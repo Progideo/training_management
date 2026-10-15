@@ -1,0 +1,60 @@
+name: Project — issue réalisée
+
+on:
+  issues:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Numéro d’une issue existante du dépôt
+        required: true
+        type: string
+      dry_run:
+        description: Simulation sans modification du Project
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-completed-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  update-project:
+    # Les événements automatiques restent inactifs tant que la variable n’est pas true.
+    # Une simulation manuelle est possible après fusion, avant l’activation.
+    if: >-
+      github.repository == 'Progideo/training_management' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       vars.PROJECT_AUTOMATION_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Récupérer les scripts de la révision du workflow
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Générer un jeton temporaire de la GitHub App
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
+        with:
+          client-id: ${{ vars.PROJECT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.PROJECT_APP_PRIVATE_KEY }}
+          owner: Progideo
+          repositories: training_management
+          permission-issues: read
+          permission-organization-projects: write
+
+      - name: Vérifier le motif de clôture et mettre à jour le Project
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+          PROJECT_AUTOMATION_ENABLED: ${{ vars.PROJECT_AUTOMATION_ENABLED }}
+        run: python3 .github/scripts/project_issue_completed.py
