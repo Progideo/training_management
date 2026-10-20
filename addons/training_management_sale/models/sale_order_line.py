@@ -49,5 +49,7 @@ class SaleOrderLine(models.Model):
 
     def _store_training_program_labels(self):
         for line in self:
+            if not line.training_program_id and not line.training_program_label:
+                continue
             label = line.training_program_id.display_name if line.training_program_id else False
             super(SaleOrderLine, line).write({"training_program_label": label})

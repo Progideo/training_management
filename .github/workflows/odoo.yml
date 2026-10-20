@@ -48,7 +48,7 @@ jobs:
               "$ODOO_IMAGE" odoo "$@" \
               --db_host=127.0.0.1 --db_port=5432 \
               --db_user=odoo --db_password=fictional_ci_password \
-              -d tm_s01_test_ci --no-http --http-interface=127.0.0.1 --http-port=0 \
+              -d "${TM_TEST_DB:-tm_s01_test_ci}" --no-http --http-interface=127.0.0.1 --http-port=0 \
               --workers=0 --max-cron-threads=0
           }
           run_odoo -i training_management --without-demo --stop-after-init \
@@ -62,6 +62,21 @@ jobs:
           run_odoo -i training_management_sale --without-demo --stop-after-init \
             --test-enable --test-tags=/training_management_sale \
             2>&1 | tee test-results/commercial-install.log
+          TM_TEST_DB=tm_s01_test_website_ci run_odoo \
+            -i website,website_slides,training_management --without-demo --stop-after-init \
+            2>&1 | tee test-results/website-baseline-install.log
+          TM_TEST_DB=tm_s01_test_website_ci TM_UPGRADE_PHASE=prepare run_odoo shell \
+            < tests/probes/catalogue_upgrade_probe.py 2>&1 | tee test-results/website-baseline.log
+          TM_TEST_DB=tm_s01_test_website_ci run_odoo \
+            -i training_management_sale --without-demo --stop-after-init \
+            --test-enable --test-tags=/training_management_sale \
+            2>&1 | tee test-results/website-commercial-install.log
+          TM_TEST_DB=tm_s01_test_website_ci run_odoo \
+            -u training_management_sale --stop-after-init \
+            --test-enable --test-tags=/training_management_sale \
+            2>&1 | tee test-results/website-commercial-update.log
+          TM_TEST_DB=tm_s01_test_website_ci TM_UPGRADE_PHASE=verify run_odoo shell \
+            < tests/probes/catalogue_upgrade_probe.py 2>&1 | tee test-results/website-history.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:

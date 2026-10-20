@@ -68,6 +68,10 @@ class TestTrainingSale(TransactionCase):
         self.assertIn("V1", quoted_label)
         self.course.name = "Renamed course"
         self.assertEqual(order.order_line.training_program_label, quoted_label)
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "sale.report_saleorder", [order.id],
+        )[0]
+        self.assertIn(quoted_label, html.decode() if isinstance(html, bytes) else html)
         self.assertFalse(self.env["sale.order.line"].search([
             ("order_id", "=", order.id), ("product_id", "=", self.product.id),
             ("training_program_id", "=", False),
