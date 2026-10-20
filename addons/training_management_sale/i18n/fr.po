@@ -458,6 +458,12 @@ msgid "Training Portal Access"
 msgstr "Accès portail à la formation"
 
 #. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.report_invoice_training_downpayment
+#: model_terms:ir.ui.view,arch_db:training_management_sale.report_saleorder_training_program
+msgid "Down Payment"
+msgstr "Acompte"
+
+#. module: training_management_sale
 #: code:addons/training_management_sale/controllers/portal.py:0
 msgid "This training document requires an authorized portal contact."
 msgstr "Ce document de formation nécessite un contact portail autorisé."
