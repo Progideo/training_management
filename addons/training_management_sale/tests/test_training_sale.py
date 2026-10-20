@@ -440,6 +440,9 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError):
             payment_wizard.action_create_payments()
         payment_wizard.currency_id = self.eur
+        payment_wizard.amount = 300
+        payment_wizard.payment_difference_handling = "open"
+        self.assertEqual(payment_wizard.amount, 300)
         payment_wizard.action_create_payments()
         first_payment = self.env["account.payment"].search([
             ("journal_id", "=", bank_journal.id),
