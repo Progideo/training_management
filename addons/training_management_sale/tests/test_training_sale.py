@@ -167,6 +167,16 @@ class TestTrainingSale(TransactionCase):
             self.env["payment.transaction"].create({
                 "sale_order_ids": [Command.set(order.ids)],
             })
+        with self.assertRaises(ValidationError):
+            self.env["payment.link.wizard"].with_context(
+                active_model="sale.order", active_id=order.id,
+            ).default_get(["res_model", "res_id", "amount"])
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.env["payment.link.wizard"].create({
+                "res_model": "sale.order", "res_id": order.id,
+                "amount": 25, "currency_id": self.eur.id,
+                "partner_id": self.partner.id,
+            })
         with self.assertRaises(AccessError):
             order.with_user(self.portal).read(["name"])
         company_contact = self.env["res.partner"].create({
@@ -394,6 +404,20 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(final_invoice.payment_state, "not_paid")
         self.assertEqual(final_invoice.amount_residual, 1200)
         self.assertEqual(advance.amount_residual, 400)
+        self.company.link_qr_code = True
+        self.assertFalse(final_invoice.display_link_qr_code)
+        self.assertFalse(final_invoice._get_portal_payment_link())
+        self.assertFalse(final_invoice._generate_portal_payment_qr())
+        with self.assertRaises(ValidationError):
+            self.env["payment.link.wizard"].with_context(
+                active_model="account.move", active_id=final_invoice.id,
+            ).default_get(["res_model", "res_id", "amount"])
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.env["payment.link.wizard"].create({
+                "res_model": "account.move", "res_id": final_invoice.id,
+                "amount": 1200, "currency_id": self.eur.id,
+                "partner_id": invoice_address.id,
+            })
         with self.assertRaises(ValidationError):
             self.env["payment.transaction"].create({
                 "invoice_ids": [Command.set(final_invoice.ids)],
