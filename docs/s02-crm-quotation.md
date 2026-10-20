@@ -197,7 +197,9 @@ générique, y compris sur le PDF de commande, car le libellé standard contient
 le numéro de la facture d'acompte.
 Le PDF de facture finale masque également le numéro de la facture d'acompte
 dans la ligne déduite ; la référence reste présente sur l'écriture interne.
-La comptabilité doit valider cette présentation avant usage réel.
+Décision du 20 octobre 2026 : conserver ce libellé sans numéro sur le PDF
+client. La comptabilité doit confirmer que cette présentation convient à la
+facturation de la société exploitante avant usage réel.
 Le service binaire vérifie aussi les pièces liées directement au devis, à la
 facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
 jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des
@@ -305,7 +307,8 @@ La recette S02 n'est acceptée que si les étapes 1 à 8 passent, si aucun accè
 documentaire n'est possible après révocation, et si les écarts comptables
 ouverts (fiscalité, journaux et import des relevés) sont décidés et documentés
 par le responsable comptable, qui doit aussi accepter la règle choisie :
-l'attestation Odoo seule pour les paiements saisis. Le refus multidevise
+l'attestation Odoo seule pour les paiements saisis, ainsi que la présentation
+du PDF final sans numéro d'acompte. Le refus multidevise
 validé pour le lancement doit être vérifié. Pour les
 lignes de relevé sans référence, la revue manuelle décidée doit être définie
 et vérifiée sans attestation enregistrée, notamment face aux règles de
