@@ -83,7 +83,10 @@ commande ou facture de formation est refusée côté serveur. Le virement reste
 traité par l'avis interne et le règlement comptable contrôlé ci-dessus.
 Un test HTTP ouvre le devis avec un jeton valide et un montant dans l'URL :
 aucun formulaire de paiement n'apparaît et l'appel direct à la route de
-transaction est refusé. Il ne couvre pas encore les liens de paiement génériques.
+transaction est refusé. L'assistant de lien de paiement refuse les commandes
+et factures de formation, y compris par création directe. Le lien et le QR
+code de paiement en ligne sont retirés du rapport de facture même si l'option
+de la société est activée.
 
 La demande CRM et le devis portent trois contacts Odoo explicites : le
 commanditaire, le payeur prévu et le contact administratif. Ils peuvent être
@@ -115,6 +118,11 @@ doublons agit également sur les paiements directs portant une référence.
 Les lignes de relevé bancaire et les écritures manuelles sans objet paiement
 relèvent du rapprochement natif ; leurs preuves et les imports bancaires
 restent à cadrer avant une recette opérationnelle complète.
+La page générique `/payment/pay` ne porte pas l'identité d'un devis ou d'une
+facture : un lien construit indépendamment avec un partenaire et un montant
+ne peut pas être attribué avec certitude à une formation. L'absence de
+prestataire de paiement actif devra être vérifiée lors du paramétrage du
+lancement ; l'addon n'interrompt pas les paiements d'autres activités Odoo.
 Les règles portail natives d'Odoo permettent toujours à plusieurs contacts
 d'une même entreprise cliente de lire ses devis et factures. Le choix des
 contacts autorisés, ainsi que le traitement des liens d'accès envoyés par

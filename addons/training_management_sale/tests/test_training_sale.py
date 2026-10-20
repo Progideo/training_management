@@ -408,6 +408,13 @@ class TestTrainingSale(TransactionCase):
         self.assertFalse(final_invoice.display_link_qr_code)
         self.assertFalse(final_invoice._get_portal_payment_link())
         self.assertFalse(final_invoice._generate_portal_payment_qr())
+        invoice_html = self.env["ir.actions.report"]._render_qweb_html(
+            "account.account_invoices", [final_invoice.id],
+        )[0]
+        self.assertNotIn(
+            "payment_link_qrcode",
+            invoice_html.decode() if isinstance(invoice_html, bytes) else invoice_html,
+        )
         with self.assertRaises(ValidationError):
             self.env["payment.link.wizard"].with_context(
                 active_model="account.move", active_id=final_invoice.id,
