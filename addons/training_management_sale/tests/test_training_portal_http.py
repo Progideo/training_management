@@ -123,21 +123,29 @@ class TestTrainingPortalHttp(HttpCase):
 
     def test_named_contact_required_even_with_a_valid_token(self):
         url = f"/my/orders/{self.order.id}?access_token={self.order.access_token}"
+        mail_url = (
+            f"/mail/view?model=sale.order&res_id={self.order.id}"
+            f"&access_token={self.order.access_token}"
+        )
         self.authenticate(None, None)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(self.order.name, self.url_open(mail_url).text)
         self.assertEqual(
             self.url_open(url + "&report_type=pdf", allow_redirects=False).status_code,
             303,
         )
         self.authenticate(self.colleague_user.login, self.colleague_user.login)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(self.order.name, self.url_open(mail_url).text)
         self.authenticate(self.authorized_user.login, self.authorized_user.login)
         self.assertEqual(
             self.url_open(f"/my/orders/{self.order.id}", allow_redirects=False).status_code,
             200,
         )
+        self.assertIn(self.order.name, self.url_open(mail_url).text)
         self.order.training_portal_partner_ids = [Command.clear()]
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(self.order.name, self.url_open(mail_url).text)
 
     def test_attachment_token_cannot_bypass_contact_grant(self):
         attachment = self.env["ir.attachment"].create({
@@ -183,6 +191,36 @@ class TestTrainingPortalHttp(HttpCase):
         self.order.training_portal_partner_ids = [Command.clear()]
         self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
         self.assertNotEqual(self.url_open(preview_url, allow_redirects=False).status_code, 200)
+
+    def test_message_notification_filters_unauthorized_external_recipients(self):
+        message = self.env["mail.message"].create({
+            "model": "sale.order", "res_id": self.order.id,
+            "message_type": "comment", "body": "Fictional training update",
+            "partner_ids": [Command.set([
+                self.authorized_user.partner_id.id,
+                self.colleague_user.partner_id.id,
+            ])],
+            "outgoing_email_to": "Unlinked <unlinked@example.invalid>",
+        })
+        recipients = self.order._notify_get_recipients(message)
+        self.assertIn(self.authorized_user.partner_id.id, [r["id"] for r in recipients])
+        self.assertNotIn(self.colleague_user.partner_id.id, [r["id"] for r in recipients])
+        self.assertFalse([r for r in recipients if r["share"] and not r["id"]])
+        self.order.message_subscribe(partner_ids=[
+            self.authorized_user.partner_id.id,
+            self.colleague_user.partner_id.id,
+        ])
+        follower_message = self.env["mail.message"].create({
+            "model": "sale.order", "res_id": self.order.id,
+            "message_type": "comment", "body": "Fictional follower update",
+            "subtype_id": self.env.ref("mail.mt_comment").id,
+        })
+        follower_recipients = self.order._notify_get_recipients(follower_message)
+        self.assertIn(self.authorized_user.partner_id.id, [r["id"] for r in follower_recipients])
+        self.assertNotIn(self.colleague_user.partner_id.id, [r["id"] for r in follower_recipients])
+        self.order.training_portal_partner_ids = [Command.clear()]
+        recipients = self.order._notify_get_recipients(message)
+        self.assertFalse([r for r in recipients if r["share"]])
 
     def test_pdf_thumbnail_route_does_not_accept_portal_token(self):
         pdf = BytesIO()
@@ -260,6 +298,10 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertNotIn(invoice.name, report_html.decode() if isinstance(report_html, bytes) else report_html)
         invoice._portal_ensure_token()
         url = f"/my/invoices/{invoice.id}?access_token={invoice.access_token}"
+        mail_url = (
+            f"/mail/view?model=account.move&res_id={invoice.id}"
+            f"&access_token={invoice.access_token}"
+        )
         attachment = self.env["ir.attachment"].create({
             "name": "fictional-training-invoice.txt", "raw": b"Fictional private invoice file",
             "mimetype": "text/plain", "res_model": "account.move", "res_id": invoice.id,
@@ -269,15 +311,31 @@ class TestTrainingPortalHttp(HttpCase):
         )
         self.authenticate(None, None)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(invoice.name, self.url_open(mail_url).text)
         self.assertNotEqual(self.url_open(attachment_url, allow_redirects=False).status_code, 200)
         self.authenticate(self.colleague_user.login, self.colleague_user.login)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(invoice.name, self.url_open(mail_url).text)
         self.authenticate(self.authorized_user.login, self.authorized_user.login)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(invoice.name, self.url_open(mail_url).text)
         order_url = self.order.get_portal_url()
         self.assertNotIn(invoice.name, self.url_open(order_url).text)
         self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         invoice.training_portal_partner_ids = [Command.link(self.authorized_user.partner_id.id)]
+        message = self.env["mail.message"].create({
+            "model": "account.move", "res_id": invoice.id,
+            "message_type": "comment", "body": "Fictional invoice update",
+            "partner_ids": [Command.set([
+                self.authorized_user.partner_id.id,
+                self.colleague_user.partner_id.id,
+            ])],
+            "outgoing_email_to": "Unlinked <unlinked@example.invalid>",
+        })
+        recipients = invoice._notify_get_recipients(message)
+        self.assertIn(self.authorized_user.partner_id.id, [r["id"] for r in recipients])
+        self.assertNotIn(self.colleague_user.partner_id.id, [r["id"] for r in recipients])
+        self.assertFalse([r for r in recipients if r["share"] and not r["id"]])
         composer.partner_ids = [Command.set([self.authorized_user.partner_id.id])]
         self.assertTrue(
             composer._prepare_mail_values(invoice.ids)[invoice.id]["notify_skip_followers"]
@@ -294,6 +352,7 @@ class TestTrainingPortalHttp(HttpCase):
                 ],
             })
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertIn(invoice.name, self.url_open(mail_url).text)
         self.assertNotIn("Pay Now", self.url_open(url).text)
         with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
             self.make_jsonrpc_request(
@@ -307,11 +366,15 @@ class TestTrainingPortalHttp(HttpCase):
             200,
         )
         invoice.training_portal_partner_ids = [Command.clear()]
+        self.assertFalse([
+            r for r in invoice._notify_get_recipients(message) if r["share"]
+        ])
         with self.assertRaises(ValidationError):
             sender._get_mail_params(invoice, {
                 "mail_partner_ids": [self.authorized_user.partner_id.id],
             })
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(invoice.name, self.url_open(mail_url).text)
         self.assertNotIn(invoice.name, self.url_open(order_url).text)
         self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         self.assertNotEqual(self.url_open(attachment_url, allow_redirects=False).status_code, 200)

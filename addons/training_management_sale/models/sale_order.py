@@ -90,6 +90,14 @@ class SaleOrder(models.Model):
             }
         return recipients
 
+    def _notify_get_recipients(self, message, **kwargs):
+        recipients = super()._notify_get_recipients(message, **kwargs)
+        if not self.training_request_kind:
+            return recipients
+        authorized_ids = set(self.training_portal_partner_ids.ids)
+        return [recipient for recipient in recipients
+                if not recipient["share"] or recipient["id"] in authorized_ids]
+
     def action_confirm(self):
         self._check_training_offer()
         return super().action_confirm()

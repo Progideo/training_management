@@ -45,6 +45,14 @@ class AccountMove(models.Model):
             }
         return recipients
 
+    def _notify_get_recipients(self, message, **kwargs):
+        recipients = super()._notify_get_recipients(message, **kwargs)
+        if not self.training_is_sale_invoice:
+            return recipients
+        authorized_ids = set(self.training_portal_partner_ids.ids)
+        return [recipient for recipient in recipients
+                if not recipient["share"] or recipient["id"] in authorized_ids]
+
     def _has_to_be_paid(self):
         self.ensure_one()
         return not self._training_sale_invoices() and super()._has_to_be_paid()

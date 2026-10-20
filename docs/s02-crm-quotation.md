@@ -144,6 +144,11 @@ destinataire, une copie ou un envoi après révocation ; les abonnés du fil ne 
 notifications. Le PDF reçu par courriel reste en possession du destinataire
 après une révocation. Utiliser des adresses individuelles pour les contacts
 habilités : une boîte partagée ne permet pas d'en limiter la lecture.
+Les notifications des autres messages du fil sont également filtrées côté
+serveur : un abonné ou destinataire externe non habilité, ainsi qu'une adresse
+libre sans contact nommé, ne reçoit pas de notification du devis ou de la
+facture de formation. Les destinataires internes conservent le fonctionnement
+Odoo habituel. Ce contrôle a été vérifié sur des messages fictifs, sans envoi.
 La page portail d'une commande de formation n'affiche que les liens des
 factures pour lesquelles le contact connecté possède une habilitation propre.
 Elle remplace également le libellé des lignes d'acompte par un libellé
@@ -157,13 +162,20 @@ facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
 jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des
 devis et factures suit la même habilitation, même avec son propre jeton.
 Les destinataires et PDF proposés ont été vérifiés dans les deux assistants
-sur la base fictive locale, sans expédier de courriel. Les corps rendus des
-modèles natifs de confirmation de commande et d'envoi de facture n'y contenaient
-aucun lien. Les téléchargements HTTP de pièces liées au document ou à un
-message sont contrôlés pour un contact habilité, un collègue non habilité et
-après révocation ; l'aperçu PDF natif testé refuse le jeton ordinaire de la
+sur la base fictive locale. Deux messages ont ensuite été envoyés vers un
+récepteur SMTP temporaire limité au conteneur local : un pour le devis, un
+pour la facture, chacun adressé au seul contact habilité et muni d'un PDF.
+Ce récepteur et sa configuration Odoo ont été retirés après le contrôle.
+Les corps des modèles natifs prévisualisés ne contenaient pas de lien, mais
+les courriels assemblés par Odoo ajoutent un lien `/mail/view`. Son accès HTTP
+est vérifié avec anonyme, collègue non habilité, contact habilité et après
+révocation, pour le devis et la facture. Les téléchargements HTTP de pièces
+liées au document ou à un message sont contrôlés pour un contact habilité,
+un collègue non habilité et après révocation ; l'aperçu PDF natif testé refuse
+le jeton ordinaire de la
 pièce, y compris pour le contact habilité. Les autres modèles de notification
-et les parcours d'envoi réel restent à vérifier avant toute ouverture externe.
+et la configuration SMTP réelle restent à vérifier avant toute ouverture
+externe.
 
 ## Recette sur données fictives et base isolée
 
