@@ -339,6 +339,10 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(advance.amount_untaxed, 400)
         self.assertTrue(advance.invoice_line_ids.filtered("is_downpayment"))
         self.assertEqual(advance.amount_residual, 400)
+        advance.action_post()
+        self.assertEqual(advance.state, "posted")
+        self.assertEqual(advance.payment_state, "not_paid")
+        self.assertEqual(advance.amount_residual, 400)
 
         final_wizard = wizard_model.create({
             "sale_order_ids": [Command.set(order.ids)],
@@ -351,4 +355,8 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(final_invoice.currency_id, self.eur)
         self.assertEqual(final_invoice.partner_id, invoice_address)
         self.assertEqual(final_invoice.amount_untaxed, 1200)
-        self.assertEqual(advance.state, "draft")
+        final_invoice.action_post()
+        self.assertEqual(final_invoice.state, "posted")
+        self.assertEqual(final_invoice.payment_state, "not_paid")
+        self.assertEqual(final_invoice.amount_residual, 1200)
+        self.assertEqual(advance.amount_residual, 400)
