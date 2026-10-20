@@ -1,5 +1,5 @@
 from odoo import Command
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
 
 
@@ -162,7 +162,7 @@ class TestTrainingSale(TransactionCase):
             ("crm.lead", {"name": "Foreign sponsor", "training_request_kind": "group"}),
             ("sale.order", {"partner_id": self.partner.id, "training_request_kind": "group"}),
         ):
-            with self.assertRaises(ValidationError), self.cr.savepoint():
+            with self.assertRaises(UserError), self.cr.savepoint():
                 self.env[model].create({
                     **values, "company_id": self.company.id,
                     "training_sponsor_id": foreign_contact.id,
