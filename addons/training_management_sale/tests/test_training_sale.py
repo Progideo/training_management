@@ -152,7 +152,13 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(order.training_admin_contact_id, admin_contact)
         self.assertEqual(order.partner_invoice_id, invoice_address)
         self.assertEqual(order._prepare_invoice()["partner_id"], invoice_address.id)
+        self.env["sale.order.line"].create({
+            "order_id": order.id, "product_id": self.product.id,
+            "product_uom_qty": 1, "price_unit": 100,
+            "training_program_id": self.program.id,
+        })
         order.prepayment_percent = 0.25
+        self.assertGreater(order.amount_total, 0)
         self.assertFalse(order._has_to_be_paid())
         self.assertIsNone(TrainingCustomerPortal()._get_payment_values(
             order, payment_amount=100,
