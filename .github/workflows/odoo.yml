@@ -25,7 +25,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U odoo"
+          --health-cmd "pg_isready -U odoo -d postgres"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 20
@@ -40,8 +40,11 @@ jobs:
           mkdir -p test-results
           run_odoo() {
             docker run --rm -i --network host \
+              -e HOST=127.0.0.1 -e PORT=5432 -e USER=odoo \
+              -e PASSWORD=fictional_ci_password \
               -e TM_UPGRADE_PHASE="${TM_UPGRADE_PHASE:-}" \
               -v "$PWD/addons:/mnt/extra-addons:ro" \
+              -v tm_s01_ci_data:/var/lib/odoo \
               "$ODOO_IMAGE" odoo "$@" \
               --db_host=127.0.0.1 --db_port=5432 \
               --db_user=odoo --db_password=fictional_ci_password \
