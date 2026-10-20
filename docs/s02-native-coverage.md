@@ -128,6 +128,11 @@ après le cadrage de leurs parcours, sans retarder leur étude.
    aucun numéro de compte ni taux de taxe n'est fixé dans l'addon. Un test fictif
    vérifie l'imputation automatique sur un compte de passif courant et la reprise
    de l'acompte sur la facture finale créée après comptabilisation de l'acompte.
+   Le compte de revenus natif `product.template.property_account_income_id`,
+   lui aussi propre à chaque société, est accessible au responsable comptable
+   sur les produits liés à une formation. Ce réglage s'applique à toutes les
+   factures de ce produit dans la société active ; le module n'impose aucun
+   numéro de compte de prestation national.
 4. Habilitations et recette du portail commercial de S02 avant toute ouverture
    aux clients. Le portail entreprise complet P05 n'est pas déclaré livré.
 

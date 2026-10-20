@@ -395,7 +395,27 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(final_invoice.amount_total, 1440)
         deduction = final_invoice.invoice_line_ids.filtered("is_downpayment")
         self.assertEqual(deduction.account_id, downpayment)
+        self.assertEqual(
+            final_invoice.invoice_line_ids.filtered(lambda line: line.product_id == product).account_id,
+            income,
+        )
         self.assertNotIn("Draft", deduction.name)
+
+    def test_training_income_account_setting_is_accountant_only(self):
+        accountant = new_test_user(
+            self.env, login="training_sale_product_accountant",
+            groups="account.group_account_manager",
+            company_id=self.company.id,
+            company_ids=[Command.set([self.company.id])],
+        )
+        accountant_view = self.env["product.template"].with_user(accountant).get_view(
+            view_type="form",
+        )["arch"]
+        salesperson_view = self.env["product.template"].with_user(self.salesperson).get_view(
+            view_type="form",
+        )["arch"]
+        self.assertIn('name="property_account_income_id"', accountant_view)
+        self.assertNotIn('name="property_account_income_id"', salesperson_view)
 
     def test_native_eur_down_payment_and_final_invoice(self):
         self.eur.active = True
