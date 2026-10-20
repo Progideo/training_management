@@ -208,3 +208,42 @@ objectif, enregistrer puis actualiser et vérifier sa conservation ; compléter
 ensuite tous les champs et contrôler à nouveau leur persistance avant validation.
 Au moment de la préparation de ce correctif, la recette navigateur reste
 bloquée et `neopro_dev` conserve la version 20.0.1.0.0.
+
+### Copie multilingue — correctif 20.0.1.0.2
+
+La recette utilisateur de 20.0.1.0.1 a ensuite confirmé la persistance des
+saisies et les parcours S01, avec report explicite du test navigateur
+multi-sociétés. Son [bilan est conservé dans la PR #42](https://github.com/Progideo/training_management/pull/42#issuecomment-6289446922).
+
+La revue a reproduit un cas supplémentaire : une source déjà traduite en
+français et anglais perdait sa traduction anglaise dans la nouvelle version
+créée depuis une session française. La source demeurait intacte. Le contexte
+`default_*` ne transportait que le texte lu dans la langue courante.
+
+20.0.1.0.2 utilise `copy()` natif : dans le code exact cible,
+`odoo/orm/models.py:copy_data` reprend les valeurs traduites stockées.
+Une fenêtre native `training.program.new.version` recueille la référence
+avant la copie et ouvre le brouillon créé dans sa propre fiche. La copie ne
+dépend donc plus de chaînes par défaut issues d'une seule langue.
+
+La fenêtre est limitée au coordinateur, à son propriétaire selon les règles
+natives des modèles transitoires, et aux sociétés autorisées. La confirmation
+contrôle aussi les droits de lecture et de création du programme. La source
+et sa formation sont verrouillées pendant la copie ; aucun `sudo()` ni commit
+métier n'est ajouté. Les règles existantes imposent le brouillon, les métadonnées
+vides, la référence unique et le refus de modification de la source validée.
+
+Tests exécutés sur `tm_s01_test_final_20261020` après mise à jour :
+`0 failed, 0 error(s) of 19 tests`, code retour 0. Le test de non-régression
+utilise le formulaire natif de la fenêtre, depuis une session française puis
+anglaise ; il vérifie chaque champ traduisible dans les deux langues après
+invalidation du cache, le brouillon et l'audit vide, puis l'indépendance des
+modifications par rapport à la source publiée. Les autres tests ajoutés
+couvrent les profils interdits, les sociétés, la référence vide et le doublon.
+Ouvrir l'action sans confirmer ne crée pas de programme.
+
+Les écritures de test restent limitées aux bases jetables. Ce correctif n'est
+pas déployé dans `neopro_dev` dans cette intervention. Les tests `Form` sont
+des tests serveur ; le nouveau dialogue n'a pas encore été parcouru manuellement
+dans le navigateur. Le test navigateur multi-sociétés demeure reporté, sans
+être remplacé par les contrôles automatisés.

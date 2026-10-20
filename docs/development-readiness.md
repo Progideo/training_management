@@ -81,8 +81,11 @@ Aucun code standard n'est copié dans le dépôt et aucun cœur Odoo n'est modif
 - Brouillon → validé → publié → retiré. Les champs requis sont contrôlés à la
   validation et à la publication. « Publié » n'ouvre aucun site ou accès public.
 - Contenu immuable dès validation, y compris via écriture directe ou traduction.
-  Le bouton « Nouvelle version » prépare un brouillon distinct avec une référence
-  à saisir. Unicité en base par formation ; aucune séquence `max + 1` vulnérable.
+  Le bouton « Nouvelle version » demande la référence dans une fenêtre native,
+  puis « Créer le brouillon » copie le programme avec l'ORM Odoo et ouvre sa fiche.
+  Tous les champs traduisibles reprennent leurs traductions, indépendamment de la
+  langue de session. Annuler la fenêtre ne crée aucun programme.
+  Unicité en base par formation ; aucune séquence `max + 1` vulnérable.
 - Auteur et date de chaque transition sont générés côté serveur. Les champs
   d'audit et les valeurs par défaut du contexte ne permettent pas de contourner
   la validation. Une transition répétée vers le même état conserve sa date.
@@ -169,8 +172,12 @@ Recette après installation sur une base autorisée :
    et rouvrir la fiche pour vérifier la persistance avant toute validation.
 3. Vérifier que les informations incomplètes bloquent la validation. Compléter
    les champs, valider et publier ; constater auteur/date et contenu figé.
-4. Créer V2 par « Nouvelle version », saisir une nouvelle référence et modifier
-   son contenu. Vérifier que V1 demeure inchangée, puis retirer V1 si nécessaire.
+4. Sur une source possédant des objectifs distincts en français et anglais,
+   cliquer sur « Nouvelle version », saisir V2 puis « Créer le brouillon ».
+   Vérifier après relecture les deux traductions, l'état brouillon et l'absence
+   d'historique de validation. Modifier le contenu de V2 et vérifier que V1 reste
+   inchangée. Refaire la copie depuis l'autre langue de session avec une référence
+   distincte ; retirer V1 si nécessaire.
 5. Vérifier lecture seule, refus hors société et refus pour un compte portail.
    Les programmes sont destinés au futur site public, mais restent internes ici.
 6. Sur une base de test avec V1 persistée, mettre à jour le module et comparer

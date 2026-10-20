@@ -206,10 +206,88 @@ class TestCatalogue(TransactionCase):
         program = self.new_program()
         program.action_validate()
         action = program.action_new_version()
-        self.assertEqual(action["context"]["default_course_id"], self.course.id)
-        self.assertEqual(action["context"]["default_objectives"], program.objectives)
+        self.assertEqual(action["res_model"], "training.program.new.version")
+        self.assertEqual(action["target"], "new")
+        self.assertEqual(action["context"]["default_source_id"], program.id)
         self.assertFalse(action["context"]["default_version"])
-        self.assertEqual(action["context"]["default_state"], "draft")
+        # Opening/cancelling the dialog must not create an abandoned programme.
+        self.assertEqual(program.search_count([("course_id", "=", self.course.id)]), 1)
+
+    def test_new_version_preserves_all_translations_in_either_session_language(self):
+        self.env["res.lang"]._activate_lang("fr_FR")
+        source = self.new_program()
+        translated_fields = [
+            name for name, field in source._fields.items()
+            if field.translate is True and field.store and field.copy
+        ]
+        self.assertIn("objectives", translated_fields)
+        self.assertIn("title", translated_fields)
+        translations = {
+            name: {"en_US": f"English {name}", "fr_FR": f"Français {name}"}
+            for name in translated_fields
+        }
+        for name, values in translations.items():
+            source.update_field_translations(name, values)
+        source.action_validate()
+        source.action_publish()
+        source_audit = source.read(["state", *source._audit_fields()])
+
+        for index, session_language in enumerate(("fr_FR", "en_US"), start=2):
+            with self.subTest(session_language=session_language):
+                action = source.with_context(lang=session_language).action_new_version()
+                Wizard = self.env[action["res_model"]].with_user(self.coordinator).with_context(
+                    action["context"],
+                )
+                with Form(Wizard) as form:
+                    form.version = f"V{index}"
+                result = form.record.action_create_version()
+                target = source.browse(result["res_id"])
+                self.env.flush_all()
+                self.env.invalidate_all()
+                self.assertEqual(target.course_id, source.course_id)
+                self.assertEqual(target.state, "draft")
+                self.assertEqual(target.version, f"V{index}")
+                self.assertTrue(all(not target[name] for name in target._audit_fields()))
+                for name, values in translations.items():
+                    for lang, text in values.items():
+                        self.assertEqual(target.with_context(lang=lang)[name], text)
+                        self.assertEqual(source.with_context(lang=lang)[name], text)
+                target.with_context(lang="en_US").write({"objectives": "Changed in new draft"})
+                self.env.flush_all()
+                self.env.invalidate_all()
+                self.assertEqual(target.with_context(lang="fr_FR").objectives, translations["objectives"]["fr_FR"])
+                self.assertEqual(source.with_context(lang="en_US").objectives, translations["objectives"]["en_US"])
+                self.assertEqual(source.read(["state", *source._audit_fields()]), source_audit)
+
+    def test_new_version_wizard_access_restrictions(self):
+        program = self.new_program()
+        Wizard = self.env["training.program.new.version"]
+        values = {"source_id": program.id, "version": "V2"}
+        wizard = Wizard.with_user(self.coordinator).create(values)
+        for user in (self.reader, self.internal, self.portal, self.env.ref("base.public_user")):
+            with self.subTest(user=user.login):
+                with self.assertRaises(AccessError), self.cr.savepoint():
+                    Wizard.with_user(user).create(values)
+                with self.assertRaises(AccessError):
+                    wizard.with_user(user).action_create_version()
+        other = self.env["training.program.version"].create({
+            **self.values, "course_id": self.other_course.id,
+            "accessibility_contact_id": False,
+        })
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            Wizard.with_user(self.coordinator).create({"source_id": other.id, "version": "V2"})
+
+    @mute_logger("odoo.sql_db")
+    def test_new_version_wizard_rejects_duplicate_and_blank_references(self):
+        program = self.new_program()
+        Wizard = self.env["training.program.new.version"].with_user(self.coordinator)
+        duplicate = Wizard.create({"source_id": program.id, "version": " V1 "})
+        with self.assertRaises(IntegrityError), self.cr.savepoint():
+            duplicate.action_create_version()
+        blank = Wizard.create({"source_id": program.id, "version": "   "})
+        with self.assertRaises(ValidationError):
+            blank.action_create_version()
+        self.assertEqual(program.search_count([("course_id", "=", self.course.id)]), 1)
 
     def test_draft_can_be_deleted(self):
         program = self.new_program()

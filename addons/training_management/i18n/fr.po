@@ -186,6 +186,9 @@ msgstr "Nom"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_program.py:0
+#: code:addons/training_management/wizard/training_program_new_version.py:0
+#: model:ir.model,name:training_management.model_training_program_new_version
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
 msgid "New Programme Version"
 msgstr "Nouvelle version de programme"
 
@@ -442,6 +445,7 @@ msgstr "Les données de validation et la société du programme ne sont pas modi
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__version
+#: model:ir.model.fields,field_description:training_management.field_training_program_new_version__version
 msgid "Version Reference"
 msgstr "Référence de version"
 
@@ -449,3 +453,29 @@ msgstr "Référence de version"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__elearning
 msgid "eLearning"
 msgstr "eLearning"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_program_new_version.py:0
+msgid "A version reference is required."
+msgstr "Une référence de version est obligatoire."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_new_version__source_id
+msgid "Source Programme"
+msgstr "Programme source"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "The new draft keeps the source content and its translations."
+msgstr "Le nouveau brouillon conserve le contenu source et ses traductions."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "Create Draft"
+msgstr "Créer le brouillon"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "Cancel"
+msgstr "Annuler"

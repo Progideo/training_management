@@ -174,23 +174,13 @@ class TrainingProgramVersion(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("New Programme Version"),
-            "res_model": self._name,
+            "res_model": "training.program.new.version",
             "view_mode": "form",
-            "target": "current",
+            "target": "new",
             "context": {
                 **self.env.context,
-                **{
-                    f"default_{name}": self[name].id if self._fields[name].type == "many2one" else self[name]
-                    for name in (
-                        "course_id", "title", "objectives", "target_audience",
-                        "prerequisites", "content", "duration_hours", "delivery_mode",
-                        "language_id", "teaching_methods", "evaluation_criteria",
-                        "access_conditions", "accessibility_contact_id",
-                        "accessibility_information", "pricing_mode",
-                    )
-                },
+                "default_source_id": self.id,
                 "default_version": False,
-                "default_state": "draft",
             },
         }
 
