@@ -81,6 +81,9 @@ même si la société a configuré un acompte par défaut ou si une URL contient
 montant. La création ou l'association d'une transaction de paiement à une
 commande ou facture de formation est refusée côté serveur. Le virement reste
 traité par l'avis interne et le règlement comptable contrôlé ci-dessus.
+La facture de formation masque aussi l'action « Payer maintenant » du portail,
+même si le paiement des factures est activé dans Odoo ; sa route de transaction
+refuse un appel direct. Les autres factures Odoo conservent leur comportement.
 Un test HTTP ouvre le devis sous un contact autorisé, avec un jeton valide et un montant dans l'URL :
 aucun formulaire de paiement n'apparaît et l'appel direct à la route de
 transaction est refusé. L'assistant de lien de paiement refuse les commandes
@@ -133,6 +136,10 @@ serveur restreignent aussi la lecture ORM et les listes. Les contacts internes
 du devis et les avis de virement restent invisibles au portail. Les autres
 documents Odoo conservent leurs règles natives. Les PDF ou pièces déjà
 transmis hors du portail ne peuvent pas être rappelés par cette révocation.
+La page portail d'une commande de formation n'affiche que les liens des
+factures pour lesquelles le contact connecté possède une habilitation propre.
+Elle remplace également le libellé des lignes d'acompte par un libellé
+générique, car le libellé standard contient le numéro de la facture d'acompte.
 Le service binaire vérifie aussi les pièces liées directement au devis, à la
 facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
 jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des

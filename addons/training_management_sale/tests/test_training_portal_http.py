@@ -147,6 +147,15 @@ class TestTrainingPortalHttp(HttpCase):
         invoice = self.order._create_invoices()
         invoice.action_post()
         self.assertTrue(invoice.training_is_sale_invoice)
+        self.env["ir.config_parameter"].sudo().set_str(
+            "account_payment.enable_portal_payment", "True",
+        )
+        self.assertFalse(invoice._has_to_be_paid())
+        self.env["sale.order.line"].create({
+            "order_id": self.order.id, "is_downpayment": True,
+            "label": f"Down Payment (ref: {invoice.name})",
+            "product_uom_qty": 0, "price_unit": 0,
+        })
         invoice._portal_ensure_token()
         url = f"/my/invoices/{invoice.id}?access_token={invoice.access_token}"
         attachment = self.env["ir.attachment"].create({
@@ -163,8 +172,18 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
         self.authenticate(self.authorized_user.login, self.authorized_user.login)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        order_url = self.order.get_portal_url()
+        self.assertNotIn(invoice.name, self.url_open(order_url).text)
+        self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         invoice.training_portal_partner_ids = [Command.link(self.authorized_user.partner_id.id)]
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertNotIn("Pay Now", self.url_open(url).text)
+        with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
+            self.make_jsonrpc_request(
+                f"/invoice/transaction/{invoice.id}",
+                {"access_token": invoice.access_token},
+            )
+        self.assertIn(invoice.name, self.url_open(order_url).text)
         self.assertEqual(self.url_open(attachment_url, allow_redirects=False).status_code, 200)
         self.assertEqual(
             self.url_open(url + "&report_type=pdf", allow_redirects=False).status_code,
@@ -172,4 +191,6 @@ class TestTrainingPortalHttp(HttpCase):
         )
         invoice.training_portal_partner_ids = [Command.clear()]
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertNotIn(invoice.name, self.url_open(order_url).text)
+        self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         self.assertNotEqual(self.url_open(attachment_url, allow_redirects=False).status_code, 200)

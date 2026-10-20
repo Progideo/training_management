@@ -14,6 +14,7 @@
         "views/sale_order_views.xml",
         "views/account_move_views.xml",
         "views/account_payment_views.xml",
+        "views/sale_portal_templates.xml",
         "report/sale_report_templates.xml",
     ],
     "installable": True,

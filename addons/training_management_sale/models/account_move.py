@@ -36,6 +36,10 @@ class AccountMove(models.Model):
             and bool(move.invoice_line_ids.sale_line_ids.order_id.filtered("training_request_kind"))
         )
 
+    def _has_to_be_paid(self):
+        self.ensure_one()
+        return not self._training_sale_invoices() and super()._has_to_be_paid()
+
     @api.depends("company_id", "invoice_line_ids.sale_line_ids.order_id.training_request_kind")
     def _compute_display_link_qr_code(self):
         super()._compute_display_link_qr_code()

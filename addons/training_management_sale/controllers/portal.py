@@ -2,6 +2,7 @@ from odoo import http, _
 from odoo.exceptions import AccessError, ValidationError
 from odoo.http import request
 from odoo.addons.account.controllers.portal import PortalAccount
+from odoo.addons.account_payment.controllers.payment import PaymentPortal as InvoicePaymentPortal
 from odoo.addons.sale.controllers.portal import CustomerPortal, PaymentPortal
 
 
@@ -30,6 +31,17 @@ class TrainingCustomerPortal(TrainingPortalDocumentAccess, CustomerPortal):
 
 class TrainingAccountPortal(TrainingPortalDocumentAccess, PortalAccount):
     pass
+
+
+class TrainingInvoicePaymentPortal(TrainingPortalDocumentAccess, InvoicePaymentPortal):
+    @http.route()
+    def invoice_transaction(self, invoice_id, access_token, **kwargs):
+        invoice_sudo = self._document_check_access("account.move", invoice_id, access_token)
+        if invoice_sudo._training_sale_invoices():
+            raise ValidationError(_(
+                "Online payment transactions are disabled for training orders and invoices."
+            ))
+        return super().invoice_transaction(invoice_id, access_token, **kwargs)
 
 
 class TrainingPaymentPortal(TrainingPortalDocumentAccess, PaymentPortal):
