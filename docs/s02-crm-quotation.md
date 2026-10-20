@@ -157,6 +157,8 @@ avant toute ouverture externe.
 3. Ajouter une ligne du produit « personne », quantité 12 et version V1. Vérifier que le
    devis PDF indique la formation et V1. Modifier ensuite le nom de la formation :
    le libellé contractuel de la ligne et du PDF ne doit pas changer.
+   Refaire la sélection de V1 dans le formulaire de ligne affiché sur écran
+   étroit : elle doit être disponible aussi hors de la liste sur grand écran.
 4. Tenter un envoi sans règle fixe propre au produit, avec quantité 1 pour le
    tarif « personne », un montant modifié ou une remise : refuser. Pour le
    forfait, accepter une quantité de 1 pour 12 participants. Vérifier le prix

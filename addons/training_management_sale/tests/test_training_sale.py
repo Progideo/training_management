@@ -1,6 +1,7 @@
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.tools.translate import load_language
 from odoo.addons.training_management_sale.controllers.portal import TrainingCustomerPortal
 
 
@@ -108,6 +109,7 @@ class TestTrainingSale(TransactionCase):
             })
 
     def test_incomplete_request_cannot_create_training_quote(self):
+        load_language(self.cr, "fr_FR")
         field = self.env["ir.model.fields"].search([
             ("model", "=", "crm.lead"), ("name", "=", "training_request_kind"),
         ], limit=1)
