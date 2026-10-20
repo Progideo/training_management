@@ -427,13 +427,59 @@ class TestTrainingSale(TransactionCase):
             "currency_id": self.eur.id,
             "amount": 300,
             "payment_difference_handling": "open",
-            "communication": "FICTIONAL-TRANSFER-001",
+            "communication": "Fictional invoice allocation",
         })
+        self.assertTrue(payment_wizard.training_bank_payment_required)
+        with self.assertRaises(ValidationError):
+            payment_wizard.action_create_payments()
+        mad = self.env.ref("base.MAD")
+        mad.active = True
+        payment_wizard.write({
+            "training_bank_reference": " fictional-transfer-001 ",
+            "currency_id": mad.id,
+        })
+        with self.assertRaises(ValidationError):
+            payment_wizard.action_create_payments()
+        payment_wizard.currency_id = self.eur
         payment_wizard.action_create_payments()
+        first_payment = self.env["account.payment"].search([
+            ("journal_id", "=", bank_journal.id),
+            ("training_bank_reference", "=", "FICTIONAL-TRANSFER-001"),
+        ])
+        self.assertEqual(len(first_payment), 1)
+        self.assertEqual(first_payment.memo, "Fictional invoice allocation")
+        with self.assertRaises(ValidationError):
+            first_payment.training_bank_reference = "ALTERED"
         self.assertEqual(final_invoice.amount_residual, 900)
         self.assertEqual(final_invoice.payment_state, "partial")
         self.assertEqual(advance.amount_residual, 400)
         self.assertEqual(notice.state, "reported")
+
+        split_wizard = self.env["account.payment.register"].with_context(
+            active_model="account.move", active_ids=advance.ids,
+        ).create({
+            "journal_id": bank_journal.id,
+            "payment_method_line_id": manual_method.id,
+            "currency_id": self.eur.id,
+            "amount": 100,
+            "payment_difference_handling": "open",
+            "training_bank_reference": " fictional-transfer-001 ",
+        })
+        self.assertTrue(split_wizard.training_bank_payment_required)
+        self.assertTrue(split_wizard.training_duplicate_reference_exists)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            split_wizard.action_create_payments()
+        self.assertEqual(advance.amount_residual, 400)
+        split_wizard.training_duplicate_reference_reason = "Fictional split across two invoices"
+        split_wizard.action_create_payments()
+        self.assertEqual(advance.amount_residual, 300)
+        split_payments = self.env["account.payment"].search([
+            ("journal_id", "=", bank_journal.id),
+            ("training_bank_reference", "=", "FICTIONAL-TRANSFER-001"),
+            ("state", "in", ("paid", "reconciled")),
+        ])
+        self.assertEqual(len(split_payments), 2)
+        self.assertTrue(split_payments.filtered("training_duplicate_reference_reason"))
         accountant = new_test_user(
             self.env, login="training_sale_accountant",
             groups="account.group_account_invoice,sales_team.group_sale_salesman",

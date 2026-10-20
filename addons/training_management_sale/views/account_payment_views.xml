@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_account_payment_register_form_training" model="ir.ui.view">
+        <field name="name">account.payment.register.form.training</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='communication']" position="after">
+                <field name="training_bank_payment_required" invisible="1"/>
+                <field name="training_bank_reference"
+                    string="Bank Transfer Reference"
+                    required="training_bank_payment_required"
+                    invisible="not training_bank_payment_required"/>
+                <field name="training_duplicate_reference_exists" invisible="1"/>
+                <field name="training_duplicate_reference_reason"
+                    required="training_bank_payment_required and training_duplicate_reference_exists"
+                    invisible="not training_bank_payment_required or not training_duplicate_reference_exists"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_account_payment_form_training" model="ir.ui.view">
+        <field name="name">account.payment.form.training</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='memo']" position="after">
+                <field name="training_bank_reference" readonly="state != 'draft'"/>
+                <field name="training_duplicate_reference_reason"
+                    readonly="state != 'draft'" invisible="not training_bank_reference"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

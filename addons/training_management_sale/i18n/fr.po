@@ -328,3 +328,39 @@ msgstr "Un avis de virement ne peut pas être modifié après sa déclaration."
 #. module: training_management_sale
 msgid "Only accounting staff can void a transfer notice."
 msgstr "Seule la comptabilité peut annuler un avis de virement."
+
+#. module: training_management_sale
+msgid "Training Bank Reference"
+msgstr "Référence bancaire de formation"
+
+#. module: training_management_sale
+msgid "Bank Transfer Reference"
+msgstr "Référence du virement bancaire"
+
+#. module: training_management_sale
+msgid "Repeated Reference Reason"
+msgstr "Motif de réutilisation de la référence"
+
+#. module: training_management_sale
+msgid "Reference checked against the bank evidence, separate from the invoice memo."
+msgstr "Référence contrôlée sur la preuve bancaire, distincte du libellé de facture."
+
+#. module: training_management_sale
+msgid "Explain an intentional allocation of one transfer across several payments."
+msgstr "Expliquez la répartition volontaire d’un même virement entre plusieurs paiements."
+
+#. module: training_management_sale
+msgid "The bank reference of a posted payment cannot be changed."
+msgstr "La référence bancaire d’un paiement comptabilisé ne peut pas être modifiée."
+
+#. module: training_management_sale
+msgid "This bank reference was already recorded in this company and journal. Explain the intentional split before continuing."
+msgstr "Cette référence bancaire a déjà été enregistrée dans cette société et ce journal. Expliquez la répartition volontaire avant de continuer."
+
+#. module: training_management_sale
+msgid "Enter the bank reference before recording a training payment."
+msgstr "Saisissez la référence bancaire avant d’enregistrer un paiement de formation."
+
+#. module: training_management_sale
+msgid "A training payment in another currency requires an explicit accounting review."
+msgstr "Un paiement de formation dans une autre devise nécessite une revue comptable explicite."

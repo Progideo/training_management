@@ -57,6 +57,14 @@ et à sa facture : il ne crée aucun paiement et ne réduit pas le résiduel.
 Seule la comptabilité peut annuler cet avis, qui reste alors visible comme
 annulé. Le test enregistre ensuite un règlement comptable partiel de 300 EUR
 sur la facture finale : son résiduel devient 900 EUR et son état « partiel ».
+Pour une facture de formation et un journal bancaire, l'assistant demande une
+référence bancaire distincte du libellé de facture. Il signale une référence
+déjà comptabilisée dans la même société et le même journal, même si le montant
+diffère ; une seconde affectation exige un motif conservé sur le paiement.
+Le contrôle sérialise les validations simultanées d'un même journal. La
+référence est figée après comptabilisation. Une devise de règlement différente
+de celle de la facture est refusée dans cet assistant en attendant la règle
+de rapprochement validée par la comptabilité.
 Ce règlement comptabilisé ne constitue pas, à lui seul, une preuve bancaire.
 Le test crée ses propres comptes et journaux fictifs ; il ne configure pas la
 comptabilité d'une société réelle.
@@ -78,9 +86,14 @@ La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
 politique de facturation n'est présumée. Le rapprochement bancaire réel,
-les références répétées, les règlements d'une autre devise et les habilitations documentaires
+la procédure comptable pour un règlement d'une autre devise et les habilitations documentaires
 du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
+La saisie directe d'un paiement hors de l'assistant ne connaît pas encore sa
+future facture de formation : elle n'exige donc pas cette référence. Lorsqu'une
+référence est renseignée, le contrôle des doublons agit également sur cette
+voie directe. Le rapprochement direct et les imports bancaires restent à
+cadrer avant une recette opérationnelle complète.
 Les règles portail natives d'Odoo restent à durcir pour les contacts rattachés
 à une même entreprise cliente avant toute ouverture externe.
 
@@ -120,10 +133,15 @@ Les règles portail natives d'Odoo restent à durcir pour les contacts rattaché
    1 200 EUR, même débiteur, même devise et deux résiduels impayés. Ne pas
    confondre l'acompte facturé avec un règlement. Déclarer un avis de virement
    de 300 EUR : le résiduel reste 1 200 EUR et le portail ne lit pas l'avis.
-   Enregistrer ensuite un paiement partiel par l'assistant Odoo sur la facture
+   L'assistant Odoo doit refuser un paiement bancaire sans référence, ainsi
+   qu'une devise différente de celle de la facture. Enregistrer ensuite un
+   paiement partiel de 300 EUR avec une référence fictive sur la facture
    finale : le résiduel passe à 900 EUR et l'état à « partiel » ; l'acompte
-   demeure impayé. Le commercial ne peut pas annuler l'avis, la comptabilité
-   le peut. Aucun de ces actes n'ouvre un accès pédagogique.
+   demeure impayé. Tenter de réutiliser cette référence pour 100 EUR sur la
+   facture d'acompte : l'assistant doit refuser sans motif, puis accepter un
+   motif explicite de répartition, en ramenant son résiduel à 300 EUR. Le
+   commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
+   ces actes n'ouvre un accès pédagogique.
 8. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
    depuis S01 avec Website présent. Relever le comportement de la vue Website
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),
