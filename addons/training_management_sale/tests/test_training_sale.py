@@ -419,6 +419,29 @@ class TestTrainingSale(TransactionCase):
         )
         self.assertEqual(len(manual_method), 1)
         manual_method.payment_account_id = outstanding_account
+        cash_account = self.env["account.account"].create({
+            "name": "Fictional EUR Cash", "code": "519903",
+            "account_type": "asset_cash",
+            "company_ids": [Command.set([self.company.id])],
+        })
+        cash_journal = self.env["account.journal"].create({
+            "name": "Fictional EUR Cash", "code": "FEC", "type": "cash",
+            "company_id": self.company.id, "currency_id": self.eur.id,
+            "default_account_id": cash_account.id,
+        })
+        cash_method = cash_journal.inbound_payment_method_line_ids.filtered(
+            lambda line: line.code == "manual"
+        )
+        self.assertEqual(len(cash_method), 1)
+        cash_wizard = self.env["account.payment.register"].with_context(
+            active_model="account.move", active_ids=final_invoice.ids,
+        ).create({
+            "journal_id": cash_journal.id, "currency_id": self.eur.id,
+            "payment_method_line_id": cash_method.id,
+        })
+        with self.assertRaises(ValidationError):
+            cash_wizard.action_create_payments()
+        self.assertEqual(final_invoice.amount_residual, 1200)
         payment_wizard = self.env["account.payment.register"].with_context(
             active_model="account.move", active_ids=final_invoice.ids,
         ).create({
@@ -495,6 +518,18 @@ class TestTrainingSale(TransactionCase):
         })
         with self.assertRaises(ValidationError), self.cr.savepoint():
             direct_payment.action_post()
+        cash_payment = self.env["account.payment"].create({
+            "date": "2026-10-20", "amount": 50,
+            "payment_type": "inbound", "partner_type": "customer",
+            "partner_id": invoice_address.id,
+            "journal_id": cash_journal.id, "company_id": self.company.id,
+            "currency_id": self.eur.id,
+            "payment_method_line_id": cash_method.id,
+            "destination_account_id": receivable.id,
+            "training_bank_reference": "FICTIONAL-CASH-REF-001",
+        })
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            cash_payment.action_post()
         accountant = new_test_user(
             self.env, login="training_sale_accountant",
             groups="account.group_account_invoice,sales_team.group_sale_salesman",

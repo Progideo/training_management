@@ -65,6 +65,12 @@ class AccountPaymentRegister(models.TransientModel):
 
     def action_create_payments(self):
         self.ensure_one()
+        if self.payment_type == "inbound" and self._training_invoices() and (
+            self.journal_id.type != "bank" or self.payment_method_line_id.code != "manual"
+        ):
+            raise ValidationError(_(
+                "Record training invoice payments through a bank journal with the manual method."
+            ))
         if self.training_bank_payment_required:
             if not (self.training_bank_reference or "").strip():
                 raise ValidationError(_("Enter the bank reference before recording a training payment."))

@@ -364,3 +364,11 @@ msgstr "Saisissez la référence bancaire avant d’enregistrer un paiement de f
 #. module: training_management_sale
 msgid "A training payment in another currency requires an explicit accounting review."
 msgstr "Un paiement de formation dans une autre devise nécessite une revue comptable explicite."
+
+#. module: training_management_sale
+msgid "Record training invoice payments through a bank journal with the manual method."
+msgstr "Enregistrez les paiements des factures de formation dans un journal bancaire avec la méthode manuelle."
+
+#. module: training_management_sale
+msgid "A training bank reference requires an incoming bank payment with the manual method."
+msgstr "Une référence bancaire de formation exige un paiement entrant dans un journal bancaire avec la méthode manuelle."

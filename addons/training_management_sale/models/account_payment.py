@@ -34,6 +34,18 @@ class AccountPayment(models.Model):
         return super().write(vals)
 
     def action_post(self):
+        tagged_payments = self.filtered(lambda payment:
+            payment.state in ("draft", "paid") and payment.training_bank_reference
+        )
+        if any(
+            payment.payment_type != "inbound"
+            or payment.journal_id.type != "bank"
+            or payment.payment_method_line_id.code != "manual"
+            for payment in tagged_payments
+        ):
+            raise ValidationError(_(
+                "A training bank reference requires an incoming bank payment with the manual method."
+            ))
         payments = self.filtered(lambda payment:
             payment.state in ("draft", "paid")
             and payment.payment_type == "inbound"

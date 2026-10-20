@@ -65,6 +65,9 @@ Le contrôle sérialise les validations simultanées d'un même journal. La
 référence est figée après comptabilisation. Une devise de règlement différente
 de celle de la facture est refusée dans cet assistant en attendant la règle
 de rapprochement validée par la comptabilité.
+Le même assistant refuse un journal de caisse ou une méthode autre que
+« manuelle » pour ces factures. Un paiement direct portant la référence
+spécifique de formation doit aussi être bancaire, entrant et manuel.
 Ce règlement comptabilisé ne constitue pas, à lui seul, une preuve bancaire.
 Le test crée ses propres comptes et journaux fictifs ; il ne configure pas la
 comptabilité d'une société réelle.
@@ -133,8 +136,8 @@ Les règles portail natives d'Odoo restent à durcir pour les contacts rattaché
    1 200 EUR, même débiteur, même devise et deux résiduels impayés. Ne pas
    confondre l'acompte facturé avec un règlement. Déclarer un avis de virement
    de 300 EUR : le résiduel reste 1 200 EUR et le portail ne lit pas l'avis.
-   L'assistant Odoo doit refuser un paiement bancaire sans référence, ainsi
-   qu'une devise différente de celle de la facture. Enregistrer ensuite un
+   L'assistant Odoo doit refuser un journal de caisse, un paiement bancaire
+   sans référence et une devise différente de celle de la facture. Enregistrer ensuite un
    paiement partiel de 300 EUR avec une référence fictive sur la facture
    finale : le résiduel passe à 900 EUR et l'état à « partiel » ; l'acompte
    demeure impayé. Tenter de réutiliser cette référence pour 100 EUR sur la
