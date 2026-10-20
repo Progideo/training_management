@@ -72,4 +72,9 @@ class AccountPaymentRegister(models.TransientModel):
                 raise ValidationError(_(
                     "A training payment in another currency requires an explicit accounting review."
                 ))
+            if self.training_duplicate_reference_exists and not (self.training_duplicate_reference_reason or "").strip():
+                raise ValidationError(_(
+                    "This bank reference was already recorded in this company and journal. "
+                    "Explain the intentional split before continuing."
+                ))
         return super().action_create_payments()

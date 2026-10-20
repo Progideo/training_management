@@ -35,7 +35,7 @@ class AccountPayment(models.Model):
 
     def action_post(self):
         payments = self.filtered(lambda payment:
-            payment.state == "draft"
+            payment.state in ("draft", "paid")
             and payment.payment_type == "inbound"
             and payment.journal_id.type == "bank"
             and payment.training_bank_reference

@@ -483,6 +483,18 @@ class TestTrainingSale(TransactionCase):
         ])
         self.assertEqual(len(split_payments), 2)
         self.assertTrue(split_payments.filtered("training_duplicate_reference_reason"))
+        direct_payment = self.env["account.payment"].create({
+            "date": "2026-10-20", "amount": 50,
+            "payment_type": "inbound", "partner_type": "customer",
+            "partner_id": invoice_address.id,
+            "journal_id": bank_journal.id, "company_id": self.company.id,
+            "currency_id": self.eur.id,
+            "payment_method_line_id": manual_method.id,
+            "destination_account_id": receivable.id,
+            "training_bank_reference": "FICTIONAL-TRANSFER-001",
+        })
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            direct_payment.action_post()
         accountant = new_test_user(
             self.env, login="training_sale_accountant",
             groups="account.group_account_invoice,sales_team.group_sale_salesman",
