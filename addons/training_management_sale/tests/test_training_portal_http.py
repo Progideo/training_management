@@ -1,4 +1,5 @@
 from odoo import Command
+from odoo.exceptions import AccessError
 from odoo.tests import HttpCase, JsonRpcException, new_test_user, tagged
 from odoo.tools import mute_logger
 
@@ -109,10 +110,17 @@ class TestTrainingPortalHttp(HttpCase):
             "mimetype": "text/plain", "res_model": "sale.order", "res_id": self.order.id,
         })
         url = f"/web/content/{attachment.id}?access_token={attachment.generate_access_token()[0]}"
+        with self.assertRaises(AccessError):
+            self.env["ir.binary"].with_user(self.colleague_user)._get_stream_from(
+                attachment.sudo(),
+            )
         self.authenticate(None, None)
         self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
         self.authenticate(self.authorized_user.login, self.authorized_user.login)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertTrue(self.env["ir.binary"].with_user(self.authorized_user)._get_stream_from(
+            attachment.sudo(),
+        ))
         self.order.training_portal_partner_ids = [Command.clear()]
         self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
 
