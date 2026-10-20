@@ -1,0 +1,184 @@
+# Translation of Training Management - Sales.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0-20261015\n"
+"PO-Revision-Date: 2026-10-20 12:00+0000\n"
+"Last-Translator: Training Management contributors\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_request_kind
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_request_kind
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_lead_form_training
+msgid "Training Request"
+msgstr "Demande de formation"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_kind__individual
+#: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_request_kind__individual
+msgid "Individual"
+msgstr "Individuelle"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_kind__group
+#: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_request_kind__group
+msgid "Group"
+msgstr "Groupe"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_program_id
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_requested_program_id
+msgid "Requested Programme Version"
+msgstr "Version du programme demandée"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_attendee_count
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_attendee_count
+msgid "Expected Participants"
+msgstr "Participants prévus"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_requested_currency_id
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_requested_currency_id
+msgid "Requested Currency"
+msgstr "Devise demandée"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_delivery_mode
+msgid "Requested Delivery Mode"
+msgstr "Modalité souhaitée"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_date_from
+msgid "Preferred Start Date"
+msgstr "Date de début souhaitée"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_date_to
+msgid "Preferred End Date"
+msgstr "Date de fin souhaitée"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_product_template__training_course_id
+msgid "Training Catalogue Entry"
+msgstr "Formation du catalogue"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_product_template__training_price_basis
+msgid "Training Price Basis"
+msgstr "Base tarifaire de la formation"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__product_template__training_price_basis__person
+msgid "Per person"
+msgstr "Par personne"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__product_template__training_price_basis__package
+msgid "Package"
+msgstr "Forfait"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_form_training
+msgid "Training Offer"
+msgstr "Offre de formation"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order_line__training_program_id
+msgid "Programme Version"
+msgstr "Version du programme"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order_line__training_program_label
+msgid "Programme Reference on Quotation"
+msgstr "Référence du programme sur le devis"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/product_template.py:0
+msgid "A training commercial product must be a service with a price basis."
+msgstr "Un produit commercial de formation doit être un service avec une base tarifaire."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/product_template.py:0
+msgid "Choose a training catalogue entry for this price basis."
+msgstr "Choisissez une formation du catalogue pour cette base tarifaire."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_lead.py:0
+msgid "Choose a validated or published programme before creating a training quotation."
+msgstr "Choisissez un programme validé ou publié avant de créer un devis de formation."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_lead.py:0
+msgid "Enter a positive participant count and requested currency."
+msgstr "Indiquez un nombre positif de participants et la devise demandée."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_lead.py:0
+msgid "Training quotations use MAD or EUR."
+msgstr "Les devis de formation utilisent le MAD ou l’EUR."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_lead.py:0
+msgid "Expected participants cannot be negative."
+msgstr "Le nombre de participants prévus ne peut pas être négatif."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_lead.py:0
+msgid "The preferred end date must follow the start date."
+msgstr "La date de fin souhaitée doit suivre la date de début."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order.py:0
+msgid "Qualify the training request before confirming its order."
+msgstr "Qualifiez la demande de formation avant de confirmer sa commande."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order.py:0
+msgid "A training order requires a validated or published programme version."
+msgstr "Une commande de formation exige une version de programme validée ou publiée."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order.py:0
+msgid "Choose a pricelist in the requested currency before confirming."
+msgstr "Choisissez une liste de prix dans la devise demandée avant de confirmer."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order.py:0
+msgid "Training lines must use the requested programme version."
+msgstr "Les lignes de formation doivent utiliser la version de programme demandée."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order.py:0
+msgid "Revise the training offer instead of changing its confirmed request."
+msgstr "Révisez l’offre de formation au lieu de modifier la demande confirmée."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order_line.py:0
+msgid "A training product and programme version must be selected together."
+msgstr "Le produit de formation et la version du programme doivent être choisis ensemble."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order_line.py:0
+msgid "The programme must match the commercial product and company."
+msgstr "Le programme doit correspondre au produit commercial et à la société."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order_line.py:0
+msgid "Only validated or published programmes may be quoted."
+msgstr "Seuls les programmes validés ou publiés peuvent être proposés sur un devis."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order_line.py:0
+msgid "The programme version on a confirmed order is fixed."
+msgstr "La version du programme d’une commande confirmée est figée."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/sale_order_line.py:0
+msgid "The quoted programme reference is generated by the system."
+msgstr "La référence du programme sur le devis est générée par le système."

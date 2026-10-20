@@ -28,7 +28,8 @@ jetables. Aucune mise en production n'est autorisée par cette documentation.
 
 Le cadrage interne demande → devis → commande → facture → virement est validé.
 Consulter [l’étude du standard exact, les écarts et la validation prévue](docs/s02-native-coverage.md).
-Cette première étude ne livre pas encore le code métier S02.
+Le premier incrément CRM → devis est décrit dans [sa procédure de recette](docs/s02-crm-quotation.md).
+La PR S02 reste en cours de validation.
 
 ## Créateur
 

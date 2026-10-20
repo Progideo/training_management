@@ -36,6 +36,7 @@ class TestTrainingSale(TransactionCase):
         cls.program.action_validate()
         cls.product = cls.env["product.template"].create({
             "name": "Training service per person", "type": "service",
+            "company_id": cls.company.id,
             "training_course_id": cls.course.id, "training_price_basis": "person",
         }).product_variant_id
         cls.eur = cls.env.ref("base.EUR")
