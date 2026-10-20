@@ -21,9 +21,22 @@ class AccountPartialReconcile(models.Model):
             debit_line = lines.get(vals.get("debit_move_id"))
             credit_line = lines.get(vals.get("credit_move_id"))
             for invoice_line, payment_line in ((debit_line, credit_line), (credit_line, debit_line)):
-                if not invoice_line or not payment_line or not payment_line.payment_id:
+                if not invoice_line or not payment_line:
                     continue
                 if not invoice_line.move_id._training_sale_invoices():
+                    continue
+                statement_line = payment_line.statement_line_id
+                if statement_line and (
+                    statement_line.journal_id.type != "bank"
+                    or statement_line.currency_id != invoice_line.move_id.currency_id
+                ):
+                    raise ValidationError(_(
+                        "A training invoice can only be matched with a bank statement line "
+                        "in the invoice currency."
+                    ))
+                if statement_line:
+                    continue
+                if not payment_line.payment_id:
                     continue
                 payment = payment_line.payment_id
                 if (

@@ -707,3 +707,36 @@ class TestTrainingSale(TransactionCase):
         self.assertFalse(statement_receivable.payment_id)
         (invoice_receivable + statement_receivable).reconcile()
         self.assertEqual(final_invoice.amount_residual, 800)
+        mad_journal = self.env["account.journal"].create({
+            "name": "Fictional MAD Bank", "code": "FMB", "type": "bank",
+            "company_id": self.company.id, "currency_id": mad.id,
+            "default_account_id": bank_account.id,
+        })
+        other_currency_line = self.env["account.bank.statement.line"].create({
+            "journal_id": mad_journal.id,
+            "date": "2026-10-20",
+            "payment_ref": "FICTIONAL-MAD-STATEMENT",
+            "partner_id": invoice_address.id,
+            "amount": 50,
+            "counterpart_account_id": receivable.id,
+        })
+        other_currency_receivable = other_currency_line.move_id.line_ids.filtered(
+            lambda line: line.account_id == receivable
+        )
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            (invoice_receivable + other_currency_receivable).reconcile()
+        self.assertEqual(final_invoice.amount_residual, 800)
+        cash_statement = self.env["account.bank.statement.line"].create({
+            "journal_id": cash_journal.id,
+            "date": "2026-10-20",
+            "payment_ref": "FICTIONAL-CASH-STATEMENT",
+            "partner_id": invoice_address.id,
+            "amount": 50,
+            "counterpart_account_id": receivable.id,
+        })
+        cash_receivable = cash_statement.move_id.line_ids.filtered(
+            lambda line: line.account_id == receivable
+        )
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            (invoice_receivable + cash_receivable).reconcile()
+        self.assertEqual(final_invoice.amount_residual, 800)

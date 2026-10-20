@@ -62,9 +62,10 @@ référence bancaire distincte du libellé de facture. Il signale une référenc
 déjà comptabilisée dans la même société et le même journal, même si le montant
 diffère ; une seconde affectation exige un motif conservé sur le paiement.
 Le contrôle sérialise les validations simultanées d'un même journal. La
-référence est figée après comptabilisation. Une devise de règlement différente
-de celle de la facture est refusée dans cet assistant en attendant la règle
-de rapprochement validée par la comptabilité.
+référence est figée après comptabilisation. Décision du 20 octobre 2026 :
+une devise de règlement différente de celle de la facture reste refusée au
+lancement. Le refus s'applique à l'assistant, au paiement rapproché directement
+et à la ligne de relevé bancaire affectée à cette facture.
 Le même assistant refuse un journal de caisse ou une méthode autre que
 « manuelle » pour ces factures. Un paiement direct portant la référence
 spécifique de formation doit aussi être bancaire, entrant et manuel.
@@ -110,8 +111,9 @@ d'habilitation de ce devis.
 La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
-politique de facturation n'est présumée. Le rapprochement bancaire réel et la
-procédure comptable pour un règlement d'une autre devise restent à valider.
+politique de facturation n'est présumée. Le rapprochement bancaire réel reste
+à valider ; l'ouverture future des règlements dans une autre devise exigera
+une procédure comptable distincte.
 Les parcours portail vérifiés sont décrits ci-dessous ; les autres modèles de
 notification restent à contrôler avant ouverture. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
@@ -130,7 +132,9 @@ par la comptabilité. Le test automatisé rejoue ce rapprochement explicite.
 Ce contrôle humain n'est pas imposé par le serveur : avant usage réel, la
 comptabilité doit définir la preuve à conserver et vérifier qu'aucune règle
 de rapprochement automatique ne valide ces lignes sans revue. Les imports
-réels et leur traitement des doublons restent à recetter.
+réels et leur traitement des doublons restent à recetter. Une ligne de relevé
+de caisse ou tenue dans une autre devise que la facture est refusée au
+rapprochement côté serveur.
 La page générique `/payment/pay` ne porte pas l'identité d'un devis ou d'une
 facture : un lien construit indépendamment avec un partenaire et un montant
 ne peut pas être attribué avec certitude à une formation. L'absence de
@@ -247,6 +251,8 @@ externe.
    850 EUR. Une ligne de relevé sans référence peut ensuite être affectée
    manuellement après contrôle comptable ; vérifier qu'elle réduit alors le
    solde, et qu'aucune règle automatique ne l'a rapprochée avant cette revue.
+   Refuser son rapprochement si le relevé est tenu en MAD pour une facture
+   EUR, ou s'il provient d'un journal de caisse.
    Le commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
    ces actes n'ouvre un accès pédagogique.
    Avec un acompte portail configuré, vérifier aussi que le devis de formation
@@ -269,8 +275,9 @@ résiduels ; ne joindre ni données personnelles réelles ni secrets au dépôt 
 
 La recette S02 n'est acceptée que si les étapes 1 à 8 passent, si aucun accès
 documentaire n'est possible après révocation, et si les écarts comptables
-ouverts (fiscalité, journaux, preuve du virement, autre devise et import des
-relevés) sont décidés et documentés par le responsable comptable. Pour les
+ouverts (fiscalité, journaux, preuve du virement et import des relevés) sont
+décidés et documentés par le responsable comptable. Le refus multidevise
+validé pour le lancement doit être vérifié. Pour les
 lignes de relevé sans référence, la revue manuelle décidée doit être définie
 et vérifiée, notamment face aux règles de rapprochement automatique. Les tests
 automatiques et les vérifications HTTP existants ne remplacent pas cette
