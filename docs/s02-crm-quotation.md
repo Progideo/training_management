@@ -108,8 +108,8 @@ La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
 politique de facturation n'est présumée. Le rapprochement bancaire réel,
-la procédure comptable pour un règlement d'une autre devise et la recette complète
-des pièces et échanges du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
+la procédure comptable pour un règlement d'une autre devise et la recette navigateur
+des pièces, échanges et notifications du portail restent à valider. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
 La saisie directe d'un paiement hors de l'assistant ne connaît pas encore sa
 future facture de formation : elle n'exige donc pas cette référence lors de la
@@ -168,8 +168,14 @@ avant toute ouverture externe.
    de la demande. Un compte portail ne doit pas lire la fiche pédagogique.
 6. Refuser un contact réservé à une autre société exploitante. Vérifier que le
    payeur prévu, sans lien avec le client, ne peut pas lire le devis par l'ORM
-   portail ; ce test ne remplace pas la recette complète des accès HTTP et des
-   contacts d'une même entreprise.
+   portail. Créer deux contacts portail de la même entreprise cliente ; n'habiliter
+   que le premier sur le devis. Sans connexion, puis connecté comme second
+   contact, refuser page, PDF, pièce jointe et discussion, même avec les jetons
+   valides. Le premier contact doit les ouvrir ; retirer son habilitation doit
+   révoquer aussitôt son accès. Refaire le contrôle sur la facture :
+   l'habilitation du devis ne lui donne pas celle de la facture. Vérifier les
+   notifications sortantes et tout lien de téléchargement qu'elles contiennent
+   avant un envoi réel à un client.
 7. Sur une base jetable avec comptes et journal fictifs, confirmer un forfait
    de 1 600 EUR facturable à la commande. Créer et valider une facture d'acompte
    de 25 %, puis une facture finale déduisant cet acompte. Vérifier 400 EUR et
@@ -195,6 +201,24 @@ avant toute ouverture externe.
    depuis S01 avec Website présent. Relever le comportement de la vue Website
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),
    sans supposer que ce nouvel addon reproduit l'incident.
+
+## Feuille de recette métier à signer
+
+Exécuter les étapes ci-dessus dans l'interface Odoo d'une base de test autorisée,
+avec des comptes réellement limités (commercial, coordinateur, comptable,
+contacts portail habilité et non habilité) et des données fictives distinctes
+de la recette S01. Pour chaque étape, consigner dans la PR #43 la date, la version
+du module, le compte/rôle utilisé, le résultat attendu et obtenu, ainsi que les
+références fictives du devis et des factures. Capturer les refus et les montants
+résiduels ; ne joindre ni données personnelles réelles ni secrets au dépôt public.
+
+La recette S02 n'est acceptée que si les étapes 1 à 8 passent, si aucun accès
+documentaire n'est possible après révocation, et si les écarts comptables
+ouverts (fiscalité, journaux, preuve du virement, autre devise et rapprochement
+des relevés) sont décidés et documentés par le responsable comptable. Les tests
+automatiques et les vérifications HTTP existants ne remplacent pas cette
+validation dans l'interface. La recette ne vaut ni fusion, ni installation sur
+la base de développement existante, ni ouverture du portail aux clients.
 
 Les tests natifs se trouvent dans `addons/training_management_sale/tests/` ;
 le workflow `.github/workflows/odoo.yml` exécute aussi l'installation et la
