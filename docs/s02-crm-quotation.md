@@ -67,7 +67,10 @@ bancaire avant de créer le paiement Odoo. L'assistant exige une attestation
 de formation l'exige aussi avant comptabilisation. L'utilisateur qui valide
 le paiement et l'horodatage sont conservés sur celui-ci, sans pouvoir être
 modifiés ensuite par le formulaire. Cette attestation documente le contrôle
-humain ; elle n'est pas une preuve bancaire indépendante.
+humain ; elle n'est pas une preuve bancaire indépendante. Décision du
+20 octobre 2026 : pour un paiement de formation saisi dans Odoo, cette
+attestation seule constitue la trace requise au lancement. Le module n'exige
+pas de pièce bancaire jointe à ce paiement.
 Un essai local avec le profil finance restreint a enregistré fictivement
 10 EUR, attribué l'attestation à ce profil et réduit le solde de 850 à
 840 EUR ; la transaction a ensuite été annulée et le solde conservé à
@@ -148,9 +151,10 @@ facture de 850 à 800 EUR, même avec un libellé de transaction vide ; aucun
 en transaction et le solde est resté à 850 EUR. Décision du 20 octobre 2026 :
 une ligne de relevé sans référence peut être rapprochée après contrôle manuel
 par la comptabilité. Le test automatisé rejoue ce rapprochement explicite.
-Ce contrôle humain n'est pas imposé par le serveur : avant usage réel, la
-comptabilité doit définir la preuve à conserver et vérifier qu'aucune règle
-de rapprochement automatique ne valide ces lignes sans revue. Les imports
+Décision du 20 octobre 2026 : ce contrôle n'exige pas d'attestation enregistrée
+dans Odoo. Le serveur ne peut donc pas démontrer que la revue humaine a eu
+lieu : avant usage réel, la comptabilité doit vérifier qu'aucune règle de
+rapprochement automatique ne valide ces lignes sans revue. Les imports
 réels et leur traitement des doublons restent à recetter. Une ligne de relevé
 de caisse ou tenue dans une autre devise que la facture est refusée au
 rapprochement côté serveur.
@@ -299,11 +303,13 @@ résiduels ; ne joindre ni données personnelles réelles ni secrets au dépôt 
 
 La recette S02 n'est acceptée que si les étapes 1 à 8 passent, si aucun accès
 documentaire n'est possible après révocation, et si les écarts comptables
-ouverts (fiscalité, journaux, preuve du virement et import des relevés) sont
-décidés et documentés par le responsable comptable. Le refus multidevise
+ouverts (fiscalité, journaux et import des relevés) sont décidés et documentés
+par le responsable comptable, qui doit aussi accepter la règle choisie :
+l'attestation Odoo seule pour les paiements saisis. Le refus multidevise
 validé pour le lancement doit être vérifié. Pour les
 lignes de relevé sans référence, la revue manuelle décidée doit être définie
-et vérifiée, notamment face aux règles de rapprochement automatique. Les tests
+et vérifiée sans attestation enregistrée, notamment face aux règles de
+rapprochement automatique. Les tests
 automatiques et les vérifications HTTP existants ne remplacent pas cette
 validation dans l'interface. La recette ne vaut ni fusion, ni installation sur
 la base de développement existante, ni ouverture du portail aux clients.
