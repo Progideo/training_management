@@ -33,7 +33,7 @@ class MailTemplate(models.Model):
                         allowed = record.training_portal_partner_ids.filtered("email")
                     values = rendered[record.id]
                     selected = set(values.get("partner_ids", []) + values.get("partner_cc_ids", []))
-                    if (values.get("email_to") or values.get("email_cc")
+                    if (not selected or values.get("email_to") or values.get("email_cc")
                             or selected - set(allowed.ids)):
                         raise ValidationError(_(
                             "Send training documents only to named contacts authorized on the document."

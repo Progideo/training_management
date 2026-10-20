@@ -108,6 +108,10 @@ class TestTrainingPortalHttp(HttpCase):
         self.order.training_portal_partner_ids = [Command.clear()]
         with self.assertRaises(ValidationError):
             composer._prepare_mail_values([self.order.id])
+        with self.assertRaises(ValidationError):
+            self.env.ref("sale.email_template_edi_sale").send_mail(
+                self.order.id, force_send=False,
+            )
 
     def test_portal_does_not_offer_payment_or_create_transaction(self):
         self.assertEqual(self.order.amount_total, 100)

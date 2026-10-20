@@ -666,6 +666,8 @@ class TestTrainingSale(TransactionCase):
         final_invoice.training_portal_partner_ids = [Command.clear()]
         with self.assertRaises(ValidationError):
             receipt_composer._prepare_mail_values(first_payment.ids)
+        with self.assertRaises(ValidationError):
+            receipt_template.send_mail(first_payment.id, force_send=False)
         self.assertFalse([
             recipient for recipient in first_payment._notify_get_recipients(receipt_message)
             if recipient["share"]
