@@ -18,21 +18,22 @@ class SaleOrder(models.Model):
     )
     training_sponsor_id = fields.Many2one(
         "res.partner", string="Training Sponsor", ondelete="restrict",
-        check_company=True, copy=True,
+        check_company=True, copy=True, groups="base.group_user",
         help="Person or organisation ordering the training; it can differ from the customer.",
     )
     training_expected_payer_id = fields.Many2one(
         "res.partner", string="Expected Payer", ondelete="restrict",
-        check_company=True, copy=True,
+        check_company=True, copy=True, groups="base.group_user",
         help="Planned payer only; this does not change the invoice debtor or grant access.",
     )
     training_admin_contact_id = fields.Many2one(
         "res.partner", string="Administrative Contact", ondelete="restrict",
-        check_company=True, copy=True,
+        check_company=True, copy=True, groups="base.group_user",
         help="Contact for commercial administration, without automatic document access.",
     )
     training_transfer_notice_ids = fields.One2many(
         "training.bank.transfer.notice", "order_id", string="Transfer Notices",
+        groups="base.group_user",
     )
 
     def write(self, vals):

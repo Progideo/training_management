@@ -85,7 +85,10 @@ repères au devis. Ils ne changent ni `partner_id` (client du devis), ni
 droits d'accès. Leur rattachement à une société exploitante différente est
 refusé. Les rôles sont figés sur une commande confirmée : une correction
 contractuelle passe par une révision de l'offre. Le payeur indiqué ici ne vaut
-pas constat de règlement.
+pas constat de règlement. Les trois repères de contacts et la liste des avis
+de virement sont réservés aux utilisateurs internes sur la commande, même si
+un contact de la même entreprise cliente peut lire le devis par les règles
+portail natives.
 
 ## Limites de l'incrément
 
@@ -103,8 +106,10 @@ doublons agit également sur les paiements directs portant une référence.
 Les lignes de relevé bancaire et les écritures manuelles sans objet paiement
 relèvent du rapprochement natif ; leurs preuves et les imports bancaires
 restent à cadrer avant une recette opérationnelle complète.
-Les règles portail natives d'Odoo restent à durcir pour les contacts rattachés
-à une même entreprise cliente avant toute ouverture externe.
+Les règles portail natives d'Odoo permettent toujours à plusieurs contacts
+d'une même entreprise cliente de lire ses devis et factures. Le choix des
+contacts autorisés, ainsi que le traitement des liens d'accès envoyés par
+Odoo, restent à valider avant toute ouverture externe.
 
 ## Recette sur données fictives et base isolée
 

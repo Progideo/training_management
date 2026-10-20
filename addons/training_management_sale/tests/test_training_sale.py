@@ -153,6 +153,23 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(order._prepare_invoice()["partner_id"], invoice_address.id)
         with self.assertRaises(AccessError):
             order.with_user(self.portal).read(["name"])
+        company_contact = self.env["res.partner"].create({
+            "name": "Fictional Buyer Colleague", "parent_id": self.partner.id,
+        })
+        company_portal = new_test_user(
+            self.env, login="training_sale_company_portal",
+            groups="base.group_portal", partner_id=company_contact.id,
+        )
+        self.assertEqual(order.with_user(company_portal).read(["name"])[0]["name"], order.name)
+        private_fields = (
+            "training_sponsor_id", "training_expected_payer_id",
+            "training_admin_contact_id", "training_transfer_notice_ids",
+        )
+        visible_fields = order.with_user(company_portal).fields_get()
+        for field_name in private_fields:
+            self.assertNotIn(field_name, visible_fields)
+            with self.assertRaises(AccessError):
+                order.with_user(company_portal).read([field_name])
 
     def test_commercial_roles_respect_operating_company(self):
         foreign_contact = self.env["res.partner"].create({
