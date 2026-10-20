@@ -21,6 +21,8 @@
                             options="{'no_create': True}"/>
                         <field name="training_admin_contact_id" readonly="state in ['sale', 'cancel']"
                             options="{'no_create': True}"/>
+                        <field name="training_portal_partner_ids" widget="many2many_tags"
+                            options="{'no_create': True}"/>
                     </group>
                 </group>
             </xpath>

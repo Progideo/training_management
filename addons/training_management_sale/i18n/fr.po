@@ -372,3 +372,27 @@ msgstr "Enregistrez les paiements des factures de formation dans un journal banc
 #. module: training_management_sale
 msgid "A training bank reference requires an incoming bank payment with the manual method."
 msgstr "Une référence bancaire de formation exige un paiement entrant dans un journal bancaire avec la méthode manuelle."
+
+#. module: training_management_sale
+msgid "Authorized Portal Contacts"
+msgstr "Contacts autorisés sur le portail"
+
+#. module: training_management_sale
+msgid "Only these named contacts may view this training quotation or order in the portal."
+msgstr "Seuls ces contacts nommément autorisés peuvent consulter ce devis ou cette commande de formation sur le portail."
+
+#. module: training_management_sale
+msgid "Only these named contacts may view this training invoice in the portal."
+msgstr "Seuls ces contacts nommément autorisés peuvent consulter cette facture de formation sur le portail."
+
+#. module: training_management_sale
+msgid "Training Sales Invoice"
+msgstr "Facture de vente de formation"
+
+#. module: training_management_sale
+msgid "Training Portal Access"
+msgstr "Accès portail à la formation"
+
+#. module: training_management_sale
+msgid "This training document requires an authorized portal contact."
+msgstr "Ce document de formation nécessite un contact portail autorisé."

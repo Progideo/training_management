@@ -186,10 +186,14 @@ class TestTrainingSale(TransactionCase):
             self.env, login="training_sale_company_portal",
             groups="base.group_portal", partner_id=company_contact.id,
         )
+        with self.assertRaises(AccessError):
+            order.with_user(company_portal).read(["name"])
+        order.training_portal_partner_ids = [Command.link(company_contact.id)]
         self.assertEqual(order.with_user(company_portal).read(["name"])[0]["name"], order.name)
         private_fields = (
             "training_sponsor_id", "training_expected_payer_id",
             "training_admin_contact_id", "training_transfer_notice_ids",
+            "training_portal_partner_ids",
         )
         visible_fields = order.with_user(company_portal).fields_get()
         for field_name in private_fields:
@@ -404,6 +408,24 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(final_invoice.payment_state, "not_paid")
         self.assertEqual(final_invoice.amount_residual, 1200)
         self.assertEqual(advance.amount_residual, 400)
+        self.assertTrue(advance.training_is_sale_invoice)
+        self.assertTrue(final_invoice.training_is_sale_invoice)
+        colleague = self.env["res.partner"].create({
+            "name": "Fictional Billing Colleague", "parent_id": self.partner.id,
+        })
+        portal_colleague = new_test_user(
+            self.env, login="training_sale_invoice_portal",
+            groups="base.group_portal", partner_id=colleague.id,
+        )
+        with self.assertRaises(AccessError):
+            final_invoice.with_user(portal_colleague).read(["name"])
+        final_invoice.training_portal_partner_ids = [Command.link(colleague.id)]
+        self.assertEqual(
+            final_invoice.with_user(portal_colleague).read(["name"])[0]["name"],
+            final_invoice.name,
+        )
+        with self.assertRaises(AccessError):
+            advance.with_user(portal_colleague).read(["name"])
         self.company.link_qr_code = True
         self.assertFalse(final_invoice.display_link_qr_code)
         self.assertFalse(final_invoice._get_portal_payment_link())

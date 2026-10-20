@@ -35,6 +35,11 @@ class SaleOrder(models.Model):
         "training.bank.transfer.notice", "order_id", string="Transfer Notices",
         groups="base.group_user",
     )
+    training_portal_partner_ids = fields.Many2many(
+        "res.partner", "training_sale_portal_partner_rel", "order_id", "partner_id",
+        string="Authorized Portal Contacts", groups="base.group_user",
+        help="Only these named contacts may view this training quotation or order in the portal.",
+    )
 
     def write(self, vals):
         if any(order.state == "sale" for order in self) and set(vals) & {

@@ -123,10 +123,17 @@ facture : un lien construit indépendamment avec un partenaire et un montant
 ne peut pas être attribué avec certitude à une formation. L'absence de
 prestataire de paiement actif devra être vérifiée lors du paramétrage du
 lancement ; l'addon n'interrompt pas les paiements d'autres activités Odoo.
-Les règles portail natives d'Odoo permettent toujours à plusieurs contacts
-d'une même entreprise cliente de lire ses devis et factures. Le choix des
-contacts autorisés, ainsi que le traitement des liens d'accès envoyés par
-Odoo, restent à valider avant toute ouverture externe.
+Sur décision du 20 octobre 2026, les devis et factures de formation ont une
+liste distincte de contacts portail nommément autorisés, vide par défaut.
+Le rattachement à la même entreprise ne suffit pas. L'accès par URL exige une
+session connectée correspondant à l'un de ces contacts, même avec le jeton
+valide d'Odoo ; retirer un contact révoque son accès au portail. Les règles
+serveur restreignent aussi la lecture ORM et les listes. Les contacts internes
+du devis et les avis de virement restent invisibles au portail. Les autres
+documents Odoo conservent leurs règles natives. Les PDF ou pièces déjà
+transmis hors du portail ne peuvent pas être rappelés par cette révocation.
+Une recette HTTP des factures, pièces jointes et échanges reste nécessaire
+avant toute ouverture externe.
 
 ## Recette sur données fictives et base isolée
 
