@@ -50,7 +50,7 @@ class TrainingPaymentPortal(TrainingPortalDocumentAccess, PaymentPortal):
         try:
             order_sudo = self._document_check_access("sale.order", order_id, access_token)
         except AccessError:
-            raise ValidationError(self.env._("The access token is invalid.")) from None
+            raise ValidationError(_("The access token is invalid.")) from None
         if order_sudo.training_request_kind:
             raise ValidationError(_(
                 "Online payment transactions are disabled for training orders and invoices."

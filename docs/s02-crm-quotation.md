@@ -157,9 +157,13 @@ facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
 jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des
 devis et factures suit la même habilitation, même avec son propre jeton.
 Les destinataires et PDF proposés ont été vérifiés dans les deux assistants
-sur la base fictive locale, sans expédier de courriel. Les autres chemins de
-notification et de téléchargement restent à vérifier avant toute ouverture
-externe.
+sur la base fictive locale, sans expédier de courriel. Les corps rendus des
+modèles natifs de confirmation de commande et d'envoi de facture n'y contenaient
+aucun lien. Les téléchargements HTTP de pièces liées au document ou à un
+message sont contrôlés pour un contact habilité, un collègue non habilité et
+après révocation ; l'aperçu PDF natif testé refuse le jeton ordinaire de la
+pièce, y compris pour le contact habilité. Les autres modèles de notification
+et les parcours d'envoi réel restent à vérifier avant toute ouverture externe.
 
 ## Recette sur données fictives et base isolée
 
@@ -196,8 +200,8 @@ externe.
    contact, refuser page, PDF, pièce jointe et discussion, même avec les jetons
    valides. Le premier contact doit les ouvrir ; retirer son habilitation doit
    révoquer aussitôt son accès. Refaire le contrôle sur la facture :
-   l'habilitation du devis ne lui donne pas celle de la facture. Vérifier les
-   Vérifier que l'assistant du devis puis celui de la facture affichent seulement
+   l'habilitation du devis ne lui donne pas celle de la facture. Vérifier que
+   l'assistant du devis puis celui de la facture affichent seulement
    le contact habilité et le PDF joint. Ajouter un collègue non habilité en
    destinataire ou copie et vérifier le refus serveur ; révoquer l'habilitation
    puis vérifier le refus d'un brouillon déjà préparé. Contrôler les liens de

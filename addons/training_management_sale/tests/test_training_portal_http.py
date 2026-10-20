@@ -1,3 +1,7 @@
+from io import BytesIO
+
+from pypdf import PdfWriter
+
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, JsonRpcException, new_test_user, tagged
@@ -152,6 +156,54 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertTrue(self.env["ir.binary"].with_user(self.authorized_user)._get_stream_from(
             attachment.sudo(),
         ))
+        self.order.training_portal_partner_ids = [Command.clear()]
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+
+    def test_message_attachment_follows_document_grant(self):
+        message = self.env["mail.message"].create({
+            "model": "sale.order", "res_id": self.order.id,
+            "message_type": "comment", "body": "Fictional private training note",
+        })
+        attachment = self.env["ir.attachment"].create({
+            "name": "fictional-message-file.txt", "raw": b"Fictional message attachment",
+            "mimetype": "text/plain", "res_model": "mail.message", "res_id": message.id,
+        })
+        token = attachment.generate_access_token()[0]
+        url = f"/web/content/{attachment.id}?access_token={token}"
+        preview_url = f"/mail/attachment/render_text/{attachment.id}?access_token={token}"
+        self.authenticate(None, None)
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertNotEqual(self.url_open(preview_url, allow_redirects=False).status_code, 200)
+        self.authenticate(self.colleague_user.login, self.colleague_user.login)
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertNotEqual(self.url_open(preview_url, allow_redirects=False).status_code, 200)
+        self.authenticate(self.authorized_user.login, self.authorized_user.login)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertEqual(self.url_open(preview_url, allow_redirects=False).status_code, 200)
+        self.order.training_portal_partner_ids = [Command.clear()]
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertNotEqual(self.url_open(preview_url, allow_redirects=False).status_code, 200)
+
+    def test_pdf_thumbnail_route_does_not_accept_portal_token(self):
+        pdf = BytesIO()
+        writer = PdfWriter()
+        writer.add_blank_page(width=72, height=72)
+        writer.write(pdf)
+        attachment = self.env["ir.attachment"].create({
+            "name": "fictional-training-preview.pdf", "raw": pdf.getvalue(),
+            "mimetype": "application/pdf", "res_model": "sale.order",
+            "res_id": self.order.id,
+        })
+        url = (
+            f"/mail/attachment/pdf_first_page/{attachment.id}"
+            f"?access_token={attachment.generate_access_token()[0]}"
+        )
+        self.authenticate(None, None)
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.authenticate(self.colleague_user.login, self.colleague_user.login)
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.authenticate(self.authorized_user.login, self.authorized_user.login)
+        self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
         self.order.training_portal_partner_ids = [Command.clear()]
         self.assertNotEqual(self.url_open(url, allow_redirects=False).status_code, 200)
 
