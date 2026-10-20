@@ -573,8 +573,11 @@ class TestTrainingSale(TransactionCase):
             payment_wizard.action_create_payments()
         mad = self.env.ref("base.MAD")
         mad.active = True
+        payment_wizard.training_bank_reference = " fictional-transfer-001 "
+        with self.assertRaises(ValidationError):
+            payment_wizard.action_create_payments()
         payment_wizard.write({
-            "training_bank_reference": " fictional-transfer-001 ",
+            "training_bank_verified": True,
             "currency_id": mad.id,
         })
         with self.assertRaises(ValidationError):
@@ -591,8 +594,15 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(len(first_payment), 1)
         self.assertEqual(first_payment.memo, final_invoice.name)
         self.assertNotEqual(first_payment.memo, first_payment.training_bank_reference)
+        self.assertTrue(first_payment.training_bank_verified)
+        self.assertEqual(first_payment.training_bank_verified_by_id, self.env.user)
+        self.assertTrue(first_payment.training_bank_verified_at)
         with self.assertRaises(ValidationError):
             first_payment.training_bank_reference = "ALTERED"
+        with self.assertRaises(ValidationError):
+            first_payment.training_bank_verified = False
+        with self.assertRaises(ValidationError):
+            first_payment.training_bank_verified_by_id = self.portal
         self.assertEqual(final_invoice.amount_residual, 900)
         self.assertEqual(final_invoice.payment_state, "partial")
         self.assertEqual(advance.amount_residual, 400)
@@ -607,6 +617,7 @@ class TestTrainingSale(TransactionCase):
             "amount": 100,
             "payment_difference_handling": "open",
             "training_bank_reference": " fictional-transfer-001 ",
+            "training_bank_verified": True,
         })
         self.assertTrue(split_wizard.training_bank_payment_required)
         self.assertTrue(split_wizard.training_duplicate_reference_exists)
@@ -632,6 +643,7 @@ class TestTrainingSale(TransactionCase):
             "payment_method_line_id": manual_method.id,
             "destination_account_id": receivable.id,
             "training_bank_reference": "FICTIONAL-TRANSFER-001",
+            "training_bank_verified": True,
         })
         with self.assertRaises(ValidationError), self.cr.savepoint():
             direct_payment.action_post()
@@ -656,6 +668,18 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError), self.cr.savepoint():
             (invoice_receivable + payment_receivable).reconcile()
         self.assertEqual(final_invoice.amount_residual, 900)
+        unchecked_payment = self.env["account.payment"].create({
+            "date": "2026-10-20", "amount": 50,
+            "payment_type": "inbound", "partner_type": "customer",
+            "partner_id": invoice_address.id,
+            "journal_id": bank_journal.id, "company_id": self.company.id,
+            "currency_id": self.eur.id,
+            "payment_method_line_id": manual_method.id,
+            "destination_account_id": receivable.id,
+            "training_bank_reference": "FICTIONAL-UNCHECKED-001",
+        })
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            unchecked_payment.action_post()
         valid_direct_payment = self.env["account.payment"].create({
             "date": "2026-10-20", "amount": 50,
             "payment_type": "inbound", "partner_type": "customer",
@@ -665,6 +689,7 @@ class TestTrainingSale(TransactionCase):
             "payment_method_line_id": manual_method.id,
             "destination_account_id": receivable.id,
             "training_bank_reference": "FICTIONAL-TRANSFER-002",
+            "training_bank_verified": True,
         })
         valid_direct_payment.action_post()
         valid_receivable = valid_direct_payment.move_id.line_ids.filtered(
@@ -681,6 +706,7 @@ class TestTrainingSale(TransactionCase):
             "payment_method_line_id": cash_method.id,
             "destination_account_id": receivable.id,
             "training_bank_reference": "FICTIONAL-CASH-REF-001",
+            "training_bank_verified": True,
         })
         with self.assertRaises(ValidationError), self.cr.savepoint():
             cash_payment.action_post()

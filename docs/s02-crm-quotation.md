@@ -61,6 +61,17 @@ Pour une facture de formation et un journal bancaire, l'assistant demande une
 référence bancaire distincte du libellé de facture. Il signale une référence
 déjà comptabilisée dans la même société et le même journal, même si le montant
 diffère ; une seconde affectation exige un motif conservé sur le paiement.
+Décision du 20 octobre 2026 : le comptable vérifie manuellement l'encaissement
+bancaire avant de créer le paiement Odoo. L'assistant exige une attestation
+« Encaissement bancaire vérifié » ; le paiement direct portant une référence
+de formation l'exige aussi avant comptabilisation. L'utilisateur qui valide
+le paiement et l'horodatage sont conservés sur celui-ci, sans pouvoir être
+modifiés ensuite par le formulaire. Cette attestation documente le contrôle
+humain ; elle n'est pas une preuve bancaire indépendante.
+Un essai local avec le profil finance restreint a enregistré fictivement
+10 EUR, attribué l'attestation à ce profil et réduit le solde de 850 à
+840 EUR ; la transaction a ensuite été annulée et le solde conservé à
+850 EUR.
 Le contrôle sérialise les validations simultanées d'un même journal. La
 référence est figée après comptabilisation. Décision du 20 octobre 2026 :
 une devise de règlement différente de celle de la facture reste refusée au
@@ -239,7 +250,8 @@ externe.
    confondre l'acompte facturé avec un règlement. Déclarer un avis de virement
    de 300 EUR : le résiduel reste 1 200 EUR et le portail ne lit pas l'avis.
    L'assistant Odoo doit refuser un journal de caisse, un paiement bancaire
-   sans référence et une devise différente de celle de la facture. Enregistrer ensuite un
+   sans référence, sans attestation de vérification bancaire, ou dans une
+   devise différente de celle de la facture. Enregistrer ensuite un
    paiement partiel de 300 EUR avec une référence fictive sur la facture
    finale : le résiduel passe à 900 EUR et l'état à « partiel » ; l'acompte
    demeure impayé. Tenter de réutiliser cette référence pour 100 EUR sur la

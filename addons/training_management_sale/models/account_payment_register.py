@@ -9,6 +9,7 @@ class AccountPaymentRegister(models.TransientModel):
         compute="_compute_training_bank_payment_required",
     )
     training_bank_reference = fields.Char(string="Training Bank Reference")
+    training_bank_verified = fields.Boolean(string="Bank Receipt Checked")
     training_duplicate_reference_exists = fields.Boolean(
         compute="_compute_training_duplicate_reference_exists",
     )
@@ -47,6 +48,7 @@ class AccountPaymentRegister(models.TransientModel):
             return {}
         return {
             "training_bank_reference": self.training_bank_reference,
+            "training_bank_verified": self.training_bank_verified,
             "training_duplicate_reference_reason": self.training_duplicate_reference_reason,
         }
 
@@ -71,6 +73,10 @@ class AccountPaymentRegister(models.TransientModel):
         if self.training_bank_payment_required:
             if not (self.training_bank_reference or "").strip():
                 raise ValidationError(_("Enter the bank reference before recording a training payment."))
+            if not self.training_bank_verified:
+                raise ValidationError(_(
+                    "Confirm that the bank receipt was checked before recording a training payment."
+                ))
             if any(invoice.currency_id != self.currency_id for invoice in self._training_invoices()):
                 raise ValidationError(_(
                     "A training payment in another currency requires an explicit accounting review."

@@ -13,6 +13,16 @@ class AccountPayment(models.Model):
         string="Repeated Reference Reason", copy=False,
         help="Explain an intentional allocation of one transfer across several payments.",
     )
+    training_bank_verified = fields.Boolean(
+        string="Bank Receipt Checked", copy=False,
+        help="The accountant confirms having checked the bank receipt before recording this payment.",
+    )
+    training_bank_verified_by_id = fields.Many2one(
+        "res.users", string="Bank Receipt Checked By", copy=False, readonly=True,
+    )
+    training_bank_verified_at = fields.Datetime(
+        string="Bank Receipt Checked At", copy=False, readonly=True,
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -24,7 +34,10 @@ class AccountPayment(models.Model):
         return super().create(vals_list)
 
     def write(self, vals):
-        if {"training_bank_reference", "training_duplicate_reference_reason"} & set(vals):
+        if {"training_bank_verified_by_id", "training_bank_verified_at"} & set(vals):
+            raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
+        if {"training_bank_reference", "training_duplicate_reference_reason",
+                "training_bank_verified"} & set(vals):
             if any(payment.state != "draft" for payment in self):
                 raise ValidationError(_("The bank reference of a posted payment cannot be changed."))
             if "training_bank_reference" in vals:
@@ -45,6 +58,10 @@ class AccountPayment(models.Model):
         ):
             raise ValidationError(_(
                 "A training bank reference requires an incoming bank payment with the manual method."
+            ))
+        if any(not payment.training_bank_verified for payment in tagged_payments):
+            raise ValidationError(_(
+                "Confirm that the bank receipt was checked before posting a training payment."
             ))
         payments = self.filtered(lambda payment:
             payment.state in ("draft", "paid")
@@ -75,4 +92,9 @@ class AccountPayment(models.Model):
                     "Explain the intentional split before continuing."
                 ))
             seen.add(key)
-        return super().action_post()
+        result = super().action_post()
+        super(AccountPayment, tagged_payments).write({
+            "training_bank_verified_by_id": self.env.user.id,
+            "training_bank_verified_at": fields.Datetime.now(),
+        })
+        return result

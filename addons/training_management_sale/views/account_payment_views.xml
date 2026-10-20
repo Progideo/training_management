@@ -10,6 +10,9 @@
                     string="Bank Transfer Reference"
                     required="training_bank_payment_required"
                     invisible="not training_bank_payment_required"/>
+                <field name="training_bank_verified"
+                    required="training_bank_payment_required"
+                    invisible="not training_bank_payment_required"/>
                 <field name="training_duplicate_reference_exists" invisible="1"/>
                 <field name="training_duplicate_reference_reason"
                     required="training_bank_payment_required and training_duplicate_reference_exists"
@@ -24,6 +27,12 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='memo']" position="after">
                 <field name="training_bank_reference" readonly="state != 'draft'"/>
+                <field name="training_bank_verified"
+                    readonly="state != 'draft'" invisible="not training_bank_reference"/>
+                <field name="training_bank_verified_by_id"
+                    invisible="not training_bank_verified"/>
+                <field name="training_bank_verified_at"
+                    invisible="not training_bank_verified"/>
                 <field name="training_duplicate_reference_reason"
                     readonly="state != 'draft'" invisible="not training_bank_reference"/>
             </xpath>
