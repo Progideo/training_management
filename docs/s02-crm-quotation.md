@@ -68,6 +68,10 @@ de rapprochement validée par la comptabilité.
 Le même assistant refuse un journal de caisse ou une méthode autre que
 « manuelle » pour ces factures. Un paiement direct portant la référence
 spécifique de formation doit aussi être bancaire, entrant et manuel.
+Lorsqu'un paiement saisi directement est rapproché d'une facture de formation,
+le contrôle exige ces mêmes attributs, une référence bancaire et la devise de
+la facture. Un paiement sans référence peut être comptabilisé, mais il ne peut
+pas réduire le solde de cette facture par rapprochement direct.
 Ce règlement comptabilisé ne constitue pas, à lui seul, une preuve bancaire.
 Le test crée ses propres comptes et journaux fictifs ; il ne configure pas la
 comptabilité d'une société réelle.
@@ -93,10 +97,12 @@ la procédure comptable pour un règlement d'une autre devise et les habilitatio
 du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
 La saisie directe d'un paiement hors de l'assistant ne connaît pas encore sa
-future facture de formation : elle n'exige donc pas cette référence. Lorsqu'une
-référence est renseignée, le contrôle des doublons agit également sur cette
-voie directe. Le rapprochement direct et les imports bancaires restent à
-cadrer avant une recette opérationnelle complète.
+future facture de formation : elle n'exige donc pas cette référence lors de la
+création. Son rapprochement avec cette facture est contrôlé. Le contrôle des
+doublons agit également sur les paiements directs portant une référence.
+Les lignes de relevé bancaire et les écritures manuelles sans objet paiement
+relèvent du rapprochement natif ; leurs preuves et les imports bancaires
+restent à cadrer avant une recette opérationnelle complète.
 Les règles portail natives d'Odoo restent à durcir pour les contacts rattachés
 à une même entreprise cliente avant toute ouverture externe.
 
@@ -143,7 +149,10 @@ Les règles portail natives d'Odoo restent à durcir pour les contacts rattaché
    demeure impayé. Tenter de réutiliser cette référence pour 100 EUR sur la
    facture d'acompte : l'assistant doit refuser sans motif, puis accepter un
    motif explicite de répartition, en ramenant son résiduel à 300 EUR. Le
-   commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
+   rapprochement direct d'un paiement bancaire sans référence avec la facture
+   finale doit être refusé et laisser 900 EUR dus ; un paiement direct avec
+   une nouvelle référence doit pouvoir être rapproché et ramener le solde à
+   850 EUR. Le commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
    ces actes n'ouvre un accès pédagogique.
 8. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
    depuis S01 avec Website présent. Relever le comportement de la vue Website

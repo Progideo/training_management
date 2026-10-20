@@ -16,10 +16,7 @@ class AccountPaymentRegister(models.TransientModel):
 
     def _training_invoices(self):
         self.ensure_one()
-        return self.line_ids.move_id.filtered(lambda move:
-            move.move_type == "out_invoice"
-            and bool(move.invoice_line_ids.sale_line_ids.order_id.filtered("training_request_kind"))
-        )
+        return self.line_ids.move_id._training_sale_invoices()
 
     @api.depends("line_ids", "journal_id", "payment_type")
     def _compute_training_bank_payment_required(self):

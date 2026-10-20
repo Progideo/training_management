@@ -518,6 +518,43 @@ class TestTrainingSale(TransactionCase):
         })
         with self.assertRaises(ValidationError), self.cr.savepoint():
             direct_payment.action_post()
+        untagged_payment = self.env["account.payment"].create({
+            "date": "2026-10-20", "amount": 50,
+            "payment_type": "inbound", "partner_type": "customer",
+            "partner_id": invoice_address.id,
+            "journal_id": bank_journal.id, "company_id": self.company.id,
+            "currency_id": self.eur.id,
+            "payment_method_line_id": manual_method.id,
+            "destination_account_id": receivable.id,
+        })
+        untagged_payment.action_post()
+        invoice_receivable = final_invoice.line_ids.filtered(
+            lambda line: line.account_id == receivable
+        )
+        payment_receivable = untagged_payment.move_id.line_ids.filtered(
+            lambda line: line.account_id == receivable
+        )
+        self.assertEqual(len(invoice_receivable), 1)
+        self.assertEqual(len(payment_receivable), 1)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            (invoice_receivable + payment_receivable).reconcile()
+        self.assertEqual(final_invoice.amount_residual, 900)
+        valid_direct_payment = self.env["account.payment"].create({
+            "date": "2026-10-20", "amount": 50,
+            "payment_type": "inbound", "partner_type": "customer",
+            "partner_id": invoice_address.id,
+            "journal_id": bank_journal.id, "company_id": self.company.id,
+            "currency_id": self.eur.id,
+            "payment_method_line_id": manual_method.id,
+            "destination_account_id": receivable.id,
+            "training_bank_reference": "FICTIONAL-TRANSFER-002",
+        })
+        valid_direct_payment.action_post()
+        valid_receivable = valid_direct_payment.move_id.line_ids.filtered(
+            lambda line: line.account_id == receivable
+        )
+        (invoice_receivable + valid_receivable).reconcile()
+        self.assertEqual(final_invoice.amount_residual, 850)
         cash_payment = self.env["account.payment"].create({
             "date": "2026-10-20", "amount": 50,
             "payment_type": "inbound", "partner_type": "customer",
@@ -537,4 +574,4 @@ class TestTrainingSale(TransactionCase):
         )
         notice.with_user(accountant).action_void()
         self.assertEqual(notice.state, "void")
-        self.assertEqual(final_invoice.amount_residual, 900)
+        self.assertEqual(final_invoice.amount_residual, 850)
