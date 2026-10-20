@@ -156,6 +156,10 @@ class TestTrainingPortalHttp(HttpCase):
             "label": f"Down Payment (ref: {invoice.name})",
             "product_uom_qty": 0, "price_unit": 0,
         })
+        report_html = self.env["ir.actions.report"]._render_qweb_html(
+            "sale.report_saleorder", [self.order.id],
+        )[0]
+        self.assertNotIn(invoice.name, report_html.decode() if isinstance(report_html, bytes) else report_html)
         invoice._portal_ensure_token()
         url = f"/my/invoices/{invoice.id}?access_token={invoice.access_token}"
         attachment = self.env["ir.attachment"].create({
