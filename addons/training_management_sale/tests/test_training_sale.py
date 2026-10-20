@@ -329,12 +329,86 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError):
             order.action_confirm()
 
+    def test_taxable_down_payment_uses_company_liability_account(self):
+        self.eur.active = True
+        income = self.env["account.account"].create({
+            "name": "Fictional Taxable Training Income", "code": "709902",
+            "account_type": "income", "company_ids": [Command.set([self.company.id])],
+        })
+        downpayment = self.env["account.account"].create({
+            "name": "Fictional Taxable Customer Advances", "code": "449902",
+            "account_type": "liability_current",
+            "company_ids": [Command.set([self.company.id])],
+        })
+        self.company.downpayment_account_id = downpayment
+        tax = self.env["account.tax"].create({
+            "name": "Fictional VAT 20%", "amount": 20,
+            "amount_type": "percent", "type_tax_use": "sale",
+            "company_id": self.company.id,
+        })
+        product = self.env["product.template"].create({
+            "name": "Fictional Taxable EUR Package", "type": "service",
+            "invoice_policy": "order", "taxes_id": [Command.set(tax.ids)],
+            "company_id": self.company.id, "property_account_income_id": income.id,
+            "training_course_id": self.course.id, "training_price_basis": "package",
+        }).product_variant_id
+        pricelist = self.env["product.pricelist"].create({
+            "name": "Fictional Taxable EUR List", "company_id": self.company.id,
+            "currency_id": self.eur.id,
+        })
+        self.env["product.pricelist.item"].create({
+            "pricelist_id": pricelist.id, "product_tmpl_id": product.product_tmpl_id.id,
+            "compute_price": "fixed", "fixed_price": 1600,
+        })
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id, "company_id": self.company.id,
+            "pricelist_id": pricelist.id, "training_request_kind": "group",
+            "training_requested_program_id": self.program.id,
+            "training_attendee_count": 12,
+            "training_requested_currency_id": self.eur.id,
+        })
+        self.env["sale.order.line"].create({
+            "order_id": order.id, "product_id": product.id,
+            "product_uom_qty": 1, "training_program_id": self.program.id,
+        })
+        order.action_confirm()
+        wizard_model = self.env["sale.advance.payment.inv"].with_context(
+            active_model="sale.order", active_ids=order.ids,
+        )
+        wizard_model.create({
+            "sale_order_ids": [Command.set(order.ids)],
+            "advance_payment_method": "fixed", "fixed_amount": 480,
+        }).create_invoices()
+        advance = order.invoice_ids
+        self.assertEqual(advance.amount_untaxed, 400)
+        self.assertEqual(advance.amount_tax, 80)
+        self.assertEqual(advance.amount_total, 480)
+        self.assertEqual(advance.invoice_line_ids.filtered("is_downpayment").account_id, downpayment)
+        advance.action_post()
+        wizard_model.create({
+            "sale_order_ids": [Command.set(order.ids)],
+            "advance_payment_method": "delivered", "deduct_down_payments": True,
+        }).create_invoices()
+        final_invoice = order.invoice_ids - advance
+        self.assertEqual(final_invoice.amount_untaxed, 1200)
+        self.assertEqual(final_invoice.amount_tax, 240)
+        self.assertEqual(final_invoice.amount_total, 1440)
+        deduction = final_invoice.invoice_line_ids.filtered("is_downpayment")
+        self.assertEqual(deduction.account_id, downpayment)
+        self.assertNotIn("Draft", deduction.name)
+
     def test_native_eur_down_payment_and_final_invoice(self):
         self.eur.active = True
         income = self.env["account.account"].create({
             "name": "Fictional Training Income", "code": "709901",
             "account_type": "income", "company_ids": [Command.set([self.company.id])],
         })
+        downpayment = self.env["account.account"].create({
+            "name": "Fictional Customer Advances", "code": "449901",
+            "account_type": "liability_current",
+            "company_ids": [Command.set([self.company.id])],
+        })
+        self.company.downpayment_account_id = downpayment
         receivable = self.env["account.account"].create({
             "name": "Fictional Training Receivable", "code": "349901",
             "account_type": "asset_receivable", "reconcile": True,
@@ -396,6 +470,7 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(advance.partner_id, invoice_address)
         self.assertEqual(advance.amount_untaxed, 400)
         self.assertTrue(advance.invoice_line_ids.filtered("is_downpayment"))
+        self.assertEqual(advance.invoice_line_ids.filtered("is_downpayment").account_id, downpayment)
         self.assertEqual(advance.amount_residual, 400)
         advance.action_post()
         self.assertEqual(advance.state, "posted")
@@ -422,6 +497,8 @@ class TestTrainingSale(TransactionCase):
         self.assertTrue(final_invoice.training_is_sale_invoice)
         downpayment_lines = final_invoice.invoice_line_ids.filtered("is_downpayment")
         self.assertTrue(downpayment_lines)
+        self.assertEqual(downpayment_lines.account_id, downpayment)
+        self.assertNotIn("Draft", downpayment_lines.name)
         self.assertTrue(all(
             line._get_aml_vals(hide_taxes=False)["label"] == "Down Payment"
             for line in downpayment_lines

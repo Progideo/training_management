@@ -122,6 +122,12 @@ après le cadrage de leurs parcours, sans retarder leur étude.
 3. Avis de virement distinct, contrôles de référence/devise, réutilisation des
    factures, acomptes et paiements natifs. Les paramètres comptables réels restent
    en attente du responsable comptable ; les tests utilisent des valeurs fictives.
+   Le compte d'acompte natif `res.company.downpayment_account_id` est exposé sur
+   la fiche société au responsable comptable. Il s'applique à **toutes** les
+   factures d'acompte de ventes de cette société, pas seulement aux formations ;
+   aucun numéro de compte ni taux de taxe n'est fixé dans l'addon. Un test fictif
+   vérifie l'imputation automatique sur un compte de passif courant et la reprise
+   de l'acompte sur la facture finale créée après comptabilisation de l'acompte.
 4. Habilitations et recette du portail commercial de S02 avant toute ouverture
    aux clients. Le portail entreprise complet P05 n'est pas déclaré livré.
 

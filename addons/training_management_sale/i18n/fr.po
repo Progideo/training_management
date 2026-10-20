@@ -404,3 +404,18 @@ msgstr "Cette pièce jointe de formation est indisponible."
 #. module: training_management_sale
 msgid "This training attachment requires an authorized portal contact."
 msgstr "Cette pièce jointe de formation nécessite un contact portail autorisé."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_company_form_training_downpayment
+msgid "Training Accounting"
+msgstr "Comptabilité des formations"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_company_form_training_downpayment
+msgid "Sales Down Payments"
+msgstr "Acomptes sur ventes"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_company_form_training_downpayment
+msgid "This account applies to all sales down payment invoices for this company."
+msgstr "Ce compte s’applique à toutes les factures d’acompte sur ventes de cette société."
