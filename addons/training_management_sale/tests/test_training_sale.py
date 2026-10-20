@@ -107,6 +107,13 @@ class TestTrainingSale(TransactionCase):
             })
 
     def test_incomplete_request_cannot_create_training_quote(self):
+        field = self.env["ir.model.fields"].search([
+            ("model", "=", "crm.lead"), ("name", "=", "training_request_kind"),
+        ], limit=1)
+        self.assertEqual(
+            field.with_context(lang="fr_FR").field_description,
+            "Demande de formation",
+        )
         lead = self.env["crm.lead"].create({
             "name": "Unqualified", "type": "opportunity", "partner_id": self.partner.id,
             "training_request_kind": "individual", "training_program_id": self.program.id,

@@ -4,7 +4,7 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet/div[@class='d-flex flex-column-reverse flex-md-row']" position="after">
+            <xpath expr="//sheet/div[hasclass('d-flex', 'flex-column-reverse', 'flex-md-row')]" position="after">
                 <group name="training_request" string="Training Request">
                     <group>
                         <field name="training_request_kind"/>
