@@ -18,6 +18,21 @@ class CrmLead(models.Model):
         "res.currency", string="Requested Currency", ondelete="restrict",
         domain="[('name', 'in', ('MAD', 'EUR'))]",
     )
+    training_sponsor_id = fields.Many2one(
+        "res.partner", string="Training Sponsor", ondelete="restrict",
+        check_company=True,
+        help="Person or organisation ordering the training; it can differ from the customer.",
+    )
+    training_expected_payer_id = fields.Many2one(
+        "res.partner", string="Expected Payer", ondelete="restrict",
+        check_company=True,
+        help="Planned payer only; this does not change the invoice debtor or grant access.",
+    )
+    training_admin_contact_id = fields.Many2one(
+        "res.partner", string="Administrative Contact", ondelete="restrict",
+        check_company=True,
+        help="Contact for commercial administration, without automatic document access.",
+    )
     training_delivery_mode = fields.Selection([
         ("onsite", "On site"), ("remote", "Remote"),
         ("blended", "Blended"), ("elearning", "eLearning"),
@@ -51,5 +66,8 @@ class CrmLead(models.Model):
             "default_training_requested_program_id": self.training_program_id.id,
             "default_training_attendee_count": self.training_attendee_count,
             "default_training_requested_currency_id": self.training_requested_currency_id.id,
+            "default_training_sponsor_id": self.training_sponsor_id.id,
+            "default_training_expected_payer_id": self.training_expected_payer_id.id,
+            "default_training_admin_contact_id": self.training_admin_contact_id.id,
         })
         return context

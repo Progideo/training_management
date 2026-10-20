@@ -18,6 +18,9 @@
                         <field name="training_delivery_mode"/>
                         <field name="training_date_from"/>
                         <field name="training_date_to"/>
+                        <field name="training_sponsor_id" options="{'no_create': True}"/>
+                        <field name="training_expected_payer_id" options="{'no_create': True}"/>
+                        <field name="training_admin_contact_id" options="{'no_create': True}"/>
                     </group>
                 </group>
             </xpath>

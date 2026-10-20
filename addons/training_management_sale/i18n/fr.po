@@ -49,6 +49,42 @@ msgid "Requested Currency"
 msgstr "Devise demandée"
 
 #. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_sponsor_id
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_sponsor_id
+msgid "Training Sponsor"
+msgstr "Commanditaire de la formation"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_expected_payer_id
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_expected_payer_id
+msgid "Expected Payer"
+msgstr "Payeur prévu"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_admin_contact_id
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_admin_contact_id
+msgid "Administrative Contact"
+msgstr "Contact administratif"
+
+#. module: training_management_sale
+#: model:ir.model.fields,help:training_management_sale.field_crm_lead__training_sponsor_id
+#: model:ir.model.fields,help:training_management_sale.field_sale_order__training_sponsor_id
+msgid "Person or organisation ordering the training; it can differ from the customer."
+msgstr "Personne ou organisation qui commande la formation ; elle peut différer du client."
+
+#. module: training_management_sale
+#: model:ir.model.fields,help:training_management_sale.field_crm_lead__training_expected_payer_id
+#: model:ir.model.fields,help:training_management_sale.field_sale_order__training_expected_payer_id
+msgid "Planned payer only; this does not change the invoice debtor or grant access."
+msgstr "Payeur prévu uniquement ; ce rôle ne change pas le débiteur de la facture et n’accorde aucun accès."
+
+#. module: training_management_sale
+#: model:ir.model.fields,help:training_management_sale.field_crm_lead__training_admin_contact_id
+#: model:ir.model.fields,help:training_management_sale.field_sale_order__training_admin_contact_id
+msgid "Contact for commercial administration, without automatic document access."
+msgstr "Contact chargé du suivi administratif commercial, sans accès automatique aux documents."
+
+#. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_delivery_mode
 msgid "Requested Delivery Mode"
 msgstr "Modalité souhaitée"

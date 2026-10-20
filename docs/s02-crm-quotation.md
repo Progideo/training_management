@@ -1,6 +1,6 @@
 # S02 — Demande CRM et devis lié au programme
 
-Incréments demande/devis et tarifs de [#12](https://github.com/Progideo/training_management/issues/12),
+Incréments demande/devis, tarifs et rôles commerciaux de [#12](https://github.com/Progideo/training_management/issues/12),
 à relire avec la [matrice de couverture](s02-native-coverage.md).
 Ce document décrit le code de la PR en brouillon ; l'installation en développement
 et l'ouverture aux clients restent des étapes séparées.
@@ -45,15 +45,27 @@ La ligne et la liste Odoo conservent le montant et la devise du devis confirmé.
 La devise d'une liste utilisée par une commande de formation confirmée est
 figée, même si la liste est partagée entre sociétés.
 
+La demande CRM et le devis portent trois contacts Odoo explicites : le
+commanditaire, le payeur prévu et le contact administratif. Ils peuvent être
+différents du client du devis ; une même personne peut aussi cumuler plusieurs
+rôles si c'est la réalité du dossier. La conversion CRM transmet les trois
+repères au devis. Ils ne changent ni `partner_id` (client du devis), ni
+`partner_invoice_id` (adresse et débiteur repris sur la facture Odoo), ni les
+droits d'accès. Leur rattachement à une société exploitante différente est
+refusé. Les rôles sont figés sur une commande confirmée : une correction
+contractuelle passe par une révision de l'offre. Le payeur indiqué ici ne vaut
+pas constat de règlement.
+
 ## Limites de l'incrément
 
 La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
-politique de facturation n'est présumée. Le circuit facture/virement, les rôles
-commanditaire/payeur/contact administratif et les habilitations documentaires
+politique de facturation n'est présumée. Le circuit facture/virement et les habilitations documentaires
 du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
+Les règles portail natives d'Odoo restent à durcir pour les contacts rattachés
+à une même entreprise cliente avant toute ouverture externe.
 
 ## Recette sur données fictives et base isolée
 
@@ -66,6 +78,9 @@ inscription, place ou session n'est créé par cet addon.
    qualifier une demande de groupe de 12 personnes, choisir V1 et EUR. La
    conversion native crée un devis portant les mêmes repères ; elle doit refuser
    une demande sans programme, effectif positif ou devise MAD/EUR.
+   Renseigner séparément un commanditaire, un payeur prévu et un contact
+   administratif fictifs ; vérifier leur reprise sans changement du client ni
+   de l'adresse de facturation.
 3. Ajouter une ligne du produit « personne », quantité 12 et version V1. Vérifier que le
    devis PDF indique la formation et V1. Modifier ensuite le nom de la formation :
    le libellé contractuel de la ligne et du PDF ne doit pas changer.
@@ -78,7 +93,11 @@ inscription, place ou session n'est créé par cet addon.
    formation sans version : toutes doivent être refusées. Refuser aussi la
    confirmation en devise différente ou avec une version différente de celle
    de la demande. Un compte portail ne doit pas lire la fiche pédagogique.
-6. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
+6. Refuser un contact réservé à une autre société exploitante. Vérifier que le
+   payeur prévu, sans lien avec le client, ne peut pas lire le devis par l'ORM
+   portail ; ce test ne remplace pas la recette complète des accès HTTP et des
+   contacts d'une même entreprise.
+7. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
    depuis S01 avec Website présent. Relever le comportement de la vue Website
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),
    sans supposer que ce nouvel addon reproduit l'incident.

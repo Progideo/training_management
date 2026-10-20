@@ -16,10 +16,26 @@ class SaleOrder(models.Model):
     training_requested_currency_id = fields.Many2one(
         "res.currency", string="Requested Currency", ondelete="restrict", copy=True,
     )
+    training_sponsor_id = fields.Many2one(
+        "res.partner", string="Training Sponsor", ondelete="restrict",
+        check_company=True, copy=True,
+        help="Person or organisation ordering the training; it can differ from the customer.",
+    )
+    training_expected_payer_id = fields.Many2one(
+        "res.partner", string="Expected Payer", ondelete="restrict",
+        check_company=True, copy=True,
+        help="Planned payer only; this does not change the invoice debtor or grant access.",
+    )
+    training_admin_contact_id = fields.Many2one(
+        "res.partner", string="Administrative Contact", ondelete="restrict",
+        check_company=True, copy=True,
+        help="Contact for commercial administration, without automatic document access.",
+    )
 
     def write(self, vals):
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind", "training_requested_program_id", "training_requested_currency_id",
+            "training_sponsor_id", "training_expected_payer_id", "training_admin_contact_id",
         }:
             raise ValidationError(_("Revise the training offer instead of changing its confirmed request."))
         return super().write(vals)

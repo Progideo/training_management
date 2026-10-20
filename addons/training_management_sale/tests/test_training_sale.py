@@ -121,6 +121,53 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError):
             lead.action_new_quotation()
 
+    def test_commercial_roles_do_not_replace_invoice_debtor_or_grant_access(self):
+        sponsor = self.env["res.partner"].create({"name": "Fictional Ordering Organisation"})
+        admin_contact = self.env["res.partner"].create({
+            "name": "Fictional Administrative Contact", "type": "contact",
+        })
+        invoice_address = self.env["res.partner"].create({
+            "name": "Fictional Invoice Address", "parent_id": self.partner.id,
+            "type": "invoice",
+        })
+        payer = self.portal.partner_id
+        lead = self.env["crm.lead"].with_user(self.salesperson).create({
+            "name": "Group roles", "type": "opportunity", "partner_id": self.partner.id,
+            "training_request_kind": "group", "training_program_id": self.program.id,
+            "training_attendee_count": 12, "training_requested_currency_id": self.eur.id,
+            "training_sponsor_id": sponsor.id,
+            "training_expected_payer_id": payer.id,
+            "training_admin_contact_id": admin_contact.id,
+        })
+        context = lead.action_new_quotation()["context"]
+        self.assertEqual(context["default_training_sponsor_id"], sponsor.id)
+        self.assertEqual(context["default_training_expected_payer_id"], payer.id)
+        self.assertEqual(context["default_training_admin_contact_id"], admin_contact.id)
+        order = self.env["sale.order"].with_user(self.salesperson).with_context(context).create({
+            "partner_id": self.partner.id,
+        })
+        self.assertEqual(order.training_sponsor_id, sponsor)
+        self.assertEqual(order.training_expected_payer_id, payer)
+        self.assertEqual(order.training_admin_contact_id, admin_contact)
+        self.assertEqual(order.partner_invoice_id, invoice_address)
+        self.assertEqual(order._prepare_invoice()["partner_id"], invoice_address.id)
+        with self.assertRaises(AccessError):
+            order.with_user(self.portal).read(["name"])
+
+    def test_commercial_roles_respect_operating_company(self):
+        foreign_contact = self.env["res.partner"].create({
+            "name": "Fictional Restricted Contact", "company_id": self.other_company.id,
+        })
+        for model, values in (
+            ("crm.lead", {"name": "Foreign sponsor", "training_request_kind": "group"}),
+            ("sale.order", {"partner_id": self.partner.id, "training_request_kind": "group"}),
+        ):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                self.env[model].create({
+                    **values, "company_id": self.company.id,
+                    "training_sponsor_id": foreign_contact.id,
+                })
+
     def test_independent_fixed_prices_and_price_basis(self):
         mad = self.env.ref("base.MAD")
         package_product = self.env["product.template"].create({
@@ -169,6 +216,13 @@ class TestTrainingSale(TransactionCase):
                 order.action_confirm()
                 self.assertEqual(order.state, "sale")
                 self.assertEqual(line.price_unit, amount)
+                if currency == mad and product == self.product:
+                    for field_name in (
+                        "training_sponsor_id", "training_expected_payer_id",
+                        "training_admin_contact_id",
+                    ):
+                        with self.assertRaises(ValidationError):
+                            order.write({field_name: self.partner.id})
                 with self.assertRaises(ValidationError):
                     pricelists[currency.name].write({
                         "currency_id": (self.eur if currency == mad else mad).id,

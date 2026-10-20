@@ -15,6 +15,12 @@
                         <field name="training_attendee_count" readonly="state in ['sale', 'cancel']"/>
                         <field name="training_requested_currency_id" readonly="state in ['sale', 'cancel']"
                             options="{'no_create': True}"/>
+                        <field name="training_sponsor_id" readonly="state in ['sale', 'cancel']"
+                            options="{'no_create': True}"/>
+                        <field name="training_expected_payer_id" readonly="state in ['sale', 'cancel']"
+                            options="{'no_create': True}"/>
+                        <field name="training_admin_contact_id" readonly="state in ['sale', 'cancel']"
+                            options="{'no_create': True}"/>
                     </group>
                 </group>
             </xpath>
