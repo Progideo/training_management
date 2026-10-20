@@ -52,8 +52,13 @@ acompte de la facture finale. Le scénario fictif couvert par les tests prend
 un forfait de 1 600 EUR : acompte de 25 % (400 EUR), puis facture finale de
 1 200 EUR. Les deux factures gardent l'EUR et l'adresse de facturation Odoo.
 Elles restent impayées après validation comptable, tant qu'aucun règlement
-n'est enregistré. Une facture d'acompte ne constitue pas une preuve de virement.
-Le test crée ses propres comptes et journal fictifs ; il ne configure pas la
+n'est enregistré. Un avis de virement interne peut être rattaché à la commande
+et à sa facture : il ne crée aucun paiement et ne réduit pas le résiduel.
+Seule la comptabilité peut annuler cet avis, qui reste alors visible comme
+annulé. Le test enregistre ensuite un règlement comptable partiel de 300 EUR
+sur la facture finale : son résiduel devient 900 EUR et son état « partiel ».
+Ce règlement comptabilisé ne constitue pas, à lui seul, une preuve bancaire.
+Le test crée ses propres comptes et journaux fictifs ; il ne configure pas la
 comptabilité d'une société réelle.
 
 La demande CRM et le devis portent trois contacts Odoo explicites : le
@@ -72,8 +77,8 @@ pas constat de règlement.
 La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
-politique de facturation n'est présumée. L'enregistrement et le rapprochement
-des virements, ainsi que les habilitations documentaires
+politique de facturation n'est présumée. Le rapprochement bancaire réel,
+les références répétées, les règlements d'une autre devise et les habilitations documentaires
 du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
 Les règles portail natives d'Odoo restent à durcir pour les contacts rattachés
@@ -113,7 +118,12 @@ Les règles portail natives d'Odoo restent à durcir pour les contacts rattaché
    de 1 600 EUR facturable à la commande. Créer et valider une facture d'acompte
    de 25 %, puis une facture finale déduisant cet acompte. Vérifier 400 EUR et
    1 200 EUR, même débiteur, même devise et deux résiduels impayés. Ne pas
-   confondre l'acompte facturé avec un règlement.
+   confondre l'acompte facturé avec un règlement. Déclarer un avis de virement
+   de 300 EUR : le résiduel reste 1 200 EUR et le portail ne lit pas l'avis.
+   Enregistrer ensuite un paiement partiel par l'assistant Odoo sur la facture
+   finale : le résiduel passe à 900 EUR et l'état à « partiel » ; l'acompte
+   demeure impayé. Le commercial ne peut pas annuler l'avis, la comptabilité
+   le peut. Aucun de ces actes n'ouvre un accès pédagogique.
 8. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
    depuis S01 avec Website présent. Relever le comportement de la vue Website
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),

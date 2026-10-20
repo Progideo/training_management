@@ -1,3 +1,6 @@
 id,name,model_id,group_id/id,operation,domain
 access_course_sales,Training courses for sales,training.course,sales_team.group_sale_salesman,r,
 access_program_sales,Training programmes for sales,training.program.version,sales_team.group_sale_salesman,r,"[('state', 'in', ('validated', 'published', 'retired'))]"
+access_transfer_notice_sales,Transfer notices for sales,training.bank.transfer.notice,sales_team.group_sale_salesman,rc,
+access_transfer_notice_accounting,Transfer notices for accounting,training.bank.transfer.notice,account.group_account_invoice,rwc,
+rule_transfer_notice_company,Transfer notices allowed companies,training.bank.transfer.notice,,crud,"[('company_id', 'in', company_ids)]"

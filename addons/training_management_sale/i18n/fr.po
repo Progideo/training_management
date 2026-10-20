@@ -248,3 +248,83 @@ msgstr "Le prix fixe de formation ne peut pas inclure de supplément de variante
 #: code:addons/training_management_sale/models/product_pricelist.py:0
 msgid "The currency of a pricelist used by a confirmed training order cannot be changed."
 msgstr "La devise d’une liste de prix utilisée par une commande de formation confirmée ne peut pas être modifiée."
+
+#. module: training_management_sale
+msgid "Unverified Bank Transfer Notice"
+msgstr "Avis de virement non vérifié"
+
+#. module: training_management_sale
+msgid "Training Order"
+msgstr "Commande de formation"
+
+#. module: training_management_sale
+msgid "Claimed Invoice"
+msgstr "Facture indiquée"
+
+#. module: training_management_sale
+msgid "Claimed Amount"
+msgstr "Montant déclaré"
+
+#. module: training_management_sale
+msgid "Claimed Transfer Date"
+msgstr "Date de virement déclarée"
+
+#. module: training_management_sale
+msgid "Claimed Reference"
+msgstr "Référence déclarée"
+
+#. module: training_management_sale
+msgid "Reported By"
+msgstr "Déclaré par"
+
+#. module: training_management_sale
+msgid "Unverified"
+msgstr "Non vérifié"
+
+#. module: training_management_sale
+msgid "Voided"
+msgstr "Annulé"
+
+#. module: training_management_sale
+msgid "Transfer Notices"
+msgstr "Avis de virement"
+
+#. module: training_management_sale
+msgid "Unverified Transfer Notices"
+msgstr "Avis de virement non vérifiés"
+
+#. module: training_management_sale
+msgid "Void"
+msgstr "Annuler"
+
+#. module: training_management_sale
+msgid "An unverified notice does not reduce the invoice balance."
+msgstr "Un avis non vérifié ne réduit pas le solde de la facture."
+
+#. module: training_management_sale
+msgid "A transfer notice requires a confirmed training order."
+msgstr "Un avis de virement nécessite une commande de formation confirmée."
+
+#. module: training_management_sale
+msgid "The claimed transfer amount must be positive."
+msgstr "Le montant du virement déclaré doit être positif."
+
+#. module: training_management_sale
+msgid "Enter the reference provided with the transfer notice."
+msgstr "Saisissez la référence fournie avec l’avis de virement."
+
+#. module: training_management_sale
+msgid "The claimed invoice must belong to the order in its currency."
+msgstr "La facture indiquée doit appartenir à la commande dans sa devise."
+
+#. module: training_management_sale
+msgid "A new transfer notice must be unverified."
+msgstr "Un nouvel avis de virement doit être non vérifié."
+
+#. module: training_management_sale
+msgid "A transfer notice cannot be changed after reporting."
+msgstr "Un avis de virement ne peut pas être modifié après sa déclaration."
+
+#. module: training_management_sale
+msgid "Only accounting staff can void a transfer notice."
+msgstr "Seule la comptabilité peut annuler un avis de virement."

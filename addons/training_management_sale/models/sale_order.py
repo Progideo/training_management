@@ -31,6 +31,9 @@ class SaleOrder(models.Model):
         check_company=True, copy=True,
         help="Contact for commercial administration, without automatic document access.",
     )
+    training_transfer_notice_ids = fields.One2many(
+        "training.bank.transfer.notice", "order_id", string="Transfer Notices",
+    )
 
     def write(self, vals):
         if any(order.state == "sale" for order in self) and set(vals) & {

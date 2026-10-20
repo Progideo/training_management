@@ -361,3 +361,69 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(final_invoice.payment_state, "not_paid")
         self.assertEqual(final_invoice.amount_residual, 1200)
         self.assertEqual(advance.amount_residual, 400)
+
+        notice = self.env["training.bank.transfer.notice"].with_user(
+            self.salesperson
+        ).create({
+            "order_id": order.id,
+            "amount": 300, "claimed_date": "2026-10-20",
+            "reference": "FICTIONAL-TRANSFER-001",
+        })
+        self.assertEqual(notice.state, "reported")
+        self.assertEqual(notice.currency_id, self.eur)
+        self.assertEqual(notice.reported_by_id, self.salesperson)
+        self.assertEqual(final_invoice.amount_residual, 1200)
+        self.assertEqual(final_invoice.payment_state, "not_paid")
+        with self.assertRaises(AccessError):
+            notice.with_user(self.portal).read(["reference"])
+        with self.assertRaises(AccessError):
+            notice.with_user(self.salesperson).action_void()
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.env["training.bank.transfer.notice"].create({
+                "order_id": order.id, "amount": 0,
+                "claimed_date": "2026-10-20", "reference": "INVALID",
+            })
+
+        bank_account = self.env["account.account"].create({
+            "name": "Fictional EUR Bank", "code": "519901",
+            "account_type": "asset_cash",
+            "company_ids": [Command.set([self.company.id])],
+        })
+        outstanding_account = self.env["account.account"].create({
+            "name": "Fictional Outstanding Receipts", "code": "349902",
+            "account_type": "asset_current", "reconcile": True,
+            "company_ids": [Command.set([self.company.id])],
+        })
+        bank_journal = self.env["account.journal"].create({
+            "name": "Fictional EUR Bank", "code": "FEB", "type": "bank",
+            "company_id": self.company.id, "currency_id": self.eur.id,
+            "default_account_id": bank_account.id,
+        })
+        manual_method = bank_journal.inbound_payment_method_line_ids.filtered(
+            lambda line: line.code == "manual"
+        )
+        self.assertEqual(len(manual_method), 1)
+        manual_method.payment_account_id = outstanding_account
+        payment_wizard = self.env["account.payment.register"].with_context(
+            active_model="account.move", active_ids=final_invoice.ids,
+        ).create({
+            "journal_id": bank_journal.id,
+            "payment_method_line_id": manual_method.id,
+            "currency_id": self.eur.id,
+            "amount": 300,
+            "payment_difference_handling": "open",
+            "communication": "FICTIONAL-TRANSFER-001",
+        })
+        payment_wizard.action_create_payments()
+        self.assertEqual(final_invoice.amount_residual, 900)
+        self.assertEqual(final_invoice.payment_state, "partial")
+        self.assertEqual(advance.amount_residual, 400)
+        self.assertEqual(notice.state, "reported")
+        accountant = new_test_user(
+            self.env, login="training_sale_accountant",
+            groups="account.group_account_invoice,sales_team.group_sale_salesman",
+            company_id=self.company.id, company_ids=[Command.set([self.company.id])],
+        )
+        notice.with_user(accountant).action_void()
+        self.assertEqual(notice.state, "void")
+        self.assertEqual(final_invoice.amount_residual, 900)
