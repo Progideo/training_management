@@ -178,6 +178,13 @@ class TestTrainingPortalHttp(HttpCase):
         invoice = self.order._create_invoices()
         invoice.action_post()
         self.assertTrue(invoice.training_is_sale_invoice)
+        composer = self.env["mail.compose.message"].with_context(
+            default_model="account.move", default_res_ids=invoice.ids,
+            default_composition_mode="comment",
+        ).create({})
+        composer.partner_ids = [Command.set([self.colleague_user.partner_id.id])]
+        with self.assertRaises(ValidationError):
+            composer._prepare_mail_values(invoice.ids)
         template = invoice._get_mail_template()
         sender = self.env["account.move.send"]
         lang = sender._get_default_mail_lang(invoice, template)
@@ -219,6 +226,10 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertNotIn(invoice.name, self.url_open(order_url).text)
         self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         invoice.training_portal_partner_ids = [Command.link(self.authorized_user.partner_id.id)]
+        composer.partner_ids = [Command.set([self.authorized_user.partner_id.id])]
+        self.assertTrue(
+            composer._prepare_mail_values(invoice.ids)[invoice.id]["notify_skip_followers"]
+        )
         self.assertEqual(
             sender._get_default_mail_partner_ids(invoice, template, lang),
             self.authorized_user.partner_id,

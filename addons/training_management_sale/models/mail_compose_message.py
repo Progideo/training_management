@@ -19,23 +19,29 @@ class MailComposeMessage(models.TransientModel):
 
     def _prepare_mail_values(self, res_ids):
         values = super()._prepare_mail_values(res_ids)
-        if self.model != "sale.order":
+        if self.model not in ("sale.order", "account.move"):
             return values
-        for order in self.env["sale.order"].browse(res_ids).filtered("training_request_kind"):
-            mail_values = values.get(order.id, {})
-            allowed = order.training_portal_partner_ids.filtered("email")
+        documents = self.env[self.model].browse(res_ids)
+        if self.model == "sale.order":
+            documents = documents.filtered("training_request_kind")
+        else:
+            documents = documents.filtered("training_is_sale_invoice")
+        for document in documents:
+            mail_values = values.get(document.id, {})
+            allowed = document.training_portal_partner_ids.filtered("email")
             selected = self.env["res.partner"].browse(
                 mail_values.get("partner_ids", []) + mail_values.get("partner_cc_ids", [])
             )
-            if (not selected or selected - allowed or mail_values.get("email_to")
-                    or mail_values.get("email_cc")):
+            preparing_document = bool(self.template_id or mail_values.get("attachment_ids"))
+            if ((preparing_document and not selected) or selected - allowed
+                    or mail_values.get("email_to") or mail_values.get("email_cc")):
                 raise ValidationError(_(
-                    "Send training quotation PDFs only to named contacts authorized on this order."
+                    "Send training document PDFs only to named contacts authorized on this document."
                 ))
             mail_values["notify_skip_followers"] = True
         return values
 
     def _action_schedule_message(self):
-        for composer in self.filtered(lambda wizard: wizard.model == "sale.order"):
+        for composer in self.filtered(lambda wizard: wizard.model in ("sale.order", "account.move")):
             composer._prepare_mail_values(composer._evaluate_res_ids())
         return super()._action_schedule_message()

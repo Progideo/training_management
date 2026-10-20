@@ -139,8 +139,8 @@ transmis hors du portail ne peuvent pas être rappelés par cette révocation.
 Les assistants d'envoi du devis et de la facture joignent le PDF uniquement
 quand au moins un contact nommé sur le document possède une adresse e-mail.
 Ils proposent ces contacts habilités à la place du client générique. La
-préparation du courriel refuse un autre destinataire, y compris en copie, ou
-un envoi après révocation ; les abonnés du fil ne sont pas ajoutés à ces
+préparation du courriel, y compris depuis le fil du document, refuse un autre
+destinataire, une copie ou un envoi après révocation ; les abonnés du fil ne sont pas ajoutés à ces
 notifications. Le PDF reçu par courriel reste en possession du destinataire
 après une révocation. Utiliser des adresses individuelles pour les contacts
 habilités : une boîte partagée ne permet pas d'en limiter la lecture.
