@@ -76,6 +76,12 @@ Ce règlement comptabilisé ne constitue pas, à lui seul, une preuve bancaire.
 Le test crée ses propres comptes et journaux fictifs ; il ne configure pas la
 comptabilité d'une société réelle.
 
+Le devis de formation n'appelle pas le paiement en ligne du portail Ventes,
+même si la société a configuré un acompte par défaut ou si une URL contient un
+montant. La création ou l'association d'une transaction de paiement à une
+commande ou facture de formation est refusée côté serveur. Le virement reste
+traité par l'avis interne et le règlement comptable contrôlé ci-dessus.
+
 La demande CRM et le devis portent trois contacts Odoo explicites : le
 commanditaire, le payeur prévu et le contact administratif. Ils peuvent être
 différents du client du devis ; une même personne peut aussi cumuler plusieurs
@@ -159,6 +165,9 @@ Odoo, restent à valider avant toute ouverture externe.
    une nouvelle référence doit pouvoir être rapproché et ramener le solde à
    850 EUR. Le commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
    ces actes n'ouvre un accès pédagogique.
+   Avec un acompte portail configuré, vérifier aussi que le devis de formation
+   n'exige aucun paiement en ligne et qu'une transaction liée à la commande
+   ou à sa facture est refusée, y compris par appel direct au modèle.
 8. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
    depuis S01 avec Website présent. Relever le comportement de la vue Website
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),

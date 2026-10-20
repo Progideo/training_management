@@ -71,3 +71,7 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         self._check_training_offer()
         return super().action_confirm()
+
+    def _has_to_be_paid(self):
+        self.ensure_one()
+        return not self.training_request_kind and super()._has_to_be_paid()

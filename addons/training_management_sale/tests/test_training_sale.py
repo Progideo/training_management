@@ -1,6 +1,7 @@
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.addons.training_management_sale.controllers.portal import TrainingCustomerPortal
 
 
 @tagged("post_install", "-at_install")
@@ -151,6 +152,15 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(order.training_admin_contact_id, admin_contact)
         self.assertEqual(order.partner_invoice_id, invoice_address)
         self.assertEqual(order._prepare_invoice()["partner_id"], invoice_address.id)
+        order.prepayment_percent = 0.25
+        self.assertFalse(order._has_to_be_paid())
+        self.assertIsNone(TrainingCustomerPortal()._get_payment_values(
+            order, payment_amount=100,
+        )["payment_amount"])
+        with self.assertRaises(ValidationError):
+            self.env["payment.transaction"].create({
+                "sale_order_ids": [Command.set(order.ids)],
+            })
         with self.assertRaises(AccessError):
             order.with_user(self.portal).read(["name"])
         company_contact = self.env["res.partner"].create({
@@ -378,6 +388,10 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(final_invoice.payment_state, "not_paid")
         self.assertEqual(final_invoice.amount_residual, 1200)
         self.assertEqual(advance.amount_residual, 400)
+        with self.assertRaises(ValidationError):
+            self.env["payment.transaction"].create({
+                "invoice_ids": [Command.set(final_invoice.ids)],
+            })
 
         notice = self.env["training.bank.transfer.notice"].with_user(
             self.salesperson
