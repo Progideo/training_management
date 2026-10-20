@@ -103,7 +103,7 @@ Les règles portail natives d'Odoo restent à durcir pour les contacts rattaché
    sans supposer que ce nouvel addon reproduit l'incident.
 
 Les tests natifs se trouvent dans `addons/training_management_sale/tests/` ;
-le workflow `.github/workflows/odoo.yml` exécute aussi l'installation de cet
-addon sur sa base CI jetable. Les résultats réellement obtenus seront consignés
-dans la PR après exécution. Les comptes et formations de recette S01 de
+le workflow `.github/workflows/odoo.yml` exécute aussi l'installation et la
+mise à jour de cet addon sur ses bases CI jetables. Les résultats obtenus sont
+consignés dans la PR. Les comptes et formations de recette S01 de
 `neopro_dev` sont préservés ; les nouvelles données de scénario seront distinctes.
