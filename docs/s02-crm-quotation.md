@@ -177,6 +177,13 @@ serveur restreignent aussi la lecture ORM et les listes. Les contacts internes
 du devis et les avis de virement restent invisibles au portail. Les autres
 documents Odoo conservent leurs règles natives. Les PDF ou pièces déjà
 transmis hors du portail ne peuvent pas être rappelés par cette révocation.
+Sur une facture de formation en brouillon, un commercial autorisé à modifier
+la facture peut choisir « Reprendre les contacts de la commande ». Cette action
+explicite reprend uniquement les contacts communs à toutes les commandes de
+formation liées ; elle refuse les factures mixtes ou sans contact commun.
+La facture reste vide par défaut et ses habilitations restent indépendantes
+après la reprise : toute révocation sur la commande doit être réexaminée sur
+les factures déjà créées.
 Les assistants d'envoi du devis et de la facture joignent le PDF uniquement
 quand au moins un contact nommé sur le document possède une adresse e-mail.
 Ils proposent ces contacts habilités à la place du client générique. La

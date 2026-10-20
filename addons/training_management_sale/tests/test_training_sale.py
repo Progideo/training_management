@@ -486,6 +486,21 @@ class TestTrainingSale(TransactionCase):
         advance = order.invoice_ids
         self.assertEqual(len(advance), 1)
         self.assertEqual(advance.state, "draft")
+        self.assertFalse(advance.training_portal_partner_ids)
+        with self.assertRaises(UserError):
+            advance.action_copy_training_portal_contacts()
+        authorized = self.env["res.partner"].create({
+            "name": "Fictional Authorized Billing Contact", "parent_id": self.partner.id,
+        })
+        order.training_portal_partner_ids = [Command.link(authorized.id)]
+        with self.assertRaises(UserError):
+            advance.with_user(self.portal).action_copy_training_portal_contacts()
+        advance.action_copy_training_portal_contacts()
+        self.assertEqual(advance.training_portal_partner_ids, authorized)
+        order.training_portal_partner_ids = [Command.clear()]
+        self.assertEqual(advance.training_portal_partner_ids, authorized)
+        advance.training_portal_partner_ids = [Command.clear()]
+        order.training_portal_partner_ids = [Command.link(authorized.id)]
         self.assertEqual(advance.currency_id, self.eur)
         self.assertEqual(advance.partner_id, invoice_address)
         self.assertEqual(advance.amount_untaxed, 400)
@@ -494,6 +509,8 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(advance.amount_residual, 400)
         advance.action_post()
         self.assertEqual(advance.state, "posted")
+        with self.assertRaises(UserError):
+            advance.action_copy_training_portal_contacts()
         self.assertEqual(advance.payment_state, "not_paid")
         self.assertEqual(advance.amount_residual, 400)
 
@@ -505,6 +522,10 @@ class TestTrainingSale(TransactionCase):
         final_invoice = order.invoice_ids - advance
         self.assertEqual(len(final_invoice), 1)
         self.assertEqual(final_invoice.state, "draft")
+        self.assertFalse(final_invoice.training_portal_partner_ids)
+        final_invoice.action_copy_training_portal_contacts()
+        self.assertEqual(final_invoice.training_portal_partner_ids, authorized)
+        final_invoice.training_portal_partner_ids = [Command.clear()]
         self.assertEqual(final_invoice.currency_id, self.eur)
         self.assertEqual(final_invoice.partner_id, invoice_address)
         self.assertEqual(final_invoice.amount_untaxed, 1200)
