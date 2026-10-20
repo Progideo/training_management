@@ -154,6 +154,10 @@ de rapprochement automatique ne valide ces lignes sans revue. Les imports
 réels et leur traitement des doublons restent à recetter. Une ligne de relevé
 de caisse ou tenue dans une autre devise que la facture est refusée au
 rapprochement côté serveur.
+Sur la base locale `tm_s02_recette_fresh3`, les seuls modèles de
+rapprochement actifs consultés le 20 octobre 2026 sont « Internal Transfers »
+et « Bank Fees », tous deux déclenchés manuellement. Ce constat local ne
+valide pas la configuration de l'instance comptable cible ni son mode d'import.
 La page générique `/payment/pay` ne porte pas l'identité d'un devis ou d'une
 facture : un lien construit indépendamment avec un partenaire et un montant
 ne peut pas être attribué avec certitude à une formation. L'absence de
