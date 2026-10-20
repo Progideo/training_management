@@ -81,7 +81,7 @@ même si la société a configuré un acompte par défaut ou si une URL contient
 montant. La création ou l'association d'une transaction de paiement à une
 commande ou facture de formation est refusée côté serveur. Le virement reste
 traité par l'avis interne et le règlement comptable contrôlé ci-dessus.
-Un test HTTP ouvre le devis avec un jeton valide et un montant dans l'URL :
+Un test HTTP ouvre le devis sous un contact autorisé, avec un jeton valide et un montant dans l'URL :
 aucun formulaire de paiement n'apparaît et l'appel direct à la route de
 transaction est refusé. L'assistant de lien de paiement refuse les commandes
 et factures de formation, y compris par création directe. Le lien et le QR
@@ -98,9 +98,9 @@ droits d'accès. Leur rattachement à une société exploitante différente est
 refusé. Les rôles sont figés sur une commande confirmée : une correction
 contractuelle passe par une révision de l'offre. Le payeur indiqué ici ne vaut
 pas constat de règlement. Les trois repères de contacts et la liste des avis
-de virement sont réservés aux utilisateurs internes sur la commande, même si
-un contact de la même entreprise cliente peut lire le devis par les règles
-portail natives.
+de virement sont réservés aux utilisateurs internes sur la commande. Un contact
+de la même entreprise cliente ne lit le devis que s'il est nommé dans la liste
+d'habilitation de ce devis.
 
 ## Limites de l'incrément
 
@@ -108,8 +108,8 @@ La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
 politique de facturation n'est présumée. Le rapprochement bancaire réel,
-la procédure comptable pour un règlement d'une autre devise et les habilitations documentaires
-du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
+la procédure comptable pour un règlement d'une autre devise et la recette complète
+des pièces et échanges du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
 La saisie directe d'un paiement hors de l'assistant ne connaît pas encore sa
 future facture de formation : elle n'exige donc pas cette référence lors de la
@@ -125,7 +125,8 @@ prestataire de paiement actif devra être vérifiée lors du paramétrage du
 lancement ; l'addon n'interrompt pas les paiements d'autres activités Odoo.
 Sur décision du 20 octobre 2026, les devis et factures de formation ont une
 liste distincte de contacts portail nommément autorisés, vide par défaut.
-Le rattachement à la même entreprise ne suffit pas. L'accès par URL exige une
+Le rattachement à la même entreprise ne suffit pas. Une copie de document ne
+reprend pas ses habilitations. L'accès par URL exige une
 session connectée correspondant à l'un de ces contacts, même avec le jeton
 valide d'Odoo ; retirer un contact révoque son accès au portail. Les règles
 serveur restreignent aussi la lecture ORM et les listes. Les contacts internes

@@ -89,6 +89,10 @@ class TestTrainingPortalHttp(HttpCase):
         url = f"/my/orders/{self.order.id}?access_token={self.order.access_token}"
         self.authenticate(None, None)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.assertEqual(
+            self.url_open(url + "&report_type=pdf", allow_redirects=False).status_code,
+            303,
+        )
         self.authenticate(self.colleague_user.login, self.colleague_user.login)
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
         self.authenticate(self.authorized_user.login, self.authorized_user.login)
@@ -97,4 +101,44 @@ class TestTrainingPortalHttp(HttpCase):
             200,
         )
         self.order.training_portal_partner_ids = [Command.clear()]
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+
+    def test_invoice_requires_its_own_named_contact(self):
+        company = self.env.company
+        income = self.env["account.account"].create({
+            "name": "Fictional Portal Income", "code": "709902",
+            "account_type": "income", "company_ids": [Command.set([company.id])],
+        })
+        receivable = self.env["account.account"].create({
+            "name": "Fictional Portal Receivable", "code": "349902",
+            "account_type": "asset_receivable", "reconcile": True,
+            "company_ids": [Command.set([company.id])],
+        })
+        self.env["account.journal"].create({
+            "name": "Fictional Portal Sales", "code": "FPS", "type": "sale",
+            "company_id": company.id, "default_account_id": income.id,
+        })
+        self.order.partner_id.with_company(company).property_account_receivable_id = receivable
+        self.order.order_line.product_id.product_tmpl_id.write({
+            "invoice_policy": "order", "property_account_income_id": income.id,
+        })
+        self.order.action_confirm()
+        invoice = self.order._create_invoices()
+        invoice.action_post()
+        self.assertTrue(invoice.training_is_sale_invoice)
+        invoice._portal_ensure_token()
+        url = f"/my/invoices/{invoice.id}?access_token={invoice.access_token}"
+        self.authenticate(None, None)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.authenticate(self.colleague_user.login, self.colleague_user.login)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        self.authenticate(self.authorized_user.login, self.authorized_user.login)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
+        invoice.training_portal_partner_ids = [Command.link(self.authorized_user.partner_id.id)]
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
+        self.assertEqual(
+            self.url_open(url + "&report_type=pdf", allow_redirects=False).status_code,
+            200,
+        )
+        invoice.training_portal_partner_ids = [Command.clear()]
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
