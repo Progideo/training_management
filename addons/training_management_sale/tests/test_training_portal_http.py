@@ -88,13 +88,13 @@ class TestTrainingPortalHttp(HttpCase):
     def test_named_contact_required_even_with_a_valid_token(self):
         url = f"/my/orders/{self.order.id}?access_token={self.order.access_token}"
         self.authenticate(None, None)
-        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 302)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
         self.authenticate(self.colleague_user.login, self.colleague_user.login)
-        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 302)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
         self.authenticate(self.authorized_user.login, self.authorized_user.login)
         self.assertEqual(
             self.url_open(f"/my/orders/{self.order.id}", allow_redirects=False).status_code,
             200,
         )
         self.order.training_portal_partner_ids = [Command.clear()]
-        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 302)
+        self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
