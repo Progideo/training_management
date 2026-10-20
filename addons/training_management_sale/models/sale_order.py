@@ -37,7 +37,7 @@ class SaleOrder(models.Model):
     )
     training_portal_partner_ids = fields.Many2many(
         "res.partner", "training_sale_portal_partner_rel", "order_id", "partner_id",
-        string="Authorized Portal Contacts", groups="base.group_user",
+        string="Authorized Portal Contacts", groups="base.group_user", copy=False,
         help="Only these named contacts may view this training quotation or order in the portal.",
     )
 

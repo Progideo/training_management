@@ -190,6 +190,7 @@ class TestTrainingSale(TransactionCase):
             order.with_user(company_portal).read(["name"])
         order.training_portal_partner_ids = [Command.link(company_contact.id)]
         self.assertEqual(order.with_user(company_portal).read(["name"])[0]["name"], order.name)
+        self.assertFalse(order.copy().training_portal_partner_ids)
         private_fields = (
             "training_sponsor_id", "training_expected_payer_id",
             "training_admin_contact_id", "training_transfer_notice_ids",
