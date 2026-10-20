@@ -396,3 +396,11 @@ msgstr "Accès portail à la formation"
 #. module: training_management_sale
 msgid "This training document requires an authorized portal contact."
 msgstr "Ce document de formation nécessite un contact portail autorisé."
+
+#. module: training_management_sale
+msgid "This training attachment is unavailable."
+msgstr "Cette pièce jointe de formation est indisponible."
+
+#. module: training_management_sale
+msgid "This training attachment requires an authorized portal contact."
+msgstr "Cette pièce jointe de formation nécessite un contact portail autorisé."

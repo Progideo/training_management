@@ -5,6 +5,7 @@ from . import sale_order
 from . import sale_order_line
 from . import bank_transfer_notice
 from . import account_move
+from . import ir_binary
 from . import account_payment
 from . import account_payment_register
 from . import account_partial_reconcile
