@@ -1,0 +1,107 @@
+<odoo>
+    <record id="view_training_program_list" model="ir.ui.view">
+        <field name="name">training.program.version.list</field>
+        <field name="model">training.program.version</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="course_id"/>
+                <field name="version"/>
+                <field name="title"/>
+                <field name="delivery_mode"/>
+                <field name="duration_hours"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_program_form" model="ir.ui.view">
+        <field name="name">training.program.version.form</field>
+        <field name="model">training.program.version</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <header>
+                    <button name="action_validate" type="object" string="Validate" class="btn-primary"
+                        invisible="state != 'draft'" groups="training_management.group_training_coordinator"/>
+                    <button name="action_publish" type="object" string="Publish Programme"
+                        invisible="state != 'validated'" groups="training_management.group_training_coordinator"/>
+                    <button name="action_retire" type="object" string="Retire"
+                        invisible="state != 'published'" groups="training_management.group_training_coordinator"/>
+                    <button name="action_new_version" type="object" string="New Version"
+                        groups="training_management.group_training_coordinator"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validated,published,retired"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status">
+                        Validation freezes programme content. Use New Version to make changes.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="course_id" readonly="state != 'draft'"/>
+                            <field name="version" readonly="state != 'draft'"/>
+                            <field name="title" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="duration_hours" readonly="state != 'draft'"/>
+                            <field name="delivery_mode" readonly="state != 'draft'"/>
+                            <field name="language_id" readonly="state != 'draft'"/>
+                            <field name="pricing_mode" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Programme">
+                            <group>
+                                <field name="objectives" readonly="state != 'draft'"/>
+                                <field name="target_audience" readonly="state != 'draft'"/>
+                                <field name="prerequisites" readonly="state != 'draft'"/>
+                                <field name="content" readonly="state != 'draft'"/>
+                                <field name="teaching_methods" readonly="state != 'draft'"/>
+                                <field name="evaluation_criteria" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Access and Accessibility">
+                            <group>
+                                <field name="access_conditions" readonly="state != 'draft'"/>
+                                <field name="accessibility_contact_id" readonly="state != 'draft'"/>
+                                <field name="accessibility_information" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Validation History">
+                            <group>
+                                <field name="validated_by_id"/>
+                                <field name="validated_at"/>
+                                <field name="published_by_id"/>
+                                <field name="published_at"/>
+                                <field name="retired_by_id"/>
+                                <field name="retired_at"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_program_search" model="ir.ui.view">
+        <field name="name">training.program.version.search</field>
+        <field name="model">training.program.version</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="title"/>
+                <field name="course_id"/>
+                <field name="version"/>
+                <field name="delivery_mode"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="published" string="Published" domain="[('state', '=', 'published')]"/>
+                <group>
+                    <filter name="group_course" string="Standard Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_programs" model="ir.actions.act_window">
+        <field name="name">Programme Versions</field>
+        <field name="res_model">training.program.version</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
