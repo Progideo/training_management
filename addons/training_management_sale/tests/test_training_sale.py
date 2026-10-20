@@ -374,8 +374,23 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(notice.reported_by_id, self.salesperson)
         self.assertEqual(final_invoice.amount_residual, 1200)
         self.assertEqual(final_invoice.payment_state, "not_paid")
+        linked_notice = self.env["training.bank.transfer.notice"].create({
+            "order_id": order.id, "invoice_id": final_invoice.id,
+            "amount": 300, "claimed_date": "2026-10-20",
+            "reference": "FICTIONAL-INVOICE-LINK-001",
+        })
+        self.assertEqual(linked_notice.invoice_id, final_invoice)
+        self.assertEqual(final_invoice.amount_residual, 1200)
         with self.assertRaises(AccessError):
             notice.with_user(self.portal).read(["reference"])
+        other_salesperson = new_test_user(
+            self.env, login="training_sale_other_company",
+            groups="sales_team.group_sale_salesman",
+            company_id=self.other_company.id,
+            company_ids=[Command.set([self.other_company.id])],
+        )
+        with self.assertRaises(AccessError):
+            notice.with_user(other_salesperson).read(["reference"])
         with self.assertRaises(AccessError):
             notice.with_user(self.salesperson).action_void()
         with self.assertRaises(ValidationError), self.cr.savepoint():
