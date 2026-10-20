@@ -24,18 +24,30 @@ class SaleOrder(models.Model):
             raise ValidationError(_("Revise the training offer instead of changing its confirmed request."))
         return super().write(vals)
 
-    def action_confirm(self):
+    def _check_training_offer(self):
         for order in self:
             lines = order.order_line.filtered(lambda line: line.product_id.product_tmpl_id.training_course_id)
             if lines and not order.training_request_kind:
-                raise ValidationError(_("Qualify the training request before confirming its order."))
+                raise ValidationError(_("Qualify the training request before sending its quotation."))
             if not order.training_request_kind:
                 continue
             if not order.training_requested_program_id or order.training_requested_program_id.state not in ("validated", "published"):
                 raise ValidationError(_("A training order requires a validated or published programme version."))
-            if order.training_requested_currency_id != order.currency_id:
-                raise ValidationError(_("Choose a pricelist in the requested currency before confirming."))
+            if order.training_attendee_count <= 0:
+                raise ValidationError(_("Enter a positive participant count on the training quotation."))
+            if (order.training_requested_currency_id.name not in ("MAD", "EUR")
+                    or order.training_requested_currency_id != order.currency_id):
+                raise ValidationError(_("Choose a pricelist in the requested MAD or EUR currency."))
             if not lines or any(line.training_program_id != order.training_requested_program_id for line in lines):
                 raise ValidationError(_("Training lines must use the requested programme version."))
             lines._check_training_program()
+            for line in lines:
+                line._check_training_tariff()
+
+    def action_quotation_send(self):
+        self._check_training_offer()
+        return super().action_quotation_send()
+
+    def action_confirm(self):
+        self._check_training_offer()
         return super().action_confirm()

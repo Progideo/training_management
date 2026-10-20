@@ -53,3 +53,44 @@ class SaleOrderLine(models.Model):
                 continue
             label = line.training_program_id.display_name if line.training_program_id else False
             super(SaleOrderLine, line).write({"training_program_label": label})
+
+    def _check_training_tariff(self):
+        self.ensure_one()
+        order = self.order_id
+        product = self.product_id
+        basis = product.product_tmpl_id.training_price_basis
+        expected_qty = order.training_attendee_count if basis == "person" else 1
+        if self.product_uom_id != product.uom_id or self.product_uom_qty != expected_qty:
+            raise ValidationError(_("The training line quantity must match its per-person or package price basis."))
+
+        rule_id = order.pricelist_id._get_product_rule(
+            product, **self._get_pricelist_kwargs(),
+        )
+        rule = self.env["product.pricelist.item"].browse(rule_id)
+        if (not rule or rule.compute_price != "fixed"
+                or rule.applied_on not in ("0_product_variant", "1_product")
+                or (rule.applied_on == "0_product_variant" and rule.product_id != product)
+                or (rule.applied_on == "1_product" and rule.product_tmpl_id != product.product_tmpl_id)
+                or self.product_no_variant_attribute_value_ids):
+            raise ValidationError(_("Set an explicit fixed pricelist price for this training product and currency."))
+
+        # Follow the same tax-mode adaptation as sale.order.line._reset_price_unit.
+        line = self.with_company(self.company_id)
+        price = rule._compute_price(
+            product=product.with_context(**line._get_product_price_context()),
+            **line._get_pricelist_kwargs(),
+        )
+        if order.currency_id.compare_amounts(price, rule.fixed_price):
+            raise ValidationError(_("The training fixed price cannot include converted variant supplements."))
+        taxes = product.taxes_id._filter_taxes_by_company(self.company_id)
+        expected_unit = product._get_tax_included_unit_price_from_price(
+            price, product_taxes=taxes,
+            fiscal_position=order.fiscal_position_id,
+            document_tax_mode=self.document_tax_mode,
+        )
+        expected_unit = product._adapt_price_unit_to_document_tax_mode(
+            expected_unit, taxes, self.product_uom_id, self.document_tax_mode,
+        )
+        if (order.currency_id.compare_amounts(self.price_unit, expected_unit)
+                or self.discount):
+            raise ValidationError(_("The training line must use its fixed pricelist amount without a manual discount."))
