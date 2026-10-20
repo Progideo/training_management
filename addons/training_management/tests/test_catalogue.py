@@ -202,6 +202,29 @@ class TestCatalogue(TransactionCase):
         self.assertEqual(first.state, "draft")
         self.assertEqual(second.state, "draft")
 
+    def test_source_display_name_identifies_course_and_version_in_each_language(self):
+        self.env["res.lang"]._activate_lang("fr_FR")
+        self.course.update_field_translations("name", {
+            "en_US": "Project management", "fr_FR": "Gestion de projet",
+        })
+        first = self.new_program(title="Same title")
+        second = self.new_program(version="V2", title="Same title")
+        for lang, course_name in (
+            ("fr_FR", "Gestion de projet"), ("en_US", "Project management"),
+        ):
+            source = second.with_context(lang=lang)
+            self.assertEqual(source.display_name, f"{course_name} — V2")
+            self.assertEqual(first.with_context(lang=lang).display_name, f"{course_name} — V1")
+            action = source.action_new_version()
+            Wizard = self.env[action["res_model"]].with_user(self.coordinator).with_context(
+                action["context"],
+            )
+            form = Form(Wizard)
+            self.assertEqual(form.source_id, source)
+            self.assertEqual(form.source_id.display_name, f"{course_name} — V2")
+        second.write({"version": "V3"})
+        self.assertEqual(second.with_context(lang="fr_FR").display_name, "Gestion de projet — V3")
+
     def test_new_version_action_keeps_standard_course(self):
         program = self.new_program()
         program.action_validate()

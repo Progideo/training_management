@@ -67,6 +67,14 @@ class TrainingProgramVersion(models.Model):
         "CHECK(duration_hours >= 0)", "Duration cannot be negative.",
     )
 
+    @api.depends("course_id.name", "version")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for program in self:
+            program.display_name = " — ".join(filter(None, (
+                program.course_id.name, program.version,
+            )))
+
     def _audit_fields(self):
         return {
             "validated_by_id", "validated_at", "published_by_id",

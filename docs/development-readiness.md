@@ -197,6 +197,15 @@ sont dans [native-coverage.md](native-coverage.md).
 
 ## Suite
 
+### Identification de la version source en recette
+
+Le dialogue de copie utilise désormais le nom affiché
+« formation — référence de version » (module `20.0.1.0.3`), au lieu du seul
+titre pédagogique. Le nom de la formation suit la langue de l'utilisateur ;
+la référence reste inchangée. Un test natif vérifie deux versions de même titre,
+le champ source du dialogue en français et en anglais et le changement de
+référence d'un brouillon. Cette correction ne modifie aucun contenu enregistré.
+
 S01 couvre CAT01 partiellement (catalogue interne), CAT02 dans son périmètre et
 SEC01 pour sociétés/rôles du catalogue. Il ne termine pas la phase 1 : publication
 Web et PDF contractuel, commerce, réalisations, inscriptions, portail, examens,
