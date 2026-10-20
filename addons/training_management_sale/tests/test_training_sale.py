@@ -427,7 +427,6 @@ class TestTrainingSale(TransactionCase):
             "currency_id": self.eur.id,
             "amount": 300,
             "payment_difference_handling": "open",
-            "communication": "Fictional invoice allocation",
         })
         self.assertTrue(payment_wizard.training_bank_payment_required)
         with self.assertRaises(ValidationError):
@@ -447,7 +446,8 @@ class TestTrainingSale(TransactionCase):
             ("training_bank_reference", "=", "FICTIONAL-TRANSFER-001"),
         ])
         self.assertEqual(len(first_payment), 1)
-        self.assertEqual(first_payment.memo, "Fictional invoice allocation")
+        self.assertEqual(first_payment.memo, final_invoice.name)
+        self.assertNotEqual(first_payment.memo, first_payment.training_bank_reference)
         with self.assertRaises(ValidationError):
             first_payment.training_bank_reference = "ALTERED"
         self.assertEqual(final_invoice.amount_residual, 900)
