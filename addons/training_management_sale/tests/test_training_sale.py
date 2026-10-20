@@ -271,3 +271,84 @@ class TestTrainingSale(TransactionCase):
         rule.compute_price = "discount"
         with self.assertRaises(ValidationError):
             order.action_confirm()
+
+    def test_native_eur_down_payment_and_final_invoice(self):
+        income = self.env["account.account"].create({
+            "name": "Fictional Training Income", "code": "709901",
+            "account_type": "income", "company_ids": [Command.set([self.company.id])],
+        })
+        receivable = self.env["account.account"].create({
+            "name": "Fictional Training Receivable", "code": "349901",
+            "account_type": "asset_receivable", "reconcile": True,
+            "company_ids": [Command.set([self.company.id])],
+        })
+        self.env["account.journal"].create({
+            "name": "Fictional Training Sales", "code": "FTS", "type": "sale",
+            "company_id": self.company.id, "default_account_id": income.id,
+        })
+        self.partner.with_company(self.company).property_account_receivable_id = receivable
+        invoice_address = self.env["res.partner"].create({
+            "name": "Fictional Training Billing", "parent_id": self.partner.id,
+            "type": "invoice",
+        })
+        invoice_address.with_company(self.company).property_account_receivable_id = receivable
+        product = self.env["product.template"].create({
+            "name": "Fictional EUR package", "type": "service",
+            "invoice_policy": "order", "taxes_id": [Command.clear()],
+            "company_id": self.company.id,
+            "property_account_income_id": income.id,
+            "training_course_id": self.course.id, "training_price_basis": "package",
+        }).product_variant_id
+        pricelist = self.env["product.pricelist"].create({
+            "name": "Fictional EUR package list", "company_id": self.company.id,
+            "currency_id": self.eur.id,
+        })
+        self.env["product.pricelist.item"].create({
+            "pricelist_id": pricelist.id, "product_tmpl_id": product.product_tmpl_id.id,
+            "compute_price": "fixed", "fixed_price": 1600,
+        })
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id, "company_id": self.company.id,
+            "pricelist_id": pricelist.id, "training_request_kind": "group",
+            "training_requested_program_id": self.program.id,
+            "training_attendee_count": 12,
+            "training_requested_currency_id": self.eur.id,
+            "training_expected_payer_id": self.portal.partner_id.id,
+        })
+        self.env["sale.order.line"].create({
+            "order_id": order.id, "product_id": product.id,
+            "product_uom_qty": 1, "training_program_id": self.program.id,
+        })
+        order.action_confirm()
+        self.assertEqual(order.amount_untaxed, 1600)
+        self.assertEqual(order.partner_invoice_id, invoice_address)
+
+        wizard_model = self.env["sale.advance.payment.inv"].with_context(
+            active_model="sale.order", active_ids=order.ids,
+        )
+        advance_wizard = wizard_model.create({
+            "sale_order_ids": [Command.set(order.ids)],
+            "advance_payment_method": "percentage", "amount": 25,
+        })
+        advance_wizard.create_invoices()
+        advance = order.invoice_ids
+        self.assertEqual(len(advance), 1)
+        self.assertEqual(advance.state, "draft")
+        self.assertEqual(advance.currency_id, self.eur)
+        self.assertEqual(advance.partner_id, invoice_address)
+        self.assertEqual(advance.amount_untaxed, 400)
+        self.assertTrue(advance.invoice_line_ids.filtered("is_downpayment"))
+        self.assertEqual(advance.amount_residual, 400)
+
+        final_wizard = wizard_model.create({
+            "sale_order_ids": [Command.set(order.ids)],
+            "advance_payment_method": "delivered", "deduct_down_payments": True,
+        })
+        final_wizard.create_invoices()
+        final_invoice = order.invoice_ids - advance
+        self.assertEqual(len(final_invoice), 1)
+        self.assertEqual(final_invoice.state, "draft")
+        self.assertEqual(final_invoice.currency_id, self.eur)
+        self.assertEqual(final_invoice.partner_id, invoice_address)
+        self.assertEqual(final_invoice.amount_untaxed, 1200)
+        self.assertEqual(advance.state, "draft")
