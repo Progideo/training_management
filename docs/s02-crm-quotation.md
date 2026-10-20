@@ -1,4 +1,4 @@
-# S02 — Demande CRM et devis lié au programme
+# S02 — Demande CRM, devis et facturation native
 
 Incréments demande/devis, tarifs et rôles commerciaux de [#12](https://github.com/Progideo/training_management/issues/12),
 à relire avec la [matrice de couverture](s02-native-coverage.md).
@@ -45,6 +45,17 @@ La ligne et la liste Odoo conservent le montant et la devise du devis confirmé.
 La devise d'une liste utilisée par une commande de formation confirmée est
 figée, même si la liste est partagée entre sociétés.
 
+Après confirmation, la facturation passe par l'assistant standard de Ventes.
+Pour un service configuré « facturer les quantités commandées », il sait créer
+une facture d'acompte en pourcentage ou en montant fixe, puis déduire cet
+acompte de la facture finale. Le scénario fictif couvert par les tests prend
+un forfait de 1 600 EUR : acompte de 25 % (400 EUR), puis facture finale de
+1 200 EUR. Les deux factures gardent l'EUR et l'adresse de facturation Odoo.
+Elles restent impayées après validation comptable, tant qu'aucun règlement
+n'est enregistré. Une facture d'acompte ne constitue pas une preuve de virement.
+Le test crée ses propres comptes et journal fictifs ; il ne configure pas la
+comptabilité d'une société réelle.
+
 La demande CRM et le devis portent trois contacts Odoo explicites : le
 commanditaire, le payeur prévu et le contact administratif. Ils peuvent être
 différents du client du devis ; une même personne peut aussi cumuler plusieurs
@@ -61,7 +72,8 @@ pas constat de règlement.
 La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
-politique de facturation n'est présumée. Le circuit facture/virement et les habilitations documentaires
+politique de facturation n'est présumée. L'enregistrement et le rapprochement
+des virements, ainsi que les habilitations documentaires
 du portail attendent les incréments suivants de S02. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
 Les règles portail natives d'Odoo restent à durcir pour les contacts rattachés
@@ -97,7 +109,12 @@ Les règles portail natives d'Odoo restent à durcir pour les contacts rattaché
    payeur prévu, sans lien avec le client, ne peut pas lire le devis par l'ORM
    portail ; ce test ne remplace pas la recette complète des accès HTTP et des
    contacts d'une même entreprise.
-7. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
+7. Sur une base jetable avec comptes et journal fictifs, confirmer un forfait
+   de 1 600 EUR facturable à la commande. Créer et valider une facture d'acompte
+   de 25 %, puis une facture finale déduisant cet acompte. Vérifier 400 EUR et
+   1 200 EUR, même débiteur, même devise et deux résiduels impayés. Ne pas
+   confondre l'acompte facturé avec un règlement.
+8. Vérifier sur base jetable l'installation depuis zéro, puis la mise à jour
    depuis S01 avec Website présent. Relever le comportement de la vue Website
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),
    sans supposer que ce nouvel addon reproduit l'incident.
