@@ -420,6 +420,16 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(advance.amount_residual, 400)
         self.assertTrue(advance.training_is_sale_invoice)
         self.assertTrue(final_invoice.training_is_sale_invoice)
+        downpayment_lines = final_invoice.invoice_line_ids.filtered("is_downpayment")
+        self.assertTrue(downpayment_lines)
+        self.assertTrue(all(
+            line._get_aml_vals(hide_taxes=False)["label"] == "Down Payment"
+            for line in downpayment_lines
+        ))
+        report_html = self.env["ir.actions.report"]._render_qweb_html(
+            "account.account_invoices", [final_invoice.id],
+        )[0]
+        self.assertNotIn(advance.name, report_html.decode() if isinstance(report_html, bytes) else report_html)
         colleague = self.env["res.partner"].create({
             "name": "Fictional Billing Colleague", "parent_id": self.partner.id,
         })

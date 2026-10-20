@@ -149,6 +149,9 @@ factures pour lesquelles le contact connecté possède une habilitation propre.
 Elle remplace également le libellé des lignes d'acompte par un libellé
 générique, y compris sur le PDF de commande, car le libellé standard contient
 le numéro de la facture d'acompte.
+Le PDF de facture finale masque également le numéro de la facture d'acompte
+dans la ligne déduite ; la référence reste présente sur l'écriture interne.
+La comptabilité doit valider cette présentation avant usage réel.
 Le service binaire vérifie aussi les pièces liées directement au devis, à la
 facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
 jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des
