@@ -14,6 +14,14 @@ class AccountMove(models.Model):
         help="Only these named contacts may view this training invoice in the portal.",
     )
 
+    def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
+        thread = super()._get_thread_with_access(thread_id, mode=mode, **kwargs)
+        if (thread and self.env.user.share and thread.sudo().training_is_sale_invoice
+                and (self.env.user._is_public()
+                     or self.env.user.partner_id not in thread.sudo().training_portal_partner_ids)):
+            return self.browse()
+        return thread
+
     @api.depends("move_type", "invoice_line_ids.sale_line_ids.order_id.training_request_kind")
     def _compute_training_is_sale_invoice(self):
         for move in self:

@@ -188,8 +188,15 @@ class TestTrainingSale(TransactionCase):
         )
         with self.assertRaises(AccessError):
             order.with_user(company_portal).read(["name"])
+        order._portal_ensure_token()
+        self.assertFalse(order.with_user(company_portal)._get_thread_with_access(
+            order.id, token=order.access_token,
+        ))
         order.training_portal_partner_ids = [Command.link(company_contact.id)]
         self.assertEqual(order.with_user(company_portal).read(["name"])[0]["name"], order.name)
+        self.assertTrue(order.with_user(company_portal)._get_thread_with_access(
+            order.id, token=order.access_token,
+        ))
         self.assertFalse(order.copy().training_portal_partner_ids)
         private_fields = (
             "training_sponsor_id", "training_expected_payer_id",
@@ -420,11 +427,18 @@ class TestTrainingSale(TransactionCase):
         )
         with self.assertRaises(AccessError):
             final_invoice.with_user(portal_colleague).read(["name"])
+        final_invoice._portal_ensure_token()
+        self.assertFalse(final_invoice.with_user(portal_colleague)._get_thread_with_access(
+            final_invoice.id, token=final_invoice.access_token,
+        ))
         final_invoice.training_portal_partner_ids = [Command.link(colleague.id)]
         self.assertEqual(
             final_invoice.with_user(portal_colleague).read(["name"])[0]["name"],
             final_invoice.name,
         )
+        self.assertTrue(final_invoice.with_user(portal_colleague)._get_thread_with_access(
+            final_invoice.id, token=final_invoice.access_token,
+        ))
         with self.assertRaises(AccessError):
             advance.with_user(portal_colleague).read(["name"])
         self.company.link_qr_code = True

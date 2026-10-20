@@ -135,8 +135,9 @@ documents Odoo conservent leurs règles natives. Les PDF ou pièces déjà
 transmis hors du portail ne peuvent pas être rappelés par cette révocation.
 Le service binaire vérifie aussi les pièces liées directement au devis, à la
 facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
-jeton propre à une pièce ne suffit pas.
-Une recette complète des échanges et des autres chemins de téléchargement reste nécessaire
+jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des
+devis et factures suit la même habilitation, même avec son propre jeton.
+Une recette complète des notifications et des autres chemins de téléchargement reste nécessaire
 avant toute ouverture externe.
 
 ## Recette sur données fictives et base isolée

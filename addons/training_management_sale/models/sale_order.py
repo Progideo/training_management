@@ -41,6 +41,14 @@ class SaleOrder(models.Model):
         help="Only these named contacts may view this training quotation or order in the portal.",
     )
 
+    def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
+        thread = super()._get_thread_with_access(thread_id, mode=mode, **kwargs)
+        if (thread and self.env.user.share and thread.sudo().training_request_kind
+                and (self.env.user._is_public()
+                     or self.env.user.partner_id not in thread.sudo().training_portal_partner_ids)):
+            return self.browse()
+        return thread
+
     def write(self, vals):
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind", "training_requested_program_id", "training_requested_currency_id",
