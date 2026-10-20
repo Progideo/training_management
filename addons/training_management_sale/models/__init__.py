@@ -9,6 +9,7 @@ from . import account_move_line
 from . import account_move_send
 from . import account_move_send_wizard
 from . import mail_compose_message
+from . import mail_template
 from . import ir_binary
 from . import account_payment
 from . import account_payment_register

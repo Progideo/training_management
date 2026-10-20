@@ -5,6 +5,49 @@ from odoo.exceptions import ValidationError
 class AccountPayment(models.Model):
     _inherit = "account.payment"
 
+    def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
+        thread = super()._get_thread_with_access(thread_id, mode=mode, **kwargs)
+        if (thread and self.env.user.share and thread.sudo()._training_receipt_is_restricted()
+                and (self.env.user._is_public()
+                     or self.env.user.partner_id not in thread.sudo()._training_receipt_allowed_partners())):
+            return self.browse()
+        return thread
+
+    def _training_receipt_is_restricted(self):
+        self.ensure_one()
+        return bool(
+            self.training_bank_reference
+            or self.reconciled_invoice_ids.filtered("training_is_sale_invoice")
+        )
+
+    def _training_receipt_allowed_partners(self):
+        self.ensure_one()
+        invoices = self.reconciled_invoice_ids
+        training_invoices = invoices.filtered("training_is_sale_invoice")
+        if not training_invoices or training_invoices != invoices:
+            return self.env["res.partner"]
+        allowed = training_invoices[0].training_portal_partner_ids.filtered("email")
+        for invoice in training_invoices[1:]:
+            allowed &= invoice.training_portal_partner_ids.filtered("email")
+        return allowed
+
+    def _message_get_default_recipients(self, with_cc=False, all_tos=False):
+        recipients = super()._message_get_default_recipients(with_cc=with_cc, all_tos=all_tos)
+        for payment in self.filtered(lambda item: item._training_receipt_is_restricted()):
+            recipients[payment.id] = {
+                "partner_ids": payment._training_receipt_allowed_partners().ids,
+                "email_to": "", "email_cc": "",
+            }
+        return recipients
+
+    def _notify_get_recipients(self, message, **kwargs):
+        recipients = super()._notify_get_recipients(message, **kwargs)
+        if not self._training_receipt_is_restricted():
+            return recipients
+        allowed_ids = set(self._training_receipt_allowed_partners().ids)
+        return [recipient for recipient in recipients
+                if not recipient["share"] or recipient["id"] in allowed_ids]
+
     training_bank_reference = fields.Char(
         string="Training Bank Reference", copy=False, index=True,
         help="Reference checked against the bank evidence, separate from the invoice memo.",

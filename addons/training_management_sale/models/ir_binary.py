@@ -15,7 +15,7 @@ class IrBinary(models.AbstractModel):
             if model_name == "mail.message":
                 message = self.env["mail.message"].sudo().browse(document_id).exists()
                 model_name, document_id = (message.model, message.res_id) if message else (None, None)
-            if model_name not in ("sale.order", "account.move") or not document_id:
+            if model_name not in ("sale.order", "account.move", "account.payment") or not document_id:
                 return
             target = self.env[model_name].sudo().browse(document_id).exists()
             if not target:
@@ -25,6 +25,8 @@ class IrBinary(models.AbstractModel):
             authorized = target.training_portal_partner_ids
         elif target._name == "account.move" and target.training_is_sale_invoice:
             authorized = target.training_portal_partner_ids
+        elif target._name == "account.payment" and target._training_receipt_is_restricted():
+            authorized = target._training_receipt_allowed_partners()
         else:
             return
         if self.env.user._is_public() or self.env.user.partner_id not in authorized:

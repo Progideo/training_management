@@ -82,6 +82,11 @@ class TestTrainingPortalHttp(HttpCase):
     def test_quotation_pdf_mail_requires_named_recipient(self):
         authorized = self.authorized_user.partner_id
         colleague = self.colleague_user.partner_id
+        with self.assertRaises(ValidationError):
+            self.env.ref("sale.email_template_edi_sale").send_mail(
+                self.order.id, force_send=False,
+                email_values={"email_to": "unlinked@example.invalid"},
+            )
         defaults = self.order._message_get_default_recipients()[self.order.id]
         self.assertEqual(defaults["partner_ids"], authorized.ids)
         self.assertFalse(defaults["email_to"])
@@ -276,6 +281,11 @@ class TestTrainingPortalHttp(HttpCase):
         with self.assertRaises(ValidationError):
             composer._prepare_mail_values(invoice.ids)
         template = invoice._get_mail_template()
+        with self.assertRaises(ValidationError):
+            self.env.ref("account.email_template_edi_invoice").send_mail(
+                invoice.id, force_send=False,
+                email_values={"email_to": "unlinked@example.invalid"},
+            )
         sender = self.env["account.move.send"]
         lang = sender._get_default_mail_lang(invoice, template)
         self.assertFalse(sender._get_default_mail_partner_ids(invoice, template, lang))

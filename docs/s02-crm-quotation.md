@@ -220,6 +220,20 @@ pièce, y compris pour le contact habilité. Les autres modèles de notification
 et la configuration SMTP réelle restent à vérifier avant toute ouverture
 externe.
 
+Le modèle standard « Payment: Payment Receipt » joignait un PDF de paiement
+et proposait initialement le client générique. Pour un paiement de formation,
+le reçu prend désormais l'intersection des contacts nommément habilités sur
+toutes les factures qu'il règle. S'il n'est pas encore affecté à une facture,
+ou s'il règle aussi une facture non liée à une formation, aucun destinataire
+externe n'est proposé. Un destinataire ou une copie ajoutés dans l'assistant
+sont refusés côté serveur ; les notifications du fil et les pièces du paiement
+suivent la même règle. L'API directe des modèles d'e-mail refuse également un
+destinataire forcé sur un devis, une facture ou un reçu de formation. Sur la
+base fictive, l'assistant du paiement `PBNK2/2026/00005` a proposé uniquement
+le contact habilité et joint `Report.pdf` ; le brouillon a été fermé sans
+envoi. Les tests natifs couvrent le refus du client générique, la révocation
+et l'accès à une pièce du reçu.
+
 ## Recette sur données fictives et base isolée
 
 1. Préparer un commercial limité à une société A ; créer dans A une formation
@@ -283,6 +297,10 @@ externe.
    solde, et qu'aucune règle automatique ne l'a rapprochée avant cette revue.
    Refuser son rapprochement si le relevé est tenu en MAD pour une facture
    EUR, ou s'il provient d'un journal de caisse.
+   Ouvrir l'assistant « Envoyer le reçu par e-mail » du paiement rapproché :
+   seul un contact habilité sur la facture doit être proposé, avec le PDF du
+   reçu. Ajouter le client générique ou un collègue non habilité et vérifier
+   le refus serveur ; après révocation, aucun reçu ne doit pouvoir partir.
    Le commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
    ces actes n'ouvre un accès pédagogique.
    Avec un acompte portail configuré, vérifier aussi que le devis de formation

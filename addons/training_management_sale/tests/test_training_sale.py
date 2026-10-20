@@ -347,7 +347,7 @@ class TestTrainingSale(TransactionCase):
         self.partner.with_company(self.company).property_account_receivable_id = receivable
         invoice_address = self.env["res.partner"].create({
             "name": "Fictional Training Billing", "parent_id": self.partner.id,
-            "type": "invoice",
+            "type": "invoice", "email": "billing-generic@example.invalid",
         })
         invoice_address.with_company(self.company).property_account_receivable_id = receivable
         product = self.env["product.template"].create({
@@ -432,6 +432,7 @@ class TestTrainingSale(TransactionCase):
         self.assertNotIn(advance.name, report_html.decode() if isinstance(report_html, bytes) else report_html)
         colleague = self.env["res.partner"].create({
             "name": "Fictional Billing Colleague", "parent_id": self.partner.id,
+            "email": "billing-colleague@example.invalid",
         })
         portal_colleague = new_test_user(
             self.env, login="training_sale_invoice_portal",
@@ -597,6 +598,74 @@ class TestTrainingSale(TransactionCase):
         self.assertTrue(first_payment.training_bank_verified)
         self.assertEqual(first_payment.training_bank_verified_by_id, self.env.user)
         self.assertTrue(first_payment.training_bank_verified_at)
+        self.assertEqual(first_payment.reconciled_invoice_ids, final_invoice)
+        receipt_defaults = first_payment._message_get_default_recipients()[first_payment.id]
+        self.assertEqual(receipt_defaults["partner_ids"], colleague.ids)
+        self.assertFalse(receipt_defaults["email_to"])
+        receipt_template = self.env.ref("account.mail_template_data_payment_receipt")
+        receipt_recipients = receipt_template._generate_template(
+            [first_payment.id], ["email_to", "email_cc", "partner_to", "partner_cc"],
+        )[first_payment.id]
+        self.assertEqual(receipt_recipients["partner_ids"], colleague.ids)
+        receipt_composer = self.env["mail.compose.message"].with_context(
+            default_model="account.payment", default_res_ids=first_payment.ids,
+            default_template_id=receipt_template.id, default_composition_mode="comment",
+        ).create({})
+        self.assertEqual(receipt_composer.partner_ids, colleague)
+        self.assertTrue(receipt_composer.attachment_ids)
+        prepared_receipt = receipt_composer._prepare_mail_values(first_payment.ids)[first_payment.id]
+        self.assertEqual(prepared_receipt["partner_ids"], colleague.ids)
+        self.assertTrue(prepared_receipt["notify_skip_followers"])
+        with self.assertRaises(ValidationError):
+            receipt_template.send_mail(
+                first_payment.id, force_send=False,
+                email_values={"email_to": "unlinked@example.invalid"},
+            )
+        receipt_mail = self.env["mail.mail"].browse(
+            receipt_template.send_mail(first_payment.id, force_send=False)
+        )
+        self.assertEqual(receipt_mail.recipient_ids, colleague)
+        self.assertFalse(receipt_mail.email_to)
+        receipt_message = self.env["mail.message"].create({
+            "model": "account.payment", "res_id": first_payment.id,
+            "message_type": "comment", "body": "Fictional receipt note",
+            "partner_ids": [Command.set((colleague + invoice_address).ids)],
+        })
+        notified = first_payment._notify_get_recipients(receipt_message)
+        self.assertIn(colleague.id, [recipient["id"] for recipient in notified])
+        self.assertNotIn(invoice_address.id, [recipient["id"] for recipient in notified])
+        receipt_attachment = self.env["ir.attachment"].create({
+            "name": "fictional-payment-receipt.txt", "raw": b"Fictional payment receipt",
+            "mimetype": "text/plain", "res_model": "account.payment",
+            "res_id": first_payment.id,
+        })
+        self.env["ir.binary"].with_user(portal_colleague)._check_training_binary_access(
+            receipt_attachment,
+        )
+        with self.assertRaises(AccessError):
+            self.env["ir.binary"].with_user(self.portal)._check_training_binary_access(
+                receipt_attachment,
+            )
+        receipt_composer.partner_ids = [Command.set(invoice_address.ids)]
+        with self.assertRaises(ValidationError):
+            receipt_composer._prepare_mail_values(first_payment.ids)
+        receipt_composer.partner_ids = [Command.set(colleague.ids)]
+        receipt_composer.partner_cc_ids = [Command.set(invoice_address.ids)]
+        with self.assertRaises(ValidationError):
+            receipt_composer._prepare_mail_values(first_payment.ids)
+        receipt_composer.partner_cc_ids = [Command.clear()]
+        final_invoice.training_portal_partner_ids = [Command.clear()]
+        with self.assertRaises(ValidationError):
+            receipt_composer._prepare_mail_values(first_payment.ids)
+        self.assertFalse([
+            recipient for recipient in first_payment._notify_get_recipients(receipt_message)
+            if recipient["share"]
+        ])
+        with self.assertRaises(AccessError):
+            self.env["ir.binary"].with_user(portal_colleague)._check_training_binary_access(
+                receipt_attachment,
+            )
+        final_invoice.training_portal_partner_ids = [Command.link(colleague.id)]
         with self.assertRaises(ValidationError):
             first_payment.training_bank_reference = "ALTERED"
         with self.assertRaises(ValidationError):
@@ -692,6 +761,10 @@ class TestTrainingSale(TransactionCase):
             "training_bank_verified": True,
         })
         valid_direct_payment.action_post()
+        unallocated_recipients = valid_direct_payment._message_get_default_recipients()[
+            valid_direct_payment.id
+        ]
+        self.assertFalse(unallocated_recipients["partner_ids"])
         valid_receivable = valid_direct_payment.move_id.line_ids.filtered(
             lambda line: line.account_id == receivable
         )
