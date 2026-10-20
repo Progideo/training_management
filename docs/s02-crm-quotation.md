@@ -72,6 +72,14 @@ Un essai local avec le profil finance restreint a enregistré fictivement
 10 EUR, attribué l'attestation à ce profil et réduit le solde de 850 à
 840 EUR ; la transaction a ensuite été annulée et le solde conservé à
 850 EUR.
+Le 20 octobre 2026, le même contrôle a été rejoué dans l'interface de la base
+locale `tm_s02_recette_fresh3` avec `s02_finance_local` sur la facture fictive
+`INV/2026/00002` : l'assistant a refusé 10 EUR avec la référence
+`FICTIONAL-UI-VERIFY-001` sans attestation, puis a créé le paiement
+`PBNK2/2026/00005` après attestation. La fiche du paiement affiche le profil
+finance et l'horodatage ; le résiduel de la facture est passé de 850 à 840 EUR.
+Ce dernier paiement reste dans cette base jetable comme preuve de recette ;
+les montants de 850 EUR décrits plus loin sont ceux du scénario avant cet essai.
 Le contrôle sérialise les validations simultanées d'un même journal. La
 référence est figée après comptabilisation. Décision du 20 octobre 2026 :
 une devise de règlement différente de celle de la facture reste refusée au
