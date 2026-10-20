@@ -1,0 +1,9 @@
+<odoo>
+    <template id="report_saleorder_training_program" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//td[@name='td_product_name']//span[@t-field='line.label']" position="after">
+            <span t-if="line.training_program_label" class="d-block small text-muted">
+                <span t-field="line.training_program_label"/>
+            </span>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_crm_lead_form_training" model="ir.ui.view">
+        <field name="name">crm.lead.form.training</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@class='d-flex flex-column-reverse flex-md-row']" position="after">
+                <group name="training_request" string="Training Request">
+                    <group>
+                        <field name="training_request_kind"/>
+                        <field name="training_program_id" invisible="not training_request_kind"
+                            options="{'no_create': True}"/>
+                        <field name="training_attendee_count" invisible="not training_request_kind"/>
+                        <field name="training_requested_currency_id" invisible="not training_request_kind"
+                            options="{'no_create': True}"/>
+                    </group>
+                    <group invisible="not training_request_kind">
+                        <field name="training_delivery_mode"/>
+                        <field name="training_date_from"/>
+                        <field name="training_date_to"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

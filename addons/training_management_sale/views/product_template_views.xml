@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_product_template_training" model="ir.ui.view">
+        <field name="name">product.template.form.training</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page name="training_commercial" string="Training Offer">
+                    <group>
+                        <field name="training_course_id" options="{'no_create': True}"/>
+                        <field name="training_price_basis"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
