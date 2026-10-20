@@ -81,6 +81,15 @@ class SaleOrder(models.Model):
         self._check_training_offer()
         return super().action_quotation_send()
 
+    def _message_get_default_recipients(self, with_cc=False, all_tos=False):
+        recipients = super()._message_get_default_recipients(with_cc=with_cc, all_tos=all_tos)
+        for order in self.filtered("training_request_kind"):
+            recipients[order.id] = {
+                "partner_ids": order.training_portal_partner_ids.filtered("email").ids,
+                "email_to": "", "email_cc": "",
+            }
+        return recipients
+
     def action_confirm(self):
         self._check_training_offer()
         return super().action_confirm()

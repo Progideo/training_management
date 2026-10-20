@@ -136,6 +136,14 @@ serveur restreignent aussi la lecture ORM et les listes. Les contacts internes
 du devis et les avis de virement restent invisibles au portail. Les autres
 documents Odoo conservent leurs règles natives. Les PDF ou pièces déjà
 transmis hors du portail ne peuvent pas être rappelés par cette révocation.
+Les assistants d'envoi du devis et de la facture joignent le PDF uniquement
+quand au moins un contact nommé sur le document possède une adresse e-mail.
+Ils proposent ces contacts habilités à la place du client générique. La
+préparation du courriel refuse un autre destinataire, y compris en copie, ou
+un envoi après révocation ; les abonnés du fil ne sont pas ajoutés à ces
+notifications. Le PDF reçu par courriel reste en possession du destinataire
+après une révocation. Utiliser des adresses individuelles pour les contacts
+habilités : une boîte partagée ne permet pas d'en limiter la lecture.
 La page portail d'une commande de formation n'affiche que les liens des
 factures pour lesquelles le contact connecté possède une habilitation propre.
 Elle remplace également le libellé des lignes d'acompte par un libellé
@@ -145,8 +153,10 @@ Le service binaire vérifie aussi les pièces liées directement au devis, à la
 facture ou à leurs messages, y compris lors d'un téléchargement groupé : le
 jeton propre à une pièce ne suffit pas. L'accès aux fils de discussion des
 devis et factures suit la même habilitation, même avec son propre jeton.
-Une recette complète des notifications et des autres chemins de téléchargement reste nécessaire
-avant toute ouverture externe.
+Les destinataires et PDF proposés ont été vérifiés dans les deux assistants
+sur la base fictive locale, sans expédier de courriel. Les autres chemins de
+notification et de téléchargement restent à vérifier avant toute ouverture
+externe.
 
 ## Recette sur données fictives et base isolée
 
@@ -184,8 +194,11 @@ avant toute ouverture externe.
    valides. Le premier contact doit les ouvrir ; retirer son habilitation doit
    révoquer aussitôt son accès. Refaire le contrôle sur la facture :
    l'habilitation du devis ne lui donne pas celle de la facture. Vérifier les
-   notifications sortantes et tout lien de téléchargement qu'elles contiennent
-   avant un envoi réel à un client.
+   Vérifier que l'assistant du devis puis celui de la facture affichent seulement
+   le contact habilité et le PDF joint. Ajouter un collègue non habilité en
+   destinataire ou copie et vérifier le refus serveur ; révoquer l'habilitation
+   puis vérifier le refus d'un brouillon déjà préparé. Contrôler les liens de
+   téléchargement avant un envoi réel à un client.
 7. Sur une base jetable avec comptes et journal fictifs, confirmer un forfait
    de 1 600 EUR facturable à la commande. Créer et valider une facture d'acompte
    de 25 %, puis une facture finale déduisant cet acompte. Vérifier 400 EUR et

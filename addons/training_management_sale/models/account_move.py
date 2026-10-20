@@ -36,6 +36,15 @@ class AccountMove(models.Model):
             and bool(move.invoice_line_ids.sale_line_ids.order_id.filtered("training_request_kind"))
         )
 
+    def _message_get_default_recipients(self, with_cc=False, all_tos=False):
+        recipients = super()._message_get_default_recipients(with_cc=with_cc, all_tos=all_tos)
+        for invoice in self.filtered("training_is_sale_invoice"):
+            recipients[invoice.id] = {
+                "partner_ids": invoice.training_portal_partner_ids.filtered("email").ids,
+                "email_to": "", "email_cc": "",
+            }
+        return recipients
+
     def _has_to_be_paid(self):
         self.ensure_one()
         return not self._training_sale_invoices() and super()._has_to_be_paid()

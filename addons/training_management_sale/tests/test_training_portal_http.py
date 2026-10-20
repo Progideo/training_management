@@ -1,5 +1,5 @@
 from odoo import Command
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, JsonRpcException, new_test_user, tagged
 from odoo.tools import mute_logger
 
@@ -10,12 +10,16 @@ class TestTrainingPortalHttp(HttpCase):
     def setUpClass(cls):
         super().setUpClass()
         company = cls.env.company
-        partner = cls.env["res.partner"].create({"name": "Fictional Portal Buyer"})
+        partner = cls.env["res.partner"].create({
+            "name": "Fictional Portal Buyer", "email": "buyer@example.invalid",
+        })
         authorized = cls.env["res.partner"].create({
             "name": "Fictional Authorized Contact", "parent_id": partner.id,
+            "email": "authorized@example.invalid",
         })
         colleague = cls.env["res.partner"].create({
             "name": "Fictional Unauthorised Colleague", "parent_id": partner.id,
+            "email": "colleague@example.invalid",
         })
         cls.authorized_user = new_test_user(
             cls.env, login="training_http_authorized", groups="base.group_portal",
@@ -25,6 +29,8 @@ class TestTrainingPortalHttp(HttpCase):
             cls.env, login="training_http_colleague", groups="base.group_portal",
             partner_id=colleague.id,
         )
+        authorized.email = "authorized@example.invalid"
+        colleague.email = "colleague@example.invalid"
         course = cls.env["training.course"].create({
             "name": "Fictional Portal Course", "company_id": company.id,
         })
@@ -68,6 +74,31 @@ class TestTrainingPortalHttp(HttpCase):
             "product_uom_qty": 1, "training_program_id": program.id,
         })
         cls.order._portal_ensure_token()
+
+    def test_quotation_pdf_mail_requires_named_recipient(self):
+        authorized = self.authorized_user.partner_id
+        colleague = self.colleague_user.partner_id
+        defaults = self.order._message_get_default_recipients()[self.order.id]
+        self.assertEqual(defaults["partner_ids"], authorized.ids)
+        self.assertFalse(defaults["email_to"])
+        action = self.order.action_quotation_send()
+        composer = self.env["mail.compose.message"].with_context(action["context"]).create({})
+        self.assertEqual(composer.partner_ids, authorized)
+        self.assertTrue(composer.attachment_ids)
+        prepared = composer._prepare_mail_values([self.order.id])[self.order.id]
+        self.assertEqual(prepared["partner_ids"], authorized.ids)
+        self.assertTrue(prepared["notify_skip_followers"])
+        composer.partner_ids = [Command.set([colleague.id])]
+        with self.assertRaises(ValidationError):
+            composer._prepare_mail_values([self.order.id])
+        composer.partner_ids = [Command.set([authorized.id])]
+        composer.partner_cc_ids = [Command.set([colleague.id])]
+        with self.assertRaises(ValidationError):
+            composer._prepare_mail_values([self.order.id])
+        composer.partner_cc_ids = [Command.clear()]
+        self.order.training_portal_partner_ids = [Command.clear()]
+        with self.assertRaises(ValidationError):
+            composer._prepare_mail_values([self.order.id])
 
     def test_portal_does_not_offer_payment_or_create_transaction(self):
         self.assertEqual(self.order.amount_total, 100)
@@ -147,6 +178,14 @@ class TestTrainingPortalHttp(HttpCase):
         invoice = self.order._create_invoices()
         invoice.action_post()
         self.assertTrue(invoice.training_is_sale_invoice)
+        template = invoice._get_mail_template()
+        sender = self.env["account.move.send"]
+        lang = sender._get_default_mail_lang(invoice, template)
+        self.assertFalse(sender._get_default_mail_partner_ids(invoice, template, lang))
+        with self.assertRaises(ValidationError):
+            sender._get_mail_params(invoice, {
+                "mail_partner_ids": [self.colleague_user.partner_id.id],
+            })
         self.env["ir.config_parameter"].sudo().set_str(
             "account_payment.enable_portal_payment", "True",
         )
@@ -180,6 +219,17 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertNotIn(invoice.name, self.url_open(order_url).text)
         self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         invoice.training_portal_partner_ids = [Command.link(self.authorized_user.partner_id.id)]
+        self.assertEqual(
+            sender._get_default_mail_partner_ids(invoice, template, lang),
+            self.authorized_user.partner_id,
+        )
+        with self.assertRaises(ValidationError):
+            sender._get_mail_params(invoice, {
+                "mail_partner_ids": [
+                    self.authorized_user.partner_id.id,
+                    self.colleague_user.partner_id.id,
+                ],
+            })
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
         self.assertNotIn("Pay Now", self.url_open(url).text)
         with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
@@ -194,6 +244,10 @@ class TestTrainingPortalHttp(HttpCase):
             200,
         )
         invoice.training_portal_partner_ids = [Command.clear()]
+        with self.assertRaises(ValidationError):
+            sender._get_mail_params(invoice, {
+                "mail_partner_ids": [self.authorized_user.partner_id.id],
+            })
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 303)
         self.assertNotIn(invoice.name, self.url_open(order_url).text)
         self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
