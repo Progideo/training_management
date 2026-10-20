@@ -23,6 +23,24 @@ class TrainingCourse(models.Model):
         if any(not (course.name or "").strip() for course in self):
             raise ValidationError(_("A course name is required."))
 
+    def action_open_programs(self):
+        self.ensure_one()
+        self.check_access("read")
+        self.env["training.program.version"].check_access("read")
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Programme Versions"),
+            "res_model": "training.program.version",
+            "view_mode": "list,form",
+            "target": "current",
+            "domain": [("course_id", "=", self.id)],
+            "context": {
+                **self.env.context,
+                "default_course_id": self.id,
+                "default_title": self.name,
+            },
+        }
+
     def write(self, vals):
         self.check_access("write")
         self.lock_for_update()

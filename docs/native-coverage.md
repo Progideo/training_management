@@ -173,3 +173,38 @@ proviennent des exécutions finales, pas des essais préliminaires.
 Limites : aucune recette navigateur complète, aucun parcours HTTP portail, aucun
 test de migration depuis Odoo 19 et aucune installation dans `neopro_dev`.
 Les bases temporaires contiennent uniquement les données fictives des essais.
+
+### Incident de recette et correctif 20.0.1.0.1
+
+Après l'installation de 20.0.1.0.0 dans `neopro_dev`, explicitement autorisée
+par l'utilisateur et précédée d'une sauvegarde base/fichiers le 20 octobre,
+la recette manuelle a révélé deux lignes V1 dans la fiche formation. Après
+actualisation, une seule restait, sans les informations pédagogiques saisies.
+
+Le contrôle SQL en lecture seule confirme une seule V1 brouillon, avec date de
+modification identique à la création et champs pédagogiques non renseignés.
+Les traces montrent un `training.program.version.web_save` suivi du refus de
+`action_validate`, puis un `training.course.web_save`. Aucun enregistrement
+ultérieur des champs du programme n'est démontré. Il ne s'agit donc pas d'un
+doublon persistant en base. Le mécanisme exact du client navigateur n'a pas
+été reproduit automatiquement ; ne pas attribuer l'incident à une faute de
+saisie ni prétendre avoir démontré un défaut du cœur Odoo.
+
+Le correctif supprime le parcours d'édition imbriquée : la fiche formation
+propose **Versions de programme**, ouvrant la liste filtrée puis une fiche
+programme autonome. Les valeurs de formation et de titre sont préremplies.
+Aucune donnée existante n'est supprimée ou reconstruite.
+
+Deux tests s'ajoutent aux 14 tests métier : accès à l'action sous profils
+restreints et scénario de formulaire natif `Form` (création incomplète, refus de
+validation, complétion, enregistrement, invalidation du cache et relecture,
+unicité et validation). Mise à jour exécutée sur `tm_s01_test_final_20261020` :
+`0 failed, 0 error(s) of 16 tests`, code retour 0.
+Ce test de formulaire serveur ne remplace pas une recette du client navigateur.
+
+Recette de non-régression à exécuter après autorisation de mise à jour de
+`neopro_dev` : ouvrir la V1 existante via le nouveau bouton, renseigner un
+objectif, enregistrer puis actualiser et vérifier sa conservation ; compléter
+ensuite tous les champs et contrôler à nouveau leur persistance avant validation.
+Au moment de la préparation de ce correctif, la recette navigateur reste
+bloquée et `neopro_dev` conserve la version 20.0.1.0.0.

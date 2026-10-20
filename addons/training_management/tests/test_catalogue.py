@@ -2,7 +2,7 @@ from psycopg2 import IntegrityError
 
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.tests import Form, TransactionCase, new_test_user, tagged
 from odoo.tools import mute_logger
 
 
@@ -215,3 +215,44 @@ class TestCatalogue(TransactionCase):
         program = self.new_program()
         program.unlink()
         self.assertFalse(program.exists())
+
+    def test_course_opens_programs_with_restricted_access(self):
+        action = self.course.with_user(self.reader).action_open_programs()
+        self.assertEqual(action["domain"], [("course_id", "=", self.course.id)])
+        self.assertEqual(action["target"], "current")
+        for user in (self.portal, self.internal):
+            with self.assertRaises(AccessError):
+                self.course.with_user(user).action_open_programs()
+        with self.assertRaises(AccessError):
+            self.other_course.with_user(self.coordinator).action_open_programs()
+
+    def test_standalone_form_persists_after_failed_validation(self):
+        action = self.course.action_open_programs()
+        model = self.env["training.program.version"].with_user(self.coordinator).with_context(
+            action["context"],
+        )
+        with Form(model) as form:
+            form.version = "V1"
+            form.duration_hours = 7
+            form.delivery_mode = "onsite"
+        program = form.record
+        self.assertEqual(program.course_id, self.course)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            program.action_validate()
+        with Form(program) as form:
+            for field in (
+                "objectives", "target_audience", "prerequisites", "content",
+                "teaching_methods", "evaluation_criteria", "access_conditions",
+                "accessibility_information",
+            ):
+                setattr(form, field, self.values[field])
+            form.accessibility_contact_id = self.contact.with_user(self.coordinator)
+        self.env.flush_all()
+        self.env.invalidate_all()
+        reloaded = model.browse(program.id)
+        self.assertEqual(reloaded.content, self.values["content"])
+        self.assertEqual(reloaded.objectives, self.values["objectives"])
+        self.assertEqual(reloaded.accessibility_contact_id, self.contact)
+        self.assertEqual(model.search_count(action["domain"]), 1)
+        reloaded.action_validate()
+        self.assertEqual(reloaded.state, "validated")

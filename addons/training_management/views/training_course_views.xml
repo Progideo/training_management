@@ -21,19 +21,13 @@
                         <field name="name"/>
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
-                    <notebook>
-                        <page string="Standard Programmes">
-                            <field name="program_version_ids" context="{'default_title': name}">
-                                <list>
-                                    <field name="version"/>
-                                    <field name="title"/>
-                                    <field name="delivery_mode"/>
-                                    <field name="duration_hours"/>
-                                    <field name="state"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
+                    <group string="Standard Programmes">
+                        <button name="action_open_programs" type="object"
+                            string="Programme Versions" class="btn-primary"/>
+                        <div class="text-muted">
+                            Open programme versions to create and save each programme in its own form.
+                        </div>
+                    </group>
                 </sheet>
             </form>
         </field>

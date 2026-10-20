@@ -163,7 +163,10 @@ Recette après installation sur une base autorisée :
 
 1. Activer le français et attribuer « Coordinateur des formations » à un
    utilisateur interne de test ; attribuer « Lecteur du catalogue » à un autre.
-2. Dans **Formations → Formations standards**, créer une formation puis V1.
+2. Dans **Formations → Formations standards**, créer et enregistrer une formation.
+   Cliquer sur **Versions de programme**, puis **Nouveau** pour créer V1 dans sa
+   propre fiche. La formation et le titre sont préremplis. Enregistrer, quitter
+   et rouvrir la fiche pour vérifier la persistance avant toute validation.
 3. Vérifier que les informations incomplètes bloquent la validation. Compléter
    les champs, valider et publier ; constater auteur/date et contenu figé.
 4. Créer V2 par « Nouvelle version », saisir une nouvelle référence et modifier

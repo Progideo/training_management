@@ -246,6 +246,9 @@ msgid "Programme Title"
 msgstr "Titre du programme"
 
 #. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_course.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
 #: model:ir.actions.act_window,name:training_management.action_training_programs
 #: model:ir.model.fields,field_description:training_management.field_training_course__program_version_ids
 #: model:ir.ui.menu,name:training_management.menu_training_programs
@@ -320,6 +323,11 @@ msgstr "Formations standards"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
 msgid "Standard Programmes"
 msgstr "Programmes standards"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
+msgid "Open programme versions to create and save each programme in its own form."
+msgstr "Ouvrez les versions de programme pour créer et enregistrer chaque programme dans sa propre fiche."
 
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_course
