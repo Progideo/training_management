@@ -81,6 +81,9 @@ même si la société a configuré un acompte par défaut ou si une URL contient
 montant. La création ou l'association d'une transaction de paiement à une
 commande ou facture de formation est refusée côté serveur. Le virement reste
 traité par l'avis interne et le règlement comptable contrôlé ci-dessus.
+Un test HTTP ouvre le devis avec un jeton valide et un montant dans l'URL :
+aucun formulaire de paiement n'apparaît et l'appel direct à la route de
+transaction est refusé. Il ne couvre pas encore les liens de paiement génériques.
 
 La demande CRM et le devis portent trois contacts Odoo explicites : le
 commanditaire, le payeur prévu et le contact administratif. Ils peuvent être
