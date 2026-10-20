@@ -273,6 +273,7 @@ class TestTrainingSale(TransactionCase):
             order.action_confirm()
 
     def test_native_eur_down_payment_and_final_invoice(self):
+        self.eur.active = True
         income = self.env["account.account"].create({
             "name": "Fictional Training Income", "code": "709901",
             "account_type": "income", "company_ids": [Command.set([self.company.id])],
