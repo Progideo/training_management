@@ -110,17 +110,27 @@ d'habilitation de ce devis.
 La version du prix fixe en vigueur au moment de l'envoi n'est pas encore
 archivée séparément : une modification de règle avant confirmation exige de
 revalider le devis et de réviser son montant. Aucune taxe, banque, règle de change ou
-politique de facturation n'est présumée. Le rapprochement bancaire réel,
-la procédure comptable pour un règlement d'une autre devise et la recette navigateur
-des pièces, échanges et notifications du portail restent à valider. Aucun accès pédagogique,
+politique de facturation n'est présumée. Le rapprochement bancaire réel et la
+procédure comptable pour un règlement d'une autre devise restent à valider.
+Les parcours portail vérifiés sont décrits ci-dessous ; les autres modèles de
+notification restent à contrôler avant ouverture. Aucun accès pédagogique,
 inscription, place ou session n'est créé par cet addon.
 La saisie directe d'un paiement hors de l'assistant ne connaît pas encore sa
 future facture de formation : elle n'exige donc pas cette référence lors de la
 création. Son rapprochement avec cette facture est contrôlé. Le contrôle des
 doublons agit également sur les paiements directs portant une référence.
 Les lignes de relevé bancaire et les écritures manuelles sans objet paiement
-relèvent du rapprochement natif ; leurs preuves et les imports bancaires
-restent à cadrer avant une recette opérationnelle complète.
+relèvent du rapprochement natif. Sur la base fictive, une ligne bancaire de
+50 EUR affectée directement au compte client a réduit le résiduel de la
+facture de 850 à 800 EUR, même avec un libellé de transaction vide ; aucun
+`account.payment` n'était créé. Les deux essais exploratoires ont été annulés
+en transaction et le solde est resté à 850 EUR. Décision du 20 octobre 2026 :
+une ligne de relevé sans référence peut être rapprochée après contrôle manuel
+par la comptabilité. Le test automatisé rejoue ce rapprochement explicite.
+Ce contrôle humain n'est pas imposé par le serveur : avant usage réel, la
+comptabilité doit définir la preuve à conserver et vérifier qu'aucune règle
+de rapprochement automatique ne valide ces lignes sans revue. Les imports
+réels et leur traitement des doublons restent à recetter.
 La page générique `/payment/pay` ne porte pas l'identité d'un devis ou d'une
 facture : un lien construit indépendamment avec un partenaire et un montant
 ne peut pas être attribué avec certitude à une formation. L'absence de
@@ -234,7 +244,10 @@ externe.
    rapprochement direct d'un paiement bancaire sans référence avec la facture
    finale doit être refusé et laisser 900 EUR dus ; un paiement direct avec
    une nouvelle référence doit pouvoir être rapproché et ramener le solde à
-   850 EUR. Le commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
+   850 EUR. Une ligne de relevé sans référence peut ensuite être affectée
+   manuellement après contrôle comptable ; vérifier qu'elle réduit alors le
+   solde, et qu'aucune règle automatique ne l'a rapprochée avant cette revue.
+   Le commercial ne peut pas annuler l'avis, la comptabilité le peut. Aucun de
    ces actes n'ouvre un accès pédagogique.
    Avec un acompte portail configuré, vérifier aussi que le devis de formation
    n'exige aucun paiement en ligne et qu'une transaction liée à la commande
@@ -256,8 +269,10 @@ résiduels ; ne joindre ni données personnelles réelles ni secrets au dépôt 
 
 La recette S02 n'est acceptée que si les étapes 1 à 8 passent, si aucun accès
 documentaire n'est possible après révocation, et si les écarts comptables
-ouverts (fiscalité, journaux, preuve du virement, autre devise et rapprochement
-des relevés) sont décidés et documentés par le responsable comptable. Les tests
+ouverts (fiscalité, journaux, preuve du virement, autre devise et import des
+relevés) sont décidés et documentés par le responsable comptable. Pour les
+lignes de relevé sans référence, la revue manuelle décidée doit être définie
+et vérifiée, notamment face aux règles de rapprochement automatique. Les tests
 automatiques et les vérifications HTTP existants ne remplacent pas cette
 validation dans l'interface. La recette ne vaut ni fusion, ni installation sur
 la base de développement existante, ni ouverture du portail aux clients.

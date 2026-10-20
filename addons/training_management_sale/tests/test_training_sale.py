@@ -692,3 +692,18 @@ class TestTrainingSale(TransactionCase):
         notice.with_user(accountant).action_void()
         self.assertEqual(notice.state, "void")
         self.assertEqual(final_invoice.amount_residual, 850)
+        statement_line = self.env["account.bank.statement.line"].create({
+            "journal_id": bank_journal.id,
+            "date": "2026-10-20",
+            "payment_ref": "",
+            "partner_id": invoice_address.id,
+            "amount": 50,
+            "counterpart_account_id": receivable.id,
+        })
+        statement_receivable = statement_line.move_id.line_ids.filtered(
+            lambda line: line.account_id == receivable
+        )
+        self.assertFalse(statement_line.payment_ref)
+        self.assertFalse(statement_receivable.payment_id)
+        (invoice_receivable + statement_receivable).reconcile()
+        self.assertEqual(final_invoice.amount_residual, 800)
