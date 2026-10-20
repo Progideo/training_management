@@ -639,13 +639,22 @@ class TestTrainingSale(TransactionCase):
             "mimetype": "text/plain", "res_model": "account.payment",
             "res_id": first_payment.id,
         })
+        message_attachment = self.env["ir.attachment"].create({
+            "name": "fictional-payment-message.txt", "raw": b"Fictional receipt message",
+            "mimetype": "text/plain", "res_model": "mail.message",
+            "res_id": receipt_message.id,
+        })
         self.env["ir.binary"].with_user(portal_colleague)._check_training_binary_access(
             receipt_attachment,
         )
-        with self.assertRaises(AccessError):
-            self.env["ir.binary"].with_user(self.portal)._check_training_binary_access(
-                receipt_attachment,
-            )
+        self.env["ir.binary"].with_user(portal_colleague)._check_training_binary_access(
+            message_attachment,
+        )
+        for attachment in (receipt_attachment, message_attachment):
+            with self.assertRaises(AccessError):
+                self.env["ir.binary"].with_user(self.portal)._check_training_binary_access(
+                    attachment,
+                )
         receipt_composer.partner_ids = [Command.set(invoice_address.ids)]
         with self.assertRaises(ValidationError):
             receipt_composer._prepare_mail_values(first_payment.ids)
@@ -661,10 +670,11 @@ class TestTrainingSale(TransactionCase):
             recipient for recipient in first_payment._notify_get_recipients(receipt_message)
             if recipient["share"]
         ])
-        with self.assertRaises(AccessError):
-            self.env["ir.binary"].with_user(portal_colleague)._check_training_binary_access(
-                receipt_attachment,
-            )
+        for attachment in (receipt_attachment, message_attachment):
+            with self.assertRaises(AccessError):
+                self.env["ir.binary"].with_user(portal_colleague)._check_training_binary_access(
+                    attachment,
+                )
         final_invoice.training_portal_partner_ids = [Command.link(colleague.id)]
         with self.assertRaises(ValidationError):
             first_payment.training_bank_reference = "ALTERED"
