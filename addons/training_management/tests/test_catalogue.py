@@ -1,0 +1,217 @@
+from psycopg2 import IntegrityError
+
+from odoo import Command
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.tools import mute_logger
+
+
+@tagged("post_install", "-at_install")
+class TestCatalogue(TransactionCase):
+    """CAT01 (internal scope), CAT02 and SEC01 with restricted users."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.company = cls.env.company
+        cls.other_company = cls.env["res.company"].create({"name": "Fictional Company B"})
+        cls.coordinator = new_test_user(
+            cls.env, login="catalogue_coordinator",
+            groups="training_management.group_training_coordinator,base.group_allow_export",
+            company_id=cls.company.id, company_ids=[Command.set([cls.company.id])],
+        )
+        cls.reader = new_test_user(
+            cls.env, login="catalogue_reader",
+            groups="training_management.group_training_reader,base.group_allow_export",
+            company_id=cls.company.id, company_ids=[Command.set([cls.company.id])],
+        )
+        cls.internal = new_test_user(cls.env, login="catalogue_unassigned")
+        cls.portal = new_test_user(
+            cls.env, login="catalogue_portal", groups="base.group_portal",
+        )
+        cls.contact = cls.env["res.partner"].create({
+            "name": "Fictional Accessibility Contact", "company_id": cls.company.id,
+        })
+        cls.course = cls.env["training.course"].with_user(cls.coordinator).create({
+            "name": "Standard Course A", "company_id": cls.company.id,
+        })
+        cls.other_course = cls.env["training.course"].create({
+            "name": "Standard Course B", "company_id": cls.other_company.id,
+        })
+        cls.values = {
+            "course_id": cls.course.id, "version": "V1", "title": "Programme A",
+            "objectives": "Apply a documented method", "target_audience": "Beginners",
+            "prerequisites": "None", "content": "Practice and review",
+            "duration_hours": 7, "delivery_mode": "onsite",
+            "language_id": cls.env.ref("base.lang_en").id,
+            "teaching_methods": "Guided practice", "evaluation_criteria": "Final exercise",
+            "access_conditions": "Confirmed registration",
+            "accessibility_contact_id": cls.contact.id,
+            "accessibility_information": "Contact the accessibility coordinator.",
+        }
+
+    def new_program(self, **overrides):
+        return self.env["training.program.version"].with_user(self.coordinator).create({
+            **self.values, **overrides,
+        })
+
+    def test_version_lifecycle_preserves_v1(self):
+        v1 = self.new_program()
+        v1.action_validate()
+        self.assertEqual(v1.validated_by_id, self.coordinator)
+        self.assertTrue(v1.validated_at)
+        v1.action_publish()
+        published_at = v1.published_at
+        v1.action_publish()
+        self.assertEqual(v1.published_at, published_at)
+        v2 = v1.copy({"version": "V2", "objectives": "New objectives"})
+        self.assertEqual(v2.state, "draft")
+        self.assertFalse(v2.validated_at)
+        v2.action_validate()
+        v2.action_publish()
+        self.assertEqual(v1.objectives, self.values["objectives"])
+        self.assertEqual(v1.title, self.values["title"])
+        self.course.name = "Renamed catalogue entry"
+        self.assertEqual(v1.title, self.values["title"])
+        v1.action_retire()
+        self.assertEqual(v1.state, "retired")
+        self.assertEqual(v1.retired_by_id, self.coordinator)
+        self.assertEqual(v2.state, "published")
+
+    def test_incomplete_validation_and_direct_publish_refused(self):
+        program = self.new_program(objectives="  ", duration_hours=0)
+        with self.assertRaises(ValidationError):
+            program.action_validate()
+        with self.assertRaises(ValidationError):
+            program.write({"state": "published"})
+        self.assertEqual(program.state, "draft")
+
+    def test_published_content_and_metadata_protected(self):
+        program = self.new_program()
+        program.action_validate()
+        for values in (
+            {"title": "Rewritten"}, {"course_id": self.other_course.id},
+            {"state": "draft"}, {"validated_by_id": self.reader.id},
+            {"validated_at": False}, {"company_id": self.other_company.id},
+        ):
+            with self.subTest(values=values), self.assertRaises((ValidationError, AccessError)):
+                program.write(values)
+        with self.assertRaises(ValidationError):
+            program.unlink()
+        with self.assertRaises(ValidationError):
+            program.update_field_translations("title", {"en_US": "Rewritten by translation"})
+
+    def test_context_cannot_create_validated_version(self):
+        program = self.env["training.program.version"].with_user(self.coordinator).with_context(
+            default_state="published", default_validated_by_id=self.reader.id,
+            default_published_at="2026-01-01 00:00:00",
+        ).create(self.values)
+        self.assertEqual(program.state, "draft")
+        self.assertFalse(program.validated_by_id)
+        self.assertFalse(program.published_at)
+        with self.assertRaises(ValidationError):
+            self.new_program(version="V2", state="published")
+
+    def test_no_edit_and_transition_in_same_call(self):
+        program = self.new_program()
+        with self.assertRaises(ValidationError):
+            program.write({"state": "validated", "objectives": "Different"})
+        self.assertEqual(program.objectives, self.values["objectives"])
+
+    @mute_logger("odoo.sql_db")
+    def test_unique_reference_and_positive_duration(self):
+        self.new_program()
+        with self.assertRaises(IntegrityError), self.cr.savepoint():
+            self.new_program(version=" V1 ")
+        with self.assertRaises(IntegrityError), self.cr.savepoint():
+            self.new_program(version="V2", duration_hours=-1)
+
+    def test_reader_read_export_only(self):
+        program = self.new_program().with_user(self.reader)
+        self.assertEqual(program.read(["title"])[0]["title"], "Programme A")
+        self.assertEqual(program.export_data(["version"])["datas"], [["V1"]])
+        for operation in (
+            lambda: program.write({"title": "Changed"}),
+            program.action_validate, program.action_publish, program.action_retire,
+            program.action_new_version, program.unlink,
+            lambda: program.create({**self.values, "version": "V2"}),
+            lambda: self.course.with_user(self.reader).write({"name": "Changed"}),
+        ):
+            with self.assertRaises(AccessError):
+                operation()
+
+    def test_unassigned_portal_public_have_no_model_access(self):
+        program = self.new_program()
+        for user in (self.internal, self.portal, self.env.ref("base.public_user")):
+            for record in (self.course, program):
+                restricted = record.with_user(user)
+                for operation in (
+                    lambda: restricted.read(["display_name"]),
+                    lambda: restricted.write({"display_name": "Changed"}),
+                    restricted.unlink,
+                ):
+                    with self.subTest(user=user.login, model=record._name), self.assertRaises(AccessError):
+                        operation()
+                with self.assertRaises((AccessError, UserError)):
+                    restricted.export_data(["display_name"])
+            with self.assertRaises(AccessError):
+                program.with_user(user).action_validate()
+            with self.assertRaises(AccessError):
+                program.with_user(user).create(self.values)
+
+    def test_cross_company_read_write_export_create_denied(self):
+        other = self.env["training.program.version"].create({
+            **self.values, "course_id": self.other_course.id,
+            "accessibility_contact_id": False,
+        })
+        for user in (self.reader, self.coordinator):
+            record = other.with_user(user).with_context(allowed_company_ids=[self.company.id])
+            self.assertFalse(record.search([("id", "=", record.id)]))
+            for operation in (
+                lambda: record.read(["title"]),
+                lambda: record.export_data(["title"]),
+                lambda: record.write({"title": "Changed"}),
+            ):
+                with self.assertRaises(AccessError):
+                    operation()
+        with self.assertRaises(AccessError):
+            self.new_program(course_id=self.other_course.id, accessibility_contact_id=False)
+
+    def test_cross_company_contact_refused(self):
+        contact = self.env["res.partner"].create({
+            "name": "Other contact", "company_id": self.other_company.id,
+        })
+        with self.assertRaises(UserError), self.cr.savepoint():
+            self.new_program(accessibility_contact_id=contact.id)
+
+    def test_company_and_parent_history_preserved(self):
+        program = self.new_program()
+        with self.assertRaises(ValidationError):
+            self.course.write({"company_id": self.other_company.id})
+        with self.assertRaises(ValidationError):
+            self.course.unlink()
+        self.course.active = False
+        self.assertTrue(program.exists())
+        self.assertEqual(program.company_id, self.company)
+
+    def test_batch_transition_is_atomic(self):
+        first = self.new_program()
+        second = self.new_program(version="V2", prerequisites="")
+        with self.assertRaises(ValidationError):
+            (first | second).action_validate()
+        self.assertEqual(first.state, "draft")
+        self.assertEqual(second.state, "draft")
+
+    def test_new_version_action_keeps_standard_course(self):
+        program = self.new_program()
+        program.action_validate()
+        action = program.action_new_version()
+        self.assertEqual(action["context"]["default_course_id"], self.course.id)
+        self.assertEqual(action["context"]["default_objectives"], program.objectives)
+        self.assertFalse(action["context"]["default_version"])
+        self.assertEqual(action["context"]["default_state"], "draft")
+
+    def test_draft_can_be_deleted(self):
+        program = self.new_program()
+        program.unlink()
+        self.assertFalse(program.exists())

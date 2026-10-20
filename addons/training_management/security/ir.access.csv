@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_course_reader,training.course reader,training.course,training_management.group_training_reader,r,
+access_course_coordinator,training.course coordinator,training.course,training_management.group_training_coordinator,crud,
+rule_course_company,Courses allowed companies,training.course,,crud,"[('company_id', 'in', company_ids)]"
+access_program_reader,training.program.version reader,training.program.version,training_management.group_training_reader,r,
+access_program_coordinator,training.program.version coordinator,training.program.version,training_management.group_training_coordinator,crud,
+rule_program_company,Programme versions allowed companies,training.program.version,,crud,"[('company_id', 'in', company_ids)]"
