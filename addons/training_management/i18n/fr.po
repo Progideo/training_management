@@ -3150,3 +3150,10 @@ msgstr "Saisissez un motif pour cette action."
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__reason_required
 msgid "Reason Required"
 msgstr "Motif obligatoire"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_controlled.py:0
+#, python-format
+msgid "Resource conflicts: %s"
+msgstr "Conflits de ressources : %s"

@@ -187,6 +187,12 @@ class TestPreparation(PreparationCase):
         self.assertEqual(first.state, "confirmed")
         conflicts = delivery.operation_ids.filtered(lambda item: "conflicts" in (item.after or ""))
         self.assertEqual(conflicts.reason, exception_reason)
+        self.assertIn("Resource conflicts: 1", conflicts.changes)
+        # The web client reloads the whole delivery after closing the wizard,
+        # including the computed, human-readable operation history.
+        reread = delivery.web_read({"state": {}, "operation_ids": {"fields": {"changes": {}, "reason": {}}}})
+        self.assertEqual(reread[0]["state"], "confirmed")
+        self.assertTrue(any(item["reason"] == exception_reason for item in reread[0]["operation_ids"]))
         self.assertTrue(
             delivery.operation_ids.filtered(
                 lambda item: '"confirmed"' in (item.after or "") and item.reason == opening_reason
