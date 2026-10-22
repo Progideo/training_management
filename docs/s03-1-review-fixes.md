@@ -2,8 +2,8 @@
 
 Cadrage d'autorité, validé le 22 octobre 2026 : [s03-1-corrections.md](s03-1-corrections.md)
 (conservé tel quel). Cette page résume les règles obtenues ; les autorisations et les
-résultats d'exécution sont dans les [PR #51](https://github.com/Progideo/training_management/pull/51) et [PR #52](https://github.com/Progideo/training_management/pull/52).
-Versions : `training_management` `20.0.1.2.1` (dépend désormais de `mail`),
+résultats d'exécution sont dans les pull requests de cet incrément ([S03.1](https://github.com/Progideo/training_management/pulls?q=is%3Apr+S03.1)).
+Versions : `training_management` `20.0.1.2.2` (dépend désormais de `mail`),
 `training_management_sale` `20.0.1.10.1`. Pas de nouvel addon.
 
 ## Règles
@@ -39,7 +39,7 @@ automatique de champ ni envoi propre au module ; le journal conserve les libell�
 relations tels qu'ils étaient à l'écriture ; fuseaux horaires natifs.
 
 **Lecture commerciale.** Le groupe Ventes lit réalisations, lots et états d'inscription de ses
-sociétés depuis le menu natif Formations ; prérequis, compte personnel, accès et journal restent réservés au coordinateur. Les boutons de gestion et actions groupées sont réservés au coordinateur ; les boutons d’accès suivent les états autorisés côté serveur. Les formulaires commerciaux restent en lecture seule et les assistants et actions groupées sont traduits en français.
+sociétés depuis le menu natif Formations ; prérequis, compte personnel, accès et journal restent réservés au coordinateur. Les filtres opérationnels qui interrogent les accès privés, les boutons de gestion et les actions groupées sont réservés au coordinateur ; les boutons d’accès suivent les états autorisés côté serveur. Les formulaires commerciaux restent en lecture seule et les assistants et actions groupées sont traduits en français.
 
 **Qualité.** `pre-commit` (ruff, pylint-odoo) est exécuté par la CI : voir [ci.md](ci.md).
 
