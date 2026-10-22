@@ -32,6 +32,8 @@ class TrainingSessionEdit(models.TransientModel):
     repeat_count = fields.Integer(default=1, required=True)
     interval_days = fields.Integer(default=1, required=True)
     reason = fields.Text()
+    conflict_description = fields.Text(readonly=True)
+    conflict_reason = fields.Text(string="Reason for Resource Exception")
     cancel_session = fields.Boolean()
     propose_notice = fields.Boolean(default=True, string="Review Recipients after Saving")
     delivery_state = fields.Selection(related="delivery_id.state")
@@ -97,6 +99,23 @@ class TrainingSessionEdit(models.TransientModel):
     def _onchange_start_date(self):
         self.end_date = self.start_date
 
+    @api.onchange(
+        "instructor_id",
+        "room_id",
+        "start_date",
+        "end_date",
+        "start_hour",
+        "end_hour",
+        "start_occurrence",
+        "end_occurrence",
+        "repeat_count",
+        "interval_days",
+        "cancel_session",
+    )
+    def _onchange_reservation(self):
+        self.conflict_description = False
+        self.conflict_reason = False
+
     def action_apply(self):
         self.ensure_one()
         self.delivery_id._require_coordinator()
@@ -105,23 +124,38 @@ class TrainingSessionEdit(models.TransientModel):
         values = {
             key: self[key].id if self._fields[key].type == "many2one" else self[key] for key in self._schedule_fields()
         }
-        if self.session_id:
-            if self.session_id.delivery_id != self.delivery_id or self.repeat_count != 1:
-                raise ValidationError(self.env._("Change only the selected session of this delivery."))
-            self.session_id._apply_schedule(values, self.reason, self.cancel_session)
-        else:
-            batch = []
-            for offset in range(self.repeat_count):
-                delta = timedelta(days=offset * self.interval_days)
-                batch.append(
-                    {
-                        **values,
-                        "delivery_id": self.delivery_id.id,
-                        "start_date": self.start_date + delta,
-                        "end_date": self.end_date + delta,
-                    }
-                )
-            self.env["training.session"]._create_scheduled(batch, self.reason)
+        try:
+            # A refused batch leaves no partial session or audit entry behind.
+            with self.env.cr.savepoint():
+                if self.session_id:
+                    if self.session_id.delivery_id != self.delivery_id or self.repeat_count != 1:
+                        raise ValidationError(self.env._("Change only the selected session of this delivery."))
+                    self.session_id._apply_schedule(values, self.reason, self.cancel_session, self.conflict_reason)
+                else:
+                    batch = []
+                    for offset in range(self.repeat_count):
+                        delta = timedelta(days=offset * self.interval_days)
+                        batch.append(
+                            {
+                                **values,
+                                "delivery_id": self.delivery_id.id,
+                                "start_date": self.start_date + delta,
+                                "end_date": self.end_date + delta,
+                            }
+                        )
+                    self.env["training.session"]._create_scheduled(batch, self.reason, self.conflict_reason)
+        except ValidationError as error:
+            if not getattr(error, "training_resource_conflict", False):
+                raise
+            self.write({"conflict_description": str(error)})
+            return {
+                "type": "ir.actions.act_window",
+                "name": self.env._("Resource Exception"),
+                "res_model": self._name,
+                "res_id": self.id,
+                "view_mode": "form",
+                "target": "new",
+            }
         if self.propose_notice and self.delivery_id.state == "confirmed":
             return self.delivery_id.action_prepare_invitations()
         return {"type": "ir.actions.act_window_close"}

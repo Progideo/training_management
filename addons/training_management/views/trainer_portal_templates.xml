@@ -7,13 +7,20 @@
     <template id="portal_trainer_sessions" name="My Training Sessions">
         <t t-call="portal.portal_layout">
             <h1>My training sessions</h1>
-            <p t-if="not sessions">No assigned sessions.</p>
+            <nav aria-label="Session period" class="nav nav-pills mb-3">
+                <a href="/my/training-sessions" t-att-class="'nav-link active' if filterby == 'upcoming' else 'nav-link'" t-att-aria-current="'page' if filterby == 'upcoming' else None">Upcoming</a>
+                <a href="/my/training-sessions?filterby=past" t-att-class="'nav-link active' if filterby == 'past' else 'nav-link'" t-att-aria-current="'page' if filterby == 'past' else None">Past</a>
+                <a href="/my/training-sessions?filterby=all" t-att-class="'nav-link active' if filterby == 'all' else 'nav-link'" t-att-aria-current="'page' if filterby == 'all' else None">All sessions</a>
+            </nav>
+            <p t-if="not sessions">No assigned sessions in this period.</p>
             <ul class="list-group">
                 <li t-foreach="sessions" t-as="session" class="list-group-item">
                     <a t-att-href="'/my/training-sessions/%s' % session['id']"><t t-out="session['name']"/></a>
+                    <div t-out="session['delivery']"/>
                     <div><t t-out="session['start']"/> — <t t-out="session['timezone']"/></div>
                 </li>
             </ul>
+            <t t-call="portal.pager"/>
         </t>
     </template>
     <template id="portal_trainer_session" name="Assigned Training Session">

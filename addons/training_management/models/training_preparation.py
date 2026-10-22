@@ -250,11 +250,13 @@ class TrainingAdaptation(models.Model):
     def unlink(self):  # pylint: disable=method-required-super  # immutable history: cancellation replaces deletion
         raise AccessError(self.env._("Adaptation history must be preserved."))  # pylint: disable=no-raise-unlink  # preserve audit
 
-    def export_data(self, fields_to_export):
+    def _export_rows(self, fields, *, _is_toplevel_call=True):
+        # Native recursive exports call _export_rows, not export_data on the
+        # related model. Authorize and audit here to cover every entry point.
         self._authorize()
-        result = super().export_data(fields_to_export)
+        result = super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
         for item in self:
-            item._audit(json.dumps({"fields": fields_to_export, "records": self.ids}), "export")
+            item._audit(json.dumps({"model": self._name, "fields": fields, "records": self.ids}), "export")
         return result
 
 
@@ -270,6 +272,14 @@ class TrainingAdaptationHistory(models.Model):
     event = fields.Selection([("change", "Change"), ("export", "Export")], required=True)
     before = fields.Text()
     after = fields.Text()
+
+    def _export_rows(self, fields, *, _is_toplevel_call=True):
+        self.check_access("read")
+        self.adaptation_id._authorize()
+        result = super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
+        for dossier in self.adaptation_id:
+            dossier._audit(json.dumps({"model": self._name, "fields": fields, "records": self.ids}), "export")
+        return result
 
     @api.private
     def _append(self, vals):

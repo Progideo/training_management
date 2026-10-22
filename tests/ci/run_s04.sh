@@ -25,7 +25,7 @@ run_odoo() {
     -e HOST="${TM_S04_DB_HOST:-127.0.0.1}" -e USER=odoo -e PASSWORD=fictional_ci_password \
     -e S04_PHASE="${S04_PHASE:-}" \
     -v "${TM_ADDONS_DIR:-$repo/addons}:/mnt/extra-addons:ro" -v "$volume:/var/lib/odoo" \
-    "$ODOO_IMAGE" odoo "$@" -d tm_s04_test_upgrade --workers=0 --max-cron-threads=0
+    "$ODOO_IMAGE" odoo "$@" -d "${TM_S04_DB:-tm_s04_test_upgrade}" --workers=0 --max-cron-threads=0
 }
 step() {
   local name=$1
@@ -41,3 +41,15 @@ TM_ADDONS_DIR="$work_dir/s031/addons" S04_PHASE=prepare step prepare run_odoo sh
 step upgrade run_odoo -u training_management,training_management_sale --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale
 S04_PHASE=verify step history run_odoo shell --no-http < "$repo/tests/probes/s04_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s04_concurrency.py"
+
+# Upgrade a persisted pre-review S04 queue as well as the S03.1 baseline.
+mkdir -p "$work_dir/s04_review"
+review_ref=70b91ae1ea088c652353009b7f618d58dcc124f0
+if ! git -C "$repo" cat-file -e "$review_ref^{commit}" 2>/dev/null; then
+  git -C "$repo" fetch --no-tags origin "$review_ref"
+fi
+git -C "$repo" archive "$review_ref" addons | tar -x -C "$work_dir/s04_review"
+TM_S04_DB=tm_s04_test_dispatch TM_ADDONS_DIR="$work_dir/s04_review/addons" step dispatch_baseline run_odoo -i training_management --without-demo --stop-after-init
+TM_S04_DB=tm_s04_test_dispatch TM_ADDONS_DIR="$work_dir/s04_review/addons" S04_PHASE=prepare step dispatch_prepare run_odoo shell --no-http < "$repo/tests/probes/s04_dispatch_upgrade.py"
+TM_S04_DB=tm_s04_test_dispatch step dispatch_upgrade run_odoo -u training_management --stop-after-init
+TM_S04_DB=tm_s04_test_dispatch S04_PHASE=verify step dispatch_history run_odoo shell --no-http < "$repo/tests/probes/s04_dispatch_upgrade.py"

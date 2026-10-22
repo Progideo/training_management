@@ -20,6 +20,7 @@ class TrainingInvitation(models.Model):
     session_id = fields.Many2one("training.session", required=True, ondelete="restrict")
     partner_id = fields.Many2one("res.partner", required=True, ondelete="restrict")
     fingerprint = fields.Char(required=True)
+    dispatch_number = fields.Integer(required=True, default=1)
     mail_id = fields.Many2one("mail.mail", required=True, ondelete="restrict")
     distribution_state = fields.Selection(related="mail_id.state")
     requested_by_id = fields.Many2one("res.users", required=True, ondelete="restrict")
@@ -27,7 +28,7 @@ class TrainingInvitation(models.Model):
     recipient_timezone = fields.Char(required=True)
 
     _unique_dispatch = models.Constraint(
-        "UNIQUE(session_id, partner_id, fingerprint)", "This invitation is already queued."
+        "UNIQUE(session_id, partner_id, dispatch_number)", "This invitation is already queued."
     )
 
     @api.private
@@ -83,7 +84,9 @@ class TrainingInvitation(models.Model):
                     continue
                 tz = partner.tz or session.timezone
                 fingerprint = self._fingerprint(session, partner)
-                existing = previous.filtered(lambda item: item.fingerprint == fingerprint)
+                # Idempotence applies to the latest dispatch, not every past
+                # schedule: A -> B -> A is a new change that must be notified.
+                existing = previous[:1].filtered(lambda item: item.fingerprint == fingerprint)
                 if existing:
                     # Retry the same queued item rather than create a duplicate.
                     if existing.mail_id.state == "exception":
@@ -126,6 +129,7 @@ class TrainingInvitation(models.Model):
                         "session_id": session.id,
                         "partner_id": partner.id,
                         "fingerprint": fingerprint,
+                        "dispatch_number": previous[0].dispatch_number + 1 if previous else 1,
                         "mail_id": mail.id,
                         "requested_by_id": self.env.uid,
                         "requested_at": fields.Datetime.now(),
@@ -159,6 +163,7 @@ class MailMail(models.Model):
             if not invitation:
                 raise ValidationError(self.env._("This session email has no authorized invitation."))
             session, partner = invitation.session_id, invitation.partner_id
+            latest = invitation.search([("session_id", "=", session.id), ("partner_id", "=", partner.id)], limit=1)
             allowed = (
                 session.delivery_id.enrollment_ids.filtered(lambda item: item.state == "confirmed").participant_id
                 | session.instructor_id
@@ -170,6 +175,7 @@ class MailMail(models.Model):
                 or self.email_cc
                 or self.recipient_ids
                 or self.recipient_cc_ids
+                or invitation != latest
                 or invitation.fingerprint != invitation._fingerprint(session, partner)
             ):
                 raise ValidationError(

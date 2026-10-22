@@ -3047,4 +3047,88 @@ msgstr "Séance de formation"
 #. odoo-python
 #: code:addons/training_management/models/training_preparation.py:0
 msgid "A delivery with sessions keeps its company, programme and kind."
-msgstr "Une réalisation comportant des séances conserve sa société, son programme et sa nature."
+msgstr ""
+"Une réalisation comportant des séances conserve sa société, son programme et"
+" sa nature."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"%(session)s — %(resource)s: %(start)s → %(end)s (%(timezone)s), %(booking)s"
+msgstr ""
+"%(session)s — %(resource)s : %(start)s → %(end)s (%(timezone)s), %(booking)s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "All sessions"
+msgstr "Toutes les séances"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__conflict_description
+msgid "Conflict Description"
+msgstr "Conflit de ressources"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__dispatch_number
+msgid "Dispatch Number"
+msgstr "Numéro de diffusion"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_calendar_event_id
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_calendar_event_id
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Prochain événement de calendrier"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "No assigned sessions in this period."
+msgstr "Aucune séance affectée sur cette période."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "Past"
+msgstr "Passées"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__conflict_reason
+msgid "Reason for Resource Exception"
+msgstr "Motif de dérogation de ressource"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+#: code:addons/training_management/wizard/training_session_edit.py:0
+msgid "Resource Exception"
+msgstr "Dérogation de ressource"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"Resource conflict. Change the schedule or explicitly justify an exception:\n"
+"%s"
+msgstr ""
+"Conflit de ressources. Modifiez le planning ou justifiez explicitement une dérogation :\n"
+"%s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+msgid "Save with Resource Exception"
+msgstr "Enregistrer avec dérogation de ressource"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "Session period"
+msgstr "Période des séances"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Unavailability"
+msgstr "Indisponibilité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "Upcoming"
+msgstr "À venir"

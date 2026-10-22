@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.tools.misc import format_datetime
 
 
 COORDINATOR = "training_management.group_training_coordinator"
@@ -220,6 +221,8 @@ class TrainingSession(models.Model):
 
     @api.private
     def _reserve(self, reason=None):
+        conflicts_to_record = []
+        descriptions = []
         for session in self.filtered(lambda item: not item.cancelled):
             if (
                 not session.instructor_id
@@ -232,18 +235,42 @@ class TrainingSession(models.Model):
             session._check_definition()
             conflicts = session._conflicts()
             if conflicts:
-                if not reason or not reason.strip():
-                    raise ValidationError(
-                        self.env._("Instructor or room conflict. Change the schedule or confirm with a reason.")
+                conflicts_to_record.append((session, conflicts))
+                for conflict in conflicts:
+                    kind, record_id = conflict.split(":")
+                    model = "training.session" if kind == "session" else "training.unavailability"
+                    other = self.env[model].browse(int(record_id))
+                    descriptions.append(
+                        self.env._(
+                            "%(session)s — %(resource)s: %(start)s → %(end)s (%(timezone)s), %(booking)s",
+                            session=session.name,
+                            resource=" / ".join(filter(None, [other.instructor_id.name, other.room_id.name])),
+                            start=format_datetime(self.env, other.start_at, tz=session.timezone),
+                            end=format_datetime(self.env, other.end_at, tz=session.timezone),
+                            timezone=session.timezone,
+                            booking=other.delivery_id.name if kind == "session" else self.env._("Unavailability"),
+                        )
                     )
-                self.env["training.operation"]._record(session, {}, {"conflicts": conflicts}, reason.strip())
+        if descriptions and not (reason or "").strip():
+            error = ValidationError(
+                self.env._(
+                    "Resource conflict. Change the schedule or explicitly justify an exception:\n%s",
+                    "\n".join(descriptions),
+                )
+            )
+            # Keep Odoo's native WarningDialog at public RPC boundaries. Only
+            # the session assistant consumes this internal marker in-process.
+            error.training_resource_conflict = True
+            raise error
+        for session, conflicts in conflicts_to_record:
+            self.env["training.operation"]._record(session, {}, {"conflicts": conflicts}, reason.strip())
 
     @api.model_create_multi
     def create(self, vals_list):  # pylint: disable=method-required-super  # shared checked helper also used by wizard
         return self._create_scheduled(vals_list)
 
     @api.private
-    def _create_scheduled(self, vals_list, reason=None):
+    def _create_scheduled(self, vals_list, reason=None, conflict_reason=None):
         self._require_coordinator()
         if any(
             set(values) - (set(self.env["training.session.edit"]._schedule_fields()) | {"delivery_id"})
@@ -267,12 +294,11 @@ class TrainingSession(models.Model):
             self.env["training.operation"]._record(
                 record, {}, {"name": record.name, "start_at": record.start_at, "end_at": record.end_at}, reason
             )
-            if record.delivery_id.state == "confirmed":
-                record._reserve(reason)
+        records.filtered(lambda item: item.delivery_id.state == "confirmed")._reserve(conflict_reason)
         return records
 
     @api.private
-    def _apply_schedule(self, vals, reason=None, cancel=False):
+    def _apply_schedule(self, vals, reason=None, cancel=False, conflict_reason=None):
         self.ensure_one()
         self._require_coordinator()
         if set(vals) - set(self.env["training.session.edit"]._schedule_fields()):
@@ -291,7 +317,7 @@ class TrainingSession(models.Model):
             reason = self.delivery_id._require_reason(reason)
         super().write(changed)  # pylint: disable=super-method-mismatch  # controlled schedule action
         if self.delivery_id.state == "confirmed":
-            self._reserve(reason)
+            self._reserve(conflict_reason)
         after = {key: self[key].id if self._fields[key].type == "many2one" else self[key] for key in changed}
         self.env["training.operation"]._record(self, {key: before[key] for key in changed}, after, reason)
 

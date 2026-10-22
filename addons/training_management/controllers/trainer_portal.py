@@ -1,47 +1,79 @@
-from odoo import http
+from odoo import fields, http
+from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 
 class TrainingTrainerPortal(http.Controller):
-    @http.route("/my/training-sessions", type="http", auth="user", website=True, methods=["GET"])
-    def sessions(self, **kwargs):
-        return request.render("training_management.portal_trainer_sessions", {"sessions": self._authorized_sessions()})
+    @http.route(
+        ["/my/training-sessions", "/my/training-sessions/page/<int:page>"],
+        type="http",
+        auth="user",
+        website=True,
+        methods=["GET"],
+    )
+    def sessions(self, page=1, filterby="upcoming", **kwargs):
+        filterby = filterby if filterby in ("upcoming", "past", "all") else "upcoming"
+        domain = self._session_domain()
+        if filterby != "all":
+            domain.append(("end_at", ">=" if filterby == "upcoming" else "<", fields.Datetime.now()))
+        # Both count and page use the same narrow, server-built authorization
+        # domain. No unrestricted recordset is returned to the template.
+        sessions = request.env["training.session"].sudo()
+        pager = portal_pager(
+            url="/my/training-sessions",
+            total=sessions.search_count(domain),
+            page=page,
+            step=40,
+            url_args={"filterby": filterby},
+        )
+        records = sessions.search(domain, limit=40, offset=pager["offset"])
+        return request.render(
+            "training_management.portal_trainer_sessions",
+            {"sessions": self._session_rows(records), "pager": pager, "filterby": filterby},
+        )
 
     @http.route("/my/training-sessions/<int:session_id>", type="http", auth="user", website=True, methods=["GET"])
     def session(self, session_id, **kwargs):
-        rows = self._authorized_sessions(session_id)
-        if not rows:
+        records = (
+            request.env["training.session"].sudo().search(self._session_domain() + [("id", "=", session_id)], limit=1)
+        )
+        if not records:
             raise request.not_found()
-        return request.render("training_management.portal_trainer_session", {"session": rows[0]})
+        return request.render(
+            "training_management.portal_trainer_session", {"session": self._session_rows(records, details=True)[0]}
+        )
 
-    def _authorized_sessions(self, session_id=None):
-        # Narrow elevation: match the authenticated partner and its allowed
-        # companies before reading anything. Return a whitelist of plain values,
-        # never a sudo recordset to a QWeb template. No token grants access.
+    def _session_domain(self):
         user = request.env.user
-        domain = [
+        return [
             ("instructor_id", "=", user.partner_id.id),
             ("company_id", "in", user.company_ids.ids),
             ("delivery_id.state", "in", ("confirmed", "ongoing")),
             ("cancelled", "=", False),
         ]
-        if session_id is not None:
-            domain.append(("id", "=", session_id))
+
+    def _session_rows(self, sessions, details=False):
+        # Whitelist plain values. Participant instructions are only fetched on
+        # an individually authorized detail page, never for the entire list.
+        user = request.env.user
         rows = []
-        for session in request.env["training.session"].sudo().search(domain, limit=200):
+        for session in sessions:
             participants = []
-            for enrollment in session.delivery_id.enrollment_ids.filtered(lambda item: item.state == "confirmed"):
-                adaptation = (
-                    request.env["training.adaptation"].sudo().search([("enrollment_id", "=", enrollment.id)], limit=1)
-                )
-                participants.append(
-                    {
-                        "name": enrollment.participant_id.name,
-                        "summary": enrollment.instructor_summary,
-                        "instruction": adaptation.instructor_instruction,
-                    }
-                )
+            if details:
+                for enrollment in session.delivery_id.enrollment_ids.filtered(lambda item: item.state == "confirmed"):
+                    adaptation = (
+                        request.env["training.adaptation"]
+                        .sudo()
+                        .search([("enrollment_id", "=", enrollment.id)], limit=1)
+                    )
+                    participants.append(
+                        {
+                            "name": enrollment.participant_id.name,
+                            "summary": enrollment.instructor_summary,
+                            "instruction": adaptation.instructor_instruction,
+                        }
+                    )
             tz = user.tz or session.timezone
             rows.append(
                 {

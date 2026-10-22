@@ -1,6 +1,9 @@
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 
-from odoo import Command
+from lxml import html
+
+from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import Form, HttpCase, JsonRpcException, new_test_user, tagged
 from odoo.tools import mute_logger
@@ -145,6 +148,152 @@ class TestPreparation(PreparationCase):
         self.assertTrue(unavailable.active)
         with self.assertRaises((AccessError, ValidationError)):
             session.with_user(self.portal).action_change()
+
+    def test_edit_reason_is_not_a_resource_exception_and_wizard_keeps_inputs(self):
+        first, first_session = self.planned()
+        first.action_confirm()
+        second, session = self.planned()
+        session.write({"start_hour": 13, "end_hour": 15})
+        second.action_confirm()
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            session._apply_schedule({"start_hour": 9}, "Customer requested a new time")
+        self.assertEqual(session.start_hour, 13)
+        with Form(
+            self.env["training.session.edit"]
+            .with_user(self.coordinator)
+            .with_context(**session.action_change()["context"])
+        ) as form:
+            form.start_hour = 9
+            form.reason = "Customer requested a new time"
+        wizard = form.record
+        action = wizard.action_apply()
+        self.assertEqual(action["res_id"], wizard.id, "Conflict stays in the same assistant")
+        self.assertEqual(session.start_hour, 13, "Refused edit is rolled back")
+        self.assertEqual(wizard.start_hour, 9, "No re-entry of the requested schedule")
+        self.assertIn(self.portal.partner_id.name, wizard.conflict_description)
+        self.assertIn("UTC", wizard.conflict_description)
+        self.assertFalse(second.invitation_ids)
+        with Form(wizard) as form:
+            form.conflict_reason = "Explicitly agreed shared instruction"
+        action = wizard.action_apply()
+        self.assertEqual(action["res_model"], "training.invitation.send")
+        self.assertEqual(session.start_hour, 9)
+        exceptions = second.operation_ids.filtered(lambda item: "conflicts" in (item.after or ""))
+        self.assertEqual(exceptions.reason, "Explicitly agreed shared instruction")
+        self.assertFalse(second.invitation_ids, "Recipient proposal never sends")
+        # A subsequent ordinary edit has no extra step or retained exception.
+        with Form(
+            self.env["training.session.edit"]
+            .with_user(self.coordinator)
+            .with_context(**session.action_change()["context"])
+        ) as form:
+            form.start_hour = 16
+            form.end_hour = 17
+            form.reason = "New non-conflicting time"
+        self.assertEqual(form.record.action_apply()["res_model"], "training.invitation.send")
+        self.assertEqual(first_session.start_hour, 9)
+
+    def test_conflicting_addition_is_atomic_and_needs_its_own_exception(self):
+        delivery, session = self.planned()
+        delivery.action_confirm()
+        action = session.action_duplicate_session()
+        with Form(
+            self.env["training.session.edit"].with_user(self.coordinator).with_context(**action["context"])
+        ) as form:
+            form.name = "Fictional repeated additions"
+            form.repeat_count = 2
+            form.reason = "Additional customer request"
+        wizard = form.record
+        before = len(delivery.operation_ids)
+        self.assertEqual(wizard.action_apply()["res_id"], wizard.id)
+        self.assertEqual(len(delivery.session_ids), 1)
+        self.assertEqual(len(delivery.operation_ids), before)
+        with Form(wizard) as form:
+            form.conflict_reason = "Explicit coordinator exception for shared resources"
+        wizard.action_apply()
+        self.assertEqual(len(delivery.session_ids), 3)
+        self.assertTrue(delivery.operation_ids.filtered(lambda item: "conflicts" in (item.after or "")))
+        with self.assertRaises(AccessError):
+            wizard.with_user(self.portal).action_apply()
+
+    def test_conflict_can_be_corrected_in_place_without_an_exception(self):
+        delivery, session = self.planned()
+        delivery.action_confirm()
+        with Form(
+            self.env["training.session.edit"]
+            .with_user(self.coordinator)
+            .with_context(**session.action_duplicate_session()["context"])
+        ) as form:
+            form.reason = "Additional customer request"
+        wizard = form.record
+        self.assertEqual(wizard.action_apply()["res_id"], wizard.id)
+        self.assertTrue(wizard.conflict_description)
+        with Form(wizard) as form:
+            form.start_hour = 13
+            form.end_hour = 15
+            self.assertFalse(form.conflict_description)
+            self.assertFalse(form.conflict_reason)
+        self.assertFalse(wizard.conflict_description)
+        self.assertEqual(wizard.action_apply()["res_model"], "training.invitation.send")
+        self.assertEqual(len(delivery.session_ids), 2)
+        self.assertFalse(delivery.operation_ids.filtered(lambda item: "conflicts" in (item.after or "")))
+        self.assertFalse(delivery.invitation_ids)
+
+    def test_confidential_recursive_and_history_exports_are_audited(self):
+        delivery, _session = self.planned()
+        adaptation = self.adaptation(delivery)
+        history = self.env["training.adaptation.history"].with_user(self.coordinator)
+        domain = [("adaptation_id", "=", adaptation.id), ("event", "=", "export")]
+        for record, paths in (
+            (adaptation, ["details"]),
+            (delivery, ["name", "adaptation_ids/details"]),
+            (adaptation.history_ids, ["after"]),
+            (delivery, ["adaptation_ids/history_ids/after"]),
+        ):
+            before = history.search_count(domain)
+            result = record.export_data(paths)
+            self.assertIn("SECRET S04 request", str(result))
+            events = history.search(domain)
+            self.assertGreater(len(events), before)
+            manifest = json.loads(events[0].before)
+            self.assertIn(manifest["model"], ("training.adaptation", "training.adaptation.history"))
+            self.assertTrue(manifest["records"])
+            self.assertTrue(manifest["fields"])
+            self.assertEqual(events[0].actor_id, self.coordinator)
+        for record in (adaptation, adaptation.history_ids):
+            with self.assertRaises(AccessError):
+                record.with_user(self.other_coordinator).export_data(["id"])
+        self.assertNotIn(
+            "SECRET S04 request",
+            str(delivery.with_user(self.other_coordinator).export_data(["adaptation_ids/details"])),
+        )
+
+    def test_schedule_return_is_a_new_dispatch_but_retries_are_idempotent(self):
+        delivery, session = self.planned()
+        self.adaptation(delivery)
+        delivery.action_confirm()
+        invitations = self.env["training.invitation"].with_user(self.coordinator)
+        recipients = invitations._recipients(delivery)
+        self.assertEqual(invitations._queue(delivery, recipients), 2)
+        original = delivery.invitation_ids.sudo().mail_id
+        original.write({"state": "sent"})  # Queue lifecycle only; no SMTP send.
+        session._apply_schedule({"start_hour": 10}, "Change to B")
+        self.assertEqual(invitations._queue(delivery, recipients), 2)
+        delivery.invitation_ids.sudo().mail_id.write({"state": "sent"})
+        session._apply_schedule({"start_hour": 9}, "Return to A")
+        self.assertEqual(invitations._queue(delivery, recipients), 2)
+        self.assertEqual(invitations._queue(delivery, recipients), 0)
+        self.assertEqual(len(delivery.invitation_ids), 6)
+        self.assertEqual(set(delivery.invitation_ids.mapped("dispatch_number")), {1, 2, 3})
+        latest = delivery.invitation_ids.filtered(lambda item: item.dispatch_number == 3).sudo().mail_id
+        latest.write({"state": "exception"})
+        self.assertEqual(invitations._queue(delivery, recipients), 0)
+        self.assertEqual(set(latest.mapped("state")), {"outgoing"})
+        for mail in original:
+            with self.assertRaises(ValidationError):
+                mail._prepare_outgoing_list()
+        for mail in latest:
+            self.assertTrue(mail._prepare_outgoing_list())
 
     def test_room_capacity_commitments_and_no_double_counting(self):
         delivery, session = self.planned()
@@ -358,6 +507,74 @@ class TestPreparation(PreparationCase):
 @tagged("post_install", "-at_install")
 class TestTrainerPortal(HttpCase, PreparationCase):
     """Real HTTP portal; no model access granted as a shortcut."""
+
+    def test_http_all_assigned_sessions_are_reachable_with_upcoming_default(self):
+        today = fields.Datetime.now().date()
+        delivery = self.delivery(
+            kind="session", start_at=today - timedelta(days=2), end_at=today + timedelta(days=203), timezone="UTC"
+        )
+        sessions = (
+            self.env["training.session"]
+            .with_user(self.coordinator)
+            .create(
+                [
+                    {
+                        "name": "Fictional upcoming %03d" % offset,
+                        "delivery_id": delivery.id,
+                        "instructor_id": self.portal.partner_id.id,
+                        "mode": "remote",
+                        "meeting_url": "https://example.invalid/room",
+                        "start_date": today + timedelta(days=offset),
+                        "end_date": today + timedelta(days=offset),
+                        "start_hour": 9,
+                        "end_hour": 12,
+                    }
+                    for offset in range(1, 202)
+                ]
+            )
+        )
+        past = (
+            self.env["training.session"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Fictional past session",
+                    "delivery_id": delivery.id,
+                    "instructor_id": self.portal.partner_id.id,
+                    "mode": "remote",
+                    "meeting_url": "https://example.invalid/room",
+                    "start_date": today - timedelta(days=1),
+                    "end_date": today - timedelta(days=1),
+                    "start_hour": 9,
+                    "end_hour": 12,
+                }
+            )
+        )
+        delivery.action_confirm()
+        hidden, hidden_session = self.planned()
+        self.authenticate(self.portal.login, self.portal.login)
+        seen = set()
+        for page in range(1, 7):
+            response = self.url_open("/my/training-sessions/page/%s" % page)
+            self.assertEqual(response.status_code, 200)
+            tree = html.fromstring(response.text)
+            ids = {int(link.rsplit("/", 1)[1]) for link in tree.xpath("//ul[contains(@class, 'list-group')]//a/@href")}
+            self.assertLessEqual(len(ids), 40)
+            self.assertFalse(seen & ids)
+            seen |= ids
+            self.assertNotIn(past.id, ids)
+            self.assertNotIn(hidden_session.id, ids)
+        self.assertEqual(seen, set(sessions.ids), "Every one of the 201 upcoming sessions is reachable")
+        response = self.url_open("/my/training-sessions?filterby=past")
+        self.assertIn("Fictional past session", response.text)
+        self.assertNotIn("Fictional upcoming", response.text)
+        response = self.url_open("/my/training-sessions/page/6?filterby=all")
+        self.assertIn(sessions[-1].name, response.text)
+        self.assertIn("filterby=all", response.text, "Pagination preserves the chosen period")
+        self.assertEqual(self.url_open("/my/training-sessions/%s" % sessions[-1].id).status_code, 200)
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        self.assertNotIn("Fictional upcoming", self.url_open("/my/training-sessions?filterby=all").text)
+        self.assertEqual(self.url_open("/my/training-sessions/%s" % sessions[-1].id).status_code, 404)
 
     def test_http_assigned_session_and_private_content_refusals(self):
         delivery, session = self.planned()

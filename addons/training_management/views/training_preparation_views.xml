@@ -41,7 +41,8 @@
                 <group><field name="instructor_id"/><field name="mode"/><field name="room_id" domain="[('training_room', '=', True), ('company_id', '=', company_id)]"/><field name="location"/><field name="meeting_url"/><field name="equipment"/></group>
                 <group invisible="session_id"><field name="repeat_count"/><field name="interval_days"/></group>
                 <group><field name="cancel_session" invisible="not session_id"/><field name="delivery_state" invisible="1"/><field name="reason" required="delivery_state == 'confirmed' or cancel_session"/><field name="propose_notice" invisible="delivery_state != 'confirmed'"/></group>
-                <footer><button name="action_apply" type="object" string="Save Sessions" class="btn-primary"/><button string="Cancel" special="cancel"/></footer>
+                <group invisible="not conflict_description" string="Resource Exception" col="1"><field name="conflict_description" nolabel="1" force_save="1"/><label for="conflict_reason"/><field name="conflict_reason" nolabel="1" required="conflict_description"/></group>
+                <footer><button name="action_apply" type="object" string="Save Sessions" class="btn-primary" invisible="conflict_description"/><button name="action_apply" type="object" string="Save with Resource Exception" class="btn-primary" invisible="not conflict_description"/><button string="Cancel" special="cancel"/></footer>
             </form>
         </field>
     </record>

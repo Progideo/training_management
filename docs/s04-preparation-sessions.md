@@ -20,7 +20,8 @@ contractuelle ou les accès S03. Les dossiers d'aménagement sont distincts et p
 un référent coordinateur par réalisation, avec suppléant facultatif. Le référent
 courant ou son suppléant gère les changements d'habilitation dès qu'un dossier existe.
 Les décisions et changements conservent auteur, date serveur et avant/après dans
-un historique restreint ; les exports du dossier sont tracés. Aucun détail dans le
+un historique restreint ; les exports du dossier et de son historique sont tracés,
+y compris depuis un export relationnel de la réalisation. Aucun détail dans le
 journal général, le chatter, les activités ou les convocations. Qualité et commercial
 n'obtiennent aucun accès sensible automatiquement.
 
@@ -28,7 +29,9 @@ Le formateur externe utilise le portail Odoo en lecture seule : ses séances
 confirmées/en cours, les participants confirmés, la synthèse de positionnement et
 la seule consigne utile. Une réaffectation retire l'accès immédiatement. Pas de
 compte interne imposé ni seconde authentification. Le portail ne donne aucun droit
-ORM général aux dossiers S03/S04. Les écrans participant/entreprise restent S05/P05.
+ORM général aux dossiers S03/S04. La liste paginée ouvre sur les séances à venir ;
+les séances passées et la liste complète restent accessibles. Les écrans
+participant/entreprise restent S05/P05.
 
 ## Planning et ressources
 
@@ -66,15 +69,20 @@ Après confirmation, l'assistant de modification collecte le motif, revérifie l
 réservations et propose les destinataires du changement. Ajouter/annuler une séance
 préserve son historique. Aucune modification après le début de la réalisation.
 Les réalisations historiques ne reçoivent aucune séance inventée à la mise à jour.
+Le motif d'une modification n'autorise pas une dérogation de ressource. Si un conflit
+apparaît, le même assistant conserve les saisies, décrit ressource et période et
+demande un motif de dérogation distinct. Sans conflit, aucune étape supplémentaire.
 
 ## Convocations et limites de messagerie
 
 Une action volontaire du coordinateur met un courriel individuel par personne et
 séance dans la file native Odoo. Destinataires : participants confirmés et formateurs
-affectés, sélection vérifiée côté serveur. Le même contenu n'est pas remis deux fois
-en file ; un nouvel horaire produit une nouvelle convocation après action explicite.
+affectés, sélection vérifiée côté serveur. Répéter la dernière demande ne crée pas de
+doublon ; chaque changement successif, y compris un retour à un ancien horaire,
+produit une nouvelle convocation après action explicite. Chaque diffusion est
+numérotée par séance et destinataire ; une mise à jour conserve les anciens messages.
 Les erreurs de distribution restent visibles ; une reprise utilise le même message.
-Le transport revérifie le destinataire et l'empreinte du planning avant tout envoi,
+Le transport revérifie la dernière diffusion, le destinataire et l'empreinte du planning avant tout envoi,
 y compris lors d'une reprise. Aucun détail d'aménagement n'entre dans ces courriels.
 
 La dette [#50](https://github.com/Progideo/training_management/issues/50) sur les circuits
@@ -115,15 +123,19 @@ inclure dans une éventuelle recette de déploiement, qui reste hors de cette PR
    prérequis/accès ; créer plusieurs séances en une action et confirmer une fois.
 2. Référent : saisir un aménagement et sa consigne ; vérifier refus pour commercial,
    autre coordinateur et participant, y compris API/export/fichier avec jeton.
+   Exporter aussi depuis la réalisation et l'historique ; vérifier le manifeste privé.
 3. Formateur portail : lire uniquement ses affectations, participants nécessaires
    et consignes ; vérifier absence de détails, refus d'écriture et perte d'accès
-   après réaffectation, ainsi que clavier et mobile.
+   après réaffectation, ainsi que clavier et mobile. Parcourir plus de 200 séances,
+   avec les filtres à venir/passées/toutes conservés lors de la pagination.
 4. Confirmer deux créneaux concurrents : une réservation ordinaire réussit ; refus
    de la seconde, puis dérogation motivée. Refaire avec une indisponibilité et une salle.
 5. Tester heure ambiguë/inexistante, plusieurs fuseaux et capacité de salle face
    aux places non nominatives. Déplacer une séance avec motif ; aucun envoi implicite.
+   Un nouveau conflit exige une dérogation distincte, sans ressaisir le déplacement.
 6. Vérifier les destinataires, envoyer vers un transport de test ; rejouer sans
-   doublon, modifier puis renvoyer ; vérifier erreur/reprise et refus d'un message périmé.
+   doublon, modifier puis renvoyer, revenir à l'ancien horaire et renvoyer ; vérifier
+   erreur/reprise et refus d'un ancien message même si son horaire redevient actuel.
 7. Installation vierge, mise à jour depuis S03.1 et comparaison des historiques :
    scénarios CI existants et `tests/ci/run_s04.sh`. Données fictives uniquement,
    environnements jetables et nettoyage. Résultats réels dans la PR et ses artefacts.
