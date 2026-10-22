@@ -8,25 +8,19 @@ La spécification v2, §2 et INS01–INS05, définit le besoin ; SEC01 et CAT02
 s'appliquent dès cet incrément. L'import documentaire de référence a été conservé, actualisé et fusionné via
 la [PR #41](https://github.com/Progideo/training_management/pull/41), après revue
 le 22 octobre 2026. Voir l’[index des références](README.md). Les empreintes de la spécification et du prompt maître sous
-`sources/` correspondent à cet import. Aucun fichier synchronisé n'est modifié.
+`docs/references/` correspondent à cet import. Aucun fichier synchronisé n'est modifié.
 L'audit historique Odoo 19 reste suspendu.
 
 ## Décision approuvée le 22 octobre 2026
 
-Après validation du périmètre, l'utilisateur a validé le modèle dédié, sans
-dépendance obligatoire à Événements, puis le développement en branche et une
-PR à revoir. Aucune fusion, aucun déploiement, aucune intervention neopro_dev ou
-production et aucune migration réelle ne sont autorisés par ces validations initiales.
-
-Après traitement de #41, l’utilisateur a autorisé le 22 octobre 2026 la fusion
-et le déploiement S03 sur la cible de développement habituelle `neopro_dev`.
-La répétition sur copie isolée, les sauvegardes et les contrôles de conservation
-précèdent la bascule ; les résultats effectifs sont consignés dans la PR #46.
-La production et une migration Odoo 19 restent hors périmètre.
-La réorganisation/parallélisation de CI est prévue dans une prochaine PR ([#47](https://github.com/Progideo/training_management/issues/47)).
+Modèle dédié de réalisations, places et inscriptions, sans dépendance obligatoire
+à Événements. Les autorisations de fusion et de déploiement, comme les résultats
+d'exécution, sont consignés dans la [PR #46](https://github.com/Progideo/training_management/pull/46) ;
+la production et une migration Odoo 19 restent hors périmètre. Les corrections de
+revue sont décrites dans [S03.1](s03-1-review-fixes.md).
 
 Le socle `training_management` passe en `20.0.1.1.0` ; l'intégration
-`training_management_sale` en `20.0.1.9.0`. Le premier reste dépendant de `base`
+`training_management_sale` en `20.0.1.9.0` (versions courantes : voir S03.1). Le premier reste dépendant de `base`
 seulement ; le second conserve ses dépendances S02. Pas de nouvel addon ni de
 copie de module standard. Le code conserve LGPL-3.0-only, manifest LGPL-3.
 

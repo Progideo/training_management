@@ -91,6 +91,8 @@ Pour chaque incrément :
 - Fournir une procédure de recette courte.
 - Indiquer les tests réellement exécutés et leurs résultats.
 
+La simplicité d’usage et l’ergonomie font partie de la recette : un parcours fréquent doit rester court pour la personne qui l’exécute. Un garde-fou doit protéger une exigence identifiée ; sans exigence, ne pas l’ajouter.
+
 Vérifier régulièrement l’installation sur base vierge et la mise à jour sur base existante. Préserver les historiques et prévoir les migrations nécessaires.
 
 Ne jamais présenter une hypothèse comme une capacité démontrée, un test non exécuté comme réussi ou une fonctionnalité simulée comme opérationnelle.
