@@ -24,3 +24,17 @@ rule_allocation_extend_company,Extend places deadline allowed companies,training
 access_allocation_release_coordinator,Release places coordinator,training.allocation.release,training_management.group_training_coordinator,crud,
 rule_allocation_release_company,Release places allowed companies,training.allocation.release,,crud,"[('company_id', 'in', company_ids)]"
 access_action_reason_coordinator,Training action reason coordinator,training.action.reason,training_management.group_training_coordinator,crud,
+access_session_coordinator,Sessions coordinator,training.session,training_management.group_training_coordinator,cru,
+rule_session_company,Sessions allowed companies,training.session,,crud,"[('company_id', 'in', company_ids)]"
+access_unavailability_coordinator,Unavailability coordinator,training.unavailability,training_management.group_training_coordinator,crud,
+rule_unavailability_company,Unavailability allowed companies,training.unavailability,,crud,"[('company_id', 'in', company_ids)]"
+access_room_coordinator,Training rooms coordinator,resource.resource,training_management.group_training_coordinator,cru,"[('training_room', '=', True), ('company_id', 'in', company_ids)]"
+access_adaptation_referent,Confidential adaptations referent,training.adaptation,training_management.group_training_coordinator,cru,"['|', ('delivery_id.adaptation_referent_id', '=', user.id), ('delivery_id.adaptation_deputy_id', '=', user.id)]"
+rule_adaptation_company,Adaptations allowed companies,training.adaptation,,crud,"[('company_id', 'in', company_ids)]"
+access_adaptation_history_referent,Confidential history referent,training.adaptation.history,training_management.group_training_coordinator,r,"['|', ('adaptation_id.delivery_id.adaptation_referent_id', '=', user.id), ('adaptation_id.delivery_id.adaptation_deputy_id', '=', user.id)]"
+rule_adaptation_history_company,Adaptation history allowed companies,training.adaptation.history,,crud,"[('company_id', 'in', company_ids)]"
+access_invitation_coordinator,Invitations coordinator,training.invitation,training_management.group_training_coordinator,r,
+rule_invitation_company,Invitations allowed companies,training.invitation,,crud,"[('company_id', 'in', company_ids)]"
+access_session_edit,Session assistant coordinator,training.session.edit,training_management.group_training_coordinator,crud,
+rule_session_edit_company,Session assistant allowed companies,training.session.edit,,crud,"[('company_id', 'in', company_ids)]"
+access_invitation_send,Invitation assistant coordinator,training.invitation.send,training_management.group_training_coordinator,crud,

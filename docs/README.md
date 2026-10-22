@@ -67,6 +67,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S02 — circuit commercial | [s02-native-coverage.md](s02-native-coverage.md), [s02-crm-quotation.md](s02-crm-quotation.md) |
 | S03 — réalisations, places, inscriptions, accès | [s03-enrollment-access.md](s03-enrollment-access.md) |
 | S03.1 — corrections de revue | [s03-1-review-fixes.md](s03-1-review-fixes.md), cadrage [s03-1-corrections.md](s03-1-corrections.md) |
+| S04 — besoins, aménagements et séances | [s04-preparation-sessions.md](s04-preparation-sessions.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;

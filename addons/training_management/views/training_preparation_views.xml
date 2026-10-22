@@ -1,0 +1,98 @@
+<odoo>
+    <record id="view_training_session_form" model="ir.ui.view">
+        <field name="name">training.session.form</field><field name="model">training.session</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" duplicate="0">
+                <header><button name="action_duplicate_session" type="object" string="Duplicate Session" invisible="cancelled"/><button name="action_change" type="object" string="Change Session" invisible="cancelled"/></header>
+                <sheet>
+                    <group><field name="name"/><field name="delivery_id"/><field name="company_id" invisible="1"/><field name="cancelled"/></group>
+                    <group string="Schedule in Reference Timezone">
+                        <field name="timezone"/><field name="start_date"/><field name="start_hour" widget="float_time"/>
+                        <field name="end_date"/><field name="end_hour" widget="float_time"/>
+                        <field name="start_occurrence"/><field name="end_occurrence"/>
+                    </group>
+                    <group><field name="instructor_id"/><field name="mode"/><field name="room_id" domain="[('training_room', '=', True), ('company_id', '=', company_id)]"/>
+                        <field name="location"/><field name="meeting_url" widget="url"/><field name="equipment"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_session_list" model="ir.ui.view">
+        <field name="name">training.session.list</field><field name="model">training.session</field>
+        <field name="arch" type="xml"><list create="0"><field name="name"/><field name="delivery_id"/><field name="start_at"/><field name="end_at"/><field name="timezone"/><field name="instructor_id"/><field name="room_id"/><field name="cancelled"/></list></field>
+    </record>
+    <record id="view_training_session_calendar" model="ir.ui.view">
+        <field name="name">training.session.calendar</field><field name="model">training.session</field>
+        <field name="arch" type="xml"><calendar string="Sessions" date_start="start_at" date_stop="end_at" color="instructor_id" create="0" edit="0" quick_create="0"><field name="name"/><field name="delivery_id"/><field name="instructor_id"/><field name="room_id"/></calendar></field>
+    </record>
+    <record id="view_training_session_edit_form" model="ir.ui.view">
+        <field name="name">training.session.edit.form</field><field name="model">training.session.edit</field>
+        <field name="arch" type="xml">
+            <form string="Add or Change Sessions">
+                <group><field name="delivery_id" readonly="1"/><field name="company_id" invisible="1"/><field name="session_id" invisible="1"/><field name="name"/></group>
+                <group string="Schedule in Reference Timezone">
+                    <field name="reference_timezone"/><field name="start_date"/><field name="start_hour" widget="float_time"/>
+                    <field name="end_date"/><field name="end_hour" widget="float_time"/>
+                    <field name="start_ambiguous" invisible="1"/><field name="end_ambiguous" invisible="1"/>
+                    <field name="start_occurrence" invisible="not start_ambiguous" required="start_ambiguous"/><field name="end_occurrence" invisible="not end_ambiguous" required="end_ambiguous"/>
+                </group>
+                <p invisible="not start_ambiguous and not end_ambiguous">Only choose an occurrence when the local time occurs twice during a clock change. Nonexistent local times are refused.</p>
+                <group><field name="instructor_id"/><field name="mode"/><field name="room_id" domain="[('training_room', '=', True), ('company_id', '=', company_id)]"/><field name="location"/><field name="meeting_url"/><field name="equipment"/></group>
+                <group invisible="session_id"><field name="repeat_count"/><field name="interval_days"/></group>
+                <group><field name="cancel_session" invisible="not session_id"/><field name="delivery_state" invisible="1"/><field name="reason" required="delivery_state == 'confirmed' or cancel_session"/><field name="propose_notice" invisible="delivery_state != 'confirmed'"/></group>
+                <footer><button name="action_apply" type="object" string="Save Sessions" class="btn-primary"/><button string="Cancel" special="cancel"/></footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_adaptation_list" model="ir.ui.view">
+        <field name="name">training.adaptation.list</field><field name="model">training.adaptation</field>
+        <field name="arch" type="xml"><list><field name="enrollment_id"/><field name="decision"/></list></field>
+    </record>
+    <record id="view_training_adaptation_form" model="ir.ui.view">
+        <field name="name">training.adaptation.form</field><field name="model">training.adaptation</field>
+        <field name="arch" type="xml"><form><sheet>
+            <group><field name="delivery_id"/><field name="enrollment_id" domain="[('delivery_id', '=', delivery_id)]"/><field name="details"/><field name="decision"/><field name="instructor_instruction"/></group>
+            <field name="history_ids" readonly="1"><list create="0" edit="0" delete="0"><field name="occurred_at"/><field name="actor_id"/><field name="event"/><field name="before"/><field name="after"/></list></field>
+        </sheet></form></field>
+    </record>
+    <record id="view_training_invitation_send_form" model="ir.ui.view">
+        <field name="name">training.invitation.send.form</field><field name="model">training.invitation.send</field>
+        <field name="arch" type="xml"><form string="Review and Send Invitations"><group><field name="delivery_id" readonly="1"/><field name="recipient_ids" widget="many2many_tags"/></group><p>One individual message per recipient. Repeating this action does not duplicate an unchanged invitation. Delivery errors remain visible in the distribution history.</p><footer><button name="action_send" type="object" string="Send Invitations" class="btn-primary"/><button string="Cancel" special="cancel"/></footer></form></field>
+    </record>
+    <record id="view_training_delivery_preparation" model="ir.ui.view">
+        <field name="name">training.delivery.preparation</field><field name="model">training.delivery</field><field name="inherit_id" ref="view_training_delivery_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button name="action_add_sessions" type="object" string="Add Sessions" groups="training_management.group_training_coordinator" invisible="kind == 'autonomous' or state not in ('preparation', 'confirmed')"/>
+                <button name="action_prepare_invitations" type="object" string="Send Invitations / Updates" groups="training_management.group_training_coordinator" invisible="kind == 'autonomous' or state != 'confirmed'"/>
+                <button name="action_open_reason" type="object" string="Confirm with Exception" context="{'reason_action': 'action_confirm'}" groups="training_management.group_training_coordinator" invisible="state != 'preparation' or below_threshold"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Needs"><field name="sponsor_need" readonly="not can_prepare"/><group groups="training_management.group_training_coordinator"><field name="adaptation_referent_id"/><field name="adaptation_deputy_id"/></group></page>
+                <page string="Sessions" groups="training_management.group_training_coordinator"><field name="session_ids" readonly="1"/></page>
+                <page string="Confidential Adaptations" groups="training_management.group_training_coordinator"><field name="adaptation_ids" context="{'default_delivery_id': id}"/></page>
+                <page string="Invitation Distribution" groups="training_management.group_training_coordinator"><field name="invitation_ids" readonly="1"><list create="0" edit="0" delete="0"><field name="requested_at"/><field name="session_id"/><field name="partner_id"/><field name="recipient_timezone"/><field name="distribution_state"/></list></field></page>
+            </xpath>
+            <xpath expr="//sheet/group" position="inside"><field name="can_prepare" invisible="1"/></xpath>
+        </field>
+    </record>
+    <record id="view_training_enrollment_positioning" model="ir.ui.view">
+        <field name="name">training.enrollment.positioning</field><field name="model">training.enrollment</field><field name="inherit_id" ref="view_training_enrollment_form"/>
+        <field name="arch" type="xml"><xpath expr="//sheet" position="inside"><group string="Individual Preparation" groups="training_management.group_training_coordinator"><field name="participant_objectives"/><field name="positioning"/><field name="instructor_summary"/></group></xpath></field>
+    </record>
+    <record id="view_training_room_list" model="ir.ui.view">
+        <field name="name">resource.resource.training.room.list</field><field name="model">resource.resource</field>
+        <field name="arch" type="xml"><list editable="bottom"><field name="name"/><field name="company_id"/><field name="training_room" column_invisible="True"/><field name="resource_type" column_invisible="True"/><field name="calendar_id"/><field name="tz"/><field name="training_capacity"/><field name="active"/></list></field>
+    </record>
+    <record id="view_training_unavailability_list" model="ir.ui.view">
+        <field name="name">training.unavailability.list</field><field name="model">training.unavailability</field>
+        <field name="arch" type="xml"><list editable="bottom"><field name="company_id"/><field name="instructor_id"/><field name="room_id" domain="[('training_room', '=', True), ('company_id', '=', company_id)]"/><field name="start_at"/><field name="end_at"/><field name="active"/></list></field>
+    </record>
+    <record id="action_training_sessions" model="ir.actions.act_window"><field name="name">Sessions</field><field name="res_model">training.session</field><field name="view_mode">calendar,list,form</field><field name="domain">[('cancelled', '=', False)]</field></record>
+    <record id="action_training_rooms" model="ir.actions.act_window"><field name="name">Training Rooms</field><field name="res_model">resource.resource</field><field name="view_mode">list</field><field name="view_id" ref="view_training_room_list"/><field name="domain">[('training_room', '=', True)]</field><field name="context">{'default_training_room': True, 'default_resource_type': 'material'}</field></record>
+    <record id="action_training_unavailability" model="ir.actions.act_window"><field name="name">Resource Unavailability</field><field name="res_model">training.unavailability</field><field name="view_mode">list</field><field name="view_id" ref="view_training_unavailability_list"/></record>
+    <menuitem id="menu_training_sessions" name="Sessions" parent="menu_training_root" action="action_training_sessions" sequence="60" groups="training_management.group_training_coordinator"/>
+    <menuitem id="menu_training_rooms" name="Training Rooms" parent="menu_training_root" action="action_training_rooms" sequence="70" groups="training_management.group_training_coordinator"/>
+    <menuitem id="menu_training_unavailability" name="Resource Unavailability" parent="menu_training_root" action="action_training_unavailability" sequence="80" groups="training_management.group_training_coordinator"/>
+</odoo>

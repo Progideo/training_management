@@ -4,3 +4,7 @@ from . import training_controlled
 from . import training_delivery
 from . import training_allocation
 from . import training_enrollment
+from . import training_schedule
+from . import training_preparation
+from . import training_invitation
+from . import training_attachment

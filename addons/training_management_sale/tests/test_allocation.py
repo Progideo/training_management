@@ -264,3 +264,28 @@ class TestAllocationCommerce(EnrollmentCase):
             company_ids=[Command.set(self.other_company.ids)],
         )
         self.assertFalse(self.env["training.delivery"].with_user(other).search([("id", "=", delivery.id)]))
+
+    def test_s04_commercial_cannot_access_positioning_or_adaptations(self):
+        delivery = self.delivery(sponsor_need="Fictional common business need")
+        enrollment = self.enrollment(delivery)
+        enrollment.write({"positioning": "CONFIDENTIAL POSITIONING", "instructor_summary": "Useful summary"})
+        adaptation = (
+            self.env["training.adaptation"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "delivery_id": delivery.id,
+                    "enrollment_id": enrollment.id,
+                    "details": "CONFIDENTIAL ARRANGEMENT",
+                    "decision": "Fictional decision",
+                }
+            )
+        )
+        self.assertEqual(delivery.with_user(self.seller).sponsor_need, "Fictional common business need")
+        for user in (self.seller, self.finance):
+            with self.assertRaises(AccessError):
+                adaptation.with_user(user).read(["details"])
+            with self.assertRaises(AccessError):
+                enrollment.with_user(user).read(["positioning"])
+            with self.assertRaises(AccessError):
+                delivery.with_user(user).action_prepare_invitations()

@@ -2,12 +2,12 @@
 {
     "name": "Training Management",
     "summary": "Standard training catalogue and controlled programme versions",
-    "version": "20.0.1.2.2",
+    "version": "20.0.1.3.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
     "license": "LGPL-3",
-    "depends": ["base", "mail"],
+    "depends": ["base", "mail", "resource", "portal"],
     "data": [
         "security/training_security.xml",
         "security/ir.access.csv",
@@ -19,6 +19,8 @@
         "wizard/training_enrollment_operation_views.xml",
         "wizard/training_action_reason_views.xml",
         "views/training_enrollment_actions.xml",
+        "views/training_preparation_views.xml",
+        "views/trainer_portal_templates.xml",
     ],
     "application": True,
 }
