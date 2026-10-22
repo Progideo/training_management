@@ -71,6 +71,9 @@ class TrainingInvitation(models.Model):
         if not all_sessions:
             raise ValidationError(self.env._("There are no sessions to invite recipients to."))
         count = 0
+        # Never carry RPC default_* values into elevated mail creation: in
+        # particular no default_attachment_ids, CC, followers or mail server.
+        clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
         for session in all_sessions:
             participants = delivery.enrollment_ids.filtered(lambda item: item.state == "confirmed").participant_id
             for partner in recipients & (participants | session.instructor_id):
@@ -108,6 +111,7 @@ class TrainingInvitation(models.Model):
                 mail = (
                     self.env["mail.mail"]
                     .sudo()
+                    .with_context(clean_context)
                     .create(
                         {
                             "subject": "%s — %s" % (title, session.name),
@@ -121,7 +125,7 @@ class TrainingInvitation(models.Model):
                         }
                     )
                 )
-                super(TrainingInvitation, self.sudo()).create(
+                super(TrainingInvitation, self.sudo().with_context(clean_context)).create(
                     {
                         "delivery_id": delivery.id,
                         "session_id": session.id,

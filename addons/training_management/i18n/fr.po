@@ -3042,3 +3042,9 @@ msgstr "Début ambigu"
 #: code:addons/training_management/wizard/training_session_edit.py:0
 msgid "Training session"
 msgstr "Séance de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "A delivery with sessions keeps its company, programme and kind."
+msgstr "Une réalisation comportant des séances conserve sa société, son programme et sa nature."

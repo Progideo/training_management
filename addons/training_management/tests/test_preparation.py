@@ -271,6 +271,54 @@ class TestPreparation(PreparationCase):
                 record.with_user(foreign).export_data([field])
         self.assertFalse(self.env["training.session"].with_user(foreign).search([]))
 
+    def test_rpc_defaults_cannot_inject_generated_values_or_email_attachments(self):
+        delivery, session = self.planned()
+        with self.assertRaises(ValidationError):
+            delivery.write({"kind": "autonomous"})
+        delivery.write({"timezone": "UTC"})
+        generated = (
+            self.env["training.session"]
+            .with_user(self.coordinator)
+            .with_context(
+                default_cancelled=True,
+                default_start_at="2030-01-01",
+                default_company_id=self.other_company.id,
+                default_timezone="Europe/Paris",
+            )
+            .create(
+                {
+                    "name": "Fictional safe defaults",
+                    "delivery_id": delivery.id,
+                    "instructor_id": self.portal.partner_id.id,
+                    "mode": "remote",
+                    "meeting_url": "https://example.invalid/room",
+                    "start_date": "2027-01-05",
+                    "end_date": "2027-01-05",
+                    "start_hour": 9,
+                    "end_hour": 12,
+                }
+            )
+        )
+        self.assertFalse(generated.cancelled)
+        self.assertEqual(generated.start_at, datetime(2027, 1, 5, 9))
+        self.assertEqual(generated.company_id, self.company)
+        self.assertEqual(generated.timezone, "UTC")
+        attachment = self.env["ir.attachment"].create({"name": "Must not be sent", "raw": b"FORBIDDEN DEFAULT FILE"})
+        delivery.action_confirm()
+        invitations = (
+            self.env["training.invitation"]
+            .with_user(self.coordinator)
+            .with_context(
+                default_email_cc="unselected@example.invalid", default_attachment_ids=[Command.link(attachment.id)]
+            )
+        )
+        invitations._queue(delivery, self.portal.partner_id)
+        for mail in delivery.invitation_ids.sudo().mail_id:
+            self.assertFalse(mail.email_cc)
+            self.assertFalse(mail.attachment_ids)
+            self.assertNotIn("FORBIDDEN DEFAULT FILE", mail.body_html)
+            self.assertTrue(mail._prepare_outgoing_list())
+
     def test_invitation_control_local_time_idempotence_and_error_retry(self):
         delivery, session = self.planned()
         adaptation = self.adaptation(delivery)

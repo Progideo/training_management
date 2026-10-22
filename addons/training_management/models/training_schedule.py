@@ -258,7 +258,11 @@ class TrainingSession(models.Model):
             raise ValidationError(self.env._("Sessions can only change before the delivery starts."))
         if any(delivery.state == "confirmed" for delivery in deliveries) and not (reason or "").strip():
             raise ValidationError(self.env._("Enter a reason for adding sessions after confirmation."))
-        records = super().create(vals_list)  # pylint: disable=super-method-mismatch  # shared checked creation helper
+        # Public RPC contexts may contain arbitrary default_* values. Only the
+        # validated input above may define a session; generated values are not
+        # allowed to enter through defaults (UTC instants, company, cancellation).
+        clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
+        records = super(TrainingSession, self.with_context(clean_context)).create(vals_list)  # pylint: disable=super-method-mismatch  # shared checked creation helper
         for record in records:
             self.env["training.operation"]._record(
                 record, {}, {"name": record.name, "start_at": record.start_at, "end_at": record.end_at}, reason

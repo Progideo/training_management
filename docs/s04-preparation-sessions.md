@@ -41,7 +41,8 @@ Une séance porte dates/heures locales et fuseau de référence de la réalisati
 les instants UTC sont calculés côté serveur. Une heure inexistante est refusée ;
 une heure ambiguë exige le choix de la première/deuxième occurrence. Les invitations
 utilisent le fuseau du contact, ou explicitement le fuseau de référence s'il manque.
-Le fuseau de référence est conservé après création des séances.
+Le fuseau de référence, la société, le programme et la nature sont conservés après
+création des séances.
 
 Présentiel : lieu/salle ; distanciel : lien HTTPS ; mixte : les deux. Une offre
 autonome n'a pas de séance fictive. Une réalisation datée doit avoir ses séances

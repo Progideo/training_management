@@ -76,6 +76,15 @@ class TrainingDelivery(models.Model):
         return super()._transition(target, reason)
 
     def write(self, vals):
+        if self.session_ids and any(
+            key in vals
+            and any(
+                item[key].id != vals[key] if item._fields[key].type == "many2one" else item[key] != vals[key]
+                for item in self
+            )
+            for key in ("company_id", "program_id", "kind")
+        ):
+            raise ValidationError(self.env._("A delivery with sessions keeps its company, programme and kind."))
         if set(vals) & {"adaptation_referent_id", "adaptation_deputy_id"}:
             self._require_coordinator()
             # A coordinator cannot grant themselves access to an existing
@@ -86,7 +95,7 @@ class TrainingDelivery(models.Model):
                 )
             )
             protected._require_adaptation_access()
-        if "timezone" in vals and self.session_ids:
+        if "timezone" in vals and self.session_ids and any(item.timezone != vals["timezone"] for item in self):
             raise ValidationError(self.env._("The reference timezone is preserved once sessions exist."))
         result = super().write(vals)
         if set(vals) & {"start_at", "end_at", "kind", "company_id"}:
@@ -218,7 +227,8 @@ class TrainingAdaptation(models.Model):
             for values in vals_list
         ):
             raise AccessError(self.env._("Only adaptation content can be supplied."))
-        records = super().create(vals_list)
+        clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
+        records = super(TrainingAdaptation, self.with_context(clean_context)).create(vals_list)
         for record in records:
             record._audit(False)
         return records
