@@ -145,6 +145,7 @@ msgstr "Lecteur du catalogue"
 #. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_form
+#: code:addons/training_management/models/training_delivery.py:0
 msgid "Change Dates"
 msgstr "Modifier les dates"
 
@@ -311,10 +312,14 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__id
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__id
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__id
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__id
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__id
 msgid "ID"
 msgstr "ID"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_operation__labels
 msgid "Labels"
 msgstr "Libellés"
 
@@ -678,6 +683,7 @@ msgid "This action does not accept a reason from the assistant."
 msgstr "Cette action n’accepte pas de motif depuis l’assistant."
 
 #. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_delivery_unique_reference
 msgid "This delivery reference already exists in the company."
 msgstr "Cette référence de réalisation existe déjà dans la société."
 
@@ -688,6 +694,7 @@ msgid "This programme status transition is not allowed."
 msgstr "Ce changement d’état du programme n’est pas autorisé."
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__threshold_alerted
 msgid "Threshold Alerted"
 msgstr "Alerte de seuil envoyée"
 
@@ -822,6 +829,7 @@ msgstr "Créer le brouillon"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_release
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_operation
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -902,6 +910,7 @@ msgstr "Durée d’accès en jours"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__access_end
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__access_end
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__access_end
 msgid "Access End"
 msgstr "Fin d’accès"
 
@@ -913,6 +922,7 @@ msgstr "Politique d’accès"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__access_start
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__access_start
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__access_start
 msgid "Access Start"
 msgstr "Début d’accès"
 
@@ -995,6 +1005,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_extend
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_release
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_operation
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -1002,6 +1013,7 @@ msgstr "Appliquer"
 #. odoo-python
 #: code:addons/training_management/models/training_enrollment.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+#: model:ir.actions.act_window,name:training_management.action_enrollment_authorize_selection
 msgid "Authorize Commercially"
 msgstr "Autoriser commercialement"
 
@@ -1130,6 +1142,7 @@ msgstr "Confirmer le lot"
 #. odoo-python
 #: code:addons/training_management/models/training_enrollment.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+#: model:ir.actions.act_window,name:training_management.action_enrollment_confirm_selection
 msgid "Confirm Enrollment"
 msgstr "Confirmer l’inscription"
 
@@ -1218,6 +1231,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__delivery_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1233,6 +1247,7 @@ msgstr "Accès effectif"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__end_at
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__end_at
 msgid "End At"
 msgstr "Fin"
 
@@ -1392,6 +1407,7 @@ msgstr "Seul un accès actif d’une inscription confirmée peut être suspendu.
 #. odoo-python
 #: code:addons/training_management/models/training_enrollment.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+#: model:ir.actions.act_window,name:training_management.action_enrollment_open_access_selection
 msgid "Open / Resume Access"
 msgstr "Ouvrir / reprendre l’accès"
 
@@ -1420,6 +1436,7 @@ msgstr "L’historique des opérations est immuable."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__participant_id
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_participant_id
 msgid "Participant"
 msgstr "Participant"
 
@@ -1461,6 +1478,7 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__reason
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__reason
 #: model:ir.model.fields,field_description:training_management.field_training_operation__reason
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__reason
 msgid "Reason"
 msgstr "Motif"
 
@@ -1615,6 +1633,7 @@ msgstr "Démarrer"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__start_at
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__start_at
 msgid "Start At"
 msgstr "Début"
 
@@ -1853,3 +1872,207 @@ msgstr "Oui"
 #: code:addons/training_management/models/training_enrollment.py:0
 msgid "New Enrollment"
 msgstr "Nouvelle inscription"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_needaction
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_needaction
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_ids
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_ids
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_exception_decoration
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_exception_decoration
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d’exception d’activité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_plans_ids
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_plans_ids
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_plans_ids
+msgid "Activity Plans"
+msgstr "Plans d'activité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_state
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_state
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_type_icon
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_type_icon
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_attachment_count
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_attachment_count
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_follower_ids
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_follower_ids
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_partner_ids
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_partner_ids
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__has_message
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__has_message
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_exception_icon
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_exception_icon
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__activity_exception_icon
+#: model:ir.model.fields,help:training_management.field_training_enrollment__activity_exception_icon
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__message_needaction
+#: model:ir.model.fields,help:training_management.field_training_enrollment__message_needaction
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__message_has_error
+#: model:ir.model.fields,help:training_management.field_training_enrollment__message_has_error
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_is_follower
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_is_follower
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_has_error
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_has_error
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_ids
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_ids
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__my_activity_date_deadline
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_date_deadline
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_date_deadline
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Date limite de l'activité à venir"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_summary
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_summary
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_type_id
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_type_id
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_needaction_counter
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_needaction_counter
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_has_error_counter
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_has_error_counter
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__message_needaction_counter
+#: model:ir.model.fields,help:training_management.field_training_enrollment__message_needaction_counter
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__message_has_error_counter
+#: model:ir.model.fields,help:training_management.field_training_enrollment__message_has_error_counter
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_user_id
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_user_id
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__activity_state
+#: model:ir.model.fields,help:training_management.field_training_enrollment__activity_state
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : l'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifié : activités futures."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__activity_exception_decoration
+#: model:ir.model.fields,help:training_management.field_training_enrollment__activity_exception_decoration
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."

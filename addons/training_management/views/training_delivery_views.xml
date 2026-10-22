@@ -41,13 +41,13 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'preparation' or below_threshold"/>
-                    <button name="action_open_reason" type="object" string="Confirm below Threshold" context="{'reason_action': 'action_confirm'}" invisible="state != 'preparation' or not below_threshold"/>
-                    <button name="action_open_dates" type="object" string="Change Dates" invisible="state not in ('preparation', 'confirmed')"/>
-                    <button name="action_start" type="object" string="Start" invisible="state != 'confirmed'"/>
-                    <button name="action_deliver" type="object" string="Mark Delivered" invisible="state != 'ongoing'"/>
-                    <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'delivered'"/>
-                    <button name="action_open_reason" type="object" string="Cancel Delivery" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled')" confirm="Cancel the delivery, revoke its enrollments and release its allocations? Commercial documents are preserved."/>
+                    <button groups="training_management.group_training_coordinator" name="action_confirm" type="object" string="Confirm" invisible="state != 'preparation' or below_threshold"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Confirm below Threshold" context="{'reason_action': 'action_confirm'}" invisible="state != 'preparation' or not below_threshold"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_dates" type="object" string="Change Dates" invisible="state not in ('preparation', 'confirmed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_start" type="object" string="Start" invisible="state != 'confirmed'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_deliver" type="object" string="Mark Delivered" invisible="state != 'ongoing'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'delivered'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Cancel Delivery" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled')" confirm="Cancel the delivery, revoke its enrollments and release its allocations? Commercial documents are preserved."/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -78,7 +78,7 @@
                         <page string="Enrollments">
                             <field name="enrollment_ids" readonly="1"/>
                         </page>
-                        <page string="History">
+                        <page string="History" groups="training_management.group_training_coordinator">
                             <field name="operation_ids" readonly="1">
                                 <list create="0" edit="0" delete="0">
                                     <field name="occurred_at"/>
@@ -135,11 +135,11 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm Allocation" invisible="state != 'reserved'"/>
-                    <button name="action_open_extend" type="object" string="Extend Deadline" invisible="state != 'reserved'"/>
-                    <button name="action_open_release" type="object" string="Release Places" invisible="state not in ('reserved', 'confirmed')"/>
-                    <button name="action_expire" type="object" string="Record Expiry" invisible="state != 'reserved'"/>
-                    <button name="action_open_reason" type="object" string="Cancel Allocation" context="{'reason_action': 'action_cancel'}" invisible="state in ('expired', 'cancelled')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_confirm" type="object" string="Confirm Allocation" invisible="state != 'reserved'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_extend" type="object" string="Extend Deadline" invisible="state != 'reserved'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_release" type="object" string="Release Places" invisible="state not in ('reserved', 'confirmed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_expire" type="object" string="Record Expiry" invisible="state != 'reserved'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Cancel Allocation" context="{'reason_action': 'action_cancel'}" invisible="state in ('expired', 'cancelled')"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -186,7 +186,7 @@
                 <separator/>
                 <filter name="requests" string="Requests" domain="[('state', '=', 'requested')]"/>
                 <filter name="expired_reservations" string="Expired Reservations" domain="[('state', '=', 'reserved'), ('reservation_end', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S'))]"/>
-                <filter name="access_to_open" string="Accesses to Open" domain="[('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)]"/>
+                <filter groups="training_management.group_training_coordinator" name="access_to_open" string="Accesses to Open" domain="[('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)]"/>
                 <group>
                     <filter name="group_delivery" string="Delivery" context="{'group_by': 'delivery_id'}"/>
                     <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
@@ -201,22 +201,22 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_wait" type="object" string="Waiting List" invisible="state != 'requested'"/>
-                    <button name="action_open_operation" type="object" string="Reserve a Place" context="{'operation': 'reserve'}" invisible="state not in ('requested', 'waiting', 'reserved')"/>
-                    <button name="action_open_operation" type="object" string="Extend Access" context="{'operation': 'extend'}" invisible="state != 'confirmed' or not access_end"/>
-                    <button name="action_open_operation" type="object" string="Postpone" context="{'operation': 'postpone'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-                    <button name="action_open_operation" type="object" string="Replace Participant" context="{'operation': 'replace'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-                    <button name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-                    <button name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-                    <button name="action_confirm" type="object" string="Confirm Enrollment" invisible="state not in ('requested', 'reserved')"/>
-                    <button name="action_open_reason" type="object" string="Authorize Commercially" context="{'reason_action': 'action_authorize'}" invisible="state != 'confirmed' or commercially_authorized"/>
-                    <button name="action_open_reason" type="object" string="Withdraw Authorization" context="{'reason_action': 'action_revoke_authorization'}" invisible="not commercially_authorized"/>
-                    <button name="action_open_reason" type="object" string="Open / Resume Access" context="{'reason_action': 'action_open_access'}" invisible="state != 'confirmed' or access_state == 'revoked'"/>
-                    <button name="action_open_reason" type="object" string="Suspend Access" context="{'reason_action': 'action_suspend_access'}" invisible="access_state != 'active'"/>
-                    <button name="action_open_reason" type="object" string="Revoke Access" context="{'reason_action': 'action_revoke_access'}" invisible="access_state == 'revoked'"/>
-                    <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'confirmed'"/>
-                    <button name="action_open_reason" type="object" string="Abandon" context="{'reason_action': 'action_abandon'}" invisible="state != 'confirmed'"/>
-                    <button name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_wait" type="object" string="Waiting List" invisible="state != 'requested'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_operation" type="object" string="Reserve a Place" context="{'operation': 'reserve'}" invisible="state not in ('requested', 'waiting', 'reserved')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_operation" type="object" string="Extend Access" context="{'operation': 'extend'}" invisible="state != 'confirmed' or not access_end"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_operation" type="object" string="Postpone" context="{'operation': 'postpone'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_operation" type="object" string="Replace Participant" context="{'operation': 'replace'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_confirm" type="object" string="Confirm Enrollment" invisible="state not in ('requested', 'reserved')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Authorize Commercially" context="{'reason_action': 'action_authorize'}" invisible="state != 'confirmed' or commercially_authorized"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Withdraw Authorization" context="{'reason_action': 'action_revoke_authorization'}" invisible="state != 'confirmed' or not commercially_authorized"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Open / Resume Access" context="{'reason_action': 'action_open_access'}" invisible="state != 'confirmed' or not commercially_authorized or not user_id or access_state not in ('unopened', 'suspended')"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Suspend Access" context="{'reason_action': 'action_suspend_access'}" invisible="state != 'confirmed' or access_state != 'active'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Revoke Access" context="{'reason_action': 'action_revoke_access'}" invisible="state != 'confirmed' or access_state == 'revoked'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'confirmed'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Abandon" context="{'reason_action': 'action_abandon'}" invisible="state != 'confirmed'"/>
+                    <button groups="training_management.group_training_coordinator" name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
