@@ -2,7 +2,7 @@
 
 Référence : [#14](https://github.com/Progideo/training_management/issues/14), ORG01–ORG02,
 SEC01–SEC02, NOT01 et UX01. Ce cadrage reprend les simplifications et les trois choix
-validés dans la conversation S04. Catégories et PDF CAT01 sont un lot distinct,
+validés dans la conversation S04. [Catégories et PDF CAT01](catalogue-categories-pdf.md) sont un lot distinct,
 conformément au report S03.1 ; ils ne sont pas livrés ici.
 
 ## Parcours et décisions
