@@ -35,14 +35,6 @@ jobs:
         run: |
           set -o pipefail
           pre-commit run --all-files --show-diff-on-failure 2>&1 | tee pre-commit.log
-      - name: Diagnostic temporaire pre-commit (annotations, à retirer)
-        if: failure()
-        run: |
-          grep -E "^addons|^tests|exit code" pre-commit.log | sed -E 's/ More info at [^ ]*//; s#^addons/##; s/%/pct/g' | cut -c1-420 > pc.txt
-          split -l 25 pc.txt pc_part_
-          for part in pc_part_*; do
-            echo "::error title=pre-commit $part::$(sed ':a;N;$!ba;s/\n/%0A/g' "$part")"
-          done
 
   scenarios:
     name: Odoo — ${{ matrix.scenario }}
@@ -78,18 +70,6 @@ jobs:
         run: bash tests/ci/run_odoo_scenario.sh "$SCENARIO"
         env:
           SCENARIO: ${{ matrix.scenario }}
-      - name: Diagnostic temporaire (annotations, à retirer)
-        if: failure()
-        run: |
-          d=test-results/${{ matrix.scenario }}
-          awk -F'\t' 'NR>1 && $2!=0 {print $1}' $d/timings.tsv | while IFS= read -r step; do
-            f=$d/$step.log
-            [ -f "$f" ] || continue
-            msg=$(grep -n -E "^(FAIL|ERROR):|Traceback|AssertionError|AssertionError:|Error:|Exception:" "$f" | grep -v "mail_mail\|failed sending" | head -12 | cut -c1-260 | sed ':a;N;$!ba;s/\n/%0A/g')
-            tb=$(grep -n -B2 -A16 -m2 "Traceback" "$f" | cut -c1-220 | tail -n 42 | sed ':a;N;$!ba;s/\n/%0A/g')
-            end=$(grep -n -A8 -E "ParseError|Error: |Exception: " "$f" | tail -n 30 | cut -c1-300 | sed ':a;N;$!ba;s/\n/%0A/g')
-            echo "::error title=$step::$msg%0A----%0A$tb%0A====%0A$end"
-          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
