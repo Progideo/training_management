@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -8,7 +8,7 @@ class AccountPaymentRegister(models.TransientModel):
     training_bank_payment_required = fields.Boolean(
         compute="_compute_training_bank_payment_required",
     )
-    training_bank_reference = fields.Char(string="Training Bank Reference")
+    training_bank_reference = fields.Char()
     training_bank_verified = fields.Boolean(string="Bank Receipt Checked")
     training_duplicate_reference_exists = fields.Boolean(
         compute="_compute_training_duplicate_reference_exists",
@@ -73,24 +73,26 @@ class AccountPaymentRegister(models.TransientModel):
             and self._training_invoices()
             and (self.journal_id.type != "bank" or self.payment_method_line_id.code != "manual")
         ):
-            raise ValidationError(_("Record training invoice payments through a bank journal with the manual method."))
+            raise ValidationError(
+                self.env._("Record training invoice payments through a bank journal with the manual method.")
+            )
         if self.training_bank_payment_required:
             if not (self.training_bank_reference or "").strip():
-                raise ValidationError(_("Enter the bank reference before recording a training payment."))
+                raise ValidationError(self.env._("Enter the bank reference before recording a training payment."))
             if not self.training_bank_verified:
                 raise ValidationError(
-                    _("Confirm that the bank receipt was checked before recording a training payment.")
+                    self.env._("Confirm that the bank receipt was checked before recording a training payment.")
                 )
             if any(invoice.currency_id != self.currency_id for invoice in self._training_invoices()):
                 raise ValidationError(
-                    _("A training payment in another currency requires an explicit accounting review.")
+                    self.env._("A training payment in another currency requires an explicit accounting review.")
                 )
             if (
                 self.training_duplicate_reference_exists
                 and not (self.training_duplicate_reference_reason or "").strip()
             ):
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "This bank reference was already recorded in this company and journal. "
                         "Explain the intentional split before continuing."
                     )

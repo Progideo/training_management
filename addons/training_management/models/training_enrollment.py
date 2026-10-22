@@ -241,7 +241,7 @@ class TrainingEnrollment(models.Model):
                 )
             return records
 
-    def write(self, vals):
+    def write(self, vals):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
         self._require_coordinator()
         vals = self._write_technical(vals)
         if not vals:

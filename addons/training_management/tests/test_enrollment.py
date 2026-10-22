@@ -380,7 +380,7 @@ class TestEnrollment(EnrollmentCase):
         enrollment_form.free_reason = "Fictional invitation"
         e = enrollment_form.save()
         action = e.action_open_operation()
-        wizard_form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))
+        wizard_form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
         wizard_form.deadline = fields.Datetime.now() + timedelta(days=1)
         wizard_form.reason = "Manual place proposal"
         wizard_form.save().action_apply()
@@ -650,7 +650,7 @@ class TestReservationDeadlineAndUniqueness(EnrollmentCase):
         old = lot.expires_at
         action = lot.action_open_extend()
         self.assertEqual(action["res_model"], "training.allocation.extend")
-        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))
+        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
         form.expires_at = lot.expires_at + timedelta(days=1)
         form.reason = "Two more days"
         form.save().action_apply()
@@ -751,7 +751,7 @@ class TestChangeDates(EnrollmentCase):
         delivery = self.session()
         action = delivery.action_open_dates()
         self.assertEqual(action["res_model"], "training.delivery.dates")
-        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))
+        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
         form.start_at = delivery.start_at + timedelta(days=1)
         form.end_at = delivery.end_at + timedelta(days=1)
         form.reason = "New room"

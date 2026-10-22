@@ -1,4 +1,4 @@
-from odoo import _, models
+from odoo import models
 from odoo.exceptions import ValidationError
 
 
@@ -16,7 +16,7 @@ class AccountMoveSend(models.AbstractModel):
             recipients = self.env["res.partner"].browse(move_data.get("mail_partner_ids", []))
             if not recipients or recipients - allowed:
                 raise ValidationError(
-                    _("Send training invoice PDFs only to named contacts authorized on this invoice.")
+                    self.env._("Send training invoice PDFs only to named contacts authorized on this invoice.")
                 )
         return super()._get_mail_params(move, move_data)
 

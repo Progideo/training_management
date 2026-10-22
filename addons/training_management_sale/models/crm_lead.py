@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -28,7 +28,6 @@ class CrmLead(models.Model):
     )
     training_sponsor_id = fields.Many2one(
         "res.partner",
-        string="Training Sponsor",
         ondelete="restrict",
         check_company=True,
         help="Person or organisation ordering the training; it can differ from the customer.",
@@ -63,9 +62,9 @@ class CrmLead(models.Model):
     def _check_training_request_values(self):
         for lead in self:
             if lead.training_attendee_count < 0:
-                raise ValidationError(_("Expected participants cannot be negative."))
+                raise ValidationError(self.env._("Expected participants cannot be negative."))
             if lead.training_date_from and lead.training_date_to and lead.training_date_to < lead.training_date_from:
-                raise ValidationError(_("The preferred end date must follow the start date."))
+                raise ValidationError(self.env._("The preferred end date must follow the start date."))
 
     def _prepare_opportunity_quotation_context(self):
         context = super()._prepare_opportunity_quotation_context()
@@ -73,11 +72,13 @@ class CrmLead(models.Model):
             return context
         self.ensure_one()
         if not self.training_program_id or self.training_program_id.state not in ("validated", "published"):
-            raise ValidationError(_("Choose a validated or published programme before creating a training quotation."))
+            raise ValidationError(
+                self.env._("Choose a validated or published programme before creating a training quotation.")
+            )
         if self.training_attendee_count <= 0 or not self.training_requested_currency_id:
-            raise ValidationError(_("Enter a positive participant count and requested currency."))
+            raise ValidationError(self.env._("Enter a positive participant count and requested currency."))
         if self.training_requested_currency_id.name not in ("MAD", "EUR"):
-            raise ValidationError(_("Training quotations use MAD or EUR."))
+            raise ValidationError(self.env._("Training quotations use MAD or EUR."))
         self.training_program_id.check_access("read")
         context.update(
             {

@@ -1,4 +1,4 @@
-from odoo import api, models, _
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
@@ -22,7 +22,9 @@ class PaymentTransaction(models.Model):
             else:
                 training_documents = documents._training_sale_invoices()
             if training_documents:
-                raise ValidationError(_("Online payment transactions are disabled for training orders and invoices."))
+                raise ValidationError(
+                    self.env._("Online payment transactions are disabled for training orders and invoices.")
+                )
 
     @api.model_create_multi
     def create(self, vals_list):

@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -52,7 +52,6 @@ class AccountPayment(models.Model):
         return [recipient for recipient in recipients if not recipient["share"] or recipient["id"] in allowed_ids]
 
     training_bank_reference = fields.Char(
-        string="Training Bank Reference",
         copy=False,
         index=True,
         help="Reference checked against the bank evidence, separate from the invoice memo.",
@@ -80,14 +79,14 @@ class AccountPayment(models.Model):
     )
 
     @api.model_create_multi
-    def create(self, vals_list):
+    def create(self, vals_list):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
         default_reference = self.default_get(["training_bank_reference"]).get("training_bank_reference")
         vals_list = [dict(vals) for vals in vals_list]
         for vals in vals_list:
             if "training_bank_reference" not in vals and default_reference:
                 vals["training_bank_reference"] = default_reference
             if {"training_bank_verified_by_id", "training_bank_verified_at"} & set(vals):
-                raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
+                raise ValidationError(self.env._("The bank check audit fields are set when the payment is posted."))
             if "training_bank_reference" in vals:
                 vals["training_bank_reference"] = (vals["training_bank_reference"] or "").strip().upper() or False
         # Native create accepts an already paid state; enter it through the same
@@ -99,14 +98,14 @@ class AccountPayment(models.Model):
                 "training_bank_verified_at",
             )
         ):
-            raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
+            raise ValidationError(self.env._("The bank check audit fields are set when the payment is posted."))
         default_state = self.default_get(["state"]).get("state", "draft")
         states = [vals.get("state", default_state) for vals in vals_list]
         with self.env.cr.savepoint():
             return self._create_training_guarded_payments(vals_list, states)
 
     def _create_training_guarded_payments(self, vals_list, states):
-        payments = super().create(
+        payments = super().create(  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
             [
                 {**vals, "state": "draft"} if state in ("paid", "reconciled") else vals
                 for vals, state in zip(vals_list, states)
@@ -120,10 +119,10 @@ class AccountPayment(models.Model):
 
     def write(self, vals):
         if {"training_bank_verified_by_id", "training_bank_verified_at"} & set(vals):
-            raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
+            raise ValidationError(self.env._("The bank check audit fields are set when the payment is posted."))
         if {"training_bank_reference", "training_duplicate_reference_reason", "training_bank_verified"} & set(vals):
             if any(payment.state != "draft" for payment in self):
-                raise ValidationError(_("The bank reference of a posted payment cannot be changed."))
+                raise ValidationError(self.env._("The bank reference of a posted payment cannot be changed."))
             if "training_bank_reference" in vals:
                 vals["training_bank_reference"] = (vals["training_bank_reference"] or "").strip().upper() or False
         self.check_access("write")
@@ -169,10 +168,12 @@ class AccountPayment(models.Model):
             for payment in tagged_payments
         ):
             raise ValidationError(
-                _("A training bank reference requires an incoming bank payment with the manual method.")
+                self.env._("A training bank reference requires an incoming bank payment with the manual method.")
             )
         if any(not payment.training_bank_verified for payment in tagged_payments):
-            raise ValidationError(_("Confirm that the bank receipt was checked before posting a training payment."))
+            raise ValidationError(
+                self.env._("Confirm that the bank receipt was checked before posting a training payment.")
+            )
         payments = tagged_payments
         for journal_id in sorted(set(payments.journal_id.ids)):
             # A lock alone does not refresh Odoo's REPEATABLE READ snapshot.
@@ -200,7 +201,7 @@ class AccountPayment(models.Model):
             )
             if (existing or key in seen) and not (payment.training_duplicate_reference_reason or "").strip():
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "This bank reference was already recorded in this company and journal. "
                         "Explain the intentional split before continuing."
                     )

@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -29,7 +29,6 @@ class SaleOrder(models.Model):
     )
     training_sponsor_id = fields.Many2one(
         "res.partner",
-        string="Training Sponsor",
         ondelete="restrict",
         check_company=True,
         copy=True,
@@ -96,7 +95,7 @@ class SaleOrder(models.Model):
             order.state == "sale" and order.training_request_kind and order.currency_id.id != vals["currency_id"]
             for order in self
         ):
-            raise ValidationError(_("Revise the training offer instead of changing its confirmed currency."))
+            raise ValidationError(self.env._("Revise the training offer instead of changing its confirmed currency."))
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind",
             "training_requested_program_id",
@@ -105,7 +104,7 @@ class SaleOrder(models.Model):
             "training_expected_payer_id",
             "training_admin_contact_id",
         }:
-            raise ValidationError(_("Revise the training offer instead of changing its confirmed request."))
+            raise ValidationError(self.env._("Revise the training offer instead of changing its confirmed request."))
         with self.env.cr.savepoint():
             result = super().write(vals)
             if vals.get("state") in ("sent", "sale"):
@@ -116,24 +115,26 @@ class SaleOrder(models.Model):
         for order in self:
             lines = order.order_line.filtered(lambda line: line.product_id.product_tmpl_id.training_course_id)
             if lines and not order.training_request_kind:
-                raise ValidationError(_("Qualify the training request before sending its quotation."))
+                raise ValidationError(self.env._("Qualify the training request before sending its quotation."))
             if not order.training_request_kind:
                 continue
             if not order.training_requested_program_id or order.training_requested_program_id.state not in (
                 "validated",
                 "published",
             ):
-                raise ValidationError(_("A training order requires a validated or published programme version."))
+                raise ValidationError(
+                    self.env._("A training order requires a validated or published programme version.")
+                )
             if order.training_attendee_count <= 0:
-                raise ValidationError(_("Enter a positive participant count on the training quotation."))
+                raise ValidationError(self.env._("Enter a positive participant count on the training quotation."))
             if (
                 order.training_requested_currency_id.name not in ("MAD", "EUR")
                 or order.training_requested_currency_id != order.currency_id
                 or order.pricelist_id.currency_id != order.currency_id
             ):
-                raise ValidationError(_("Choose a pricelist in the requested MAD or EUR currency."))
+                raise ValidationError(self.env._("Choose a pricelist in the requested MAD or EUR currency."))
             if not lines or any(line.training_program_id != order.training_requested_program_id for line in lines):
-                raise ValidationError(_("Training lines must use the requested programme version."))
+                raise ValidationError(self.env._("Training lines must use the requested programme version."))
             lines._check_training_program()
             for line in lines:
                 line._check_training_tariff()

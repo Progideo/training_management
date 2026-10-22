@@ -272,7 +272,7 @@ class TestCatalogue(TransactionCase):
             self.assertEqual(first.with_context(lang=lang).display_name, f"{course_name} — V1")
             action = source.action_new_version()
             Wizard = (
-                self.env[action["res_model"]]
+                self.env[action["res_model"]]  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
                 .with_user(self.coordinator)
                 .with_context(
                     action["context"],
@@ -314,7 +314,7 @@ class TestCatalogue(TransactionCase):
             with self.subTest(session_language=session_language):
                 action = source.with_context(lang=session_language).action_new_version()
                 Wizard = (
-                    self.env[action["res_model"]]
+                    self.env[action["res_model"]]  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
                     .with_user(self.coordinator)
                     .with_context(
                         action["context"],
@@ -392,7 +392,7 @@ class TestCatalogue(TransactionCase):
     def test_standalone_form_persists_after_failed_validation(self):
         action = self.course.action_open_programs()
         model = (
-            self.env["training.program.version"]
+            self.env["training.program.version"]  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
             .with_user(self.coordinator)
             .with_context(
                 action["context"],

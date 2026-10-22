@@ -1,3 +1,4 @@
+# pylint: disable=manifest-required-author,missing-readme  # not an OCA module: no OCA author, README kept in docs/
 {
     "name": "Training Management - Sales",
     "summary": "Qualify training requests and price programme quotations in MAD or EUR",
@@ -20,5 +21,4 @@
         "report/sale_report_templates.xml",
         "report/account_report_templates.xml",
     ],
-    "installable": True,
 }

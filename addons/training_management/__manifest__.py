@@ -1,3 +1,4 @@
+# pylint: disable=manifest-required-author,missing-readme  # not an OCA module: no OCA author, README kept in docs/
 {
     "name": "Training Management",
     "summary": "Standard training catalogue and controlled programme versions",
@@ -20,5 +21,4 @@
         "views/training_enrollment_actions.xml",
     ],
     "application": True,
-    "installable": True,
 }

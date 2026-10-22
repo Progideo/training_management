@@ -93,7 +93,7 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(context["default_training_attendee_count"], 12)
         self.assertEqual(context["default_training_requested_currency_id"], self.eur.id)
         order = (
-            self.env["sale.order"]
+            self.env["sale.order"]  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
             .with_user(self.salesperson)
             .with_context(context)
             .create(
@@ -243,7 +243,7 @@ class TestTrainingSale(TransactionCase):
         self.assertEqual(context["default_training_expected_payer_id"], payer.id)
         self.assertEqual(context["default_training_admin_contact_id"], admin_contact.id)
         order = (
-            self.env["sale.order"]
+            self.env["sale.order"]  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
             .with_user(self.salesperson)
             .with_context(context)
             .create(

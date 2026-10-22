@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from odoo import fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -26,7 +26,7 @@ class TrainingProgramNewVersion(models.TransientModel):
         source.check_access("create")
         reference = (self.version or "").strip()
         if not reference:
-            raise ValidationError(_("A version reference is required."))
+            raise ValidationError(self.env._("A version reference is required."))
         # Keep the source stable while native copy reads every translation.
         source._lock_courses()
         source.lock_for_update()
@@ -34,7 +34,7 @@ class TrainingProgramNewVersion(models.TransientModel):
         program = source.copy({"version": reference})
         return {
             "type": "ir.actions.act_window",
-            "name": _("New Programme Version"),
+            "name": self.env._("New Programme Version"),
             "res_model": program._name,
             "view_mode": "form",
             "res_id": program.id,

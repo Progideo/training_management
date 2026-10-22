@@ -1,11 +1,11 @@
-from odoo import _, models
+from odoo import models
 from odoo.exceptions import ValidationError
 
 
 class MailComposeMessage(models.TransientModel):
     _inherit = "mail.compose.message"
 
-    def _compute_recipient_partners(self):
+    def _compute_recipient_partners(self):  # pylint: disable=missing-return  # compute method, nothing to return
         super()._compute_recipient_partners()
         for composer in self.filtered(
             lambda wizard: wizard.model in ("sale.order", "account.payment") and not wizard.composition_batch
@@ -51,7 +51,7 @@ class MailComposeMessage(models.TransientModel):
                 or mail_values.get("email_cc")
             ):
                 raise ValidationError(
-                    _("Send training document PDFs only to named contacts authorized on this document.")
+                    self.env._("Send training document PDFs only to named contacts authorized on this document.")
                 )
             mail_values["notify_skip_followers"] = True
         return values

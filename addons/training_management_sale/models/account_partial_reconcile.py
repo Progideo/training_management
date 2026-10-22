@@ -1,4 +1,4 @@
-from odoo import api, models, _
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
@@ -25,7 +25,9 @@ class AccountPartialReconcile(models.Model):
                     or statement_line.currency_id != invoice_line.move_id.currency_id
                 ):
                     raise ValidationError(
-                        _("A training invoice can only be matched with a bank statement line in the invoice currency.")
+                        self.env._(
+                            "A training invoice can only be matched with a bank statement line in the invoice currency."
+                        )
                     )
                 if statement_line:
                     continue
@@ -43,7 +45,7 @@ class AccountPartialReconcile(models.Model):
                     or payment.currency_id != invoice_line.move_id.currency_id
                 ):
                     raise ValidationError(
-                        _(
+                        self.env._(
                             "A training invoice can only be matched with an incoming manual bank payment "
                             "bearing a bank reference in the invoice currency."
                         )

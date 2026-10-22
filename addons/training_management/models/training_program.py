@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -64,12 +64,10 @@ class TrainingProgramVersion(models.Model):
     access_conditions = fields.Text(translate=True)
     accessibility_contact_id = fields.Many2one(
         "res.partner",
-        string="Accessibility Contact",
         ondelete="restrict",
         check_company=True,
     )
     accessibility_information = fields.Text(
-        string="Accessibility Information",
         translate=True,
         help="Contact instructions preserved in this programme version.",
     )
@@ -133,9 +131,9 @@ class TrainingProgramVersion(models.Model):
         for vals in vals_list:
             vals = dict(vals)
             if vals.get("state", "draft") != "draft" or self._audit_fields().intersection(vals):
-                raise ValidationError(_("New programme versions must be drafts without validation metadata."))
+                raise ValidationError(self.env._("New programme versions must be drafts without validation metadata."))
             if "company_id" in vals:
-                raise ValidationError(_("The programme company is defined by its course."))
+                raise ValidationError(self.env._("The programme company is defined by its course."))
             vals["state"] = "draft"
             vals.update(dict.fromkeys(self._audit_fields(), False))
             vals["version"] = (vals.get("version") or "").strip()
@@ -150,7 +148,7 @@ class TrainingProgramVersion(models.Model):
     def _check_identification(self):
         for program in self:
             if not (program.title or "").strip() or not (program.version or "").strip():
-                raise ValidationError(_("A programme title and version reference are required."))
+                raise ValidationError(self.env._("A programme title and version reference are required."))
 
     def _check_complete(self):
         required_fields = (
@@ -174,7 +172,7 @@ class TrainingProgramVersion(models.Model):
             ]
             if missing or program.duration_hours <= 0:
                 raise ValidationError(
-                    _("Complete all programme information and enter a positive duration before validation.")
+                    self.env._("Complete all programme information and enter a positive duration before validation.")
                 )
 
     def write(self, vals):
@@ -183,21 +181,21 @@ class TrainingProgramVersion(models.Model):
         self.lock_for_update()
         self.invalidate_recordset()
         if self._audit_fields().intersection(vals) or "company_id" in vals:
-            raise ValidationError(_("Validation metadata and programme company cannot be edited."))
+            raise ValidationError(self.env._("Validation metadata and programme company cannot be edited."))
         values = dict(vals)
         if "version" in values:
             values["version"] = (values["version"] or "").strip()
         if any(record.state != "draft" for record in self) and set(values) - {"state"}:
-            raise ValidationError(_("Validated programme content is immutable. Create a new draft version."))
+            raise ValidationError(self.env._("Validated programme content is immutable. Create a new draft version."))
         target = values.get("state")
         if "state" in values and not target:
-            raise ValidationError(_("This programme status transition is not allowed."))
+            raise ValidationError(self.env._("This programme status transition is not allowed."))
         if target:
             transitions = {"draft": "validated", "validated": "published", "published": "retired"}
             if set(values) != {"state"}:
-                raise ValidationError(_("Save programme content before changing its status."))
+                raise ValidationError(self.env._("Save programme content before changing its status."))
             if any(record.state != target and transitions.get(record.state) != target for record in self):
-                raise ValidationError(_("This programme status transition is not allowed."))
+                raise ValidationError(self.env._("This programme status transition is not allowed."))
             changing = self.filtered(lambda record: record.state != target)
             if not changing:
                 return True
@@ -227,7 +225,7 @@ class TrainingProgramVersion(models.Model):
         self.check_access("create")
         return {
             "type": "ir.actions.act_window",
-            "name": _("New Programme Version"),
+            "name": self.env._("New Programme Version"),
             "res_model": "training.program.new.version",
             "view_mode": "form",
             "target": "new",
@@ -244,4 +242,4 @@ class TrainingProgramVersion(models.Model):
         self.lock_for_update()
         self.invalidate_recordset(["state"])
         if any(program.state != "draft" for program in self):
-            raise ValidationError(_("Validated programme versions cannot be deleted."))
+            raise ValidationError(self.env._("Validated programme versions cannot be deleted."))

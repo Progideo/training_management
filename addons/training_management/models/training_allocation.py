@@ -112,7 +112,7 @@ class TrainingSeatAllocation(models.Model):
             deliveries._check_capacity()
             return records
 
-    def write(self, vals):
+    def write(self, vals):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
         self._require_coordinator()
         vals = self._write_technical(vals)
         if vals:

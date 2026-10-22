@@ -1,4 +1,4 @@
-from odoo import models, _
+from odoo import models
 from odoo.exceptions import AccessError
 from odoo.fields import Domain
 
@@ -17,7 +17,7 @@ class MailMessage(models.Model):
     def _check_training_message_access(self):
         if self and not self.env.su and self.env.user.share:
             if self.sudo().filtered_domain(self._training_message_access_domain()) != self:
-                raise AccessError(_("This training message requires a currently authorized contact."))
+                raise AccessError(self.env._("This training message requires a currently authorized contact."))
 
     def read(self, fields=None, load="_classic_read"):
         self._check_training_message_access()

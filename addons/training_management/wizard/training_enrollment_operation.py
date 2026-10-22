@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -35,7 +35,7 @@ class TrainingEnrollmentOperation(models.TransientModel):
         self.check_access("write")
         self.enrollment_id._require_coordinator()
         if not (self.reason or "").strip():
-            raise ValidationError(_("A reason is required."))
+            raise ValidationError(self.env._("A reason is required."))
         with self.env.cr.savepoint():
             enrollment = self.enrollment_id
             if self.operation == "reserve":
@@ -44,7 +44,7 @@ class TrainingEnrollmentOperation(models.TransientModel):
                 enrollment.action_extend_access(self.deadline, reason=self.reason)
             else:
                 if not self.target_id:
-                    raise ValidationError(_("Choose a new requested enrollment."))
+                    raise ValidationError(self.env._("Choose a new requested enrollment."))
                 if self.operation == "replace":
                     enrollment.action_replace(self.target_id.id, reason=self.reason)
                 else:

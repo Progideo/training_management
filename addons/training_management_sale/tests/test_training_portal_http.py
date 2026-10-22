@@ -142,7 +142,7 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertEqual(defaults["partner_ids"], authorized.ids)
         self.assertFalse(defaults["email_to"])
         action = self.order.action_quotation_send()
-        composer = self.env["mail.compose.message"].with_context(action["context"]).create({})
+        composer = self.env["mail.compose.message"].with_context(action["context"]).create({})  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
         self.assertEqual(composer.partner_ids, authorized)
         self.assertTrue(composer.attachment_ids)
         prepared = composer._prepare_mail_values([self.order.id])[self.order.id]

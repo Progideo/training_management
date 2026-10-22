@@ -1,4 +1,4 @@
-from odoo import models, _
+from odoo import models
 from odoo.exceptions import AccessError
 
 
@@ -19,7 +19,7 @@ class IrBinary(models.AbstractModel):
                 return
             target = self.env[model_name].sudo().browse(document_id).exists()
             if not target:
-                raise AccessError(_("This training attachment is unavailable."))
+                raise AccessError(self.env._("This training attachment is unavailable."))
 
         if target._name == "sale.order" and target.training_request_kind:
             authorized = target.training_portal_partner_ids
@@ -30,7 +30,7 @@ class IrBinary(models.AbstractModel):
         else:
             return
         if self.env.user._is_public() or self.env.user.partner_id not in authorized:
-            raise AccessError(_("This training attachment requires an authorized portal contact."))
+            raise AccessError(self.env._("This training attachment requires an authorized portal contact."))
 
     def _find_record(self, xmlid=None, res_model="ir.attachment", res_id=None, access_token=None, field=None):
         record = super()._find_record(xmlid, res_model, res_id, access_token, field)

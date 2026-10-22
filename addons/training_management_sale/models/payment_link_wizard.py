@@ -1,4 +1,4 @@
-from odoo import api, models, _
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
@@ -18,7 +18,7 @@ class PaymentLinkWizard(models.TransientModel):
         else:
             return
         if is_training:
-            raise ValidationError(_("Online payment links are disabled for training orders and invoices."))
+            raise ValidationError(self.env._("Online payment links are disabled for training orders and invoices."))
 
     @api.model
     def default_get(self, fields_list):

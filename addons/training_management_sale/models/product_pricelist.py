@@ -1,4 +1,4 @@
-from odoo import models, _
+from odoo import models
 from odoo.exceptions import ValidationError
 
 
@@ -23,6 +23,6 @@ class ProductPricelist(models.Model):
             )
             if confirmed:
                 raise ValidationError(
-                    _("The currency of a pricelist used by a confirmed training order cannot be changed.")
+                    self.env._("The currency of a pricelist used by a confirmed training order cannot be changed.")
                 )
         return super().write(vals)

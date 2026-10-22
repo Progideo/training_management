@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -20,7 +20,7 @@ class TrainingSeatAllocation(models.Model):
         line = self.sale_line_id
         if not line:
             if require_confirmed:
-                return super()._check_source()
+                return super()._check_source()  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
             return
         # Coordination does not imply Sales access: native read rights on the
         # source order/line are required, with roles explicitly combined.
@@ -29,11 +29,11 @@ class TrainingSeatAllocation(models.Model):
         order.check_access("read")
         order.lock_for_update()
         order.invalidate_recordset()
-        super(SaleOrder, order).write({"training_allocation_revision": order.training_allocation_revision + 1})
+        super(SaleOrder, order).write({"training_allocation_revision": order.training_allocation_revision + 1})  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
         line.lock_for_update()
         line.invalidate_recordset()
         # This column is a concurrency fence only, including stale snapshots.
-        super(SaleOrderLine, line).write({"training_allocation_revision": line.training_allocation_revision + 1})
+        super(SaleOrderLine, line).write({"training_allocation_revision": line.training_allocation_revision + 1})  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
         if (
             order.company_id != self.company_id
             or line.training_program_id != self.delivery_id.program_id
@@ -43,7 +43,7 @@ class TrainingSeatAllocation(models.Model):
             or (require_confirmed and order.state != "sale")
         ):
             raise ValidationError(
-                _(
+                self.env._(
                     "The allocation must match a readable commercial line, customer, company and programme; commitment requires a confirmed order."
                 )
             )
@@ -53,7 +53,7 @@ class TrainingSeatAllocation(models.Model):
         # A later catalogue price-basis change must not rewrite this entitlement.
         limit = order.training_attendee_count
         if committed > limit:
-            raise ValidationError(_("Allocated places exceed the commercial line's participant entitlement."))
+            raise ValidationError(self.env._("Allocated places exceed the commercial line's participant entitlement."))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -72,12 +72,12 @@ class SaleOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         if any("training_allocation_revision" in values for values in vals_list):
-            raise ValidationError(_("The allocation revision is server-managed."))
+            raise ValidationError(self.env._("The allocation revision is server-managed."))
         return super().create([{**values, "training_allocation_revision": 0} for values in vals_list])
 
     def write(self, vals):
         if "training_allocation_revision" in vals:
-            raise ValidationError(_("The allocation revision is server-managed."))
+            raise ValidationError(self.env._("The allocation revision is server-managed."))
         if set(vals) & {"order_id", "product_id", "product_uom_qty", "training_program_id", "product_uom_id"}:
             self.check_access("write")
             # Narrow elevated existence check: protect linked history without
@@ -86,7 +86,7 @@ class SaleOrderLine(models.Model):
             # Only live lots, or lots still carrying an open enrollment, bind the line.
             if any(lot._holds_source() for lot in lots):
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Commercial lines with allocated training places are fixed. Use a controlled commercial revision."
                     )
                 )
@@ -101,12 +101,12 @@ class SaleOrder(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         if any("training_allocation_revision" in values for values in vals_list):
-            raise ValidationError(_("The allocation revision is server-managed."))
+            raise ValidationError(self.env._("The allocation revision is server-managed."))
         return super().create([{**values, "training_allocation_revision": 0} for values in vals_list])
 
     def write(self, vals):
         if "training_allocation_revision" in vals:
-            raise ValidationError(_("The allocation revision is server-managed."))
+            raise ValidationError(self.env._("The allocation revision is server-managed."))
         protected = {
             "training_attendee_count",
             "partner_id",
@@ -121,10 +121,12 @@ class SaleOrder(models.Model):
             bound = lots.filtered(lambda lot: lot._holds_source())
             if bound and set(vals) & protected:
                 raise ValidationError(
-                    _("Orders with training allocations keep their customer, programme and participant entitlement.")
+                    self.env._(
+                        "Orders with training allocations keep their customer, programme and participant entitlement."
+                    )
                 )
             if bound and vals.get("state") == "cancel":
                 raise ValidationError(
-                    _("Cancel the training allocations explicitly before cancelling the commercial order.")
+                    self.env._("Cancel the training allocations explicitly before cancelling the commercial order.")
                 )
         return super().write(vals)

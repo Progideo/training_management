@@ -86,14 +86,14 @@ class TrainingDelivery(models.Model):
         }
 
     @api.private
-    def _serialize(self):
+    def _serialize(self):  # pylint: disable=missing-return  # compute method, nothing to return
         self._require_coordinator()
         self.sorted("id").lock_for_update()
         self.invalidate_recordset()
         for delivery in self.sorted("id"):
             # Write fence: a stale REPEATABLE READ snapshot must fail, even after
             # a competing transaction released its lock. A lock alone is not enough.
-            super(TrainingControlled, delivery).write({"revision": delivery.revision + 1})
+            super(TrainingControlled, delivery).write({"revision": delivery.revision + 1})  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
 
     @api.private
     def _occupancy(self, now=None):
@@ -211,7 +211,7 @@ class TrainingDelivery(models.Model):
             )
         return sequence.next_by_id()
 
-    def write(self, vals):
+    def write(self, vals):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
         self._require_coordinator()
         vals = self._write_technical(vals)
         if not vals:
@@ -330,7 +330,7 @@ class TrainingDelivery(models.Model):
                     )
             self._store(changes, reason)
             # A moved session may be worth a new alert.
-            super(TrainingControlled, self).write({"threshold_alerted": False})
+            super(TrainingControlled, self).write({"threshold_alerted": False})  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
         return True
 
     @api.model
@@ -370,7 +370,7 @@ class TrainingDelivery(models.Model):
                     "The session starts within seven days and has fewer places taken than its opening threshold."
                 ),
             )
-            super(TrainingControlled, delivery).write({"threshold_alerted": True})
+            super(TrainingControlled, delivery).write({"threshold_alerted": True})  # pylint: disable=super-method-mismatch  # deliberate bypass of the controlled write, see _store
         return True
 
     def action_open_dates(self):

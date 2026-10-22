@@ -1,4 +1,4 @@
-from odoo import Command, api, fields, models, _
+from odoo import Command, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -24,21 +24,21 @@ class AccountMove(models.Model):
     def action_copy_training_portal_contacts(self):
         self.ensure_one()
         if not self.env.user.has_group("sales_team.group_sale_salesman"):
-            raise UserError(_("Only a salesperson may copy authorized contacts from a training order."))
+            raise UserError(self.env._("Only a salesperson may copy authorized contacts from a training order."))
         self.check_access("write")
         if self.state != "draft" or not self.training_is_sale_invoice:
-            raise UserError(_("Copy authorized contacts only on a draft training invoice."))
+            raise UserError(self.env._("Copy authorized contacts only on a draft training invoice."))
         orders = self.invoice_line_ids.sale_line_ids.order_id
         orders.check_access("read")
         if not orders or any(
             not order.training_request_kind or order.company_id != self.company_id for order in orders
         ):
-            raise UserError(_("This invoice must be linked only to training orders of its company."))
+            raise UserError(self.env._("This invoice must be linked only to training orders of its company."))
         contacts = orders[0].training_portal_partner_ids
         for order in orders[1:]:
             contacts &= order.training_portal_partner_ids
         if not contacts:
-            raise UserError(_("No contact is authorized on every linked training order."))
+            raise UserError(self.env._("No contact is authorized on every linked training order."))
         self.training_portal_partner_ids = [Command.set(contacts.ids)]
 
     def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
@@ -91,7 +91,7 @@ class AccountMove(models.Model):
         return not self._training_sale_invoices() and super()._has_to_be_paid()
 
     @api.depends("company_id", "invoice_line_ids.sale_line_ids.order_id.training_request_kind")
-    def _compute_display_link_qr_code(self):
+    def _compute_display_link_qr_code(self):  # pylint: disable=missing-return  # compute method, nothing to return
         super()._compute_display_link_qr_code()
         for invoice in self._training_sale_invoices():
             invoice.display_link_qr_code = False

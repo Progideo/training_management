@@ -104,7 +104,7 @@ with env.registry.cursor() as third:
     try:
         with third.savepoint():
             retry.action_post()
-    except ValidationError:
+    except ValidationError:  # pylint: disable=except-pass  # the expected failure is the test
         pass
     else:
         raise AssertionError("A full retry must detect the already committed reference")
@@ -117,5 +117,5 @@ with env.registry.cursor() as fourth:
     paid = e4["account.payment"].search(domain)
     assert len(paid) == 2
     assert len(paid.filtered("training_duplicate_reference_reason")) == 1
-print("TRAINING_CONCURRENCY_OK: stale snapshot rejected; fresh retry refused; motivated split accepted")
+print("TRAINING_CONCURRENCY_OK: stale snapshot rejected; fresh retry refused; motivated split accepted")  # pylint: disable=print-used  # odoo shell probe prints its verdict
 env.cr.rollback()

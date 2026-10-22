@@ -175,7 +175,7 @@ class TestAllocationCommerce(EnrollmentCase):
         lot = self.lot(self.delivery(), sale_line_id=order.order_line.id)
         lot.action_confirm()
         action = lot.action_open_release()
-        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))
+        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
         form.quantity = 2
         form.reason = "Two places released, no automatic commercial refund"
         form.save().action_apply()

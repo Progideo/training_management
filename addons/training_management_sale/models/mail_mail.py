@@ -1,4 +1,4 @@
-from odoo import models, _
+from odoo import models
 from odoo.exceptions import ValidationError
 
 
@@ -33,5 +33,7 @@ class MailMail(models.Model):
                     lambda partner: not partner.user_ids or all(user.share for user in partner.user_ids)
                 )
                 if self.email_to or self.email_cc or external - allowed:
-                    raise ValidationError(_("A training mail recipient is no longer authorized on the document."))
+                    raise ValidationError(
+                        self.env._("A training mail recipient is no longer authorized on the document.")
+                    )
         return super()._prepare_outgoing_list(mail_server=mail_server, doc_to_followers=doc_to_followers)

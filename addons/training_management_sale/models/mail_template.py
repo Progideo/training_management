@@ -1,4 +1,4 @@
-from odoo import _, models
+from odoo import models
 from odoo.exceptions import ValidationError
 
 
@@ -30,7 +30,7 @@ class MailTemplate(models.Model):
                     "recipient_cc_ids",
                 }:
                     raise ValidationError(
-                        _("Recipients of training documents cannot be overridden on direct email sends.")
+                        self.env._("Recipients of training documents cannot be overridden on direct email sends.")
                     )
                 rendered = self._generate_template(
                     restricted.ids,
@@ -45,7 +45,7 @@ class MailTemplate(models.Model):
                     selected = set(values.get("partner_ids", []) + values.get("partner_cc_ids", []))
                     if not selected or values.get("email_to") or values.get("email_cc") or selected - set(allowed.ids):
                         raise ValidationError(
-                            _("Send training documents only to named contacts authorized on the document.")
+                            self.env._("Send training documents only to named contacts authorized on the document.")
                         )
         return super().send_mail_batch(
             res_ids,
