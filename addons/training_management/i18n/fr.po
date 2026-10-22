@@ -1016,12 +1016,6 @@ msgid "Before"
 msgstr "Avant"
 
 #. module: training_management
-#: model:ir.model.fields,field_description:training_management.field_training_delivery__below_threshold
-#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
-msgid "Below Threshold"
-msgstr "Sous le seuil d’ouverture"
-
-#. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__effective_access__blocked
 msgid "Blocked"
 msgstr "Bloqué"

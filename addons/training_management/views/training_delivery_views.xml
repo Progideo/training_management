@@ -13,7 +13,6 @@
                 <filter name="to_process" string="To Process" domain="['|', '|', ('enrollment_ids', 'any', [('state', '=', 'requested')]), ('allocation_ids', 'any', [('state', '=', 'reserved'), ('expires_at', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S'))]), ('enrollment_ids', 'any', [('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)])]"/>
                 <separator/>
                 <filter name="live" string="Not Finished" domain="[('state', 'in', ('preparation', 'confirmed', 'ongoing'))]"/>
-                <filter name="below_threshold" string="Below Threshold" domain="[('state', 'in', ('preparation', 'confirmed')), ('below_threshold', '=', True)]"/>
                 <group>
                     <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                     <filter name="group_program" string="Programme" context="{'group_by': 'program_id'}"/>
