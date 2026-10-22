@@ -14,6 +14,8 @@ for module, path in (
     ("training_management", "wizard/training_action_reason_views.xml"),
     ("training_management", "wizard/training_enrollment_operation_views.xml"),
     ("training_management_sale", "views/training_allocation_views.xml"),
+    ("training_management", "views/training_preparation_views.xml"),
+    ("training_management", "views/trainer_portal_templates.xml"),
 ):
     convert_file(env, module, path, None, mode="update")
 env.cr.commit()

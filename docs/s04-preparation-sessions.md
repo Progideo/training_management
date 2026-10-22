@@ -101,6 +101,14 @@ Lecture du code exact, sans déduire une capacité Enterprise :
 Le socle dépend désormais de `resource` et `portal` (LGPL-3 dans l'image exacte),
 en complément de `base`/`mail`. Pas de cœur modifié ni nouvel addon/service.
 
+Sur une ancienne base équipée de Website, le défaut obligatoire de visibilité des
+nouvelles vues peut manquer pendant le chargement de mise à jour. L'amorçage natif
+déjà décrit dans [S03](s03-enrollment-access.md#sécurité-et-concurrence) et reproduit
+par `tests/probes/s03_view_bootstrap.py` inclut désormais les vues S04. Les charger
+avec le registre installé complet avant la mise à jour ; aucune valeur SQL par
+défaut, contrainte ou source standard n'est modifiée. Cette procédure sera à
+inclure dans une éventuelle recette de déploiement, qui reste hors de cette PR.
+
 ## Recette courte
 
 1. Coordinateur restreint : renseigner un besoin et un positionnement sans changer
