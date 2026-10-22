@@ -130,6 +130,13 @@ class TrainingEnrollment(models.Model):
             for values in prepared:
                 delivery = self.env["training.delivery"].browse(values.get("delivery_id") or self.env.context.get("default_delivery_id"))
                 values.update(company_id=delivery.company_id.id, program_id=delivery.program_id.id)
+            seen = set()
+            for values in prepared:
+                key = (values.get("delivery_id") or self.env.context.get("default_delivery_id"), values.get("participant_id"))
+                # The database index is the last guard; refuse with a clear message first.
+                if key in seen or self.search_count([("delivery_id", "=", key[0]), ("participant_id", "=", key[1]), ("state", "not in", list(TERMINAL))]):
+                    raise ValidationError(self.env._("This participant already has an active enrollment for this delivery."))
+                seen.add(key)
             records = super().create(prepared)
             for record in records:
                 record._check_identity()

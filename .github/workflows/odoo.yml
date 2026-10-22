@@ -65,10 +65,14 @@ jobs:
       - name: Diagnostic temporaire (annotations, à retirer)
         if: failure()
         run: |
-          for f in test-results/${{ matrix.scenario }}/*.log; do
-            grep -n -m6 -E "Traceback|ERROR|FAIL|Error:|CRITICAL" "$f" | cut -c1-400 | while IFS= read -r l; do echo "::error title=$(basename "$f")::$l"; done
+          d=test-results/${{ matrix.scenario }}
+          awk -F'\t' 'NR>1 && $2!=0 {print $1}' $d/timings.tsv | while IFS= read -r step; do
+            f=$d/$step.log
+            [ -f "$f" ] || continue
+            msg=$(grep -n -E "^(FAIL|ERROR):|Traceback|AssertionError|AssertionError:|Error:|Exception:" "$f" | grep -v "mail_mail\|failed sending" | head -12 | cut -c1-260 | sed ':a;N;$!ba;s/\n/%0A/g')
+            tb=$(grep -n -B2 -A16 -m2 "Traceback" "$f" | cut -c1-220 | tail -n 42 | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=$step::$msg%0A----%0A$tb"
           done
-          tail -n 25 test-results/${{ matrix.scenario }}/timings.tsv | while IFS= read -r l; do echo "::notice::$l"; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:

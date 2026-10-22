@@ -9,6 +9,7 @@ if not env.cr.dbname.startswith('tm_s03_test_'):
     raise RuntimeError('Disposable test databases only')
 for module, path in (
     ('training_management', 'views/training_delivery_views.xml'),
+    ('training_management', 'wizard/training_action_reason_views.xml'),
     ('training_management', 'wizard/training_enrollment_operation_views.xml'),
     ('training_management_sale', 'views/training_allocation_views.xml'),
 ):
