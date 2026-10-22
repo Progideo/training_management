@@ -633,8 +633,10 @@ class TestErgonomics(EnrollmentCase):
         self.assertEqual(self.env["training.delivery"].with_user(self.coordinator).name_search(first.reference)[0][0], first.id)
         with self.assertRaises(ValidationError):
             first.write({"reference": "FORGED"})
-        other = self.env["training.delivery"]._next_reference(self.other_company)
-        self.assertNotEqual(other, first.reference)
+        # Each company numbers independently; the unique key includes the company.
+        self.env["training.delivery"]._next_reference(self.other_company)
+        own = self.env["ir.sequence"].sudo().search([("code", "=", "training.delivery"), ("company_id", "=", self.other_company.id)])
+        self.assertEqual(len(own), 1)
         sequences = self.env["ir.sequence"].sudo().search([("code", "=", "training.delivery")])
         self.assertEqual(len(sequences.filtered(lambda s: s.company_id == self.company)), 1)
 
