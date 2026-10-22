@@ -156,14 +156,15 @@ ainsi que les lignes commerciales déjà référencées, sont protégés des ré
 | --- | --- |
 | Coordinateur | Gestion des réalisations, places et admissions dans ses sociétés ; journal en lecture seule. |
 | Coordinateur + Ventes explicitement attribué | Même périmètre S03 et utilisation des sources commerciales autorisées par les droits natifs. |
-| Commercial seul, facturation seule, lecteur catalogue, interne sans rôle | Aucun accès aux dossiers S03 ; aucune activation pédagogique. |
+| Commercial seul (S03.1) | Lecture des réalisations, lots et états d'inscription de ses sociétés, sans interface dédiée. Prérequis, compte personnel, accès et journal restent réservés au coordinateur (droits par champ) ; aucune écriture. |
+| Facturation seule, lecteur catalogue, interne sans rôle | Aucun accès aux dossiers S03 ; aucune activation pédagogique. |
 | Portail participant/représentant, public | Aucun accès aux modèles S03 à ce stade. Les futurs portails restent S05/P05. |
 
 Les champs générés, états et horodatages ne sont pas modifiables directement.
 Les valeurs de contexte ne permettent pas d'injecter une admission ni une société
 étrangère. Les suppressions métier sont refusées ; les historiques restent liés.
 L'export conserve les restrictions société et nécessite le droit natif d'export,
-non attribué automatiquement. Aucun chatter ni envoi spécifique n'est introduit.
+non attribué automatiquement. Le chatter et les activités (S03.1) sont des notes internes : aucun suivi automatique de champ et aucun envoi propre au module. Un commercial qui lit un dossier lit aussi ses notes de chatter.
 
 Les opérations critiques verrouillent la réalisation avec `lock_for_update()`
 et écrivent une révision technique avec l'ORM. Cette écriture force le rejet

@@ -152,3 +152,39 @@ class TestAllocationCommerce(EnrollmentCase):
         order.order_line.write({"product_uom_qty": 2})
         order.action_cancel()
         self.assertEqual(order.state, "cancel")
+
+    def test_salesperson_reads_states_but_not_admission_access_or_history(self):
+        order = self.order(count=2)
+        delivery = self.delivery()
+        lot = self.lot(delivery, quantity=2, sale_line_id=order.order_line.id)
+        lot.action_confirm()
+        e = self.enrollment(delivery, allocation_id=lot.id, free_reason=False)
+        e.action_waive_prerequisites(reason="Approved B2B payment after delivery")
+        e.action_confirm()
+        e.action_authorize(reason="Fictional authorization")
+        e.action_open_access(reason="Fictional opening")
+        seller = self.seller
+        self.assertEqual(delivery.with_user(seller).state, delivery.state)
+        self.assertEqual(delivery.with_user(seller).reference, delivery.reference)
+        self.assertEqual(lot.with_user(seller).state, "confirmed")
+        self.assertEqual(lot.with_user(seller).quantity, 2)
+        self.assertEqual(e.with_user(seller).state, "confirmed")
+        for record, name in ((e, "prerequisites"), (e, "user_id"), (e, "access_state"), (e, "access_start"),
+                             (e, "access_end"), (e, "effective_access"), (delivery, "operation_ids")):
+            with self.subTest(field=name), self.assertRaises(AccessError):
+                record.with_user(seller).read([name])
+        with self.assertRaises(AccessError):
+            self.env["training.operation"].with_user(seller).search([])
+        for record in (delivery, lot, e):
+            with self.assertRaises(AccessError):
+                record.with_user(seller)._require_coordinator()
+        with self.assertRaises(AccessError):
+            self.env["training.enrollment"].with_user(seller).create({"delivery_id": delivery.id, "participant_id": self.portal.partner_id.id})
+        with self.assertRaises(AccessError):
+            e.with_user(seller).unlink()
+
+    def test_salesperson_of_another_company_sees_nothing(self):
+        delivery = self.delivery()
+        other = new_test_user(self.env, login="s03_seller_b", groups="sales_team.group_sale_salesman",
+                              company_id=self.other_company.id, company_ids=[Command.set(self.other_company.ids)])
+        self.assertFalse(self.env["training.delivery"].with_user(other).search([("id", "=", delivery.id)]))

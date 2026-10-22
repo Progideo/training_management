@@ -30,7 +30,7 @@ class TrainingEnrollment(models.Model):
                                  default=lambda self: self.env.company, index=True)
     program_id = fields.Many2one(related="delivery_id.program_id", store=True)
     participant_id = fields.Many2one("res.partner", required=True, ondelete="restrict", check_company=True, index=True)
-    user_id = fields.Many2one("res.users", ondelete="restrict", check_company=True)
+    user_id = fields.Many2one("res.users", ondelete="restrict", check_company=True, groups="training_management.group_training_coordinator")
     allocation_id = fields.Many2one("training.seat.allocation", ondelete="restrict", check_company=True)
     free_reason = fields.Text(string="Free Invitation Reason")
     requested_at = fields.Datetime(default=fields.Datetime.now, readonly=True, required=True, copy=False)
@@ -39,12 +39,12 @@ class TrainingEnrollment(models.Model):
         ("confirmed", "Confirmed"), ("closed", "Closed"), ("cancelled", "Cancelled"),
         ("replaced", "Replaced"), ("abandoned", "Abandoned"), ("postponed", "Postponed")]], default="requested", required=True, readonly=True, copy=False)
     reservation_end = fields.Datetime(readonly=True, copy=False)
-    prerequisites = fields.Selection([("pending", "Pending"), ("validated", "Validated"), ("waived", "Waived")], default="pending", required=True, readonly=True, copy=False)
+    prerequisites = fields.Selection([("pending", "Pending"), ("validated", "Validated"), ("waived", "Waived")], default="pending", required=True, readonly=True, copy=False, groups="training_management.group_training_coordinator")
     commercially_authorized = fields.Boolean(readonly=True, copy=False)
-    access_state = fields.Selection([("unopened", "Unopened"), ("active", "Active"), ("suspended", "Suspended"), ("revoked", "Revoked")], default="unopened", required=True, readonly=True, copy=False)
-    access_start = fields.Datetime(readonly=True, copy=False)
-    access_end = fields.Datetime(readonly=True, copy=False)
-    effective_access = fields.Selection([("unopened", "Unopened"), ("active", "Active"), ("scheduled", "Scheduled"), ("expired", "Expired"), ("suspended", "Suspended"), ("revoked", "Revoked"), ("blocked", "Blocked")], compute="_compute_effective_access")
+    access_state = fields.Selection([("unopened", "Unopened"), ("active", "Active"), ("suspended", "Suspended"), ("revoked", "Revoked")], default="unopened", required=True, readonly=True, copy=False, groups="training_management.group_training_coordinator")
+    access_start = fields.Datetime(readonly=True, copy=False, groups="training_management.group_training_coordinator")
+    access_end = fields.Datetime(readonly=True, copy=False, groups="training_management.group_training_coordinator")
+    effective_access = fields.Selection([("unopened", "Unopened"), ("active", "Active"), ("scheduled", "Scheduled"), ("expired", "Expired"), ("suspended", "Suspended"), ("revoked", "Revoked"), ("blocked", "Blocked")], compute="_compute_effective_access", groups="training_management.group_training_coordinator")
     successor_id = fields.Many2one("training.enrollment", readonly=True, copy=False, ondelete="restrict", check_company=True)
 
     _reason_actions = (

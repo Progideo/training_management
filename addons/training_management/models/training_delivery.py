@@ -39,7 +39,7 @@ class TrainingDelivery(models.Model):
     access_days = fields.Integer()
     allocation_ids = fields.One2many("training.seat.allocation", "delivery_id")
     enrollment_ids = fields.One2many("training.enrollment", "delivery_id")
-    operation_ids = fields.One2many("training.operation", "delivery_id", readonly=True)
+    operation_ids = fields.One2many("training.operation", "delivery_id", readonly=True, groups="training_management.group_training_coordinator")
     occupied_seats = fields.Integer(compute="_compute_seats")
     below_threshold = fields.Boolean(compute="_compute_seats")
     revision = fields.Integer(default=0, readonly=True, copy=False)
