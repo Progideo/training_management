@@ -60,14 +60,32 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 - Phase 1 : socle MVP et P01 à P08, dont émargement électronique et reprise Odoo 19.
 - Phase 2 : P09 à P16.
 - P17 à P20 : hors phases 1 et 2 ; réalisation soumise à validation complémentaire explicite.
-- La version exacte d’Odoo 20 Community reste à identifier dans l’[issue #5](https://github.com/Progideo/training_management/issues/5).
-- La couverture du standard, l’architecture et les droits restent à établir et à valider selon le backlog. Surveys/Certification est un candidat à démontrer, pas un choix technique acquis.
+- La cible vérifiée est Odoo Community `20.0-20261015`, image épinglée et provenance décrites dans [la couverture native](native-coverage.md).
+- Le socle S01 et le circuit commercial S02 sont livrés : [architecture S01](development-readiness.md), [étude native S02](s02-native-coverage.md) et [règles/recette S02](s02-crm-quotation.md). Les preuves sont propres à chaque incrément ; elles ne démontrent pas toute la spécification.
+- S03 utilise un modèle dédié de réalisations, places et inscriptions, sans dépendance obligatoire à Événements, sur décision validée le 22 octobre 2026 ; [PR #46](https://github.com/Progideo/training_management/pull/46). Sa documentation précise les contrôles et limites de l’incrément.
+- Surveys/Certification reste un candidat à démontrer pour les examens blancs, sans choix technique acquis.
+- Les encaissements au lancement sont manuels après vérification bancaire ; relevés et imports bancaires reportés par décision du 22 octobre 2026 ([PR #45](https://github.com/Progideo/training_management/pull/45)).
 - Les scénarios de recette décrits sont des attentes, pas des tests exécutés.
 - Les réserves sur les références Odoo 19, Qualiopi et le niveau juridique de l’émargement sont conservées ; cette PR documentaire ne les vérifie ni ne les lève.
 
 Le fichier historique `MASTER_PROMPT_AUDIT_ODOO_19_NEOPRO_ACADEMY.md` n’est pas
 importé : l’audit est suspendu et ne constitue pas la mission active. La reprise
 des données Odoo 19 demeure une exigence distincte du lancement.
+
+## Revue de la PR #41 — 22 octobre 2026
+
+Les cinq fichiers documentaires de #41 ne sont pas des doublons de `main` :
+`AGENTS.md`, les deux références et leur index étaient absents. Ils sont conservés.
+Le conflit du README est résolu en conservant les descriptions S01/S02 actuelles
+et en ajoutant les liens de contribution ; les affirmations de cadrage devenues
+obsolètes sont actualisées ici. Les deux références restent octet pour octet
+identiques à l’import initial. Les décisions ultérieures sont consignées dans
+les documents d’incrément et ne réécrivent pas silencieusement la spécification.
+
+L’utilisateur a autorisé le traitement de #41 puis la fusion et le déploiement
+S03 le 22 octobre 2026. Cette autorisation concerne la cible de développement
+`neopro_dev` utilisée pour les incréments précédents ; la production et une
+migration Odoo 19 restent hors de cette opération.
 
 ## Licence, publication et validations
 

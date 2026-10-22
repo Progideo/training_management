@@ -1,0 +1,481 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* training_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0-20261015\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 08:23+0000\n"
+"PO-Revision-Date: 2026-10-20 08:23+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_course.py:0
+msgid "A course name is required."
+msgstr "Le nom de la formation est obligatoire."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_course.py:0
+msgid "A course with programme versions cannot change company."
+msgstr "Une formation possédant des versions de programme ne peut pas changer de société."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "A programme title and version reference are required."
+msgstr "Le titre du programme et la référence de version sont obligatoires."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__access_conditions
+msgid "Access Conditions"
+msgstr "Conditions d’accès"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Access and Accessibility"
+msgstr "Accès et accessibilité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__accessibility_contact_id
+msgid "Accessibility Contact"
+msgstr "Contact accessibilité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__accessibility_information
+msgid "Accessibility Information"
+msgstr "Informations d’accessibilité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_course.py:0
+msgid "Archive courses with programme versions instead of deleting them."
+msgstr "Archivez les formations possédant des versions de programme au lieu de les supprimer."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__blended
+msgid "Blended"
+msgstr "Mixte"
+
+#. module: training_management
+#: model:res.groups,name:training_management.group_training_reader
+msgid "Catalogue Reader"
+msgstr "Lecteur du catalogue"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_program_version__pricing_mode
+msgid ""
+"Commercial prices will be managed by standard Odoo products and quotations."
+msgstr "Les tarifs commerciaux seront gérés par les produits et devis standards Odoo."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid ""
+"Complete all programme information and enter a positive duration before "
+"validation."
+msgstr "Complétez toutes les informations du programme et indiquez une durée strictement positive avant validation."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_program_version__accessibility_information
+msgid "Contact instructions preserved in this programme version."
+msgstr "Consignes de contact conservées dans cette version du programme."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__content
+msgid "Content"
+msgstr "Contenu"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__delivery_mode
+msgid "Delivery Mode"
+msgstr "Modalité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__draft
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__duration_hours
+msgid "Duration (hours)"
+msgstr "Durée (heures)"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_program_version_positive_duration
+msgid "Duration cannot be negative."
+msgstr "La durée ne peut pas être négative."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__evaluation_criteria
+msgid "Evaluation Criteria"
+msgstr "Critères d’évaluation"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_root
+msgid "Formations"
+msgstr "Formations"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__id
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__id
+msgid "ID"
+msgstr "ID"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+#: code:addons/training_management/wizard/training_program_new_version.py:0
+#: model:ir.model,name:training_management.model_training_program_new_version
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "New Programme Version"
+msgstr "Nouvelle version de programme"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "New Version"
+msgstr "Nouvelle version"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "New programme versions must be drafts without validation metadata."
+msgstr "Une nouvelle version doit être un brouillon sans données de validation."
+
+#. module: training_management
+#: model:res.groups.privilege,placeholder:training_management.privilege_training
+msgid "No"
+msgstr "Aucun"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__objectives
+msgid "Objectives"
+msgstr "Objectifs"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__pricing_mode__quotation
+msgid "On quotation"
+msgstr "Sur devis"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__onsite
+msgid "On site"
+msgstr "Présentiel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__prerequisites
+msgid "Prerequisites"
+msgstr "Prérequis"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pricing_mode
+msgid "Pricing Mode"
+msgstr "Tarification"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Programme"
+msgstr "Programme"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__language_id
+msgid "Programme Language"
+msgstr "Langue du programme"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__title
+msgid "Programme Title"
+msgstr "Titre du programme"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_course.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
+#: model:ir.actions.act_window,name:training_management.action_training_programs
+#: model:ir.model.fields,field_description:training_management.field_training_course__program_version_ids
+#: model:ir.ui.menu,name:training_management.menu_training_programs
+msgid "Programme Versions"
+msgstr "Versions de programme"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Publish Programme"
+msgstr "Publier le programme"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__published
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
+msgid "Published"
+msgstr "Publié"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__published_at
+msgid "Published At"
+msgstr "Publié le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__published_by_id
+msgid "Published By"
+msgstr "Publié par"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__remote
+msgid "Remote"
+msgstr "Distanciel"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Retire"
+msgstr "Retirer"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__retired
+msgid "Retired"
+msgstr "Retiré"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__retired_at
+msgid "Retired At"
+msgstr "Retiré le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__retired_by_id
+msgid "Retired By"
+msgstr "Retiré par"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "Save programme content before changing its status."
+msgstr "Enregistrez le contenu du programme avant de changer son état."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__course_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
+msgid "Standard Course"
+msgstr "Formation standard"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_courses
+#: model:ir.ui.menu,name:training_management.menu_training_courses
+msgid "Standard Courses"
+msgstr "Formations standards"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
+msgid "Standard Programmes"
+msgstr "Programmes standards"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
+msgid "Open programme versions to create and save each programme in its own form."
+msgstr "Ouvrez les versions de programme pour créer et enregistrer chaque programme dans sa propre fiche."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_course
+msgid "Standard Training Course"
+msgstr "Formation standard"
+
+#. module: training_management
+#: model:ir.module.module,summary:base.module_training_management
+msgid "Standard training catalogue and controlled programme versions"
+msgstr "Catalogue de formations standards et versions de programme contrôlées"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__state
+msgid "State"
+msgstr "État"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
+msgid "Status"
+msgstr "État"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__target_audience
+msgid "Target Audience"
+msgstr "Public visé"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__teaching_methods
+msgid "Teaching Methods"
+msgstr "Méthodes pédagogiques"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "The programme company is defined by its course."
+msgstr "La société du programme est définie par sa formation."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_program_version_unique_version
+msgid "The version reference must be unique for each course."
+msgstr "La référence de version doit être unique pour chaque formation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "This programme status transition is not allowed."
+msgstr "Ce changement d’état du programme n’est pas autorisé."
+
+#. module: training_management
+#: model:res.groups,name:training_management.group_training_coordinator
+msgid "Training Coordinator"
+msgstr "Coordinateur des formations"
+
+#. module: training_management
+#: model:ir.module.module,shortdesc:base.module_training_management
+#: model:res.groups.privilege,name:training_management.privilege_training
+msgid "Training Management"
+msgstr "Training Management"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_program_version
+msgid "Training Programme Version"
+msgstr "Version de programme de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Validate"
+msgstr "Valider"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__validated
+msgid "Validated"
+msgstr "Validé"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_at
+msgid "Validated At"
+msgstr "Validé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_by_id
+msgid "Validated By"
+msgstr "Validé par"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "Validated programme content is immutable. Create a new draft version."
+msgstr "Le contenu d’un programme validé est figé. Créez une nouvelle version en brouillon."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "Validated programme versions cannot be deleted."
+msgstr "Les versions de programme validées ne peuvent pas être supprimées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Validation History"
+msgstr "Historique de validation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Validation freezes programme content. Use New Version to make changes."
+msgstr "La validation fige le contenu du programme. Utilisez « Nouvelle version » pour le modifier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "Validation metadata and programme company cannot be edited."
+msgstr "Les données de validation et la société du programme ne sont pas modifiables."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__version
+#: model:ir.model.fields,field_description:training_management.field_training_program_new_version__version
+msgid "Version Reference"
+msgstr "Référence de version"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__elearning
+msgid "eLearning"
+msgstr "eLearning"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_program_new_version.py:0
+msgid "A version reference is required."
+msgstr "Une référence de version est obligatoire."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_new_version__source_id
+msgid "Source Programme"
+msgstr "Programme source"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "The new draft keeps the source content and its translations."
+msgstr "Le nouveau brouillon conserve le contenu source et ses traductions."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "Create Draft"
+msgstr "Créer le brouillon"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
+msgid "Cancel"
+msgstr "Annuler"

@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_product_template_training" model="ir.ui.view">
+        <field name="name">product.template.form.training</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page name="training_commercial" string="Training Offer">
+                    <group>
+                        <field name="training_course_id" options="{'no_create': True}"/>
+                        <field name="training_price_basis"/>
+                    </group>
+                    <group string="Training Revenue" groups="account.group_account_manager" invisible="not training_course_id">
+                        <field name="property_account_income_id" options="{'no_create': True}"/>
+                        <div colspan="2" class="text-muted">
+                            This income account applies to all invoices for this product in the active company.
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

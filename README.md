@@ -2,7 +2,7 @@
 
 Module de gestion de formations pour Odoo Community.
 
-Version cible : Odoo 20 Community. Compatibilité à valider lors du développement.
+Version cible vérifiée pour le premier incrément : Odoo Community `20.0-20261015`.
 
 ## Périmètre
 
@@ -13,12 +13,31 @@ Les besoins, anomalies et évolutions sont suivis dans GitHub Issues. Les modifi
 ## Références et contribution
 
 Lire les [consignes du dépôt](AGENTS.md) et l’[index documentaire](docs/README.md)
-avant toute contribution. L’index présente la spécification fonctionnelle v2.0
-validée le 15 octobre 2026, le prompt maître de développement et leurs statuts.
+avant toute contribution. L’index conserve les références validées, leur
+provenance, leurs empreintes et les décisions d’architecture par incrément.
+Le [backlog de référence — issue #3](https://github.com/Progideo/training_management/issues/3)
+porte les besoins et leur avancement.
 
-Le [backlog de référence (issue #3)](https://github.com/Progideo/training_management/issues/3)
-fixe l’ordre des travaux. Le code métier attend le cadrage et les décisions
-structurantes ; la version exacte d’Odoo 20 Community reste à identifier.
+## Premier incrément
+
+L'addon se trouve dans `addons/training_management/`. Il apporte la gestion
+interne des formations standards et de leurs programmes versionnés, avec
+validation, publication, retrait, droits coordinateur/lecteur et isolation
+multi-sociétés. Les programmes standards sont destinés au futur catalogue
+public ; la publication Web et les variantes privées par client restent à réaliser.
+
+Consulter [l'architecture et la recette S01](docs/development-readiness.md)
+et [les preuves et limites de couverture](docs/native-coverage.md).
+L'ajout au chemin des addons utilise le dossier parent `addons/`.
+Les tests natifs et la CI vérifient installation et mise à jour sur des bases
+jetables. Aucune mise en production n'est autorisée par cette documentation.
+
+## Circuit commercial S02
+
+Le cadrage interne demande → devis → commande → facture → virement est validé.
+Consulter [l’étude du standard exact, les écarts et la validation prévue](docs/s02-native-coverage.md).
+Le premier incrément CRM → devis est décrit dans [sa procédure de recette](docs/s02-crm-quotation.md).
+S02 est fusionné ; le [bilan #45](https://github.com/Progideo/training_management/pull/45#issuecomment-6340365735) précise sa validation et son déploiement en développement. Les relevés et imports bancaires restent reportés.
 
 ## Créateur
 
