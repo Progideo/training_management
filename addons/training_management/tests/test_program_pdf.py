@@ -24,6 +24,8 @@ class TestProgrammePdf(CatalogueCase):
         self.assertTrue(original.startswith(b"%PDF-"))
         self.assertEqual(hashlib.sha256(original).hexdigest(), program.pdf_sha256)
         self.assertGreater(len(PdfFileReader(io.BytesIO(original)).pages), 1)
+        page = PdfFileReader(io.BytesIO(original)).pages[0]
+        self.assertLess(float(page.mediabox.width), float(page.mediabox.height), "The programme is A4 portrait")
         text = self.text(original)
         for expected in ("Programme A", "V1", "Objectives", "Beginners", "Practice", "On quotation", self.contact.name):
             if expected == "Practice":
