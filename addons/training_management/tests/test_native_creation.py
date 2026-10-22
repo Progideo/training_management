@@ -58,6 +58,8 @@ class TestNativeCreation(EnrollmentCase):
             record.write({"company_id": self.other_company.id})
 
     def test_transfer_labels_and_domain(self):
+        draft = self.env["training.enrollment"].new({})
+        self.assertEqual(draft.display_name, self.env._("New Enrollment"))
         source = self.enrollment(self.delivery())
         replacement = self.enrollment(source.delivery_id, participant_id=self.portal_b.partner_id.id,
                                       user_id=self.portal_b.id)

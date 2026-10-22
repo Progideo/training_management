@@ -1581,3 +1581,9 @@ msgstr "%(participant)s — %(delivery)s (Inscription %(reference)s)"
 #: code:addons/training_management/models/training_controlled.py:0
 msgid "Yes"
 msgstr "Oui"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_enrollment.py:0
+msgid "New Enrollment"
+msgstr "Nouvelle inscription"

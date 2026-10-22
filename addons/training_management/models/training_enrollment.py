@@ -43,6 +43,9 @@ class TrainingEnrollment(models.Model):
     @api.depends("participant_id.display_name", "delivery_id.display_name")
     def _compute_display_name(self):
         for enrollment in self:
+            if not enrollment.id:
+                enrollment.display_name = self.env._("New Enrollment")
+                continue
             enrollment.display_name = self.env._(
                 "%(participant)s — %(delivery)s (Enrollment %(reference)s)",
                 participant=enrollment.participant_id.display_name or "—",
