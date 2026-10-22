@@ -710,6 +710,7 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_state
 msgid "State"
 msgstr "État"
 
@@ -2390,6 +2391,8 @@ msgstr ""
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+#: code:addons/training_management/wizard/training_action_reason.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
 msgid "Confirm with Exception"
 msgstr "Confirmer avec dérogation"
 
@@ -3066,6 +3069,7 @@ msgstr "Toutes les séances"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__conflict_description
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__conflict_description
 msgid "Conflict Description"
 msgstr "Conflit de ressources"
 
@@ -3093,12 +3097,15 @@ msgstr "Passées"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__conflict_reason
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__conflict_reason
 msgid "Reason for Resource Exception"
 msgstr "Motif de dérogation de ressource"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
 #: code:addons/training_management/wizard/training_session_edit.py:0
+#: code:addons/training_management/wizard/training_action_reason.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
 msgid "Resource Exception"
 msgstr "Dérogation de ressource"
 
@@ -3132,3 +3139,14 @@ msgstr "Indisponibilité"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
 msgid "Upcoming"
 msgstr "À venir"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_action_reason.py:0
+msgid "Enter a reason for this action."
+msgstr "Saisissez un motif pour cette action."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__reason_required
+msgid "Reason Required"
+msgstr "Motif obligatoire"

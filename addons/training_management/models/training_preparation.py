@@ -56,7 +56,7 @@ class TrainingDelivery(models.Model):
         return True
 
     @api.private
-    def _transition(self, target, reason=None):
+    def _transition(self, target, reason=None, conflict_reason=None):
         self._require_coordinator()
         if target == "confirmed":
             self.company_id._lock_training_schedule()
@@ -68,12 +68,15 @@ class TrainingDelivery(models.Model):
                     sessions = delivery.session_ids.filtered(lambda item: not item.cancelled)
                     if not sessions:
                         raise ValidationError(self.env._("Add the sessions before confirming this dated delivery."))
-                    sessions._reserve(reason)
+                    sessions._reserve(conflict_reason)
                 # Transition each delivery immediately: a later member of the
                 # same batch must see the resources reserved by an earlier one.
                 super(TrainingDelivery, delivery)._transition(target, reason)
             return True
         return super()._transition(target, reason)
+
+    def action_confirm(self, reason=None, conflict_reason=None):
+        return self._transition("confirmed", reason, conflict_reason)
 
     def write(self, vals):
         if self.session_ids and any(

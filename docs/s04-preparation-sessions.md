@@ -72,6 +72,10 @@ Les réalisations historiques ne reçoivent aucune séance inventée à la mise 
 Le motif d'une modification n'autorise pas une dérogation de ressource. Si un conflit
 apparaît, le même assistant conserve les saisies, décrit ressource et période et
 demande un motif de dérogation distinct. Sans conflit, aucune étape supplémentaire.
+La confirmation sous seuil suit la même séparation : le motif d'ouverture n'autorise
+aucun conflit de ressource. Le même assistant affiche les conflits connus dès son
+ouverture ; il conserve le motif d'ouverture si un conflit apparaît ensuite.
+Au-dessus du seuil, seule la justification de ressource est demandée en cas de conflit.
 
 ## Convocations et limites de messagerie
 
@@ -130,6 +134,9 @@ inclure dans une éventuelle recette de déploiement, qui reste hors de cette PR
    avec les filtres à venir/passées/toutes conservés lors de la pagination.
 4. Confirmer deux créneaux concurrents : une réservation ordinaire réussit ; refus
    de la seconde, puis dérogation motivée. Refaire avec une indisponibilité et une salle.
+   Combiner sous-seuil et conflit : motif d'ouverture seul refusé, dérogation distincte
+   conservée au journal. Sans conflit, une seule validation ; au-dessus du seuil,
+   aucun motif d'ouverture inutile. Refaire avec un conflit apparu après ouverture de l'assistant.
 5. Tester heure ambiguë/inexistante, plusieurs fuseaux et capacité de salle face
    aux places non nominatives. Déplacer une séance avec motif ; aucun envoi implicite.
    Un nouveau conflit exige une dérogation distincte, sans ressaisir le déplacement.

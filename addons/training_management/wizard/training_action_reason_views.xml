@@ -10,10 +10,17 @@
                     <field name="action_name" invisible="1"/>
                     <field name="action_label"/>
                     <field name="target_count"/>
-                    <field name="reason"/>
+                    <field name="reason_required" invisible="1"/>
+                    <field name="reason" invisible="not reason_required" required="reason_required"/>
+                </group>
+                <group invisible="not conflict_description" string="Resource Exception" col="1">
+                    <field name="conflict_description" nolabel="1" force_save="1"/>
+                    <label for="conflict_reason"/>
+                    <field name="conflict_reason" nolabel="1" required="conflict_description"/>
                 </group>
                 <footer>
-                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary" invisible="conflict_description"/>
+                    <button name="action_apply" type="object" string="Confirm with Exception" class="btn-primary" invisible="not conflict_description"/>
                     <button special="cancel" string="Cancel"/>
                 </footer>
             </form>

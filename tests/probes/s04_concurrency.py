@@ -113,7 +113,7 @@ with env.registry.cursor() as retry:
     else:
         raise AssertionError("Fresh retry must refuse instructor/room conflict")
     assert current["training.delivery"].browse(deliveries.ids).mapped("state") == ["confirmed", "preparation"]
-    current["training.delivery"].browse(deliveries[1].id).action_confirm(reason="Fictional explicit exception")
+    current["training.delivery"].browse(deliveries[1].id).action_confirm(conflict_reason="Fictional explicit exception")
     assert (
         current["training.delivery"]
         .browse(deliveries[1].id)

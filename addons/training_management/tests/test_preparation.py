@@ -121,7 +121,7 @@ class TestPreparation(PreparationCase):
         second, session = self.planned()
         with self.assertRaises(ValidationError):
             second.action_confirm()
-        second.action_confirm(reason="Explicit coordinator exception")
+        second.action_confirm(conflict_reason="Explicit coordinator exception")
         self.assertTrue(second.operation_ids.filtered(lambda row: "conflicts" in (row.after or "")))
         with self.assertRaises(ValidationError):
             session.write({"start_hour": 10})
@@ -144,10 +144,93 @@ class TestPreparation(PreparationCase):
         third_session.write({"start_date": "2027-01-05", "end_date": "2027-01-05"})
         with self.assertRaises(ValidationError):
             third.action_confirm()
-        third.action_confirm(reason="Confirmed exception to unavailability")
+        third.action_confirm(conflict_reason="Confirmed exception to unavailability")
         self.assertTrue(unavailable.active)
         with self.assertRaises((AccessError, ValidationError)):
             session.with_user(self.portal).action_change()
+
+    def test_below_threshold_confirmation_needs_a_distinct_resource_exception(self):
+        first, _first_session = self.planned()
+        delivery, session = self.planned(opening_threshold=5, capacity=10)
+        opening_reason = "Approved opening for a small group"
+        exception_reason = "Explicitly agreed shared instructor"
+        self.assertTrue(delivery.below_threshold)
+        other, other_session = self.planned()
+        other_session.write({"start_date": "2027-01-05", "end_date": "2027-01-05"})
+        action = (other | delivery).with_context(reason_action="action_confirm").action_open_reason()
+        with Form(
+            self.env["training.action.reason"].with_user(self.coordinator).with_context(**action["context"])
+        ) as form:
+            form.reason = opening_reason
+        wizard = form.record
+        self.assertFalse(wizard.conflict_description)
+        first.action_confirm()
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            delivery.action_confirm(reason=opening_reason)
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            delivery.action_confirm(conflict_reason=exception_reason)
+        self.assertEqual(delivery.state, "preparation")
+        self.assertFalse(delivery.operation_ids.filtered(lambda item: "conflicts" in (item.after or "")))
+        action = wizard.action_apply()
+        self.assertEqual(action["res_id"], wizard.id, "Keep the same confirmation assistant")
+        self.assertEqual(delivery.state, "preparation")
+        self.assertEqual(other.state, "preparation", "The entire confirmation batch is rolled back")
+        self.assertEqual(wizard.reason, opening_reason, "No re-entry of the opening reason")
+        self.assertIn(self.portal.partner_id.name, wizard.conflict_description)
+        self.assertIn("UTC", wizard.conflict_description)
+        self.assertFalse(delivery.operation_ids.filtered(lambda item: "conflicts" in (item.after or "")))
+        with Form(wizard) as form:
+            form.conflict_reason = exception_reason
+        self.assertEqual(wizard.action_apply()["type"], "ir.actions.act_window_close")
+        self.assertEqual(delivery.state, "confirmed")
+        self.assertEqual(other.state, "confirmed")
+        self.assertEqual(first.state, "confirmed")
+        conflicts = delivery.operation_ids.filtered(lambda item: "conflicts" in (item.after or ""))
+        self.assertEqual(conflicts.reason, exception_reason)
+        self.assertTrue(
+            delivery.operation_ids.filtered(
+                lambda item: '"confirmed"' in (item.after or "") and item.reason == opening_reason
+            )
+        )
+        self.assertTrue(session._conflicts())
+        self.assertFalse(delivery.invitation_ids, "Confirmation never sends invitations")
+        with self.assertRaises(AccessError):
+            wizard.with_user(self.portal).action_apply()
+
+    def test_confirmation_without_conflict_keeps_one_apply_and_no_extra_reason(self):
+        delivery, _session = self.planned(opening_threshold=5, capacity=10)
+        action = delivery.with_context(reason_action="action_confirm").action_open_reason()
+        with Form(
+            self.env["training.action.reason"].with_user(self.coordinator).with_context(**action["context"])
+        ) as form:
+            form.reason = "Approved opening for a small group"
+        wizard = form.record
+        self.assertTrue(wizard.reason_required)
+        self.assertFalse(wizard.conflict_description)
+        self.assertEqual(wizard.action_apply()["type"], "ir.actions.act_window_close")
+        self.assertEqual(delivery.state, "confirmed")
+        self.assertFalse(wizard.conflict_reason)
+        self.assertFalse(delivery.invitation_ids)
+        other, other_session = self.planned()
+        other_session.write({"start_date": "2027-01-05", "end_date": "2027-01-05"})
+        self.assertTrue(other.action_confirm(), "Ordinary confirmation remains a single action")
+
+    def test_resource_only_confirmation_does_not_require_an_opening_reason(self):
+        first, _session = self.planned()
+        first.action_confirm()
+        delivery, _second_session = self.planned()
+        action = delivery.with_context(reason_action="action_confirm").action_open_reason()
+        with Form(
+            self.env["training.action.reason"].with_user(self.coordinator).with_context(**action["context"])
+        ) as form:
+            self.assertFalse(form.reason_required)
+            self.assertIn(self.portal.partner_id.name, form.conflict_description)
+            form.conflict_reason = "Explicit resource exception above threshold"
+        wizard = form.record
+        self.assertEqual(wizard.action_apply()["type"], "ir.actions.act_window_close")
+        self.assertEqual(delivery.state, "confirmed")
+        self.assertFalse(wizard.reason)
+        self.assertFalse(delivery.invitation_ids)
 
     def test_edit_reason_is_not_a_resource_exception_and_wizard_keeps_inputs(self):
         first, first_session = self.planned()
