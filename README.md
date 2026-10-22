@@ -10,6 +10,14 @@ Ce dépôt contient exclusivement le code, les tests, la documentation et les wo
 
 Les besoins, anomalies et évolutions sont suivis dans GitHub Issues. Les modifications sont proposées et examinées par pull request.
 
+## Références et contribution
+
+Lire les [consignes du dépôt](AGENTS.md) et l’[index documentaire](docs/README.md)
+avant toute contribution. L’index conserve les références validées, leur
+provenance, leurs empreintes et les décisions d’architecture par incrément.
+Le [backlog de référence — issue #3](https://github.com/Progideo/training_management/issues/3)
+porte les besoins et leur avancement.
+
 ## Premier incrément
 
 L'addon se trouve dans `addons/training_management/`. Il apporte la gestion
@@ -36,9 +44,8 @@ S02 est fusionné, avec encaissements manuels après vérification bancaire ; le
 S03 ajoute les réalisations datées/autonomes, les lots de places, les inscriptions
 nominatives et leurs autorisations/périodes d'accès, avec historique et contrôles
 serveur. Consulter [la décision, les règles et la recette S03](docs/s03-enrollment-access.md).
-Le modèle dédié est validé ; la PR S03 reste à revoir. Aucun portail pédagogique,
-PDF ou examen n'est ouvert par cet incrément. Aucune fusion ni aucun déploiement
-S03 n'est autorisé par cette documentation.
+Le modèle dédié est validé ; la PR S03 et sa validation sont suivies dans [#46](https://github.com/Progideo/training_management/pull/46). Aucun portail pédagogique,
+PDF ou examen n'est ouvert par cet incrément. La fusion et le déploiement sur `neopro_dev` ont été autorisés le 22 octobre 2026 après traitement de #41 ; leurs résultats sont consignés dans la PR. La production reste hors de cette opération.
 
 ## Créateur
 

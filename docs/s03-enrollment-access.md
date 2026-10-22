@@ -5,9 +5,9 @@ Références : [besoin #13](https://github.com/Progideo/training_management/issu
 [architecture et comptes #8](https://github.com/Progideo/training_management/issues/8),
 [S02 #12](https://github.com/Progideo/training_management/issues/12).
 La spécification v2, §2 et INS01–INS05, définit le besoin ; SEC01 et CAT02
-s'appliquent dès cet incrément. L'import documentaire de référence reste dans
-la [PR #41](https://github.com/Progideo/training_management/pull/41), non fusionnée
-lors du cadrage. Les empreintes de la spécification et du prompt maître sous
+s'appliquent dès cet incrément. L'import documentaire de référence a été conservé, actualisé et fusionné via
+la [PR #41](https://github.com/Progideo/training_management/pull/41), après revue
+le 22 octobre 2026. Voir l’[index des références](README.md). Les empreintes de la spécification et du prompt maître sous
 `sources/` correspondent à cet import. Aucun fichier synchronisé n'est modifié.
 L'audit historique Odoo 19 reste suspendu.
 
@@ -16,7 +16,14 @@ L'audit historique Odoo 19 reste suspendu.
 Après validation du périmètre, l'utilisateur a validé le modèle dédié, sans
 dépendance obligatoire à Événements, puis le développement en branche et une
 PR à revoir. Aucune fusion, aucun déploiement, aucune intervention neopro_dev ou
-production et aucune migration réelle ne sont autorisés par ces validations.
+production et aucune migration réelle ne sont autorisés par ces validations initiales.
+
+Après traitement de #41, l’utilisateur a autorisé le 22 octobre 2026 la fusion
+et le déploiement S03 sur la cible de développement habituelle `neopro_dev`.
+La répétition sur copie isolée, les sauvegardes et les contrôles de conservation
+précèdent la bascule ; les résultats effectifs sont consignés dans la PR #46.
+La production et une migration Odoo 19 restent hors périmètre.
+La réorganisation/parallélisation de CI est prévue dans une prochaine PR ([#47](https://github.com/Progideo/training_management/issues/47)).
 
 Le socle `training_management` passe en `20.0.1.1.0` ; l'intégration
 `training_management_sale` en `20.0.1.9.0`. Le premier reste dépendant de `base`
