@@ -19,3 +19,4 @@ from . import payment_link_wizard
 from . import account_journal
 from . import mail_message
 from . import mail_mail
+from . import training_allocation

@@ -2,13 +2,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0-20261015\n"
-"PO-Revision-Date: 2026-10-20 12:00+0000\n"
+"PO-Revision-Date: 2026-10-22 13:00+0000\n"
 "Last-Translator: Training Management contributors\n"
 "Language-Team: French\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: training_management_sale
@@ -69,20 +69,30 @@ msgstr "Contact administratif"
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_crm_lead__training_sponsor_id
 #: model:ir.model.fields,help:training_management_sale.field_sale_order__training_sponsor_id
-msgid "Person or organisation ordering the training; it can differ from the customer."
-msgstr "Personne ou organisation qui commande la formation ; elle peut différer du client."
+msgid ""
+"Person or organisation ordering the training; it can differ from the "
+"customer."
+msgstr ""
+"Personne ou organisation qui commande la formation ; elle peut différer du "
+"client."
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_crm_lead__training_expected_payer_id
 #: model:ir.model.fields,help:training_management_sale.field_sale_order__training_expected_payer_id
-msgid "Planned payer only; this does not change the invoice debtor or grant access."
-msgstr "Payeur prévu uniquement ; ce rôle ne change pas le débiteur de la facture et n’accorde aucun accès."
+msgid ""
+"Planned payer only; this does not change the invoice debtor or grant access."
+msgstr ""
+"Payeur prévu uniquement ; ce rôle ne change pas le débiteur de la facture et"
+" n’accorde aucun accès."
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_crm_lead__training_admin_contact_id
 #: model:ir.model.fields,help:training_management_sale.field_sale_order__training_admin_contact_id
-msgid "Contact for commercial administration, without automatic document access."
-msgstr "Contact chargé du suivi administratif commercial, sans accès automatique aux documents."
+msgid ""
+"Contact for commercial administration, without automatic document access."
+msgstr ""
+"Contact chargé du suivi administratif commercial, sans accès automatique aux"
+" documents."
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_delivery_mode
@@ -101,11 +111,13 @@ msgstr "Date de fin souhaitée"
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_product_template__training_course_id
+#: model:ir.model.fields,field_description:training_management_sale.field_product_product__training_course_id
 msgid "Training Catalogue Entry"
 msgstr "Formation du catalogue"
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_product_template__training_price_basis
+#: model:ir.model.fields,field_description:training_management_sale.field_product_product__training_price_basis
 msgid "Training Price Basis"
 msgstr "Base tarifaire de la formation"
 
@@ -121,11 +133,13 @@ msgstr "Forfait"
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_form_training
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_product_template_training
 msgid "Training Offer"
 msgstr "Offre de formation"
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_sale_order_line__training_program_id
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_form_training
 msgid "Programme Version"
 msgstr "Version du programme"
 
@@ -137,7 +151,9 @@ msgstr "Référence du programme sur le devis"
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/product_template.py:0
 msgid "A training commercial product must be a service with a price basis."
-msgstr "Un produit commercial de formation doit être un service avec une base tarifaire."
+msgstr ""
+"Un produit commercial de formation doit être un service avec une base "
+"tarifaire."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/product_template.py:0
@@ -146,8 +162,12 @@ msgstr "Choisissez une formation du catalogue pour cette base tarifaire."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/crm_lead.py:0
-msgid "Choose a validated or published programme before creating a training quotation."
-msgstr "Choisissez un programme validé ou publié avant de créer un devis de formation."
+msgid ""
+"Choose a validated or published programme before creating a training "
+"quotation."
+msgstr ""
+"Choisissez un programme validé ou publié avant de créer un devis de "
+"formation."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/crm_lead.py:0
@@ -177,7 +197,8 @@ msgstr "Qualifiez la demande de formation avant d’envoyer son devis."
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order.py:0
 msgid "A training order requires a validated or published programme version."
-msgstr "Une commande de formation exige une version de programme validée ou publiée."
+msgstr ""
+"Une commande de formation exige une version de programme validée ou publiée."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order.py:0
@@ -192,17 +213,21 @@ msgstr "Indiquez un nombre positif de participants sur le devis de formation."
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order.py:0
 msgid "Training lines must use the requested programme version."
-msgstr "Les lignes de formation doivent utiliser la version de programme demandée."
+msgstr ""
+"Les lignes de formation doivent utiliser la version de programme demandée."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order.py:0
 msgid "Revise the training offer instead of changing its confirmed request."
-msgstr "Révisez l’offre de formation au lieu de modifier la demande confirmée."
+msgstr ""
+"Révisez l’offre de formation au lieu de modifier la demande confirmée."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
 msgid "A training product and programme version must be selected together."
-msgstr "Le produit de formation et la version du programme doivent être choisis ensemble."
+msgstr ""
+"Le produit de formation et la version du programme doivent être choisis "
+"ensemble."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
@@ -212,7 +237,8 @@ msgstr "Le programme doit correspondre au produit commercial et à la société.
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
 msgid "Only validated or published programmes may be quoted."
-msgstr "Seuls les programmes validés ou publiés peuvent être proposés sur un devis."
+msgstr ""
+"Seuls les programmes validés ou publiés peuvent être proposés sur un devis."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
@@ -226,28 +252,45 @@ msgstr "La référence du programme sur le devis est générée par le système.
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
-msgid "The training line quantity must match its per-person or package price basis."
-msgstr "La quantité de la ligne de formation doit correspondre à sa base tarifaire par personne ou au forfait."
+msgid ""
+"The training line quantity must match its per-person or package price basis."
+msgstr ""
+"La quantité de la ligne de formation doit correspondre à sa base tarifaire "
+"par personne ou au forfait."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
-msgid "Set an explicit fixed pricelist price for this training product and currency."
-msgstr "Définissez un prix fixe explicite dans la liste de prix pour ce produit de formation et cette devise."
+msgid ""
+"Set an explicit fixed pricelist price for this training product and "
+"currency."
+msgstr ""
+"Définissez un prix fixe explicite dans la liste de prix pour ce produit de "
+"formation et cette devise."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
-msgid "The training line must use its fixed pricelist amount without a manual discount."
-msgstr "La ligne de formation doit reprendre le montant fixe de la liste de prix sans remise manuelle."
+msgid ""
+"The training line must use its fixed pricelist amount without a manual "
+"discount."
+msgstr ""
+"La ligne de formation doit reprendre le montant fixe de la liste de prix "
+"sans remise manuelle."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/sale_order_line.py:0
 msgid "The training fixed price cannot include converted variant supplements."
-msgstr "Le prix fixe de formation ne peut pas inclure de supplément de variante converti."
+msgstr ""
+"Le prix fixe de formation ne peut pas inclure de supplément de variante "
+"converti."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/product_pricelist.py:0
-msgid "The currency of a pricelist used by a confirmed training order cannot be changed."
-msgstr "La devise d’une liste de prix utilisée par une commande de formation confirmée ne peut pas être modifiée."
+msgid ""
+"The currency of a pricelist used by a confirmed training order cannot be "
+"changed."
+msgstr ""
+"La devise d’une liste de prix utilisée par une commande de formation "
+"confirmée ne peut pas être modifiée."
 
 #. module: training_management_sale
 #: model:ir.model,name:training_management_sale.model_training_bank_transfer_notice
@@ -368,59 +411,93 @@ msgstr "Motif de réutilisation de la référence"
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_account_payment__training_bank_reference
-msgid "Reference checked against the bank evidence, separate from the invoice memo."
-msgstr "Référence contrôlée sur la preuve bancaire, distincte du libellé de facture."
+msgid ""
+"Reference checked against the bank evidence, separate from the invoice memo."
+msgstr ""
+"Référence contrôlée sur la preuve bancaire, distincte du libellé de facture."
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_account_payment__training_duplicate_reference_reason
-msgid "Explain an intentional allocation of one transfer across several payments."
-msgstr "Expliquez la répartition volontaire d’un même virement entre plusieurs paiements."
+msgid ""
+"Explain an intentional allocation of one transfer across several payments."
+msgstr ""
+"Expliquez la répartition volontaire d’un même virement entre plusieurs "
+"paiements."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_payment.py:0
 msgid "The bank reference of a posted payment cannot be changed."
-msgstr "La référence bancaire d’un paiement comptabilisé ne peut pas être modifiée."
+msgstr ""
+"La référence bancaire d’un paiement comptabilisé ne peut pas être modifiée."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_payment_register.py:0
-msgid "This bank reference was already recorded in this company and journal. Explain the intentional split before continuing."
-msgstr "Cette référence bancaire a déjà été enregistrée dans cette société et ce journal. Expliquez la répartition volontaire avant de continuer."
+#: code:addons/training_management_sale/models/account_payment.py:0
+msgid ""
+"This bank reference was already recorded in this company and journal. "
+"Explain the intentional split before continuing."
+msgstr ""
+"Cette référence bancaire a déjà été enregistrée dans cette société et ce "
+"journal. Expliquez la répartition volontaire avant de continuer."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_payment_register.py:0
 msgid "Enter the bank reference before recording a training payment."
-msgstr "Saisissez la référence bancaire avant d’enregistrer un paiement de formation."
+msgstr ""
+"Saisissez la référence bancaire avant d’enregistrer un paiement de "
+"formation."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_payment_register.py:0
-msgid "A training payment in another currency requires an explicit accounting review."
-msgstr "Un paiement de formation dans une autre devise nécessite une revue comptable explicite."
+msgid ""
+"A training payment in another currency requires an explicit accounting "
+"review."
+msgstr ""
+"Un paiement de formation dans une autre devise nécessite une revue comptable"
+" explicite."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_payment_register.py:0
-msgid "Record training invoice payments through a bank journal with the manual method."
-msgstr "Enregistrez les paiements des factures de formation dans un journal bancaire avec la méthode manuelle."
+msgid ""
+"Record training invoice payments through a bank journal with the manual "
+"method."
+msgstr ""
+"Enregistrez les paiements des factures de formation dans un journal bancaire"
+" avec la méthode manuelle."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_payment.py:0
-msgid "A training bank reference requires an incoming bank payment with the manual method."
-msgstr "Une référence bancaire de formation exige un paiement entrant dans un journal bancaire avec la méthode manuelle."
+msgid ""
+"A training bank reference requires an incoming bank payment with the manual "
+"method."
+msgstr ""
+"Une référence bancaire de formation exige un paiement entrant dans un "
+"journal bancaire avec la méthode manuelle."
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_portal_partner_ids
 #: model:ir.model.fields,field_description:training_management_sale.field_account_move__training_portal_partner_ids
+#: model:ir.model.fields,field_description:training_management_sale.field_account_bank_statement_line__training_portal_partner_ids
 msgid "Authorized Portal Contacts"
 msgstr "Contacts autorisés sur le portail"
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_sale_order__training_portal_partner_ids
-msgid "Only these named contacts may view this training quotation or order in the portal."
-msgstr "Seuls ces contacts nommément autorisés peuvent consulter ce devis ou cette commande de formation sur le portail."
+msgid ""
+"Only these named contacts may view this training quotation or order in the "
+"portal."
+msgstr ""
+"Seuls ces contacts nommément autorisés peuvent consulter ce devis ou cette "
+"commande de formation sur le portail."
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_account_move__training_portal_partner_ids
-msgid "Only these named contacts may view this training invoice in the portal."
-msgstr "Seuls ces contacts nommément autorisés peuvent consulter cette facture de formation sur le portail."
+#: model:ir.model.fields,help:training_management_sale.field_account_bank_statement_line__training_portal_partner_ids
+msgid ""
+"Only these named contacts may view this training invoice in the portal."
+msgstr ""
+"Seuls ces contacts nommément autorisés peuvent consulter cette facture de "
+"formation sur le portail."
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_move_form_training_portal
@@ -430,25 +507,33 @@ msgstr "Reprendre les contacts de la commande"
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_move.py:0
 msgid "Only a salesperson may copy authorized contacts from a training order."
-msgstr "Seul un commercial peut reprendre les contacts autorisés d’une commande de formation."
+msgstr ""
+"Seul un commercial peut reprendre les contacts autorisés d’une commande de "
+"formation."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_move.py:0
 msgid "Copy authorized contacts only on a draft training invoice."
-msgstr "Reprenez les contacts autorisés uniquement sur une facture de formation en brouillon."
+msgstr ""
+"Reprenez les contacts autorisés uniquement sur une facture de formation en "
+"brouillon."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_move.py:0
 msgid "This invoice must be linked only to training orders of its company."
-msgstr "Cette facture doit être liée uniquement à des commandes de formation de sa société."
+msgstr ""
+"Cette facture doit être liée uniquement à des commandes de formation de sa "
+"société."
 
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/account_move.py:0
 msgid "No contact is authorized on every linked training order."
-msgstr "Aucun contact n’est autorisé sur toutes les commandes de formation liées."
+msgstr ""
+"Aucun contact n’est autorisé sur toutes les commandes de formation liées."
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_account_move__training_is_sale_invoice
+#: model:ir.model.fields,field_description:training_management_sale.field_account_bank_statement_line__training_is_sale_invoice
 msgid "Training Sales Invoice"
 msgstr "Facture de vente de formation"
 
@@ -460,6 +545,7 @@ msgstr "Accès portail à la formation"
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.report_invoice_training_downpayment
 #: model_terms:ir.ui.view,arch_db:training_management_sale.report_saleorder_training_program
+#: code:addons/training_management_sale/models/account_move_line.py:0
 msgid "Down Payment"
 msgstr "Acompte"
 
@@ -476,7 +562,8 @@ msgstr "Cette pièce jointe de formation est indisponible."
 #. module: training_management_sale
 #: code:addons/training_management_sale/models/ir_binary.py:0
 msgid "This training attachment requires an authorized portal contact."
-msgstr "Cette pièce jointe de formation nécessite un contact portail autorisé."
+msgstr ""
+"Cette pièce jointe de formation nécessite un contact portail autorisé."
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_company_form_training_downpayment
@@ -490,8 +577,11 @@ msgstr "Acomptes sur ventes"
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_company_form_training_downpayment
-msgid "This account applies to all sales down payment invoices for this company."
-msgstr "Ce compte s’applique à toutes les factures d’acompte sur ventes de cette société."
+msgid ""
+"This account applies to all sales down payment invoices for this company."
+msgstr ""
+"Ce compte s’applique à toutes les factures d’acompte sur ventes de cette "
+"société."
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_product_template_training
@@ -500,8 +590,12 @@ msgstr "Revenus de formation"
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_product_template_training
-msgid "This income account applies to all invoices for this product in the active company."
-msgstr "Ce compte de produits s’applique à toutes les factures de cet article dans la société active."
+msgid ""
+"This income account applies to all invoices for this product in the active "
+"company."
+msgstr ""
+"Ce compte de produits s’applique à toutes les factures de cet article dans "
+"la société active."
 
 #. module: training_management_sale
 #. odoo-python
@@ -513,10 +607,81 @@ msgstr "Révisez l’offre de formation au lieu de modifier sa devise confirmée
 #. odoo-python
 #: code:addons/training_management_sale/models/mail_message.py:0
 msgid "This training message requires a currently authorized contact."
-msgstr "Ce message de formation est réservé aux contacts actuellement habilités."
+msgstr ""
+"Ce message de formation est réservé aux contacts actuellement habilités."
 
 #. module: training_management_sale
 #. odoo-python
 #: code:addons/training_management_sale/models/mail_mail.py:0
 msgid "A training mail recipient is no longer authorized on the document."
-msgstr "Un destinataire du courriel de formation n’est plus habilité sur le document."
+msgstr ""
+"Un destinataire du courriel de formation n’est plus habilité sur le "
+"document."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid "Allocated places exceed the commercial line's participant entitlement."
+msgstr "Les places attribuées dépassent l’effectif commercial autorisé."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid ""
+"Cancel the training allocations explicitly before cancelling the commercial "
+"order."
+msgstr ""
+"Annulez explicitement les lots de formation avant d’annuler la commande "
+"commerciale."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_seat_allocation__sale_line_id
+msgid "Commercial Line"
+msgstr "Ligne commerciale"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid ""
+"Commercial lines with allocated training places are fixed. Use a controlled "
+"commercial revision."
+msgstr ""
+"Les lignes commerciales comportant des lots de formation sont figées. "
+"Utilisez une révision commerciale contrôlée."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid ""
+"Orders with training allocations keep their customer, programme and "
+"participant entitlement."
+msgstr ""
+"Les commandes avec des lots de formation conservent leur client, programme "
+"et effectif autorisé."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid ""
+"The allocation must match a readable commercial line, customer, company and "
+"programme; commitment requires a confirmed order."
+msgstr ""
+"Le lot doit correspondre à une ligne commerciale accessible, au client, à la"
+" société et au programme ; sa confirmation exige une commande confirmée."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid "The allocation revision is server-managed."
+msgstr "La révision des lots est gérée par le serveur."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_allocation_revision
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order_line__training_allocation_revision
+msgid "Training Allocation Revision"
+msgstr "Révision des lots de formation"
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_seat_allocation
+msgid "Training Seat Allocation"
+msgstr "Lot de places de formation"
