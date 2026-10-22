@@ -348,42 +348,11 @@ mise à jour de cet addon sur ses bases CI jetables. Les résultats obtenus sont
 consignés dans la PR. Les comptes et formations de recette S01 de
 `neopro_dev` sont préservés ; les nouvelles données de scénario seront distinctes.
 
-## Validation complémentaire du 22 octobre 2026
+## Périmètre de lancement confirmé le 22 octobre 2026
 
-L'utilisateur confirme que les choix convenus ont été validés par un comptable.
-Il confirme aussi le périmètre de lancement : **saisie manuelle des encaissements
-après vérification bancaire ; import des fichiers bancaires ultérieur**. Aucun
-importeur ni mécanisme de détection des doublons d'import n'est livré par S02.
-Les exigences de référence, d'attestation Odoo et de devise du paiement saisi
-restent celles décrites ci-dessus. Le relevé sans référence peut être rapproché
-manuellement, sans attestation enregistrée ; ce parcours n'autorise pas un
-rapprochement automatique avant contrôle.
-
-La version `20.0.1.7.4` a été vérifiée sur la base de développement autorisée,
-avec des documents exclusivement fictifs et le code `9b2a025`. La CI n° 66 de
-ce code a réussi. Les comptes d'acompte et de revenus sont configurés à partir
-des champs natifs Odoo propres à chaque société ; aucun plan comptable national,
-numéro de compte ou taux de taxe n'est imposé par l'addon.
-
-| Contrôle complémentaire sur la cible | Résultat exécuté |
-| --- | --- |
-| Paiement sous profil facturation/commercial limité à une société, sans administration | Refus sans référence ou sans attestation ; paiement partiel ; doublon refusé sans motif ; répartition explicitement motivée ; paiement des soldes. Auteur et date de l'attestation enregistrés, modification directe refusée. |
-| Scénario taxable fictif : acompte 480 EUR TTC et finale 1 440 EUR TTC | Après quatre paiements fictifs totalisant 1 920 EUR, deux résiduels à zéro et transfert cumulé de TVA de 3 200 MAD au taux fictif de recette. Transaction intégralement annulée ; les deux factures restent dues. |
-| Ligne bancaire de 50 EUR sans référence, profil comptable limité à une société | Rapprochement explicite accepté, sans objet paiement ni attestation. Un journal EUR temporaire a été créé pour ce seul essai, puis annulé. Une ligne du journal MAD existant a été refusée pour la facture EUR. Ce contrôle n'est pas un essai d'import. |
-| Portail HTTP sur devis et facture, avec jetons valides | Anonyme et collègue de la même entreprise refusés ; contact explicitement habilité admis aux pages et PDF. Accès refusé immédiatement après révocation. |
-| Pièce privée liée à la facture | Accès HTTP accordé seulement au contact habilité ; jeton de pièce insuffisant pour l'anonyme, le collègue et le contact révoqué. |
-| Préparation des courriels sur la cible | PDF du devis préparé pour le seul contact habilité ; autre destinataire ou copie refusés. Destinataires de facture limités aux contacts habilités ; forçage d'une adresse libre par modèle d'e-mail refusé pour devis et facture. Brouillon de devis refusé après révocation. Aucun courriel expédié. |
-
-Les essais de paiement et de rapprochement ont été annulés. Pour les essais HTTP,
-deux comptes portail fictifs ont été temporairement créés, puis désactivés ; les
-habilitations initiales des documents ont été restaurées et la pièce de test
-retirée. Aucun identifiant, jeton ou mot de passe n'est conservé dans ce dépôt.
-Ces contrôles serveur et HTTP complètent la recette d'interface du 20 octobre ;
-ils ne constituent pas un encaissement réel ni une signature de procès-verbal
-au nom du comptable.
-
-Avant l'ouverture des courriels aux clients, configurer et vérifier le transport
-SMTP avec une destination de test autorisée, puis contrôler la réception, les
-PDF et les liens. Avant un futur import, cadrer son format, ses doublons, les
-journaux et devises, et la revue manuelle. La revue de la PR, sa fusion et la
-mise en production restent des étapes distinctes.
+La saisie des encaissements est **manuelle au lancement, après vérification
+bancaire ; l'import des fichiers bancaires est ultérieur**. S02 n'ajoute donc
+aucun importeur ni contrôle des doublons de fichiers importés. Les contrôles
+de référence, d'attestation et de devise du paiement saisi restent inchangés.
+Le futur import nécessitera un cadrage distinct de ses formats, doublons,
+journaux, devises et de la revue comptable.
