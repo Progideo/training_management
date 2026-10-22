@@ -92,6 +92,8 @@ class TestNativeCreation(EnrollmentCase):
         enrollment = self.admitted()
         enrollment.action_authorize()
         enrollment.action_open_access()
+        self.assertIn(f"(Enrollment {enrollment.id})", enrollment.with_context(lang="en_US").display_name)
+        self.assertIn(f"(Inscription {enrollment.id})", enrollment.with_context(lang="fr_FR").display_name)
         rows = enrollment.delivery_id.operation_ids
         raw = {row.id: (row.before, row.after, row.record_label) for row in rows}
         fr = rows.with_context(lang="fr_FR", tz="Africa/Casablanca")

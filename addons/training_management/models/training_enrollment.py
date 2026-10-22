@@ -41,6 +41,7 @@ class TrainingEnrollment(models.Model):
     successor_id = fields.Many2one("training.enrollment", readonly=True, copy=False, ondelete="restrict", check_company=True)
 
     @api.depends("participant_id.display_name", "delivery_id.display_name")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         for enrollment in self:
             if not enrollment.id:
