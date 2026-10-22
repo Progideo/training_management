@@ -24,6 +24,7 @@
                     h1 { font-size: 21pt; } h2 { font-size: 13pt; margin-top: 18pt; page-break-after: avoid; }
                     .text { white-space: pre-wrap; line-height: 1.45; overflow-wrap: anywhere; }
                     .notice { padding: 10pt; border: 1pt solid #596e84; margin: 12pt 0; }
+                    .section { page-break-inside: avoid; }
                     .meta { line-height: 1.7; } img { max-height: 55pt; max-width: 180pt; }
                 </style>
             </head>
@@ -46,16 +47,16 @@
                                 Reconstructed from preserved programme content on <span t-out="generated_at"/> (UTC).
                                 This does not reproduce a historical document sent to a customer.
                             </p>
-                            <h2>Objectives</h2><div class="text" t-out="o.objectives"/>
-                            <h2>Target audience</h2><div class="text" t-out="o.target_audience"/>
-                            <h2>Prerequisites</h2><div class="text" t-out="o.prerequisites"/>
+                            <div class="section"><h2>Objectives</h2><div class="text" t-out="o.objectives"/></div>
+                            <div class="section"><h2>Target audience</h2><div class="text" t-out="o.target_audience"/></div>
+                            <div class="section"><h2>Prerequisites</h2><div class="text" t-out="o.prerequisites"/></div>
                             <h2>Programme content</h2><div class="text" t-out="o.content"/>
-                            <h2>Teaching methods</h2><div class="text" t-out="o.teaching_methods"/>
-                            <h2>Evaluation</h2><div class="text" t-out="o.evaluation_criteria"/>
-                            <h2>Access conditions</h2><div class="text" t-out="o.access_conditions"/>
-                            <h2>Accessibility</h2>
+                            <div class="section"><h2>Teaching methods</h2><div class="text" t-out="o.teaching_methods"/></div>
+                            <div class="section"><h2>Evaluation</h2><div class="text" t-out="o.evaluation_criteria"/></div>
+                            <div class="section"><h2>Access conditions</h2><div class="text" t-out="o.access_conditions"/></div>
+                            <div class="section"><h2>Accessibility</h2>
                             <p t-out="o.accessibility_contact_id.name"/>
-                            <div class="text" t-out="o.accessibility_information"/>
+                            <div class="text" t-out="o.accessibility_information"/></div>
                         </div>
                     </t>
                 </main>

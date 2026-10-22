@@ -32,6 +32,13 @@ class TestProgrammePdf(CatalogueCase):
                 expected = "Detailed fictional"
             self.assertIn(expected, text)
         self.assertNotIn("not a reference document", text)
+        self.assertTrue(
+            any(
+                "Evaluation" in page.extract_text() and "Final exercise" in page.extract_text()
+                for page in PdfFileReader(io.BytesIO(original)).pages
+            ),
+            "A section title stays with its text",
+        )
         self.assertEqual(program.pdf_generated_by_id, self.coordinator)
         self.assertEqual(program.pdf_language_code, "en_US")
         self.assertFalse(attachment.public)
