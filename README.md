@@ -10,6 +10,14 @@ Ce dépôt contient exclusivement le code, les tests, la documentation et les wo
 
 Les besoins, anomalies et évolutions sont suivis dans GitHub Issues. Les modifications sont proposées et examinées par pull request.
 
+## Références et contribution
+
+Lire les [consignes du dépôt](AGENTS.md) et l’[index documentaire](docs/README.md)
+avant toute contribution. L’index conserve les références validées, leur
+provenance, leurs empreintes et les décisions d’architecture par incrément.
+Le [backlog de référence — issue #3](https://github.com/Progideo/training_management/issues/3)
+porte les besoins et leur avancement.
+
 ## Premier incrément
 
 L'addon se trouve dans `addons/training_management/`. Il apporte la gestion
@@ -29,7 +37,7 @@ jetables. Aucune mise en production n'est autorisée par cette documentation.
 Le cadrage interne demande → devis → commande → facture → virement est validé.
 Consulter [l’étude du standard exact, les écarts et la validation prévue](docs/s02-native-coverage.md).
 Le premier incrément CRM → devis est décrit dans [sa procédure de recette](docs/s02-crm-quotation.md).
-La PR S02 reste en cours de validation.
+S02 est fusionné ; le [bilan #45](https://github.com/Progideo/training_management/pull/45#issuecomment-6340365735) précise sa validation et son déploiement en développement. Les relevés et imports bancaires restent reportés.
 
 ## Créateur
 
