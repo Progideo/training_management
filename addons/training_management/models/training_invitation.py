@@ -74,6 +74,7 @@ class TrainingInvitation(models.Model):
         # Never carry RPC default_* values into elevated mail creation: in
         # particular no default_attachment_ids, CC, followers or mail server.
         clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
+        outgoing = self.env["mail.mail"].sudo().with_context(clean_context)  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
         for session in all_sessions:
             participants = delivery.enrollment_ids.filtered(lambda item: item.state == "confirmed").participant_id
             for partner in recipients & (participants | session.instructor_id):
@@ -108,22 +109,16 @@ class TrainingInvitation(models.Model):
                 )
                 # Narrow elevation: whitelist recipients above, one message per
                 # person, no followers, attachments, CC or confidential content.
-                mail = (
-                    self.env["mail.mail"]
-                    .sudo()
-                    .with_context(clean_context)  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
-                    .create(
-                        {
-                            "subject": "%s — %s" % (title, session.name),
-                            "body_html": body,
-                            "email_to": partner.email,
-                            "email_from": self.env.user.email_formatted
-                            or delivery.company_id.partner_id.email_formatted,
-                            "auto_delete": False,
-                            "model": "training.session",
-                            "res_id": session.id,
-                        }
-                    )
+                mail = outgoing.create(
+                    {
+                        "subject": "%s — %s" % (title, session.name),
+                        "body_html": body,
+                        "email_to": partner.email,
+                        "email_from": self.env.user.email_formatted or delivery.company_id.partner_id.email_formatted,
+                        "auto_delete": False,
+                        "model": "training.session",
+                        "res_id": session.id,
+                    }
                 )
                 super(TrainingInvitation, self.sudo().with_context(clean_context)).create(  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
                     {
