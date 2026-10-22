@@ -62,6 +62,13 @@ jobs:
         run: bash tests/ci/run_odoo_scenario.sh "$SCENARIO"
         env:
           SCENARIO: ${{ matrix.scenario }}
+      - name: Diagnostic temporaire (annotations, à retirer)
+        if: failure()
+        run: |
+          for f in test-results/${{ matrix.scenario }}/*.log; do
+            grep -n -m6 -E "Traceback|ERROR|FAIL|Error:|CRITICAL" "$f" | cut -c1-400 | while IFS= read -r l; do echo "::error title=$(basename "$f")::$l"; done
+          done
+          tail -n 25 test-results/${{ matrix.scenario }}/timings.tsv | while IFS= read -r l; do echo "::notice::$l"; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
