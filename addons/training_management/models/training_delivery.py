@@ -239,7 +239,7 @@ class TrainingDelivery(models.Model):
         now = fields.Datetime.now()
         lots = self.env["training.seat.allocation"].search([("state", "=", "reserved"), ("expires_at", "<=", now)])
         reservations = self.env["training.enrollment"].search([("state", "=", "reserved"), ("reservation_end", "<=", now)])
-        for record in lots | reservations:
+        for record in [*lots, *reservations]:
             try:
                 with self.env.cr.savepoint():
                     record.action_expire()

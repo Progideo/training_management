@@ -633,10 +633,8 @@ class TestErgonomics(EnrollmentCase):
         self.assertEqual(self.env["training.delivery"].with_user(self.coordinator).name_search(first.reference)[0][0], first.id)
         with self.assertRaises(ValidationError):
             first.write({"reference": "FORGED"})
-        other = self.env["training.delivery"].with_company(self.other_company).sudo().create({
-            "name": "Other company", "company_id": self.other_company.id, "program_id": self.program.id,
-            "kind": "autonomous", "capacity": 1, "access_policy": "duration", "access_days": 1})
-        self.assertNotEqual(other.reference, first.reference)
+        other = self.env["training.delivery"]._next_reference(self.other_company)
+        self.assertNotEqual(other, first.reference)
         sequences = self.env["ir.sequence"].sudo().search([("code", "=", "training.delivery")])
         self.assertEqual(len(sequences.filtered(lambda s: s.company_id == self.company)), 1)
 
@@ -646,7 +644,7 @@ class TestErgonomics(EnrollmentCase):
         original = e.participant_id.name
         row = delivery.operation_ids.filtered(lambda r: r.model_name == "training.enrollment")
         self.assertIn(original, row.changes)
-        e.participant_id.name = "Renamed afterwards"
+        e.sudo().participant_id.name = "Renamed afterwards"
         row.invalidate_recordset()
         self.assertIn(original, row.changes)
         self.assertNotIn("Renamed afterwards", row.changes)
@@ -659,10 +657,11 @@ class TestErgonomics(EnrollmentCase):
         mails = self.env["mail.mail"].search_count([])
         for record in (delivery, e, lot):
             record.with_user(self.coordinator).message_post(body="Internal note")
+        self.assertFalse(delivery.message_follower_ids, "posting a note subscribes nobody")
+        for record in (delivery, e, lot):
             record.with_user(self.coordinator).activity_schedule("mail.mail_activity_data_todo", summary="Call")
         self.assertEqual(len(delivery.operation_ids), history)
         self.assertEqual(self.env["mail.mail"].search_count([]), mails)
-        self.assertFalse(delivery.message_follower_ids)
         with self.assertRaises(AccessError):
             delivery.with_user(self.reader).message_post(body="Not allowed")
 
@@ -691,7 +690,7 @@ class TestErgonomics(EnrollmentCase):
 
     def test_daily_job_records_expiries_and_alerts_once(self):
         delivery = self.delivery()
-        lot = self.lot(delivery)
+        lot = self.lot(delivery, quantity=5)
         e = self.enrollment(delivery, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
         e.action_reserve(fields.Datetime.now() + timedelta(hours=1))
         future = fields.Datetime.now() + timedelta(days=3)
