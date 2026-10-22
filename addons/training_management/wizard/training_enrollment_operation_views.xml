@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_training_enrollment_operation" model="ir.ui.view">
+        <field name="name">training.enrollment.operation.form</field>
+        <field name="model">training.enrollment.operation</field>
+        <field name="arch" type="xml">
+            <form string="Enrollment Operation">
+                <group>
+                    <field name="company_id" invisible="1"/>
+                    <field name="enrollment_id" readonly="1"/>
+                    <field name="operation"/>
+                    <field name="deadline" invisible="operation not in ('reserve', 'extend')"/>
+                    <field name="target_id" invisible="operation not in ('report', 'replace')" domain="[('state', '=', 'requested'), ('company_id', '=', company_id)]"/>
+                    <field name="reason"/>
+                </group>
+                <footer><button name="action_apply" type="object" string="Apply" class="btn-primary"/><button special="cancel" string="Cancel"/></footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_allocation_release" model="ir.ui.view">
+        <field name="name">training.allocation.release.form</field><field name="model">training.allocation.release</field>
+        <field name="arch" type="xml"><form string="Release Places"><group><field name="company_id" invisible="1"/><field name="allocation_id" readonly="1"/><field name="quantity"/><field name="reason"/></group><footer><button name="action_apply" type="object" string="Apply" class="btn-primary"/><button special="cancel" string="Cancel"/></footer></form></field>
+    </record>
+</odoo>

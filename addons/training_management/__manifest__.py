@@ -1,7 +1,7 @@
 {
     "name": "Training Management",
     "summary": "Standard training catalogue and controlled programme versions",
-    "version": "20.0.1.0.3",
+    "version": "20.0.1.1.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
@@ -14,6 +14,8 @@
         "views/training_course_views.xml",
         "views/training_program_views.xml",
         "views/training_menus.xml",
+        "views/training_delivery_views.xml",
+        "wizard/training_enrollment_operation_views.xml",
     ],
     "application": True,
     "installable": True,

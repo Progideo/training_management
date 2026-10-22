@@ -7,3 +7,15 @@ access_program_coordinator,training.program.version coordinator,training.program
 rule_program_company,Programme versions allowed companies,training.program.version,,crud,"[('company_id', 'in', company_ids)]"
 access_new_version_coordinator,training.program.new.version coordinator,training.program.new.version,training_management.group_training_coordinator,crud,
 rule_new_version_company,New programme versions allowed companies,training.program.new.version,,crud,"[('company_id', 'in', company_ids)]"
+access_delivery_coordinator,training.delivery coordinator,training.delivery,training_management.group_training_coordinator,cru,
+rule_delivery_company,training.delivery allowed companies,training.delivery,,crud,"[('company_id', 'in', company_ids)]"
+access_allocation_coordinator,training.seat.allocation coordinator,training.seat.allocation,training_management.group_training_coordinator,cru,
+rule_allocation_company,training.seat.allocation allowed companies,training.seat.allocation,,crud,"[('company_id', 'in', company_ids)]"
+access_enrollment_coordinator,training.enrollment coordinator,training.enrollment,training_management.group_training_coordinator,cru,
+rule_enrollment_company,training.enrollment allowed companies,training.enrollment,,crud,"[('company_id', 'in', company_ids)]"
+access_operation_coordinator,training.operation coordinator,training.operation,training_management.group_training_coordinator,r,
+rule_operation_company,Training history allowed companies,training.operation,,crud,"[('company_id', 'in', company_ids)]"
+access_enrollment_operation_coordinator,Enrollment operation coordinator,training.enrollment.operation,training_management.group_training_coordinator,crud,
+rule_enrollment_operation_company,Enrollment operation allowed companies,training.enrollment.operation,,crud,"[('company_id', 'in', company_ids)]"
+access_allocation_release_coordinator,Release places coordinator,training.allocation.release,training_management.group_training_coordinator,crud,
+rule_allocation_release_company,Release places allowed companies,training.allocation.release,,crud,"[('company_id', 'in', company_ids)]"

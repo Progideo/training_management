@@ -29,7 +29,16 @@ jetables. Aucune mise en production n'est autorisée par cette documentation.
 Le cadrage interne demande → devis → commande → facture → virement est validé.
 Consulter [l’étude du standard exact, les écarts et la validation prévue](docs/s02-native-coverage.md).
 Le premier incrément CRM → devis est décrit dans [sa procédure de recette](docs/s02-crm-quotation.md).
-La PR S02 reste en cours de validation.
+S02 est fusionné, avec encaissements manuels après vérification bancaire ; les relevés et imports bancaires restent reportés. Le [bilan #45](https://github.com/Progideo/training_management/pull/45#issuecomment-6340365735) précise la validation et le déploiement en développement.
+
+## Réalisations et inscriptions S03
+
+S03 ajoute les réalisations datées/autonomes, les lots de places, les inscriptions
+nominatives et leurs autorisations/périodes d'accès, avec historique et contrôles
+serveur. Consulter [la décision, les règles et la recette S03](docs/s03-enrollment-access.md).
+Le modèle dédié est validé ; la PR S03 reste à revoir. Aucun portail pédagogique,
+PDF ou examen n'est ouvert par cet incrément. Aucune fusion ni aucun déploiement
+S03 n'est autorisé par cette documentation.
 
 ## Créateur
 
