@@ -617,3 +617,116 @@ class TestChangeDates(EnrollmentCase):
         for user in (self.reader, self.internal, self.portal):
             with self.assertRaises(AccessError):
                 delivery.with_user(user).action_change_dates(start_at=delivery.start_at + timedelta(days=1), end_at=delivery.end_at + timedelta(days=1), reason="Forbidden")
+
+
+@tagged("post_install", "-at_install")
+class TestErgonomics(EnrollmentCase):
+    """S03.1 §5: references, journal labels, chatter, grouped actions, daily job."""
+
+    def test_reference_per_company_and_free_name_kept(self):
+        first = self.delivery(name="Free name")
+        second = self.delivery(name="Free name")
+        self.assertTrue(first.reference and second.reference)
+        self.assertNotEqual(first.reference, second.reference)
+        self.assertEqual(first.name, "Free name")
+        self.assertEqual(self.env["training.delivery"].with_user(self.coordinator).search([("name", "=", "Free name"), ("id", "=", first.id)]), first)
+        self.assertEqual(self.env["training.delivery"].with_user(self.coordinator).name_search(first.reference)[0][0], first.id)
+        with self.assertRaises(ValidationError):
+            first.write({"reference": "FORGED"})
+        other = self.env["training.delivery"].with_company(self.other_company).sudo().create({
+            "name": "Other company", "company_id": self.other_company.id, "program_id": self.program.id,
+            "kind": "autonomous", "capacity": 1, "access_policy": "duration", "access_days": 1})
+        self.assertNotEqual(other.reference, first.reference)
+        sequences = self.env["ir.sequence"].sudo().search([("code", "=", "training.delivery")])
+        self.assertEqual(len(sequences.filtered(lambda s: s.company_id == self.company)), 1)
+
+    def test_journal_keeps_the_labels_captured_at_the_time(self):
+        delivery = self.delivery()
+        e = self.enrollment(delivery)
+        original = e.participant_id.name
+        row = delivery.operation_ids.filtered(lambda r: r.model_name == "training.enrollment")
+        self.assertIn(original, row.changes)
+        e.participant_id.name = "Renamed afterwards"
+        row.invalidate_recordset()
+        self.assertIn(original, row.changes)
+        self.assertNotIn("Renamed afterwards", row.changes)
+
+    def test_chatter_does_not_touch_the_journal_or_send_mail(self):
+        delivery = self.delivery()
+        e = self.enrollment(delivery)
+        lot = self.lot(delivery)
+        history = len(delivery.operation_ids)
+        mails = self.env["mail.mail"].search_count([])
+        for record in (delivery, e, lot):
+            record.with_user(self.coordinator).message_post(body="Internal note")
+            record.with_user(self.coordinator).activity_schedule("mail.mail_activity_data_todo", summary="Call")
+        self.assertEqual(len(delivery.operation_ids), history)
+        self.assertEqual(self.env["mail.mail"].search_count([]), mails)
+        self.assertFalse(delivery.message_follower_ids)
+        with self.assertRaises(AccessError):
+            delivery.with_user(self.reader).message_post(body="Not allowed")
+
+    def test_grouped_action_one_reason_one_journal_line_each(self):
+        delivery = self.delivery()
+        first = self.enrollment(delivery)
+        second = self.enrollment(delivery, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
+        (first | second).action_validate_prerequisites(reason="Reviewed")
+        action = self.env.ref("training_management.action_enrollment_confirm_selection")
+        self.assertEqual(action.binding_model_id.model, "training.enrollment")
+        wizard = self.env["training.action.reason"].with_user(self.coordinator).with_context(
+            active_model="training.enrollment", active_ids=(first | second).ids, default_action_name="action_confirm"
+        ).create({"reason": "Group decision"})
+        self.assertEqual(wizard.target_count, 2)
+        wizard.action_apply()
+        self.assertEqual((first | second).mapped("state"), ["confirmed", "confirmed"])
+        rows = delivery.operation_ids.filtered(lambda r: r.reason == "Group decision")
+        self.assertEqual(sorted(rows.mapped("record_id")), sorted((first | second).ids))
+
+    def test_contextual_operation_buttons_preselect_the_operation(self):
+        e = self.enrollment(self.delivery())
+        for operation in ("reserve", "extend", "postpone", "replace"):
+            action = e.with_context(operation=operation).action_open_operation()
+            self.assertEqual(action["context"]["default_operation"], operation)
+        self.assertNotIn("default_operation", e.with_context(operation="unlink").action_open_operation()["context"])
+
+    def test_daily_job_records_expiries_and_alerts_once(self):
+        delivery = self.delivery()
+        lot = self.lot(delivery)
+        e = self.enrollment(delivery, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
+        e.action_reserve(fields.Datetime.now() + timedelta(hours=1))
+        future = fields.Datetime.now() + timedelta(days=3)
+        with patch("odoo.fields.Datetime.now", return_value=future):
+            self.env["training.delivery"]._cron_expire()
+        self.assertEqual(lot.state, "expired")
+        self.assertEqual(e.state, "requested")
+        before = self.env["training.seat.allocation"].search_count([("state", "=", "reserved")])
+        with patch("odoo.fields.Datetime.now", return_value=future):
+            self.env["training.delivery"]._cron_expire()
+        self.assertEqual(self.env["training.seat.allocation"].search_count([("state", "=", "reserved")]), before)
+        # Before the deadline the job never expires anything.
+        fresh = self.lot(self.delivery())
+        self.env["training.delivery"]._cron_expire()
+        self.assertEqual(fresh.state, "reserved")
+        fresh.action_expire()
+        self.assertEqual(fresh.state, "reserved", "server time stays the authority")
+
+    def test_alert_when_session_stays_under_threshold_a_week_before(self):
+        start = fields.Datetime.now() + timedelta(days=5)
+        delivery = self.delivery(kind="session", start_at=start, end_at=start + timedelta(hours=7), opening_threshold=3)
+        self.env["training.delivery"]._cron_expire()
+        activities = delivery.activity_ids
+        self.assertEqual(len(activities), 1)
+        self.assertEqual(activities.user_id, delivery.responsible_id)
+        self.env["training.delivery"]._cron_expire()
+        self.assertEqual(len(delivery.activity_ids), 1)
+        far = fields.Datetime.now() + timedelta(days=30)
+        distant = self.delivery(kind="session", start_at=far, end_at=far + timedelta(hours=7), opening_threshold=3)
+        self.env["training.delivery"]._cron_expire()
+        self.assertFalse(distant.activity_ids)
+
+    def test_search_views_and_timezone_selection(self):
+        for model in ("training.delivery", "training.seat.allocation", "training.enrollment"):
+            views = self.env[model].with_user(self.coordinator).get_views([(False, "search")])
+            self.assertIn("to_process", views["views"]["search"]["arch"])
+        zones = dict(self.env["training.delivery"]._fields["timezone"]._description_selection(self.env))
+        self.assertIn("Europe/Paris", zones)

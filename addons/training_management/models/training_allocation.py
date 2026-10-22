@@ -6,7 +6,7 @@ from .training_controlled import TERMINAL
 
 class TrainingSeatAllocation(models.Model):
     _name = "training.seat.allocation"
-    _inherit = "training.controlled"
+    _inherit = ["training.controlled", "mail.thread", "mail.activity.mixin"]
     _description = "Training Seat Allocation"
     _check_company_auto = True
     _rec_name = "customer_id"
@@ -79,7 +79,7 @@ class TrainingSeatAllocation(models.Model):
             for values in prepared:
                 delivery = self.env["training.delivery"].browse(values.get("delivery_id") or self.env.context.get("default_delivery_id"))
                 values["company_id"] = delivery.company_id.id
-            records = super().create(prepared)
+            records = super(TrainingSeatAllocation, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)).create(prepared)
             for record in records:
                 if record.expires_at <= fields.Datetime.now() or not record.source_reference:
                     raise ValidationError(self.env._("A reservation needs a reference and a future expiry."))
@@ -89,9 +89,10 @@ class TrainingSeatAllocation(models.Model):
 
     def write(self, vals):
         self._require_coordinator()
+        vals = self._write_technical(vals)
         if vals:
             raise ValidationError(self.env._("An allocation is fixed; cancel it and create a new reservation."))
-        return super().write(vals)
+        return True
 
     def action_confirm(self, reason=None):
         self._require_coordinator()

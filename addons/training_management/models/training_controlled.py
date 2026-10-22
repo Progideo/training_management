@@ -5,6 +5,7 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.misc import format_date, format_datetime
 
 
+MAIL_FIELDS = {"message_main_attachment_id"}
 TERMINAL = {"closed", "cancelled", "replaced", "abandoned", "postponed"}
 
 
@@ -24,6 +25,9 @@ class TrainingOperation(models.Model):
     reason = fields.Text()
     before = fields.Text()
     after = fields.Text()
+    # Old and new display labels of linked records, captured when the row is
+    # written, so that history never follows a link that was reassigned later.
+    labels = fields.Text()
 
     @api.private
     def _format_change_value(self, value, description):
@@ -47,15 +51,20 @@ class TrainingOperation(models.Model):
         for row in self:
             before = json.loads(row.before or "{}")
             after = json.loads(row.after or "{}")
-            descriptions = self.env[row.model_name].fields_get(list(after))
+            captured = json.loads(row.labels or "{}")
+            descriptions = self.env[row.model_name].fields_get(list(after)) if after else {}
             lines = []
             for key, value in after.items():
                 description = descriptions.get(key, {})
                 label = description.get("string", key)
                 if description.get("type") == "many2one":
-                    # The record label is captured separately; don't expose raw
-                    # relation ids or follow a possibly reassigned historical link.
-                    lines.append(label)
+                    # Never expose raw relation ids or follow a possibly
+                    # reassigned historical link: use the labels captured then.
+                    names = captured.get(key)
+                    if names:
+                        lines.append(f"{label}: {names.get('before') or '—'} → {names.get('after') or '—'}")
+                    else:
+                        lines.append(label)
                 else:
                     old = row._format_change_value(before.get(key), description)
                     new = row._format_change_value(value, description)
@@ -76,6 +85,14 @@ class TrainingOperation(models.Model):
     def _record(self, record, before, after, reason):
         record._require_coordinator()
         delivery = record if record._name == "training.delivery" else record.delivery_id
+        labels = {}
+        for key in set(before) | set(after):
+            field = record._fields.get(key)
+            if field is not None and field.type == "many2one":
+                # Display names only, read narrowly: the actor may not read the linked record.
+                comodel = record.env[field.comodel_name].sudo()
+                labels[key] = {side: (comodel.browse(values[key]).exists().display_name or None) if values.get(key) else None
+                               for side, values in (("before", before), ("after", after))}
         # Narrow elevation: append a server-authored audit row after access checks.
         # No history create/write/unlink permission is granted to business users.
         return super(TrainingOperation, self.sudo()).create({
@@ -84,6 +101,7 @@ class TrainingOperation(models.Model):
             "occurred_at": fields.Datetime.now(), "reason": reason or False,
             "before": json.dumps(before, default=str, sort_keys=True),
             "after": json.dumps(after, default=str, sort_keys=True),
+            "labels": json.dumps(labels, sort_keys=True) if labels else False,
         })
 
 
@@ -100,6 +118,18 @@ class TrainingControlled(models.AbstractModel):
         self.check_access("write" if self else "create")
         if not self.env.su and not self.env.user.has_group("training_management.group_training_coordinator"):
             raise AccessError(self.env._("Only a training coordinator may perform this operation."))
+
+    @api.private
+    def _write_technical(self, vals):
+        """Write the mail bookkeeping values directly and return the business values.
+
+        Chatter and activities store technical fields on the record; they are
+        neither business changes nor journal material.
+        """
+        technical = {key: vals[key] for key in vals if key in MAIL_FIELDS}
+        if technical:
+            super(TrainingControlled, self).write(technical)
+        return {key: value for key, value in vals.items() if key not in MAIL_FIELDS}
 
     @api.private
     def _require_reason(self, reason):

@@ -1,0 +1,39 @@
+<odoo>
+    <!-- Grouped actions of the enrollment list: one reason for the selection, one journal line per enrollment. -->
+    <record id="action_enrollment_confirm_selection" model="ir.actions.act_window">
+        <field name="name">Confirm Enrollment</field>
+        <field name="res_model">training.action.reason</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_action_name': 'action_confirm'}</field>
+        <field name="binding_model_id" ref="model_training_enrollment"/>
+        <field name="binding_view_types">list</field>
+    </record>
+    <record id="action_enrollment_authorize_selection" model="ir.actions.act_window">
+        <field name="name">Authorize Commercially</field>
+        <field name="res_model">training.action.reason</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_action_name': 'action_authorize'}</field>
+        <field name="binding_model_id" ref="model_training_enrollment"/>
+        <field name="binding_view_types">list</field>
+    </record>
+    <record id="action_enrollment_open_access_selection" model="ir.actions.act_window">
+        <field name="name">Open / Resume Access</field>
+        <field name="res_model">training.action.reason</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_action_name': 'action_open_access'}</field>
+        <field name="binding_model_id" ref="model_training_enrollment"/>
+        <field name="binding_view_types">list</field>
+    </record>
+    <record id="cron_training_expire" model="ir.cron">
+        <field name="name">Training: record expired reservations and alert under-threshold sessions</field>
+        <field name="model_id" ref="model_training_delivery"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

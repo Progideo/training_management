@@ -78,6 +78,11 @@ msgid "Access dates only apply to a fixed access period."
 msgstr "Les dates d’accès ne concernent qu’une période d’accès fixe."
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+msgid "Accesses to Open"
+msgstr "Accès à ouvrir"
+
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__accessibility_contact_id
 msgid "Accessibility Contact"
 msgstr "Contact accessibilité"
@@ -273,6 +278,11 @@ msgid "Evaluation Criteria"
 msgstr "Critères d’évaluation"
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+msgid "Expired Reservations"
+msgstr "Réservations expirées"
+
+#. module: training_management
 #: model:ir.model,name:training_management.model_training_allocation_extend
 msgid "Extend a Training Reservation Deadline"
 msgstr "Prolonger l’échéance d’une réservation de places"
@@ -303,6 +313,10 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__id
 msgid "ID"
 msgstr "ID"
+
+#. module: training_management
+msgid "Labels"
+msgstr "Libellés"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__write_uid
@@ -375,6 +389,11 @@ msgid "No"
 msgstr "Non"
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
+msgid "Not Finished"
+msgstr "Non terminées"
+
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__objectives
 msgid "Objectives"
 msgstr "Objectifs"
@@ -408,6 +427,11 @@ msgid "Only a live reservation can be extended."
 msgstr "Seule une réservation active peut être prolongée."
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+msgid "Postpone"
+msgstr "Reporter"
+
+#. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment_operation__operation__postpone
 msgid "Postpone to Another Delivery"
 msgstr "Reporter vers une autre réalisation"
@@ -429,6 +453,7 @@ msgid "Pricing Mode"
 msgstr "Tarification"
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 msgid "Programme"
 msgstr "Programme"
@@ -487,9 +512,24 @@ msgid "Record IDs"
 msgstr "Identifiants des enregistrements"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__remote
 msgid "Remote"
 msgstr "Distanciel"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+msgid "Requests"
+msgstr "Demandes"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+msgid "Reserve a Place"
+msgstr "Réserver une place"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
@@ -521,6 +561,12 @@ msgstr "Enregistrez le contenu du programme avant de changer son état."
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__target_count
 msgid "Selected Records"
 msgstr "Enregistrements sélectionnés"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid "Session below its opening threshold"
+msgstr "Session sous son seuil d’ouverture"
 
 #. module: training_management
 #. odoo-python
@@ -568,10 +614,11 @@ msgid "Standard training catalogue and controlled programme versions"
 msgstr "Catalogue de formations standards et versions de programme contrôlées"
 
 #. module: training_management
-#: model:ir.model.fields,field_description:training_management.field_training_program_version__state
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__state
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__state
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__state
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__state
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 msgid "State"
 msgstr "État"
 
@@ -592,6 +639,12 @@ msgstr "Méthodes pédagogiques"
 
 #. module: training_management
 #. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid "The delivery reference is generated by the server."
+msgstr "La référence de la réalisation est générée par le serveur."
+
+#. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_program.py:0
 msgid "The programme company is defined by its course."
 msgstr "La société du programme est définie par sa formation."
@@ -601,6 +654,16 @@ msgstr "La société du programme est définie par sa formation."
 #: code:addons/training_management/wizard/training_action_reason.py:0
 msgid "The selected records no longer exist."
 msgstr "Les enregistrements sélectionnés n’existent plus."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid ""
+"The session starts within seven days and has fewer places taken than its "
+"opening threshold."
+msgstr ""
+"La session commence dans moins de sept jours et compte moins de places "
+"prises que son seuil d’ouverture."
 
 #. module: training_management
 #: model:ir.model.constraint,message:training_management.constraint_training_program_version_unique_version
@@ -615,10 +678,23 @@ msgid "This action does not accept a reason from the assistant."
 msgstr "Cette action n’accepte pas de motif depuis l’assistant."
 
 #. module: training_management
+msgid "This delivery reference already exists in the company."
+msgstr "Cette référence de réalisation existe déjà dans la société."
+
+#. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_program.py:0
 msgid "This programme status transition is not allowed."
 msgstr "Ce changement d’état du programme n’est pas autorisé."
+
+#. module: training_management
+msgid "Threshold Alerted"
+msgstr "Alerte de seuil envoyée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
+msgid "To Process"
+msgstr "À traiter"
 
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_action_reason
@@ -631,6 +707,10 @@ msgid "Training Coordinator"
 msgstr "Coordinateur des formations"
 
 #. module: training_management
+msgid "Training deliveries - %s"
+msgstr "Réalisations de formation - %s"
+
+#. module: training_management
 #: model:ir.module.module,shortdesc:base.module_training_management
 #: model:res.groups.privilege,name:training_management.privilege_training
 msgid "Training Management"
@@ -640,6 +720,14 @@ msgstr "Training Management"
 #: model:ir.model,name:training_management.model_training_program_version
 msgid "Training Programme Version"
 msgstr "Version de programme de formation"
+
+#. module: training_management
+#: model:ir.cron,name:training_management.cron_training_expire
+msgid ""
+"Training: record expired reservations and alert under-threshold sessions"
+msgstr ""
+"Formation : enregistrer les réservations expirées et alerter sur les "
+"sessions sous le seuil"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
@@ -869,6 +957,7 @@ msgstr "Le nombre de places doit être strictement positif."
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__allocation_id
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__allocation_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__allocation_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 msgid "Allocation"
 msgstr "Lot de places"
 
@@ -928,6 +1017,7 @@ msgstr "Avant"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__below_threshold
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 msgid "Below Threshold"
 msgstr "Sous le seuil d’ouverture"
 
@@ -1075,6 +1165,7 @@ msgstr "Confirmez l’inscription avant l’autorisation commerciale."
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__confirmed
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__confirmed
 #: model:ir.model.fields.selection,name:training_management.selection__training_seat_allocation__state__confirmed
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 msgid "Confirmed"
 msgstr "Confirmée"
 
@@ -1103,6 +1194,7 @@ msgstr "Créez une réservation avant de confirmer ses places."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__customer_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 msgid "Customer"
 msgstr "Client"
 
@@ -1131,6 +1223,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_operation__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__delivery_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1195,6 +1288,7 @@ msgstr "Échéance de réservation"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment_operation__operation__extend
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
 msgid "Extend Access"
 msgstr "Prolonger l’accès"
 
@@ -1230,6 +1324,7 @@ msgstr ""
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__kind
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 msgid "Kind"
 msgstr "Type"
 
@@ -1411,6 +1506,7 @@ msgstr ""
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment_operation__operation__replace
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
 msgid "Replace Participant"
 msgstr "Remplacer le participant"
 
@@ -1442,6 +1538,7 @@ msgstr "Référence de réservation"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_allocation.py:0
+#: code:addons/training_management/models/training_enrollment.py:0
 msgid "Reservation expired"
 msgstr "Réservation expirée"
 
@@ -1453,6 +1550,7 @@ msgstr "Réserver / prolonger / transférer"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__reserved
 #: model:ir.model.fields.selection,name:training_management.selection__training_seat_allocation__state__reserved
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 msgid "Reserved"
 msgstr "Réservée"
 

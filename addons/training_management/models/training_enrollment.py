@@ -8,7 +8,7 @@ from .training_controlled import TERMINAL
 
 class TrainingEnrollment(models.Model):
     _name = "training.enrollment"
-    _inherit = "training.controlled"
+    _inherit = ["training.controlled", "mail.thread", "mail.activity.mixin"]
     _description = "Training Enrollment"
     _check_company_auto = True
     _rec_name = "participant_id"
@@ -137,7 +137,7 @@ class TrainingEnrollment(models.Model):
                 if key in seen or self.search_count([("delivery_id", "=", key[0]), ("participant_id", "=", key[1]), ("state", "not in", list(TERMINAL))]):
                     raise ValidationError(self.env._("This participant already has an active enrollment for this delivery."))
                 seen.add(key)
-            records = super().create(prepared)
+            records = super(TrainingEnrollment, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)).create(prepared)
             for record in records:
                 record._check_identity()
                 if not record.allocation_id and not (record.free_reason or "").strip():
@@ -147,6 +147,9 @@ class TrainingEnrollment(models.Model):
 
     def write(self, vals):
         self._require_coordinator()
+        vals = self._write_technical(vals)
+        if not vals:
+            return True
         if set(vals) - {"user_id"}:
             raise ValidationError(self.env._("Use admission and access actions; enrollment identity and origin are fixed."))
         with self.env.cr.savepoint():
@@ -167,6 +170,13 @@ class TrainingEnrollment(models.Model):
             for enrollment in self:
                 callback(enrollment)
         return True
+
+    def action_expire(self):
+        """Record the end of a reservation whose deadline has passed (server time decides)."""
+        def change(e):
+            if e.state == "reserved" and e.reservation_end and e.reservation_end <= fields.Datetime.now():
+                e._store({"state": "requested"}, self.env._("Reservation expired"))
+        return self._action(change)
 
     def action_wait(self):
         def change(e):
@@ -367,6 +377,8 @@ class TrainingEnrollment(models.Model):
     def action_open_operation(self):
         self.ensure_one()
         self._require_coordinator()
+        operation = self.env.context.get("operation")
+        default = {"default_operation": operation} if operation in ("reserve", "extend", "postpone", "replace") else {}
         return {"type": "ir.actions.act_window", "name": self.env._("Enrollment Operation"),
                 "res_model": "training.enrollment.operation", "view_mode": "form", "target": "new",
-                "context": {"default_enrollment_id": self.id}}
+                "context": {"default_enrollment_id": self.id, **default}}
