@@ -4,7 +4,9 @@
 Besoin : [#12](https://github.com/Progideo/training_management/issues/12).
 [Cadrage accepté](https://github.com/Progideo/training_management/issues/12#issuecomment-6290595309).
 Cette étude ne termine pas S02 et ne constitue pas une recette fonctionnelle.
-Pour la décision de lancement sans import bancaire, voir le
+Pour la décision de lancement manuel, avec report explicite du scénario
+navigateur des relevés et des imports (non validés, hors critères bloquants de
+la recette de lancement), voir le
 [périmètre confirmé le 22 octobre 2026](s02-crm-quotation.md#périmètre-de-lancement-confirmé-le-22-octobre-2026).
 
 ## Reprise vérifiée

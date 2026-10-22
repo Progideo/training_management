@@ -2,8 +2,8 @@
 
 Incréments demande/devis, tarifs et rôles commerciaux de [#12](https://github.com/Progideo/training_management/issues/12),
 à relire avec la [matrice de couverture](s02-native-coverage.md).
-Ce document décrit le code de la PR en brouillon ; l'installation en développement
-et l'ouverture aux clients restent des étapes séparées.
+Ce document décrit S02 livré par les PR #43 et #44 et son périmètre de recette.
+L'installation en développement et l'ouverture aux clients restent des étapes séparées.
 
 ## Parcours interne livré
 
@@ -145,6 +145,9 @@ La saisie directe d'un paiement hors de l'assistant ne connaît pas encore sa
 future facture de formation : elle n'exige donc pas cette référence lors de la
 création. Son rapprochement avec cette facture est contrôlé. Le contrôle des
 doublons agit également sur les paiements directs portant une référence.
+Les constats ci-dessous sur les relevés sont historiques et techniques : leur
+scénario navigateur est **reporté hors recette de lancement**, sur décision
+explicite du 22 octobre 2026. Ils ne démontrent pas un parcours utilisateur livré.
 Les lignes de relevé bancaire et les écritures manuelles sans objet paiement
 relèvent du rapprochement natif. Sur la base fictive, une ligne bancaire de
 50 EUR affectée directement au compte client a réduit le résiduel de la
@@ -301,11 +304,8 @@ et l'accès à une pièce du reçu.
    rapprochement direct d'un paiement bancaire sans référence avec la facture
    finale doit être refusé et laisser 900 EUR dus ; un paiement direct avec
    une nouvelle référence doit pouvoir être rapproché et ramener le solde à
-   850 EUR. Une ligne de relevé sans référence peut ensuite être affectée
-   manuellement après contrôle comptable ; vérifier qu'elle réduit alors le
-   solde, et qu'aucune règle automatique ne l'a rapprochée avant cette revue.
-   Refuser son rapprochement si le relevé est tenu en MAD pour une facture
-   EUR, ou s'il provient d'un journal de caisse.
+   850 EUR. Ce solde clôt le scénario d'encaissement manuel du lancement ;
+   le scénario supplémentaire des relevés bancaires est reporté ci-dessous.
    Ouvrir l'assistant « Envoyer le reçu par e-mail » du paiement rapproché :
    seul un contact habilité sur la facture doit être proposé, avec le PDF du
    reçu. Ajouter le client générique ou un collègue non habilité et vérifier
@@ -320,6 +320,32 @@ et l'accès à une pièce du reçu.
    décrit dans la [PR #42](https://github.com/Progideo/training_management/pull/42),
    sans supposer que ce nouvel addon reproduit l'incident.
 
+### Scénario reporté — relevés bancaires et imports
+
+Décision explicite de l'utilisateur du **22 octobre 2026** : les encaissements
+sont saisis manuellement au lancement, après vérification bancaire. Le scénario
+des lignes de relevé est reporté à un incrément ultérieur, avec les imports ;
+il ne conditionne plus l'acceptation de la recette S02 de lancement.
+
+Restent **non validés par navigateur et non ouverts à l'exploitation** :
+
+- affectation manuelle d'une ligne de relevé de 50 EUR sans référence,
+  réduction du résiduel de 850 à 800 EUR et preuve de la revue comptable avant
+  tout rapprochement automatique ;
+- refus de rapprochement d'un relevé MAD avec une facture EUR et d'un relevé
+  de caisse ;
+- imports réels, formats, doublons/rejeux de fichiers, journaux, devises et
+  règles de rapprochement.
+
+La recette locale du 22 octobre a atteint, sous le profil comptable de base,
+la liste native des relevés sans parcours complet de création/rapprochement
+utilisable dans l'édition Community testée. Les essais ORM et tests serveur
+antérieurs ne remplacent pas ce parcours navigateur. Ce constat reste conservé ;
+le report ne transforme aucun scénario non exécuté en succès et ne retire aucun
+contrôle serveur existant. Avant d'ouvrir cet incrément, cadrer un parcours
+compatible avec le code exact Community, les droits et la procédure de revue
+comptable, puis réaliser une recette dédiée.
+
 ## Feuille de recette métier à signer
 
 Exécuter les étapes ci-dessus dans l'interface Odoo d'une base de test autorisée,
@@ -330,16 +356,18 @@ du module, le compte/rôle utilisé, le résultat attendu et obtenu, ainsi que l
 références fictives du devis et des factures. Capturer les refus et les montants
 résiduels ; ne joindre ni données personnelles réelles ni secrets au dépôt public.
 
-La recette S02 n'est acceptée que si les étapes 1 à 8 passent, si aucun accès
-documentaire n'est possible après révocation, et si les écarts comptables
-ouverts (fiscalité, journaux et import des relevés) sont décidés et documentés
+La recette S02 **de lancement manuel** n'est acceptée que si les étapes 1 à 8,
+dans leur périmètre courant ci-dessus, passent, si aucun accès documentaire
+n'est possible après révocation, et si les paramètres comptables de lancement
+(fiscalité et journaux) sont décidés et documentés
 par le responsable comptable, qui doit aussi accepter la règle choisie :
 l'attestation Odoo seule pour les paiements saisis, ainsi que la présentation
 du PDF final sans numéro d'acompte. Le refus multidevise
-validé pour le lancement doit être vérifié. Pour les
-lignes de relevé sans référence, la revue manuelle décidée doit être définie
-et vérifiée sans attestation enregistrée, notamment face aux règles de
-rapprochement automatique. Les tests
+validé pour le lancement doit être vérifié sur les paiements saisis, y compris
+leur affectation directe à une facture. Les relevés et imports font l'objet du
+report explicite ci-dessus et ne sont pas un critère bloquant de cette recette
+de lancement. La validation de la revue des lignes sans référence et des règles
+de rapprochement sera exigée avant leur ouverture ultérieure. Les tests
 automatiques et les vérifications HTTP existants ne remplacent pas cette
 validation dans l'interface. La recette ne vaut ni fusion, ni installation sur
 la base de développement existante, ni ouverture du portail aux clients.
@@ -353,11 +381,16 @@ consignés dans la PR. Les comptes et formations de recette S01 de
 ## Périmètre de lancement confirmé le 22 octobre 2026
 
 La saisie des encaissements est **manuelle au lancement, après vérification
-bancaire ; l'import des fichiers bancaires est ultérieur**. S02 n'ajoute donc
-aucun importeur ni contrôle des doublons de fichiers importés. Les contrôles
-de référence, d'attestation et de devise du paiement saisi restent inchangés.
-Le futur import nécessitera un cadrage distinct de ses formats, doublons,
-journaux, devises et de la revue comptable.
+bancaire ; les lignes de relevé et l'import des fichiers bancaires sont reportés**.
+Le report explicite du scénario de relevé remplace son ancien statut de réserve
+bloquant l'acceptation globale de la recette navigateur. Il ne vaut pas validation
+de ce scénario, ni autorisation de l'utiliser. S02 n'ajoute aucun importeur ni
+contrôle des doublons de fichiers importés. Les contrôles du paiement manuel
+restent inchangés : banque entrante et méthode manuelle, référence, attestation
+avec auteur/horodatage serveur, motif de fractionnement d'une référence répétée,
+refus multidevise, affectation contrôlée et habilitations documentaires.
+Le futur circuit des relevés/imports nécessitera un cadrage distinct de ses
+formats, doublons, journaux, devises, droits, interface Community et revue comptable.
 
 
 ## Contrôles serveur renforcés — 22 octobre 2026
