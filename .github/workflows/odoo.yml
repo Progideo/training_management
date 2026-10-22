@@ -38,8 +38,11 @@ jobs:
       - name: Diagnostic temporaire pre-commit (annotations, à retirer)
         if: failure()
         run: |
-          msg=$(grep -E "^addons|^tests|exit code" pre-commit.log | sed -E 's/ More info at [^ ]*//; s#^addons/##' | cut -c1-200 | head -n 330 | sed ':a;N;$!ba;s/\n/%0A/g')
-          echo "::error title=pre-commit::$msg"
+          grep -E "^addons|^tests|exit code" pre-commit.log | sed -E 's/ More info at [^ ]*//; s#^addons/##; s/%/pct/g' | cut -c1-220 > pc.txt
+          split -l 25 pc.txt pc_part_
+          for part in pc_part_*; do
+            echo "::error title=pre-commit $part::$(sed ':a;N;$!ba;s/\n/%0A/g' "$part")"
+          done
 
   scenarios:
     name: Odoo — ${{ matrix.scenario }}
