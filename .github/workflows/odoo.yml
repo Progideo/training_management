@@ -71,7 +71,8 @@ jobs:
             [ -f "$f" ] || continue
             msg=$(grep -n -E "^(FAIL|ERROR):|Traceback|AssertionError|AssertionError:|Error:|Exception:" "$f" | grep -v "mail_mail\|failed sending" | head -12 | cut -c1-260 | sed ':a;N;$!ba;s/\n/%0A/g')
             tb=$(grep -n -B2 -A16 -m2 "Traceback" "$f" | cut -c1-220 | tail -n 42 | sed ':a;N;$!ba;s/\n/%0A/g')
-            echo "::error title=$step::$msg%0A----%0A$tb"
+            end=$(grep -n -A8 -E "ParseError|Error: |Exception: " "$f" | tail -n 30 | cut -c1-300 | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=$step::$msg%0A----%0A$tb%0A====%0A$end"
           done
       - uses: actions/upload-artifact@v4
         if: always()
