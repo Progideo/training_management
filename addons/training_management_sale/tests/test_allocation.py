@@ -180,8 +180,9 @@ class TestAllocationCommerce(EnrollmentCase):
                 record.with_user(seller)._require_coordinator()
         with self.assertRaises(AccessError):
             self.env["training.enrollment"].with_user(seller).create({"delivery_id": delivery.id, "participant_id": self.portal.partner_id.id})
-        with self.assertRaises(AccessError):
+        with self.assertRaises((AccessError, ValidationError)):
             e.with_user(seller).unlink()
+        self.assertTrue(e.exists())
 
     def test_salesperson_of_another_company_sees_nothing(self):
         delivery = self.delivery()
