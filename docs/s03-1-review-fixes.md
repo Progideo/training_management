@@ -2,7 +2,7 @@
 
 Cadrage d'autorité, validé le 22 octobre 2026 : [s03-1-corrections.md](s03-1-corrections.md)
 (conservé tel quel). Cette page résume les règles obtenues ; les autorisations et les
-résultats d'exécution sont dans la [PR #51](https://github.com/Progideo/training_management/pull/51).
+résultats d'exécution sont dans les [PR #51](https://github.com/Progideo/training_management/pull/51) et [PR #52](https://github.com/Progideo/training_management/pull/52).
 Versions : `training_management` `20.0.1.2.1` (dépend désormais de `mail`),
 `training_management_sale` `20.0.1.10.1`. Pas de nouvel addon.
 
