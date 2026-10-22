@@ -43,6 +43,25 @@ class TrainingEnrollmentOperation(models.TransientModel):
         return {"type": "ir.actions.act_window_close"}
 
 
+class TrainingAllocationExtend(models.TransientModel):
+    _name = "training.allocation.extend"
+    _description = "Extend a Training Reservation Deadline"
+    _check_company_auto = True
+
+    allocation_id = fields.Many2one("training.seat.allocation", required=True, ondelete="cascade", check_company=True)
+    company_id = fields.Many2one(related="allocation_id.company_id")
+    expires_at = fields.Datetime(string="New Deadline", required=True)
+    reason = fields.Text(required=True)
+
+    def action_apply(self):
+        self.ensure_one()
+        self.check_access("write")
+        self.allocation_id._require_coordinator()
+        with self.env.cr.savepoint():
+            self.allocation_id.action_extend_deadline(self.expires_at, reason=self.reason)
+        return {"type": "ir.actions.act_window_close"}
+
+
 class TrainingAllocationRelease(models.TransientModel):
     _name = "training.allocation.release"
     _description = "Release Training Places"

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
@@ -119,3 +120,35 @@ class TestAllocationCommerce(EnrollmentCase):
         form.save().action_apply()
         self.assertEqual(lot.quantity, 8)
         self.assertEqual(order.state, "sale")
+
+    def test_cancelled_lot_no_longer_freezes_line_or_order(self):
+        order = self.order(count=1)
+        lot = self.lot(self.delivery(), quantity=1, sale_line_id=order.order_line.id)
+        lot.action_confirm()
+        with self.assertRaises(ValidationError):
+            order.order_line.write({"product_uom_qty": 2})
+        lot.action_cancel(reason="Lot withdrawn before the session")
+        order.order_line.write({"product_uom_qty": 2})
+        self.assertEqual(order.order_line.product_uom_qty, 2)
+        order.action_cancel()
+        self.assertEqual(order.state, "cancel")
+
+    def test_expired_lot_binds_the_order_only_while_an_enrollment_stays_open(self):
+        order = self.order(count=1)
+        delivery = self.delivery()
+        lot = self.lot(delivery, quantity=1, sale_line_id=order.order_line.id)
+        e = self.enrollment(delivery, allocation_id=lot.id, free_reason=False)
+        e.action_reserve()
+        future = lot.expires_at + timedelta(seconds=1)
+        with patch("odoo.fields.Datetime.now", return_value=future):
+            lot.action_expire()
+        self.assertEqual(lot.state, "expired")
+        self.assertEqual(e.state, "requested")
+        with self.assertRaises(ValidationError):
+            order.order_line.write({"product_uom_qty": 2})
+        with self.assertRaises(ValidationError):
+            order.action_cancel()
+        e.action_cancel(reason="Request withdrawn")
+        order.order_line.write({"product_uom_qty": 2})
+        order.action_cancel()
+        self.assertEqual(order.state, "cancel")

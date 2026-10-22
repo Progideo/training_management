@@ -71,7 +71,9 @@ class SaleOrderLine(models.Model):
             self.check_access("write")
             # Narrow elevated existence check: protect linked history without
             # exposing enrollment data or granting Sales a coordinator role.
-            if self.env["training.seat.allocation"].sudo().search_count([("sale_line_id", "in", self.ids)]):
+            lots = self.env["training.seat.allocation"].sudo().search([("sale_line_id", "in", self.ids)])
+            # Only live lots, or lots still carrying an open enrollment, bind the line.
+            if any(lot._holds_source() for lot in lots):
                 raise ValidationError(_("Commercial lines with allocated training places are fixed. Use a controlled commercial revision."))
         return super().write(vals)
 
@@ -94,8 +96,10 @@ class SaleOrder(models.Model):
         if set(vals) & protected or vals.get("state") == "cancel":
             self.check_access("write")
             lots = self.env["training.seat.allocation"].sudo().search([("sale_line_id.order_id", "in", self.ids)])
-            if lots and set(vals) & protected:
+            # A cancelled or expired lot without an open enrollment no longer binds the order.
+            bound = lots.filtered(lambda lot: lot._holds_source())
+            if bound and set(vals) & protected:
                 raise ValidationError(_("Orders with training allocations keep their customer, programme and participant entitlement."))
-            if any(lot._available() for lot in lots) and vals.get("state") == "cancel":
+            if bound and vals.get("state") == "cancel":
                 raise ValidationError(_("Cancel the training allocations explicitly before cancelling the commercial order."))
         return super().write(vals)

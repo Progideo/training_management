@@ -14,6 +14,13 @@ class TrainingEnrollment(models.Model):
     _rec_name = "participant_id"
     _order = "requested_at, id"
 
+    # A single non-terminal enrollment per person and delivery, also enforced by
+    # the database; the application check and its message remain the first line.
+    _unique_open_participant = models.UniqueIndex(
+        "(delivery_id, participant_id) WHERE state NOT IN (%s)" % ", ".join(f"'{state}'" for state in sorted(TERMINAL)),
+        "This participant already has an active enrollment for this delivery.",
+    )
+
     delivery_id = fields.Many2one("training.delivery", required=True, ondelete="restrict", check_company=True, index=True)
     # Keep a company on an empty native form: a related value would be False
     # until delivery selection, making its check_company domain circular.

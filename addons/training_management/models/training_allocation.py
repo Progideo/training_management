@@ -50,6 +50,12 @@ class TrainingSeatAllocation(models.Model):
         return self.state == "confirmed" or (self.state == "reserved" and self.expires_at and self.expires_at > (now or fields.Datetime.now()))
 
     @api.private
+    def _holds_source(self, now=None):
+        """A lot binds its commercial source while it is alive or still carries an open enrollment."""
+        self.ensure_one()
+        return self._available(now) or any(e.state not in TERMINAL for e in self.enrollment_ids)
+
+    @api.private
     def _check_source(self):
         # Integration override validates the commercial line before commitment.
         raise ValidationError(self.env._("A confirmed allocation requires a confirmed commercial line."))
@@ -130,6 +136,21 @@ class TrainingSeatAllocation(models.Model):
             self._store({"quantity": remaining}, self._require_reason(reason))
         return True
 
+    def action_extend_deadline(self, expires_at=None, reason=None):
+        self.ensure_one()
+        with self.env.cr.savepoint():
+            self._require_coordinator()
+            self.delivery_id._serialize()
+            self.invalidate_recordset()
+            now = fields.Datetime.now()
+            deadline = fields.Datetime.to_datetime(expires_at)
+            if self.state != "reserved" or not self._available(now) or self.delivery_id.state in ("delivered", "closed", "cancelled"):
+                raise ValidationError(self.env._("Only a live reservation can be extended."))
+            if not deadline or deadline <= max(self.expires_at, now):
+                raise ValidationError(self.env._("An extension needs a future deadline later than the current one."))
+            self._store({"expires_at": deadline}, self._require_reason(reason))
+        return True
+
     def action_expire(self):
         self._require_coordinator()
         with self.env.cr.savepoint():
@@ -141,6 +162,13 @@ class TrainingSeatAllocation(models.Model):
                         enrollment._store({"state": "requested"}, self.env._("Reservation expired"))
                     lot._store({"state": "expired"}, self.env._("Reservation expired"))
         return True
+
+    def action_open_extend(self):
+        self.ensure_one()
+        self._require_coordinator()
+        return {"type": "ir.actions.act_window", "name": self.env._("Extend Deadline"),
+                "res_model": "training.allocation.extend", "view_mode": "form", "target": "new",
+                "context": {"default_allocation_id": self.id}}
 
     def action_open_release(self):
         self.ensure_one()

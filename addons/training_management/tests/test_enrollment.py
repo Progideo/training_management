@@ -1,9 +1,13 @@
+import json
 from datetime import timedelta
 from unittest.mock import patch
+
+from psycopg2 import IntegrityError
 
 from odoo import Command, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.tools import mute_logger
 
 
 @tagged("post_install", "-at_install")
@@ -478,3 +482,70 @@ class TestLifecycleAndAccess(EnrollmentCase):
         with self.assertRaises(ValidationError):
             cancelled.action_revoke_authorization(reason="Terminal enrollment")
         cancelled.action_revoke_access(reason="Already revoked")
+
+
+@tagged("post_install", "-at_install")
+class TestReservationDeadlineAndUniqueness(EnrollmentCase):
+    """S03.1 §3: deadline extension and the database-level open enrollment guard."""
+
+    def test_extend_deadline_of_a_live_reservation(self):
+        delivery = self.delivery()
+        lot = self.lot(delivery)
+        old = lot.expires_at
+        new = old + timedelta(days=3)
+        with self.assertRaises(ValidationError):
+            lot.action_extend_deadline(new)
+        with self.assertRaises(ValidationError):
+            lot.action_extend_deadline(old - timedelta(hours=1), reason="Earlier than the current deadline")
+        with self.assertRaises(ValidationError):
+            lot.action_extend_deadline(None, reason="No new deadline")
+        lot.action_extend_deadline(new, reason="Customer asked for time")
+        self.assertEqual(lot.expires_at, new)
+        row = delivery.operation_ids.filtered(lambda r: r.model_name == "training.seat.allocation" and r.record_id == lot.id)[:1]
+        self.assertEqual(row.reason, "Customer asked for time")
+        self.assertEqual(json.loads(row.before)["expires_at"], str(old))
+        self.assertEqual(json.loads(row.after)["expires_at"], str(new))
+
+    def test_extension_refused_for_expired_or_cancelled_lots(self):
+        delivery = self.delivery()
+        lot = self.lot(delivery, quantity=2)
+        cancelled = self.lot(delivery, quantity=2, source_reference="CANCELLED")
+        cancelled.action_cancel(reason="Lot withdrawn")
+        with self.assertRaises(ValidationError):
+            cancelled.action_extend_deadline(fields.Datetime.now() + timedelta(days=9), reason="Too late")
+        future = lot.expires_at + timedelta(seconds=1)
+        with patch("odoo.fields.Datetime.now", return_value=future):
+            with self.assertRaises(ValidationError):
+                lot.action_extend_deadline(future + timedelta(days=1), reason="Already expired")
+            lot.action_expire()
+            with self.assertRaises(ValidationError):
+                lot.action_extend_deadline(future + timedelta(days=1), reason="Expired and recorded")
+        self.assertEqual(lot.state, "expired")
+
+    def test_extension_assistant_and_rights(self):
+        from odoo.tests import Form
+        lot = self.lot(self.delivery())
+        old = lot.expires_at
+        action = lot.action_open_extend()
+        self.assertEqual(action["res_model"], "training.allocation.extend")
+        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))
+        form.expires_at = lot.expires_at + timedelta(days=1)
+        form.reason = "Two more days"
+        form.save().action_apply()
+        self.assertEqual(lot.expires_at, old + timedelta(days=1))
+        for user in (self.reader, self.internal, self.portal):
+            with self.assertRaises(AccessError):
+                lot.with_user(user).action_extend_deadline(lot.expires_at + timedelta(days=1), reason="Forbidden")
+
+    def test_database_refuses_two_open_enrollments_for_one_person(self):
+        delivery = self.delivery()
+        first = self.enrollment(delivery)
+        values = {"delivery_id": delivery.id, "company_id": delivery.company_id.id, "participant_id": first.participant_id.id}
+        with mute_logger("odoo.sql_db"), self.assertRaises(IntegrityError):
+            with self.env.cr.savepoint():
+                # Bypass the model checks to prove the database guard itself.
+                models.BaseModel.create(self.env["training.enrollment"], [values])
+        first.action_cancel(reason="Request withdrawn")
+        second = self.enrollment(delivery)
+        self.assertEqual(second.state, "requested")
+        self.assertEqual(first.state, "cancelled")
