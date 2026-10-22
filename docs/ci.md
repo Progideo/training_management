@@ -40,9 +40,10 @@ arguments Odoo, tags, sondes, phases et références historiques sont conservés
 Les profils restreints, cas multi-sociétés et intégrations continuent à être
 exécutés par les mêmes suites Odoo ; aucun test d’addon n’est modifié.
 
-Le contrat [coverage.json](../tests/ci/coverage.json) recense les 22 appels du
-workflow au commit de référence `80ad50c`. Les tests comparent ce contrat au
-workflow historique puis aux invocations effectives du nouveau script, y compris
+Le contrat [coverage.json](../tests/ci/coverage.json) conserve les 21 appels du
+workflow de référence `80ad50c` et ajoute le passage S04 pour la fixture Website
+historique. Les tests vérifient ces 22 étapes, en conservant la comparaison des
+21 commandes originales et des invocations effectives du script, y compris
 le contenu des sondes transmis sur l’entrée standard. Un changement intentionnel
 de couverture devra actualiser ce contrat et sa justification.
 
