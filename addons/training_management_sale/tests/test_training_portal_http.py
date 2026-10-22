@@ -1,4 +1,5 @@
 from io import BytesIO
+from unittest.mock import patch
 
 from pypdf import PdfWriter
 
@@ -392,3 +393,52 @@ class TestTrainingPortalHttp(HttpCase):
         self.assertNotIn(invoice.name, self.url_open(order_url).text)
         self.assertNotIn(invoice.access_token, self.url_open(order_url).text)
         self.assertNotEqual(self.url_open(attachment_url, allow_redirects=False).status_code, 200)
+
+    def test_revoked_message_recipient_cannot_read_new_content_by_rpc(self):
+        message = self.order.with_context(mail_notify_force_send=False).message_post(
+            body="Fictional original", message_type="comment", subtype_xmlid="mail.mt_comment",
+            partner_ids=self.authorized_user.partner_id.ids,
+        )
+        self.authenticate(self.authorized_user.login, self.authorized_user.login)
+        params = {"model": "mail.message", "method": "read",
+                  "args": [message.ids, ["body"]], "kwargs": {}}
+        route = "/web/dataset/call_kw/mail.message/read"
+        self.assertIn("Fictional original", self.make_jsonrpc_request(route, params)[0]["body"])
+        self.order.training_portal_partner_ids = [Command.clear()]
+        message.write({"body": "Fictional new confidential content after revocation"})
+        with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
+            self.make_jsonrpc_request(route, params)
+        with self.assertRaises(AccessError):
+            message.with_user(self.authorized_user).read(["body"])
+        self.assertFalse(self.env["mail.message"].with_user(self.authorized_user).search([
+            ("id", "=", message.id),
+        ]))
+        self.assertFalse(message.with_user(self.authorized_user).sudo()._get_with_access())
+        self.order.training_portal_partner_ids = [Command.set(self.authorized_user.partner_id.ids)]
+        self.assertIn("after revocation", message.with_user(self.authorized_user).read(["body"])[0]["body"])
+
+    def test_queued_pdf_revalidates_recipients_at_transport_and_retry(self):
+        template = self.env.ref("sale.email_template_edi_sale")
+        mail = self.env["mail.mail"].browse(template.send_mail(
+            self.order.id, force_send=False, email_values={"auto_delete": False},
+        ))
+        self.assertTrue(mail.attachment_ids)
+        self.order.training_portal_partner_ids = [Command.clear()]
+        server = type(self.env["ir.mail_server"])
+        with patch.object(server, "_disable_send", return_value=False), \
+                patch.object(server, "_connect__", return_value=None), \
+                patch.object(server, "send_email", return_value="fictional-id") as transport:
+            with mute_logger("odoo.addons.mail.models.mail_mail"):
+                mail.send()
+            self.assertEqual(mail.state, "exception")
+            transport.assert_not_called()
+            # A queue retry must recheck the same grant.
+            mail.write({"state": "outgoing"})
+            with mute_logger("odoo.addons.mail.models.mail_mail"):
+                mail.send()
+            transport.assert_not_called()
+            self.order.training_portal_partner_ids = [Command.set(self.authorized_user.partner_id.ids)]
+            mail.write({"state": "outgoing"})
+            mail.send(raise_exception=True)
+            self.assertEqual(mail.state, "sent")
+            transport.assert_called_once()

@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
@@ -461,6 +463,7 @@ class TestTrainingSale(TransactionCase):
         })
         order = self.env["sale.order"].create({
             "partner_id": self.partner.id, "company_id": self.company.id,
+            "user_id": self.salesperson.id,
             "pricelist_id": pricelist.id, "training_request_kind": "group",
             "training_requested_program_id": self.program.id,
             "training_attendee_count": 12,
@@ -747,6 +750,7 @@ class TestTrainingSale(TransactionCase):
         receipt_message = self.env["mail.message"].create({
             "model": "account.payment", "res_id": first_payment.id,
             "message_type": "comment", "body": "Fictional receipt note",
+            "subtype_id": self.env.ref("mail.mt_comment").id,
             "partner_ids": [Command.set((colleague + invoice_address).ids)],
         })
         notified = first_payment._notify_get_recipients(receipt_message)
@@ -781,7 +785,36 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError):
             receipt_composer._prepare_mail_values(first_payment.ids)
         receipt_composer.partner_cc_ids = [Command.clear()]
+        invoice_message = self.env["mail.message"].create({
+            "model": "account.move", "res_id": final_invoice.id,
+            "message_type": "comment", "subtype_id": self.env.ref("mail.mt_comment").id,
+            "body": "Fictional invoice note", "partner_ids": [Command.set(colleague.ids)],
+        })
+        invoice_mail = self.env["mail.mail"].create({
+            "model": "account.move", "res_id": final_invoice.id,
+            "subject": "Fictional queued invoice", "body_html": "Fictional invoice",
+            "email_from": "sender@example.invalid", "recipient_ids": [Command.set(colleague.ids)],
+            "auto_delete": False,
+        })
+        for message in (receipt_message, invoice_message):
+            self.assertTrue(message.with_user(portal_colleague).read(["body"]))
         final_invoice.training_portal_partner_ids = [Command.clear()]
+        for message in (receipt_message, invoice_message):
+            message.body = "Fictional confidential update after revocation"
+            with self.assertRaises(AccessError):
+                message.with_user(portal_colleague).read(["body"])
+            self.assertFalse(message.with_user(portal_colleague).sudo()._get_with_access())
+            self.assertFalse(self.env["mail.message"].with_user(portal_colleague).search([
+                ("id", "=", message.id),
+            ]))
+        server = type(self.env["ir.mail_server"])
+        with patch.object(server, "_disable_send", return_value=False), \
+                patch.object(server, "_connect__", return_value=None), \
+                patch.object(server, "send_email") as transport:
+            for queued in (receipt_mail, invoice_mail):
+                with self.assertRaises(ValidationError), self.cr.savepoint():
+                    queued.send(raise_exception=True)
+            transport.assert_not_called()
         with self.assertRaises(ValidationError):
             receipt_composer._prepare_mail_values(first_payment.ids)
         with self.assertRaises(ValidationError):
@@ -969,3 +1002,74 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError), self.cr.savepoint():
             (invoice_receivable + cash_receivable).reconcile()
         self.assertEqual(final_invoice.amount_residual, 800)
+
+    def _server_guard_order(self):
+        pricelist = self.env["product.pricelist"].create({
+            "name": "Fictional server guard EUR", "currency_id": self.eur.id,
+        })
+        self.env["product.pricelist.item"].create({
+            "pricelist_id": pricelist.id, "product_tmpl_id": self.product.product_tmpl_id.id,
+            "compute_price": "fixed", "fixed_price": 100,
+        })
+        return self.env["sale.order"].with_user(self.salesperson).create({
+            "partner_id": self.partner.id, "pricelist_id": pricelist.id,
+            "training_request_kind": "group", "training_attendee_count": 1,
+            "training_requested_program_id": self.program.id,
+            "training_requested_currency_id": self.eur.id,
+            "order_line": [Command.create({
+                "product_id": self.product.id, "product_uom_qty": 1,
+                "training_program_id": self.program.id,
+            })],
+        })
+
+    def test_direct_sale_state_and_currency_are_guarded(self):
+        order = self._server_guard_order()
+        order.order_line.price_unit = 1
+        for state in ("sent", "sale"):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                order.write({"state": state})
+            self.assertEqual(order.state, "draft")
+        vals = order.copy_data()[0]
+        vals["state"] = "sale"
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.env["sale.order"].with_user(self.salesperson).create(vals)
+        order.order_line.price_unit = 100
+        order.action_confirm()
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            order.write({"currency_id": self.env.ref("base.MAD").id})
+        order.invalidate_recordset()
+        self.assertEqual(order.currency_id, self.eur)
+        self.assertEqual(order.amount_untaxed, 100)
+        order.write({"currency_id": self.eur.id})
+        # A native non-training order keeps its ordinary state writes.
+        native = self.env["sale.order"].with_user(self.salesperson).create({
+            "partner_id": self.partner.id,
+        })
+        native.write({"state": "sale"})
+        self.assertEqual(native.state, "sale")
+
+    def test_notice_follows_native_order_portfolio(self):
+        order = self._server_guard_order()
+        order.action_confirm()
+        notice = self.env["training.bank.transfer.notice"].with_user(self.salesperson).create({
+            "order_id": order.id, "amount": 10, "claimed_date": "2026-10-22",
+            "reference": "FICTIONAL-PRIVATE-NOTICE",
+        })
+        other = new_test_user(self.env, login="fictional_other_sales",
+                              groups="sales_team.group_sale_salesman")
+        finance = new_test_user(self.env, login="fictional_notice_finance",
+                                groups="account.group_account_invoice")
+        manager = new_test_user(self.env, login="fictional_all_sales",
+                                groups="sales_team.group_sale_salesman_all_leads")
+        with self.assertRaises(AccessError):
+            order.with_user(other).read(["name"])
+        for operation in (
+            lambda: notice.with_user(other).read(["reference", "amount", "claimed_date"]),
+            lambda: notice.with_user(other).export_data(["reference", "amount"]),
+        ):
+            with self.assertRaises(AccessError):
+                operation()
+        self.assertFalse(self.env[notice._name].with_user(other).search([("id", "=", notice.id)]))
+        for user in (self.salesperson, manager, finance):
+            self.assertEqual(notice.with_user(user).read(["reference"])[0]["reference"],
+                             "FICTIONAL-PRIVATE-NOTICE")

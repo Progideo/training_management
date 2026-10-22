@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
@@ -49,13 +49,29 @@ class SaleOrder(models.Model):
             return self.browse()
         return thread
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        with self.env.cr.savepoint():
+            orders = super().create(vals_list)
+            orders.filtered(lambda order: order.state in ("sent", "sale"))._check_training_offer()
+            return orders
+
     def write(self, vals):
+        if "currency_id" in vals and any(
+            order.state == "sale" and order.training_request_kind
+            and order.currency_id.id != vals["currency_id"] for order in self
+        ):
+            raise ValidationError(_("Revise the training offer instead of changing its confirmed currency."))
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind", "training_requested_program_id", "training_requested_currency_id",
             "training_sponsor_id", "training_expected_payer_id", "training_admin_contact_id",
         }:
             raise ValidationError(_("Revise the training offer instead of changing its confirmed request."))
-        return super().write(vals)
+        with self.env.cr.savepoint():
+            result = super().write(vals)
+            if vals.get("state") in ("sent", "sale"):
+                self._check_training_offer()
+            return result
 
     def _check_training_offer(self):
         for order in self:
@@ -69,7 +85,8 @@ class SaleOrder(models.Model):
             if order.training_attendee_count <= 0:
                 raise ValidationError(_("Enter a positive participant count on the training quotation."))
             if (order.training_requested_currency_id.name not in ("MAD", "EUR")
-                    or order.training_requested_currency_id != order.currency_id):
+                    or order.training_requested_currency_id != order.currency_id
+                    or order.pricelist_id.currency_id != order.currency_id):
                 raise ValidationError(_("Choose a pricelist in the requested MAD or EUR currency."))
             if not lines or any(line.training_program_id != order.training_requested_program_id for line in lines):
                 raise ValidationError(_("Training lines must use the requested programme version."))

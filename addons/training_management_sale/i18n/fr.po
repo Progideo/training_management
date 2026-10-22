@@ -502,3 +502,21 @@ msgstr "Revenus de formation"
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_product_template_training
 msgid "This income account applies to all invoices for this product in the active company."
 msgstr "Ce compte de produits s’applique à toutes les factures de cet article dans la société active."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/sale_order.py:0
+msgid "Revise the training offer instead of changing its confirmed currency."
+msgstr "Révisez l’offre de formation au lieu de modifier sa devise confirmée."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/mail_message.py:0
+msgid "This training message requires a currently authorized contact."
+msgstr "Ce message de formation est réservé aux contacts actuellement habilités."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/mail_mail.py:0
+msgid "A training mail recipient is no longer authorized on the document."
+msgstr "Un destinataire du courriel de formation n’est plus habilité sur le document."
