@@ -4,6 +4,8 @@
 Besoin : [#12](https://github.com/Progideo/training_management/issues/12).
 [Cadrage accepté](https://github.com/Progideo/training_management/issues/12#issuecomment-6290595309).
 Cette étude ne termine pas S02 et ne constitue pas une recette fonctionnelle.
+Pour l'état de validation plus récent et la décision de lancement sans import
+bancaire, voir la [validation complémentaire du 22 octobre 2026](s02-crm-quotation.md#validation-complémentaire-du-22-octobre-2026).
 
 ## Reprise vérifiée
 
