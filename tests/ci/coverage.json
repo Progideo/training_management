@@ -1,0 +1,279 @@
+{
+  "source_commit": "80ad50c1f19ab52fad60057b45ea807946916572",
+  "scenarios": {
+    "incremental": [
+      {
+        "step": "install",
+        "database": "tm_s01_test_ci",
+        "args": [
+          "-i",
+          "training_management",
+          "--without-demo",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "baseline",
+        "database": "tm_s01_test_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/catalogue_upgrade_probe.py",
+        "phase": {
+          "TM_UPGRADE_PHASE": "prepare"
+        },
+        "baseline": false
+      },
+      {
+        "step": "update",
+        "database": "tm_s01_test_ci",
+        "args": [
+          "-u",
+          "training_management",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "history",
+        "database": "tm_s01_test_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/catalogue_upgrade_probe.py",
+        "phase": {
+          "TM_UPGRADE_PHASE": "verify"
+        },
+        "baseline": false
+      },
+      {
+        "step": "commercial-install",
+        "database": "tm_s01_test_ci",
+        "args": [
+          "-i",
+          "training_management_sale",
+          "--without-demo",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management_sale"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "commercial-concurrency",
+        "database": "tm_s01_test_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "addons/training_management_sale/tests/probes/bank_reference_concurrency.py",
+        "phase": {},
+        "baseline": false
+      }
+    ],
+    "fresh": [
+      {
+        "step": "commercial-fresh-install",
+        "database": "tm_s03_test_fresh_ci",
+        "args": [
+          "-i",
+          "training_management_sale",
+          "--without-demo",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management_sale"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "s03-concurrency",
+        "database": "tm_s03_test_fresh_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/s03_concurrency.py",
+        "phase": {},
+        "baseline": false
+      }
+    ],
+    "history": [
+      {
+        "step": "s03-old-install",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "-i",
+          "website,website_slides,training_management_sale",
+          "--without-demo",
+          "--stop-after-init"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": true
+      },
+      {
+        "step": "s03-history-prepare",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/s03_history.py",
+        "phase": {
+          "S03_UPGRADE_PHASE": "prepare"
+        },
+        "baseline": true
+      },
+      {
+        "step": "s03-view-bootstrap",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/s03_view_bootstrap.py",
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "s03-upgrade-tests",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "-u",
+          "training_management,training_management_sale",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management,/training_management_sale"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "s03-history-verify",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/s03_history.py",
+        "phase": {
+          "S03_UPGRADE_PHASE": "verify"
+        },
+        "baseline": false
+      },
+      {
+        "step": "s03-update-prepare",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/s03_history.py",
+        "phase": {
+          "S03_UPGRADE_PHASE": "prepare_s03"
+        },
+        "baseline": false
+      },
+      {
+        "step": "s03-update",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "-u",
+          "training_management,training_management_sale",
+          "--stop-after-init"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "s03-update-verify",
+        "database": "tm_s03_test_upgrade_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/s03_history.py",
+        "phase": {
+          "S03_UPGRADE_PHASE": "verify_s03"
+        },
+        "baseline": false
+      }
+    ],
+    "website": [
+      {
+        "step": "website-baseline-install",
+        "database": "tm_s01_test_website_ci",
+        "args": [
+          "-i",
+          "website,website_slides,training_management",
+          "--without-demo",
+          "--stop-after-init"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "website-baseline",
+        "database": "tm_s01_test_website_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/catalogue_upgrade_probe.py",
+        "phase": {
+          "TM_UPGRADE_PHASE": "prepare"
+        },
+        "baseline": false
+      },
+      {
+        "step": "website-commercial-install",
+        "database": "tm_s01_test_website_ci",
+        "args": [
+          "-i",
+          "training_management_sale",
+          "--without-demo",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management_sale"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "website-commercial-update",
+        "database": "tm_s01_test_website_ci",
+        "args": [
+          "-u",
+          "training_management_sale",
+          "--stop-after-init",
+          "--test-enable",
+          "--test-tags=/training_management_sale"
+        ],
+        "probe": null,
+        "phase": {},
+        "baseline": false
+      },
+      {
+        "step": "website-history",
+        "database": "tm_s01_test_website_ci",
+        "args": [
+          "shell"
+        ],
+        "probe": "tests/probes/catalogue_upgrade_probe.py",
+        "phase": {
+          "TM_UPGRADE_PHASE": "verify"
+        },
+        "baseline": false
+      }
+    ]
+  }
+}

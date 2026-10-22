@@ -1,0 +1,101 @@
+# CI Odoo — organisation et couverture
+
+Référence : [issue #47](https://github.com/Progideo/training_management/issues/47).
+Le workflow s’appelle désormais **CI Odoo** ; son contrôle final est
+**Validation CI Odoo**. L’ancien nom `catalogue` venait du premier incrément S01.
+Le 22 octobre 2026, l’API GitHub ne retourne aucun contrôle de statut obligatoire
+pour `main`, ni ruleset applicable ; le renommage ne nécessite aucune modification
+des protections. Si un contrôle requis est ajouté ultérieurement, sélectionner
+le contrôle final, et vérifier les noms avant de les changer.
+
+## Quatre scénarios indépendants
+
+Chaque entrée de la matrice utilise son propre runner, service PostgreSQL 18.6,
+volume Docker et artefact. L’image Odoo reste celle épinglée pour S03 :
+`odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23`.
+Les données sont fictives ; aucun accès OVH ou secret de déploiement n’est utilisé.
+
+| Scénario | Étapes conservées, dans l’ordre | Nombre |
+| --- | --- | ---: |
+| `incremental` | Installation/test du socle ; préparation de l’historique catalogue ; mise à jour/test du socle ; comparaison de l’historique ; installation/test Ventes sur ce socle ; concurrence des références bancaires | 6 |
+| `fresh` | Installation/test Ventes sur base vierge ; concurrence S03 réelle | 2 |
+| `history` | Installation S02 avec Website/eLearning depuis `a0c95fa` ; préparation historique S02 ; préchargement XML natif ; mise à jour/tests S03 ; comparaison S02 ; préparation historique S03 ; seconde mise à jour ; comparaison S03 | 8 |
+| `website` | Installation Website/eLearning/socle courant ; préparation catalogue ; installation/tests Ventes ; mise à jour/tests Ventes ; comparaison catalogue | 5 |
+
+L’installation progressive socle → Ventes reste dans un seul scénario : la séparer
+en deux bases supprimerait la preuve de cette transition. Les noms de bases,
+arguments Odoo, tags, sondes, phases et références historiques sont conservés.
+Les profils restreints, cas multi-sociétés et intégrations continuent à être
+exécutés par les mêmes suites Odoo ; aucun test d’addon n’est modifié.
+
+Le contrat [coverage.json](../tests/ci/coverage.json) recense les 21 appels du
+workflow au commit de référence `80ad50c`. Les tests comparent ce contrat au
+workflow historique puis aux invocations effectives du nouveau script, y compris
+le contenu des sondes transmis sur l’entrée standard. Un changement intentionnel
+de couverture devra actualiser ce contrat et sa justification.
+
+## Exécution et diagnostic
+
+[run_odoo_scenario.sh](../tests/ci/run_odoo_scenario.sh) porte les opérations,
+avec arrêt au premier échec dans un scénario. Les autres scénarios continuent
+(`fail-fast: false`), pour conserver leurs résultats indépendants. La matrice est
+limitée à quatre scénarios simultanés ; le petit job d’orchestration peut aussi
+s’exécuter en parallèle, puis le contrôle final attend les deux ensembles.
+Les étapes d’une même base restent strictement séquentielles.
+
+Les bases sont propres à chaque scénario sur des services isolés. Les volumes et
+conteneurs portent l’identifiant du run, de sa tentative et du scénario ; le
+nettoyage vise seulement ces ressources. Aucun volume partagé entre jobs et
+aucune commande globale de purge. Le code S02 archivé reste dans un dossier
+temporaire, en dehors des artefacts, puis est supprimé.
+
+Les artefacts `odoo-<scenario>-results` contiennent un journal par étape, les
+résultats de nettoyage et `timings.tsv` (étape, code retour, secondes).
+Ils sont téléversés même en cas d’échec ; l’absence de fichiers fait échouer
+le téléversement. Le code retour de Docker et les erreurs d’écriture des journaux
+ne sont pas masqués par `tee`.
+
+[check_results.py](../tests/ci/check_results.py) exige :
+
+- succès des jobs d’orchestration et de la matrice ; échec, annulation, exclusion
+  ou résultat manquant sont refusés ;
+- présence des quatre artefacts et des 21 étapes dans l’ordre attendu ;
+- codes retour nuls, durées valides et journaux présents.
+
+Le job final utilise `needs` et `always()` pour ne pas devenir un succès implicite
+lorsqu’un préalable échoue. Aucune exception `continue-on-error`. Une annulation
+globale peut annuler le contrôle final lui-même ; elle ne produit pas de succès.
+Voir les références officielles GitHub sur [les dépendances entre jobs](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs)
+et [les matrices et leur concurrence](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations).
+
+## Mesures et coût
+
+La CI précédente [n° 71](https://github.com/Progideo/training_management/actions/runs/39789685043)
+exécutait un seul job `catalogue` : **348 secondes**, du début à la fin du job
+(données API GitHub). Les durées de la nouvelle exécution sont consignées dans
+la PR, avec durée écoulée et somme des durées des jobs. La synthèse GitHub donne
+aussi la somme des étapes de chaque scénario ; ces mesures excluent préparation
+des runners, services et transferts d’artefacts, et ne sont donc pas directement
+comparables aux durées complètes des jobs.
+
+La parallélisation vise le délai de retour ; elle ne garantit pas une diminution
+du temps machine cumulé. Quatre démarrages PostgreSQL/Odoo, téléchargements et
+runners peuvent augmenter le cumul. Les quotas du compte et les files d’attente
+peuvent réduire le parallélisme effectif. Aucun achat ni changement de quota.
+
+## Recette
+
+1. `python3 -m pip install -r tests/ci/requirements.txt`, puis
+   `python3 -m unittest discover -s tests -p 'test_odoo_ci.py' -v` : contrats de
+   couverture, isolation, arrêt après panne injectée dans chaque scénario,
+   propagation via `tee`, et refus des résultats incomplets/non réussis.
+2. Vérifier la syntaxe Bash et GitHub Actions (actionlint 1.7.7 utilisé localement).
+3. Sur la PR, attendre les quatre scénarios Odoo réels, le job d’orchestration
+   et **Validation CI Odoo**, tous réussis ; examiner les quatre artefacts et
+   la synthèse. Les doubles Docker des tests d’orchestration ne remplacent pas
+   ces exécutions réelles.
+4. Comparer les durées complètes aux données du run n° 71 et documenter la limite
+   d’une comparaison entre deux exécutions, sans prétendre à un benchmark stable.
+
+Cette modification concerne la CI uniquement ; aucune fusion ni aucun déploiement
+n’est autorisé par cette documentation.

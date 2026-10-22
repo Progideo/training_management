@@ -22,6 +22,10 @@ Une divergence entre pièce jointe, dépôt et décision doit être signalée et
 version de référence identifiée avant correction. Ne pas synchroniser
 automatiquement des sources externes ni modifier silencieusement une exigence.
 
+## Validation continue
+
+Voir [CI Odoo : scénarios, couverture, diagnostic et mesures](ci.md).
+
 ## Provenance et statut des documents importés
 
 Import documentaire préparé le **15 octobre 2026** pour
