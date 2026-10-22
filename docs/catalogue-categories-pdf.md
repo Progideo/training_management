@@ -165,3 +165,10 @@ le justifier après contrôle des droits métier ; aucun `sudo()` global sur le 
 
 Ces critères sont des tests prévus. Les preuves des vérifications natives et,
 ultérieurement, les résultats de recette restent dans la PR du lot.
+
+Pour l'ancienne fixture S02 avec Website, le préparateur de vues historique
+utilise le registre S04 figé, puis une mise à jour native S04 précède celle du
+lot actuel. Charger d'abord le code actuel sur cet ancien schéma échouerait sur
+la nouvelle colonne des pièces jointes. Les 21 contrôles historiques sont
+conservés et le passage intermédiaire est ajouté au contrôle final de CI.
+La mise à jour depuis S04 reste vérifiée directement, sans ce préparateur.
