@@ -106,6 +106,7 @@ msgstr "Méthode de l’action"
 #: model:ir.model.fields,field_description:training_management.field_training_course__active
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__access_state__active
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__effective_access__active
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__active
 msgid "Active"
 msgstr "Actif"
 
@@ -133,6 +134,8 @@ msgstr "Archivé"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__blended
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__blended
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__blended
 msgid "Blended"
 msgstr "Mixte"
 
@@ -174,6 +177,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__company_id
+#: model:ir.model,name:training_management.model_res_company
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_session__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -217,6 +227,13 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_session__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -233,6 +250,13 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_session__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -265,6 +289,17 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__display_name
+#: model:ir.model.fields,field_description:training_management.field_ir_attachment__display_name
+#: model:ir.model.fields,field_description:training_management.field_mail_mail__display_name
+#: model:ir.model.fields,field_description:training_management.field_res_company__display_name
+#: model:ir.model.fields,field_description:training_management.field_resource_resource__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_session__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -326,6 +361,17 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__id
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__id
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__id
+#: model:ir.model.fields,field_description:training_management.field_ir_attachment__id
+#: model:ir.model.fields,field_description:training_management.field_mail_mail__id
+#: model:ir.model.fields,field_description:training_management.field_res_company__id
+#: model:ir.model.fields,field_description:training_management.field_resource_resource__id
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__id
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__id
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__id
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__id
+#: model:ir.model.fields,field_description:training_management.field_training_session__id
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__id
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__id
 msgid "ID"
 msgstr "ID"
 
@@ -347,6 +393,13 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_session__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -363,6 +416,13 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_session__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -374,6 +434,9 @@ msgstr "Modèle"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__name
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__name
+#: model:ir.model.fields,field_description:training_management.field_training_session__name
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__name
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__name
 msgid "Name"
 msgstr "Nom"
 
@@ -427,6 +490,8 @@ msgstr "Sur devis"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__onsite
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__onsite
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__onsite
 msgid "On site"
 msgstr "Présentiel"
 
@@ -540,6 +605,8 @@ msgstr "Référence"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__remote
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__remote
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__remote
 msgid "Remote"
 msgstr "Distanciel"
 
@@ -643,11 +710,13 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_state
 msgid "State"
 msgstr "État"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__distribution_state
 msgid "Status"
 msgstr "État"
 
@@ -852,6 +921,8 @@ msgstr "Créer le brouillon"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_operation
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_new_version_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_invitation_send_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -966,11 +1037,13 @@ msgstr ""
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__actor_id
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__actor_id
 msgid "Actor"
 msgstr "Auteur"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__after
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__after
 msgid "After"
 msgstr "Après"
 
@@ -1048,6 +1121,7 @@ msgstr "Offre autonome"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__before
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__before
 msgid "Before"
 msgstr "Avant"
 
@@ -1099,6 +1173,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__cancelled
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__cancelled
 #: model:ir.model.fields.selection,name:training_management.selection__training_seat_allocation__state__cancelled
+#: model:ir.model.fields,field_description:training_management.field_training_session__cancelled
 msgid "Cancelled"
 msgstr "Annulée"
 
@@ -1259,6 +1334,11 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_delivery_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_session__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1275,6 +1355,8 @@ msgstr "Accès effectif"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__end_at
+#: model:ir.model.fields,field_description:training_management.field_training_session__end_at
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__end_at
 msgid "End At"
 msgstr "Fin"
 
@@ -1282,6 +1364,7 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__enrollment_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__enrollment_ids
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -1346,6 +1429,7 @@ msgstr "Motif de gratuité"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_form
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__history_ids
 msgid "History"
 msgstr "Historique"
 
@@ -1393,6 +1477,7 @@ msgstr "Places occupées"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__occurred_at
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__occurred_at
 msgid "Occurred At"
 msgstr "Date de l’opération"
 
@@ -1507,6 +1592,7 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__reason
 #: model:ir.model.fields,field_description:training_management.field_training_operation__reason
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__reason
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__reason
 msgid "Reason"
 msgstr "Motif"
 
@@ -1562,6 +1648,7 @@ msgstr "Demandée"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__requested_at
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__requested_at
 msgid "Requested At"
 msgstr "Date de demande"
 
@@ -1662,6 +1749,8 @@ msgstr "Démarrer"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__start_at
+#: model:ir.model.fields,field_description:training_management.field_training_session__start_at
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__start_at
 msgid "Start At"
 msgstr "Début"
 
@@ -1764,6 +1853,8 @@ msgstr "Cette référence de réservation existe déjà pour cette réalisation.
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__timezone
+#: model:ir.model.fields,field_description:training_management.field_training_session__timezone
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__reference_timezone
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
@@ -1998,6 +2089,9 @@ msgstr "Si coché, de nouveaux messages demandent votre attention."
 #: model:ir.model.fields,help:training_management.field_training_delivery__message_has_error
 #: model:ir.model.fields,help:training_management.field_training_enrollment__message_has_error
 #: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_has_error
+#: model:ir.model.fields,help:training_management.field_training_delivery__message_has_sms_error
+#: model:ir.model.fields,help:training_management.field_training_enrollment__message_has_sms_error
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si coché, certains messages ont une erreur de livraison."
 
@@ -2106,3 +2200,960 @@ msgstr ""
 #: model:ir.model.fields,help:training_management.field_training_seat_allocation__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Type d'activité d'exception enregistrée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"A training room is a material resource of one company with a non-negative "
+"capacity."
+msgstr ""
+"Une salle de formation doit être une ressource matérielle d’une société, "
+"avec une capacité positive ou nulle."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__adaptation_id
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__adaptation_ids
+msgid "Adaptation"
+msgstr "Aménagement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "Adaptation history must be preserved."
+msgstr "L’historique des aménagements doit être conservé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+msgid "Add Sessions"
+msgstr "Ajouter des séances"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+msgid "Add or Change Sessions"
+msgstr "Ajouter ou modifier des séances"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_session_edit
+msgid "Add or Change Training Sessions"
+msgstr "Ajouter ou modifier des séances"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "Add the sessions before confirming this dated delivery."
+msgstr "Ajoutez les séances avant de confirmer cette réalisation datée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "An adaptation keeps its enrollment and protected history."
+msgstr "Un aménagement conserve son inscription et son historique protégé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "An autonomous offer does not need fictitious sessions."
+msgstr "Un parcours autonome ne nécessite pas de séances fictives."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "An unavailability keeps its company."
+msgstr "Une indisponibilité conserve sa société."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__below_threshold
+msgid "Below Threshold"
+msgstr "Sous le seuil"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__can_prepare
+msgid "Can Prepare"
+msgstr "Peut préparer"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__cancel_session
+msgid "Cancel Session"
+msgstr "Annuler la séance"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Cancel a session to preserve its history."
+msgstr "Annulez la séance pour conserver son historique."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_adaptation_history__event__change
+msgid "Change"
+msgstr "Modification"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_form
+msgid "Change Session"
+msgstr "Modifier la séance"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_session_edit.py:0
+msgid "Change only the selected session of this delivery."
+msgstr "Modifiez uniquement la séance sélectionnée de cette réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Choose a training room of this company."
+msgstr "Choisissez une salle de formation de cette société."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Choose an active training room of the delivery company."
+msgstr ""
+"Choisissez une salle active de la société exploitante de la réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid ""
+"Choose an enrollment of this delivery and record the adaptation decision."
+msgstr ""
+"Choisissez une inscription de cette réalisation et renseignez la décision "
+"d’aménagement."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Choose one instructor or room and an increasing period."
+msgstr ""
+"Choisissez un formateur ou une salle et une période dont la fin est "
+"postérieure au début."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Complete the instructor, place and/or remote link before confirming."
+msgstr ""
+"Renseignez le formateur, le lieu et/ou le lien distant avant de confirmer."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_adaptation_history
+msgid "Confidential Adaptation History"
+msgstr "Historique confidentiel des aménagements"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+msgid "Confidential Adaptations"
+msgstr "Aménagements confidentiels"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__details
+msgid "Confidential Request"
+msgstr "Demande confidentielle"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_adaptation
+msgid "Confidential Training Adaptation"
+msgstr "Aménagement confidentiel de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Confidential adaptation attachments cannot be public."
+msgstr ""
+"Les fichiers d’un aménagement confidentiel ne peuvent pas être publics."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__adaptation_deputy_id
+msgid "Confidentiality Deputy"
+msgstr "Suppléant habilité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__adaptation_referent_id
+msgid "Confidentiality Referent"
+msgstr "Référent habilité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid ""
+"Confirm the delivery and its complete schedule before sending invitations."
+msgstr ""
+"Confirmez la réalisation et son planning complet avant d’envoyer les "
+"convocations."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+#: code:addons/training_management/wizard/training_action_reason.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
+msgid "Confirm with Exception"
+msgstr "Confirmer avec dérogation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_session_edit.py:0
+msgid "Create between 1 and 100 sessions with a positive interval."
+msgstr "Créez entre 1 et 100 séances avec un intervalle positif."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__decision
+msgid "Decision"
+msgstr "Décision"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "Distribution history is immutable."
+msgstr "L’historique de diffusion ne peut pas être modifié."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__end_date
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_date
+msgid "End Date"
+msgstr "Date de fin"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__end_hour
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_hour
+msgid "End Hour"
+msgstr "Heure de fin"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__end_occurrence
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_occurrence
+msgid "End Occurrence"
+msgstr "Occurrence de fin"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Enter a reason for adding sessions after confirmation."
+msgstr "Indiquez un motif pour ajouter des séances après confirmation."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__equipment
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__equipment
+msgid "Equipment"
+msgstr "Équipements"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__event
+msgid "Event"
+msgstr "Événement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "Every selected recipient needs an email address."
+msgstr "Chaque destinataire sélectionné doit avoir une adresse de courriel."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_adaptation_history__event__export
+msgid "Export"
+msgstr "Export"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__fingerprint
+msgid "Fingerprint"
+msgstr "Empreinte"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__end_occurrence__first
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__start_occurrence__first
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__end_occurrence__first
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__start_occurrence__first
+msgid "First occurrence"
+msgstr "Première occurrence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "History is generated by the server."
+msgstr "L’historique est généré par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "History is immutable."
+msgstr "L’historique ne peut pas être modifié."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_positioning
+msgid "Individual Preparation"
+msgstr "Préparation individuelle"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_adaptation__instructor_instruction
+msgid "Instruction for Assigned Instructor"
+msgstr "Consigne pour le formateur affecté"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__instructor_id
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__instructor_id
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__instructor_id
+msgid "Instructor"
+msgstr "Formateur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"Instructor or room conflict. Change the schedule or confirm with a reason."
+msgstr ""
+"Conflit de formateur ou de salle. Modifiez le planning ou confirmez avec un "
+"motif de dérogation."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__interval_days
+msgid "Interval Days"
+msgstr "Intervalle en jours"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Invalid local schedule: %s"
+msgstr "Horaire local invalide : %s"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__invitation_ids
+msgid "Invitation"
+msgstr "Convocation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+msgid "Invitation Distribution"
+msgstr "Diffusion des convocations"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "Invitations are generated by the coordinator's send action."
+msgstr "Les convocations sont générées par l’action d’envoi du coordinateur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+msgid "Join remote session"
+msgstr "Rejoindre la séance à distance"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__location
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__location
+msgid "Location"
+msgstr "Lieu"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__mail_id
+msgid "Mail"
+msgstr "Courriel"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__activity_type_icon
+#: model:ir.model.fields,help:training_management.field_training_enrollment__activity_type_icon
+#: model:ir.model.fields,help:training_management.field_training_seat_allocation__activity_type_icon
+msgid "Material Symbols icon e.g. checklist"
+msgstr "Icône Material Symbols, par exemple checklist"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__meeting_url
+msgid "Meeting Link"
+msgstr "Lien de connexion"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__meeting_url
+msgid "Meeting Url"
+msgstr "Lien de connexion"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__mode
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__mode
+msgid "Mode"
+msgstr "Modalité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "My training sessions"
+msgstr "Mes séances de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+msgid "Needs"
+msgstr "Besoins"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "No assigned sessions."
+msgstr "Aucune séance affectée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_invitation_send_form
+msgid ""
+"One individual message per recipient. Repeating this action does not "
+"duplicate an unchanged invitation. Delivery errors remain visible in the "
+"distribution history."
+msgstr ""
+"Un message individuel par destinataire. Répéter cette action ne duplique pas"
+" une convocation inchangée. Les erreurs d’envoi restent visibles dans "
+"l’historique de diffusion."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Only a future, non-cancelled session may change."
+msgstr ""
+"Seule une séance non annulée d’une réalisation à venir peut être modifiée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Only a training coordinator may change sessions."
+msgstr "Seul un coordinateur peut modifier les séances."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Only a training coordinator may reserve resources."
+msgstr "Seul un coordinateur peut réserver les ressources."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "Only adaptation content can be supplied."
+msgstr "Seul le contenu de l’aménagement peut être renseigné."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+msgid ""
+"Only choose an occurrence when the local time occurs twice during a clock "
+"change. Nonexistent local times are refused."
+msgstr ""
+"Choisissez une occurrence uniquement si l’heure locale se produit deux fois "
+"lors d’un changement d’heure. Les heures locales inexistantes sont refusées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Only schedule fields may change."
+msgstr "Seuls les champs du planning peuvent être modifiés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "Only the named referent or deputy may access confidential adaptations."
+msgstr ""
+"Seuls le référent ou le suppléant désignés peuvent accéder aux aménagements "
+"confidentiels."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__participant_objectives
+msgid "Participant Objectives"
+msgstr "Objectifs du participant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+msgid "Participants and useful instructions"
+msgstr "Participants et consignes utiles"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__partner_id
+msgid "Partner"
+msgstr "Contact"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__positioning
+msgid "Positioning"
+msgstr "Positionnement"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__instructor_summary
+msgid "Positioning Summary for Instructor"
+msgstr "Synthèse du positionnement pour le formateur"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__recipient_timezone
+msgid "Recipient Timezone"
+msgstr "Fuseau du destinataire"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation_send__recipient_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+msgid "Reference timezone:"
+msgstr "Fuseau de référence :"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__repeat_count
+msgid "Repeat Count"
+msgstr "Nombre de séances"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__requested_by_id
+msgid "Requested By"
+msgstr "Envoi demandé par"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_resource_resource
+msgid "Resource"
+msgstr "Ressource"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_unavailability
+#: model:ir.ui.menu,name:training_management.menu_training_unavailability
+msgid "Resource Unavailability"
+msgstr "Indisponibilités des ressources"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__propose_notice
+msgid "Review Recipients after Saving"
+msgstr "Vérifier les destinataires après enregistrement"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_invitation_send_form
+msgid "Review and Send Invitations"
+msgstr "Vérifier et envoyer les convocations"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_invitation_send
+msgid "Review and Send Training Invitations"
+msgstr "Vérifier et envoyer les convocations"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__room_id
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__room_id
+#: model:ir.model.fields,field_description:training_management.field_training_unavailability__room_id
+msgid "Room"
+msgstr "Salle"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_resource_resource__training_capacity
+msgid "Room Capacity"
+msgstr "Capacité de la salle"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__message_has_sms_error
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_has_sms_error
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d’envoi du SMS"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+msgid "Save Sessions"
+msgstr "Enregistrer les séances"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_form
+msgid "Schedule in Reference Timezone"
+msgstr "Horaires dans le fuseau de référence"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__end_occurrence__second
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__start_occurrence__second
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__end_occurrence__second
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__start_occurrence__second
+msgid "Second occurrence"
+msgstr "Deuxième occurrence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "Select only confirmed participants and assigned instructors."
+msgstr ""
+"Sélectionnez uniquement des participants confirmés et des formateurs "
+"affectés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_invitation_send_form
+msgid "Send Invitations"
+msgstr "Envoyer les convocations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+msgid "Send Invitations / Updates"
+msgstr "Envoyer les convocations / modifications"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__session_ids
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__session_id
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__session_id
+msgid "Session"
+msgstr "Séance"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "Session cancelled"
+msgstr "Séance annulée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Session instants and state are server-managed."
+msgstr "Les horaires calculés et l’état de séance sont gérés par le serveur."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_sessions
+#: model:ir.ui.menu,name:training_management.menu_training_sessions
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_preparation
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_calendar
+msgid "Sessions"
+msgstr "Séances"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Sessions can only change before the delivery starts."
+msgstr ""
+"Les séances ne peuvent être modifiées qu’avant le début de la réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"Sessions must remain inside the delivery dates. Change those dates "
+"explicitly first."
+msgstr ""
+"Les séances doivent rester dans les dates de la réalisation. Modifiez "
+"d’abord explicitement ces dates."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Set an increasing session period."
+msgstr "La fin de séance doit être postérieure au début."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__sponsor_need
+msgid "Sponsor Needs"
+msgstr "Besoins du commanditaire"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__start_date
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_date
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__start_hour
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_hour
+msgid "Start Hour"
+msgstr "Heure de début"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__start_occurrence
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_occurrence
+msgid "Start Occurrence"
+msgstr "Occurrence de début"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "The company is outside your allowed companies."
+msgstr "Cette société ne fait pas partie de vos sociétés autorisées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "The reference timezone is preserved once sessions exist."
+msgstr "Le fuseau de référence est conservé dès que des séances existent."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "The referent and deputy must be active coordinators of this company."
+msgstr ""
+"Le référent et le suppléant doivent être des coordinateurs actifs de cette "
+"société."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "The reservation revision is server-managed."
+msgstr "La révision des réservations est gérée par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "The room is smaller than the committed participant count."
+msgstr "La capacité de la salle est inférieure à l’effectif engagé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "There are no sessions to invite recipients to."
+msgstr "Aucune séance ne permet l’envoi de convocations."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_invitation_unique_dispatch
+msgid "This invitation is already queued."
+msgstr "Cette convocation est déjà en file d’envoi."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"This unavailability overlaps a confirmed session. Change that session first."
+msgstr ""
+"Cette indisponibilité chevauche une séance confirmée. Modifiez d’abord cette"
+" séance."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_invitation
+msgid "Training Invitation Distribution"
+msgstr "Diffusion des convocations de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_unavailability
+msgid "Training Resource Unavailability"
+msgstr "Indisponibilité de ressource de formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_resource_resource__training_room
+msgid "Training Room"
+msgstr "Salle de formation"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_rooms
+#: model:ir.ui.menu,name:training_management.menu_training_rooms
+msgid "Training Rooms"
+msgstr "Salles de formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_res_company__training_schedule_revision
+msgid "Training Schedule Revision"
+msgstr "Révision des réservations de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_session
+msgid "Training Session"
+msgstr "Séance de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "Training invitation / schedule update"
+msgstr "Convocation / modification de séance"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Use Change Session with a reason after confirmation."
+msgstr "Utilisez « Modifier la séance » avec un motif après confirmation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Use an HTTPS meeting link."
+msgstr "Utilisez un lien de connexion HTTPS."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Use the controlled session actions."
+msgstr "Utilisez les actions de gestion de séance."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_adaptation_unique_enrollment
+msgid "Use the existing adaptation dossier for this enrollment."
+msgstr "Utilisez le dossier d’aménagement existant pour cette inscription."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_resource_resource__training_capacity
+msgid "Zero means not specified."
+msgstr "Zéro signifie non renseigné."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_course.py:0
+msgid "course_id"
+msgstr "Formation standard"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+#, python-format
+msgid "Invalid local date or time"
+msgstr "Date ou heure locale invalide"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+#, python-format
+msgid "This local time does not exist; choose another time"
+msgstr "Cette heure locale n’existe pas ; choisissez une autre heure"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+#, python-format
+msgid "This local time occurs twice; choose the first or second occurrence"
+msgstr ""
+"Cette heure locale se produit deux fois ; choisissez la première ou la "
+"deuxième occurrence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid "This session email has no authorized invitation."
+msgstr "Ce courriel de séance ne correspond à aucune convocation autorisée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_invitation.py:0
+msgid ""
+"The schedule or recipient changed. Review and send the updated invitation."
+msgstr ""
+"Le planning ou le destinataire a changé. Vérifiez puis envoyez la "
+"convocation actualisée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_form
+msgid "Duplicate Session"
+msgstr "Dupliquer la séance"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_ambiguous
+msgid "End Ambiguous"
+msgstr "Fin ambiguë"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_mail_mail
+msgid "Outgoing Mail"
+msgstr "E-mails sortants"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_ambiguous
+msgid "Start Ambiguous"
+msgstr "Début ambigu"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_session_edit.py:0
+msgid "Training session"
+msgstr "Séance de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_preparation.py:0
+msgid "A delivery with sessions keeps its company, programme and kind."
+msgstr ""
+"Une réalisation comportant des séances conserve sa société, son programme et"
+" sa nature."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"%(session)s — %(resource)s: %(start)s → %(end)s (%(timezone)s), %(booking)s"
+msgstr ""
+"%(session)s — %(resource)s : %(start)s → %(end)s (%(timezone)s), %(booking)s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "All sessions"
+msgstr "Toutes les séances"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__conflict_description
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__conflict_description
+msgid "Conflict Description"
+msgstr "Conflit de ressources"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_invitation__dispatch_number
+msgid "Dispatch Number"
+msgstr "Numéro de diffusion"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__activity_calendar_event_id
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__activity_calendar_event_id
+#: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Prochain événement de calendrier"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "No assigned sessions in this period."
+msgstr "Aucune séance affectée sur cette période."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "Past"
+msgstr "Passées"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__conflict_reason
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__conflict_reason
+msgid "Reason for Resource Exception"
+msgstr "Motif de dérogation de ressource"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+#: code:addons/training_management/wizard/training_session_edit.py:0
+#: code:addons/training_management/wizard/training_action_reason.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
+msgid "Resource Exception"
+msgstr "Dérogation de ressource"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid ""
+"Resource conflict. Change the schedule or explicitly justify an exception:\n"
+"%s"
+msgstr ""
+"Conflit de ressources. Modifiez le planning ou justifiez explicitement une dérogation :\n"
+"%s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+msgid "Save with Resource Exception"
+msgstr "Enregistrer avec dérogation de ressource"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "Session period"
+msgstr "Période des séances"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_schedule.py:0
+msgid "Unavailability"
+msgstr "Indisponibilité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "Upcoming"
+msgstr "À venir"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_action_reason.py:0
+msgid "Enter a reason for this action."
+msgstr "Saisissez un motif pour cette action."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__reason_required
+msgid "Reason Required"
+msgstr "Motif obligatoire"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_controlled.py:0
+#, python-format
+msgid "Resource conflicts: %s"
+msgstr "Conflits de ressources : %s"

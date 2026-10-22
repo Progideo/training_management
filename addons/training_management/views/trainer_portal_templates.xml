@@ -1,0 +1,46 @@
+<odoo>
+    <template id="portal_trainer_home" inherit_id="portal.portal_my_home" name="Trainer Sessions">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="card p-3 my-2"><a href="/my/training-sessions">My training sessions</a></div>
+        </xpath>
+    </template>
+    <template id="portal_trainer_sessions" name="My Training Sessions">
+        <t t-call="portal.portal_layout">
+            <h1>My training sessions</h1>
+            <nav aria-label="Session period" class="nav nav-pills mb-3">
+                <a href="/my/training-sessions" t-att-class="'nav-link active' if filterby == 'upcoming' else 'nav-link'" t-att-aria-current="'page' if filterby == 'upcoming' else None">Upcoming</a>
+                <a href="/my/training-sessions?filterby=past" t-att-class="'nav-link active' if filterby == 'past' else 'nav-link'" t-att-aria-current="'page' if filterby == 'past' else None">Past</a>
+                <a href="/my/training-sessions?filterby=all" t-att-class="'nav-link active' if filterby == 'all' else 'nav-link'" t-att-aria-current="'page' if filterby == 'all' else None">All sessions</a>
+            </nav>
+            <p t-if="not sessions">No assigned sessions in this period.</p>
+            <ul class="list-group">
+                <li t-foreach="sessions" t-as="session" class="list-group-item">
+                    <a t-att-href="'/my/training-sessions/%s' % session['id']"><t t-out="session['name']"/></a>
+                    <div t-out="session['delivery']"/>
+                    <div><t t-out="session['start']"/> — <t t-out="session['timezone']"/></div>
+                </li>
+            </ul>
+            <t t-call="portal.pager"/>
+        </t>
+    </template>
+    <template id="portal_trainer_session" name="Assigned Training Session">
+        <t t-call="portal.portal_layout">
+            <a href="/my/training-sessions">My training sessions</a>
+            <h1 t-out="session['name']"/>
+            <p t-out="session['delivery']"/>
+            <p><t t-out="session['start']"/> → <t t-out="session['end']"/> (<t t-out="session['timezone']"/>)</p>
+            <p>Reference timezone: <t t-out="session['reference_timezone']"/></p>
+            <p t-out="session['location']"/>
+            <a t-if="session['meeting_url']" t-att-href="session['meeting_url']" rel="noopener noreferrer">Join remote session</a>
+            <p class="text-break" t-out="session['equipment']"/>
+            <h2>Participants and useful instructions</h2>
+            <ul class="list-group">
+                <li t-foreach="session['participants']" t-as="participant" class="list-group-item">
+                    <strong t-out="participant['name']"/>
+                    <p class="text-break" t-out="participant['summary']"/>
+                    <p class="text-break" t-out="participant['instruction']"/>
+                </li>
+            </ul>
+        </t>
+    </template>
+</odoo>

@@ -56,6 +56,12 @@ class TrainingOperation(models.Model):
             descriptions = self.env[row.model_name].fields_get(list(after)) if after else {}
             lines = []
             for key, value in after.items():
+                if row.model_name == "training.session" and key == "conflicts":
+                    # S04 keeps machine references in the immutable snapshot,
+                    # not in a selection field. Show a readable summary without
+                    # treating the list as a hashable selection value.
+                    lines.append(self.env._("Resource conflicts: %s", len(value)))
+                    continue
                 description = descriptions.get(key, {})
                 label = description.get("string", key)
                 if description.get("type") == "many2one":
