@@ -1,13 +1,13 @@
 # Catalogue — Catégories et PDF du programme
 
-**Proposition à valider avant développement.** Lot distinct de S04 ([PR #54](https://github.com/Progideo/training_management/pull/54)).
+**Cadrage validé ; développement non commencé.** Lot distinct de S04 ([PR #54](https://github.com/Progideo/training_management/pull/54)).
 Références : CAT01–CAT02, SEC01–SEC02 et UX01 de la
 [spécification](references/Training_Management_Specification_Fonctionnelle_v2.md),
 [S01 #11](https://github.com/Progideo/training_management/issues/11),
 [P01 #23](https://github.com/Progideo/training_management/issues/23),
 [P03 #25](https://github.com/Progideo/training_management/issues/25).
 
-## Périmètre proposé
+## Périmètre
 
 Classer les formations dans le catalogue interne et fournir le PDF fidèle de
 chaque version de programme. Réutiliser les fiches, états et habilitations S01 ;
@@ -18,17 +18,16 @@ navigation du site et appels à l'action restent à articuler avec P01/P03.
 Les supports pédagogiques privés restent S05 (#15), les extraits de démonstration
 et mini-quiz restent P04 (#26). Aucun changement aux convocations S04.
 
-## Choix recommandés à valider
+## Décisions retenues
 
-| Choix | Recommandation simple | Conséquence |
+| Choix | Décision | Conséquence |
 | --- | --- | --- |
 | Classement | Une catégorie pédagogique par formation, liste plate propre à la société ; facultative en brouillon, demandée avant une nouvelle validation/publication | Une seule sélection, pas d'arborescence ni d'étiquettes multiples. Les formations historiques restent utilisables sans reclassement forcé. |
 | PDF de référence | Génération et conservation automatiques lors de la validation du programme | Aucun bouton supplémentaire pour figer le document. Un échec PDF empêche la validation ; les téléchargements suivants rendent exactement le même fichier. |
 | Diffusion initiale | Téléchargement interne par les profils déjà autorisés ; transmission au client volontaire dans le circuit commercial existant | Aucun compte ni action imposés au client, aucun envoi automatique. L'accès direct client/formateur et le téléchargement public seront traités dans leurs lots respectifs. |
 
-Ces recommandations ne constituent pas des décisions déjà approuvées.
-Inclure dès maintenant un catalogue public ou un téléchargement portail élargirait
-le lot : routes, sélection des versions et recette d'accès supplémentaires.
+Le catalogue public et le téléchargement portail restent hors de ce lot : ils
+nécessitent leurs routes, leur sélection des versions et leur recette d'accès.
 
 ## Parcours courts
 
@@ -55,7 +54,7 @@ Sources de l'image Community exacte : `20.0-20261015`,
 dans `/usr/lib/python3/dist-packages/odoo`. Les modules candidats ci-dessous
 sont présents et déclarent LGPL-3. Leur présence ne prouve pas leur installation.
 
-| Standard examiné, chemins sous `addons/` | Capacité observée | Choix proposé |
+| Standard examiné, chemins sous `addons/` | Capacité observée | Choix retenu |
 | --- | --- | --- |
 | `product/models/product_category.py`, `product/security/ir.access.csv`, `account/models/product.py` | Catégories hiérarchiques, société facultative et droits de gestion produits ; propriétés comptables ajoutées par Account | Ne pas utiliser le classement pédagogique pour piloter la catégorie comptable du produit commercial. Une simple relation à ce référentiel imposerait aussi le module Product et l'adaptation des droits. |
 | `product/models/product_tag.py`, `product/security/ir.access.csv` | Étiquettes plates traduisibles, unicité globale du nom, visibilité client par défaut, gestion par le responsable produits | Réutilisation possible, mais restriction pédagogique et isolation par société à ajouter. Peu d'avantage sur un petit référentiel dédié, et dépendance Product supplémentaire pour le socle. |
@@ -71,12 +70,12 @@ métier ni l'atomicité validation/fichier. La présence de `wkhtmltopdf` est v�
 le rendu complet QWeb du futur programme et son fonctionnement HTTP restent à
 recetter. Ne pas confondre capacité native observée et fonctionnalité livrée.
 
-Architecture recommandée : petit référentiel `training.category` dans
+Architecture retenue : petit référentiel `training.category` dans
 `training_management` (nom traduisible, société, actif), relation unique depuis
 `training.course`. Ce référentiel représente le domaine pédagogique absent du
 socle ; il ne recopie ni produits ni cours eLearning. Aucun second référentiel de
 catégories pédagogiques dans un futur site : exposer cette même source, sans
-synchronisation bidirectionnelle. L'extension reste soumise au choix ci-dessus.
+synchronisation bidirectionnelle.
 Aucune dépendance Product, Website Sale, eLearning ou service externe ajoutée pour
 ce besoin ; utiliser explicitement les composants Web nécessaires au rapport.
 
@@ -89,13 +88,28 @@ date serveur, langue du programme et empreinte du contenu. Verrouiller la versio
 et traiter validation, pièce et métadonnées dans la même transaction. Un double
 clic ou une concurrence ne crée pas deux fichiers de référence.
 
-Le document reprend les champs validés S01 : titre, référence, objectifs, public,
-prérequis, contenu, durée, modalité, langue, méthodes, évaluation, conditions
-d'accès et informations d'accessibilité. Prix : « sur devis », cohérent avec S01,
-sans tarif calculé depuis un produit vivant ni montant d'un client. Identité et
-présentation viennent de la société exploitante, jamais d'une entreprise codée en dur.
-La catégorie est un filtre du catalogue, sans engagement contractuel dans le PDF.
-P03 complétera les inclusions ; ne pas annoncer ici ses champs comme déjà livrés.
+### Contenu exact du PDF
+
+Le PDF est la fiche du programme applicable, liée à une version précise. Son
+contenu reprend les champs validés S01 :
+
+- Titre du programme, référence de version et identité de l'organisme.
+- Objectifs, public concerné et prérequis.
+- Contenu détaillé du programme.
+- Durée, modalité (présentiel, distanciel, mixte ou eLearning) et langue.
+- Méthodes pédagogiques et modalités d'évaluation.
+- Conditions d'accès à la formation.
+- Informations et contact d'accessibilité.
+- Mention « Sur devis », sans tarif propre à un client ni calcul depuis un produit vivant.
+
+L'identité et la présentation viennent de la société exploitante, jamais d'une
+entreprise codée en dur. La catégorie reste un filtre du catalogue, sans
+engagement contractuel dans le PDF. Les dates des séances, participants,
+adaptations individuelles et conditions commerciales du client restent dans
+leurs documents respectifs. P03 complétera les inclusions, les supports et les
+examens ; ne pas annoncer ici ses champs comme déjà livrés.
+
+### Conservation et versions antérieures
 
 Le téléchargement rend les octets conservés, même après changement du gabarit,
 du logo, du nom de la formation ou d'une catégorie. Une nouvelle version crée
@@ -109,7 +123,7 @@ action ponctuelle, sur sélection, de génération depuis le contenu déjà fig�
 datée du jour et signalée comme reconstitution. Elle conserve tout fichier déjà
 référencé et ne prétend pas reproduire une pièce ancienne envoyée au client.
 Les pièces commerciales existantes restent intactes ; aucune reprise Odoo 19
-réelle dans ce lot. Cette règle d'historique fait partie du choix PDF à valider.
+réelle dans ce lot. Cette règle d'historique fait partie du choix PDF retenu.
 
 ## Droits et garde-fous proportionnés
 
