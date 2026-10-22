@@ -68,7 +68,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S03 — réalisations, places, inscriptions, accès | [s03-enrollment-access.md](s03-enrollment-access.md) |
 | S03.1 — corrections de revue | [s03-1-review-fixes.md](s03-1-review-fixes.md), cadrage [s03-1-corrections.md](s03-1-corrections.md) |
 
-Chaque page porte les décisions, les règles et une recette courte ; les autorisations et
+Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;
 2 = P09 à P16 ; P17 à P20 exigent une validation complémentaire explicite. La cible vérifiée est
 Odoo Community `20.0-20261015` ([couverture native](native-coverage.md)). Les réserves sur les

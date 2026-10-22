@@ -105,6 +105,8 @@ GitHub est la référence pour le code, les issues, les pull requests, les déci
 
 Ne pas créer de suivi parallèle dans Jira ou Confluence sans demande explicite.
 
+Rester simple et concis dans la documentation : une page par incrément (décisions, règles, recette courte), des phrases courtes, aucune répétition d’un document à l’autre (renvoyer par un lien), ni historique d’autorisations ni résultats d’exécution, qui restent dans les pull requests. Le même principe vaut pour les descriptions de PR et les réponses : résultat, validation réalisée, limite, prochaine action.
+
 Maintenir les documents concernés lorsqu’une décision validée change le périmètre ou l’architecture. Ne pas modifier silencieusement une exigence validée pour faciliter l’implémentation.
 
 ## Autonomie et autorisations
