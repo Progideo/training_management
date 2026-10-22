@@ -83,7 +83,9 @@ locale `tm_s02_recette_fresh3` avec `s02_finance_local` sur la facture fictive
 finance et l'horodatage ; le résiduel de la facture est passé de 850 à 840 EUR.
 Ce dernier paiement reste dans cette base jetable comme preuve de recette ;
 les montants de 850 EUR décrits plus loin sont ceux du scénario avant cet essai.
-Le contrôle sérialise les validations simultanées d'un même journal. La
+Le contrôle provoque un conflit d’écriture entre les validations simultanées
+d'un même journal ; une transaction utilisant un ancien instantané est annulée
+puis reprise intégralement par le service Odoo avant un nouveau contrôle. La
 référence est figée après comptabilisation. Décision du 20 octobre 2026 :
 une devise de règlement différente de celle de la facture reste refusée au
 lancement. Le refus s'applique à l'assistant, au paiement rapproché directement
@@ -356,3 +358,73 @@ aucun importeur ni contrôle des doublons de fichiers importés. Les contrôles
 de référence, d'attestation et de devise du paiement saisi restent inchangés.
 Le futur import nécessitera un cadrage distinct de ses formats, doublons,
 journaux, devises et de la revue comptable.
+
+
+## Contrôles serveur renforcés — 22 octobre 2026
+
+La version `20.0.1.8.0` applique les exigences COM02, COM03 et SEC01 aux
+entrées ORM et au traitement différé, en complément des assistants :
+
+- Une écriture effective d’un compteur technique du journal remplace le verrou
+  seul lors du contrôle des références. Sous `REPEATABLE READ`, PostgreSQL
+  annule une transaction dont l’instantané précède une validation concurrente.
+  Le service Odoo reprend toute la transaction ; un appel direct hors service
+  doit gérer cette reprise complète. Aucun commit ni nouvelle connexion n’est
+  introduit dans le code métier. Le motif de fractionnement reste nécessaire
+  après reprise. Cette sérialisation par journal privilégie l’intégrité ; elle
+  ne constitue pas un test de charge.
+- Les créations et écritures d’état des paiements utilisent le même contrôle
+  de référence et d’attestation que l’action native. L’auteur et l’heure sont
+  exclusivement fixés par le serveur, y compris avec des valeurs par défaut
+  de contexte. Un rapprochement de paiement saisi exige aussi ces métadonnées.
+  Les paiements ordinaires et les relevés sans référence restent possibles.
+- Les créations et transitions de devis vers `sent` ou `sale` contrôlent
+  qualification, version et tarif. La devise effective et la devise de la liste
+  doivent correspondre à la demande. Une commande de formation confirmée
+  refuse la substitution directe de sa devise ; une révision reste nécessaire.
+- Chaque préparation de transport `mail.mail`, y compris une reprise de file,
+  revalide les destinataires externes des devis, factures et reçus protégés.
+  Un contact révoqué fait passer le courriel en erreur avant le transport ;
+  aucun destinataire de ce courriel ne reçoit alors son contenu. La comptabilité
+  ou le commercial doit revoir les destinataires avant de relancer l’envoi.
+  Les destinataires internes conservent les règles natives.
+- Les lectures et recherches des messages ajoutent l’habilitation courante
+  aux permissions natives d’auteur, de destinataire ou de notification. Cette
+  restriction est recalculée, sans mémoriser une ancienne liste de contacts.
+  Elle s’applique aussi aux raccourcis des contrôleurs et aux exports. Les
+  reçus conservent l’intersection des contacts de toutes les factures réglées.
+- L’avis de virement commercial utilise l’opérateur natif Odoo 20 `access` sur
+  la commande : son portefeuille suit les droits courants de lecture de celle-ci.
+  La facturation garde sa permission propre, avec la restriction par société.
+
+La mise à jour ajoute uniquement un compteur technique de journal. Elle ne
+réécrit aucun programme, devis, paiement ni historique antérieur. Elle ne
+corrige pas automatiquement des données déjà incohérentes : leur éventuelle
+régularisation exige une analyse et une autorisation distinctes. Aucun changement
+S01, plan comptable national ou traitement d’import bancaire n’est ajouté.
+
+### Vérification corrective reproductible
+
+Sur bases jetables et données fictives, exécuter les suites natives S01/S02,
+puis la sonde `addons/training_management_sale/tests/probes/bank_reference_concurrency.py`
+dans `odoo shell`. Elle exige un nom de base préfixé `tm_s01_test_` ou
+`tm_s02_test_`, persiste volontairement ses seules fixtures fictives, ouvre deux
+transactions `REPEATABLE READ` sous facturation restreinte et relit les commits
+avec une troisième connexion. Elle vérifie le conflit, le refus après reprise
+et l’acceptation du fractionnement motivé. Le workflow Odoo exécute cette sonde
+en plus de l’installation vierge, la mise à jour et la variante Website/eLearning.
+Les journaux et résultats de la CI sont attachés à chaque exécution GitHub.
+
+Les tests d’addon couvrent les écritures directes sous profils restreints,
+les refus d’audit fourni par l’appelant, la lecture RPC d’un message modifié
+après révocation, le transport de devis et les refus d’envoi de facture/reçu,
+ainsi que lecture, recherche et export d’un avis hors portefeuille. Les connexions
+et transports SMTP sont interceptés dans ces tests ; aucun envoi externe n’est
+nécessaire. Ces tests ne remplacent pas la recette métier dans l’interface.
+
+Recette courte : confirmer un devis fictif au tarif fixe ; refuser sa devise
+modifiée et une confirmation directe à prix altéré ; poster un paiement vérifié,
+refuser son doublon sans motif par action et écriture d’état ; préparer un PDF,
+révoquer son contact et contrôler l’échec en file et la lecture du message ;
+refuser enfin l’avis à un autre commercial limité, tout en le conservant pour
+son propriétaire et la facturation.

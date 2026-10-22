@@ -42,6 +42,8 @@ class AccountPartialReconcile(models.Model):
                 if (
                     not payment.training_bank_reference
                     or not payment.training_bank_verified
+                    or not payment.training_bank_verified_by_id
+                    or not payment.training_bank_verified_at
                     or payment.payment_type != "inbound"
                     or payment.journal_id.type != "bank"
                     or payment.payment_method_line_id.code != "manual"

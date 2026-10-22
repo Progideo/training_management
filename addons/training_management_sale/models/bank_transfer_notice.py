@@ -66,3 +66,7 @@ class BankTransferNotice(models.Model):
 
     def action_void(self):
         self.write({"state": "void"})
+
+    def export_data(self, fields_to_export):
+        self.check_access("read")
+        return super().export_data(fields_to_export)
