@@ -24,7 +24,7 @@
                 <field name="name" string="Delivery" filter_domain="['|', ('name', 'ilike', self), ('reference', 'ilike', self)]"/>
                 <field name="program_id"/>
                 <field name="responsible_id"/>
-                <filter name="to_process" string="To Process" domain="['|', '|', ('enrollment_ids', 'any', [('state', '=', 'requested')]), ('allocation_ids', 'any', [('state', '=', 'reserved'), ('expires_at', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S'))]), ('enrollment_ids', 'any', [('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)])]"/>
+                <filter groups="training_management.group_training_coordinator" name="to_process" string="To Process" domain="['|', '|', ('enrollment_ids', 'any', [('state', '=', 'requested')]), ('allocation_ids', 'any', [('state', '=', 'reserved'), ('expires_at', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S'))]), ('enrollment_ids', 'any', [('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)])]"/>
                 <separator/>
                 <filter name="live" string="Not Finished" domain="[('state', 'in', ('preparation', 'confirmed', 'ongoing'))]"/>
                 <group>
@@ -182,7 +182,7 @@
                 <field name="participant_id"/>
                 <field name="delivery_id"/>
                 <field name="allocation_id"/>
-                <filter name="to_process" string="To Process" domain="['|', '|', ('state', '=', 'requested'), '&amp;', ('state', '=', 'reserved'), ('reservation_end', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S')), '&amp;', '&amp;', ('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)]"/>
+                <filter groups="training_management.group_training_coordinator" name="to_process" string="To Process" domain="['|', '|', ('state', '=', 'requested'), '&amp;', ('state', '=', 'reserved'), ('reservation_end', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S')), '&amp;', '&amp;', ('state', '=', 'confirmed'), ('access_state', '=', 'unopened'), ('commercially_authorized', '=', True)]"/>
                 <separator/>
                 <filter name="requests" string="Requests" domain="[('state', '=', 'requested')]"/>
                 <filter name="expired_reservations" string="Expired Reservations" domain="[('state', '=', 'reserved'), ('reservation_end', '&lt;', time.strftime('%Y-%m-%d %H:%M:%S'))]"/>

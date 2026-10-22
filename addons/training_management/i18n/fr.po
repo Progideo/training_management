@@ -172,6 +172,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_operation__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -212,6 +214,9 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -225,6 +230,9 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -254,6 +262,9 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -333,6 +344,9 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -346,6 +360,9 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_program_new_version__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_action_reason__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -624,6 +641,8 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__state
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__state
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 msgid "State"
 msgstr "État"
 
@@ -700,6 +719,8 @@ msgstr "Alerte de seuil envoyée"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 msgid "To Process"
 msgstr "À traiter"
 
@@ -730,6 +751,7 @@ msgstr "Version de programme de formation"
 
 #. module: training_management
 #: model:ir.cron,name:training_management.cron_training_expire
+#: model:ir.actions.server,name:training_management.cron_training_expire_ir_actions_server
 msgid ""
 "Training: record expired reservations and alert under-threshold sessions"
 msgstr ""
@@ -916,6 +938,7 @@ msgstr "Fin d’accès"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__access_policy
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__access_policy
 msgid "Access Policy"
 msgstr "Politique d’accès"
 
@@ -968,6 +991,7 @@ msgstr "Le nombre de places doit être strictement positif."
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__allocation_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__allocation_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_allocation_id
 msgid "Allocation"
 msgstr "Lot de places"
 
@@ -1232,6 +1256,9 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__delivery_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_delivery_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1334,6 +1361,7 @@ msgstr ""
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__kind
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
+#: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -1807,6 +1835,7 @@ msgstr "Compte utilisateur"
 #. odoo-python
 #: code:addons/training_management/models/training_enrollment.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+#: code:addons/training_management/tests/test_enrollment.py:0
 msgid "Validate Prerequisites"
 msgstr "Valider les prérequis"
 
@@ -1870,6 +1899,7 @@ msgstr "Oui"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_enrollment.py:0
+#: code:addons/training_management/tests/test_native_creation.py:0
 msgid "New Enrollment"
 msgstr "Nouvelle inscription"
 

@@ -4,7 +4,7 @@ from lxml import etree
 
 from odoo.exceptions import AccessError
 from odoo.tests import new_test_user, tagged
-from odoo.tools.safe_eval import safe_eval
+from odoo.tools.safe_eval import safe_eval, time
 from odoo.tools.translate import load_language
 
 from odoo.addons.training_management.tests.test_enrollment import EnrollmentCase
@@ -116,3 +116,29 @@ class TestNativeCommercialUI(EnrollmentCase):
         arch = etree.fromstring(model.get_view(view_type="form")["arch"].encode())
         self.assertEqual(arch.get("string"), "Modifier les dates")
         self.assertEqual(arch.xpath("./footer/button/@string"), ["Appliquer", "Annuler"])
+        for model, expected in (
+            ("training.delivery", {"group_state": "État", "group_program": "Programme", "group_kind": "Type"}),
+            (
+                "training.seat.allocation",
+                {"group_delivery": "Réalisation", "group_state": "État", "group_customer": "Client"},
+            ),
+            (
+                "training.enrollment",
+                {"group_delivery": "Réalisation", "group_state": "État", "group_allocation": "Lot de places"},
+            ),
+        ):
+            search = self.env[model].with_user(self.seller).with_context(lang="fr_FR").get_view(view_type="search")
+            arch = etree.fromstring(search["arch"].encode())
+            labels = {node.get("name"): node.get("string") for node in arch.xpath(".//group/filter")}
+            self.assertEqual(labels, expected)
+
+    def test_sales_search_filters_use_only_readable_fields(self):
+        for model in ("training.delivery", "training.seat.allocation", "training.enrollment"):
+            commercial = self.env[model].with_user(self.seller)
+            arch = etree.fromstring(commercial.get_view(view_type="search")["arch"].encode())
+            for node in arch.xpath(".//filter[@domain]"):
+                domain = safe_eval(node.get("domain"), {"time": time})
+                commercial.search_count(domain)
+            coordinator = self.env[model].with_user(self.coordinator)
+            arch = etree.fromstring(coordinator.get_view(view_type="search")["arch"].encode())
+            self.assertTrue(arch.xpath(".//filter[@name='to_process']"))
