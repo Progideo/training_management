@@ -7,6 +7,10 @@ run_id=${TM_CI_ID:-local_$$}
 results=${TM_RESULTS_DIR:-$repo/test-results/catalogue-pdf}
 mkdir -p "$results"
 results=$(cd "$results" && pwd)
+# The image's odoo UID differs from the Linux runner UID. Only this
+# disposable, fictional PDF artifact directory is container-writable.
+mkdir -p "$results/pdfs"
+chmod 0777 "$results/pdfs"
 work_dir=$(mktemp -d)
 container=tm_catpdf_${run_id}_odoo
 volume=tm_catpdf_${run_id}_data
@@ -22,7 +26,7 @@ trap cleanup EXIT
 run_odoo() {
   docker run --rm -i --name "$container" --network "${TM_CATPDF_NETWORK:-host}" \
     -e HOST="${TM_CATPDF_DB_HOST:-127.0.0.1}" -e USER=odoo -e PASSWORD=fictional_ci_password \
-    -e CATALOGUE_PHASE="${CATALOGUE_PHASE:-}" -e CATALOGUE_PDF_PROOFS=/proofs \
+    -e CATALOGUE_PHASE="${CATALOGUE_PHASE:-}" -e CATALOGUE_PDF_PROOFS=/proofs/pdfs \
     -v "${TM_ADDONS_DIR:-$repo/addons}:/mnt/extra-addons:ro" -v "$volume:/var/lib/odoo" -v "$results:/proofs" \
     "$ODOO_IMAGE" odoo "$@" -d "${TM_CATPDF_DB:-tm_catpdf_test_upgrade}" --workers=0 --max-cron-threads=0
 }
