@@ -1,0 +1,15 @@
+<odoo>
+    <!-- Sales navigation belongs to the integration; core stays independent of Sales. -->
+    <record id="training_management.menu_training_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+    <record id="training_management.menu_training_deliveries" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+    <record id="training_management.menu_training_allocations" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+    <record id="training_management.menu_training_enrollments" model="ir.ui.menu">
+        <field name="group_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+</odoo>

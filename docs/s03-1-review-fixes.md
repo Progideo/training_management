@@ -2,9 +2,9 @@
 
 Cadrage d'autorité, validé le 22 octobre 2026 : [s03-1-corrections.md](s03-1-corrections.md)
 (conservé tel quel). Cette page résume les règles obtenues ; les autorisations et les
-résultats d'exécution sont dans la [PR #51](https://github.com/Progideo/training_management/pull/51).
-Versions : `training_management` `20.0.1.2.0` (dépend désormais de `mail`),
-`training_management_sale` `20.0.1.10.0`. Pas de nouvel addon.
+résultats d'exécution sont dans les [PR #51](https://github.com/Progideo/training_management/pull/51) et [PR #52](https://github.com/Progideo/training_management/pull/52).
+Versions : `training_management` `20.0.1.2.1` (dépend désormais de `mail`),
+`training_management_sale` `20.0.1.10.1`. Pas de nouvel addon.
 
 ## Règles
 
@@ -39,7 +39,7 @@ automatique de champ ni envoi propre au module ; le journal conserve les libell�
 relations tels qu'ils étaient à l'écriture ; fuseaux horaires natifs.
 
 **Lecture commerciale.** Le groupe Ventes lit réalisations, lots et états d'inscription de ses
-sociétés ; prérequis, compte personnel, accès et journal restent réservés au coordinateur.
+sociétés depuis le menu natif Formations ; prérequis, compte personnel, accès et journal restent réservés au coordinateur. Les boutons de gestion et actions groupées sont réservés au coordinateur ; les boutons d’accès suivent les états autorisés côté serveur. Les formulaires commerciaux restent en lecture seule et les assistants et actions groupées sont traduits en français.
 
 **Qualité.** `pre-commit` (ruff, pylint-odoo) est exécuté par la CI : voir [ci.md](ci.md).
 
@@ -58,5 +58,5 @@ sociétés ; prérequis, compte personnel, accès et journal restent réservés 
 3. Prolonger un lot réservé ; annuler un autre lot puis modifier sa ligne de commande : accepté.
 4. Déplacer une session confirmée d'une semaine avec motif ; les inscriptions restent rattachées.
 5. Reporter un inscrit : état « Reportée » ; clôturer la réalisation : accès effectifs bloqués.
-6. Commercial seul : lit lots et états, pas les prérequis ni le journal.
+6. Commercial seul : ouvrir Formations, puis chaque liste et fiche (réalisation, lot, inscription) ; aucune erreur, aucun bouton de gestion, prérequis, accès ou onglet Historique. Le coordinateur conserve les commandes ; sur une inscription reportée, aucun retrait d’autorisation ou d’accès n’est proposé. Vérifier les actions groupées et l’assistant de dates en français.
 7. Mise à jour depuis S03 sur base jetable et installation sur base vierge : scénarios de la CI.

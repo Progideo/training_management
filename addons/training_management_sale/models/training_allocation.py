@@ -65,7 +65,7 @@ class TrainingSeatAllocation(models.Model):
 
 
 class SaleOrderLine(models.Model):
-    _inherit = "sale.order.line"
+    _inherit = "sale.order.line"  # pylint: disable=consider-merging-classes-inherited  # S03 allocation guards stay separate from S02 pricing
 
     training_allocation_revision = fields.Integer(readonly=True, default=0, copy=False)
 
@@ -94,7 +94,7 @@ class SaleOrderLine(models.Model):
 
 
 class SaleOrder(models.Model):
-    _inherit = "sale.order"
+    _inherit = "sale.order"  # pylint: disable=consider-merging-classes-inherited  # S03 allocation guards stay separate from S02 quotation rules
 
     training_allocation_revision = fields.Integer(readonly=True, default=0, copy=False)
 
