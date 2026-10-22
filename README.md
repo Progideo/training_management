@@ -24,6 +24,13 @@ L'ajout au chemin des addons utilise le dossier parent `addons/`.
 Les tests natifs et la CI vérifient installation et mise à jour sur des bases
 jetables. Aucune mise en production n'est autorisée par cette documentation.
 
+## Circuit commercial S02
+
+Le cadrage interne demande → devis → commande → facture → virement est validé.
+Consulter [l’étude du standard exact, les écarts et la validation prévue](docs/s02-native-coverage.md).
+Le premier incrément CRM → devis est décrit dans [sa procédure de recette](docs/s02-crm-quotation.md).
+La PR S02 reste en cours de validation.
+
 ## Créateur
 
 NeoPro Academy.

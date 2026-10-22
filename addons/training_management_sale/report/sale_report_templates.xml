@@ -1,0 +1,12 @@
+<odoo>
+    <template id="report_saleorder_training_program" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//td[@name='td_product_name']//span[@t-field='line.label']" position="replace">
+            <span t-if="line.is_downpayment and doc.training_request_kind"
+                  class="d-inline-block w-100 lh-sm">Down Payment</span>
+            <span t-else="" class="d-inline-block w-100 lh-sm" t-field="line.label"/>
+            <span t-if="line.training_program_label" class="d-block small text-muted">
+                <span t-field="line.training_program_label"/>
+            </span>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,8 @@
+id,name,model_id,group_id/id,operation,domain
+access_course_sales,Training courses for sales,training.course,sales_team.group_sale_salesman,r,
+access_program_sales,Training programmes for sales,training.program.version,sales_team.group_sale_salesman,r,"[('state', 'in', ('validated', 'published', 'retired'))]"
+access_transfer_notice_sales,Transfer notices for sales,training.bank.transfer.notice,sales_team.group_sale_salesman,cr,
+access_transfer_notice_accounting,Transfer notices for accounting,training.bank.transfer.notice,account.group_account_invoice,cru,
+rule_transfer_notice_company,Transfer notices allowed companies,training.bank.transfer.notice,,crud,"[('company_id', 'in', company_ids)]"
+rule_training_sale_portal,Training quotations require named contact,sale.order,,r,"[(1, '=', 1)] if not user.share else ['|', ('training_request_kind', '=', False), ('training_portal_partner_ids', 'in', [user.partner_id.id])]"
+rule_training_invoice_portal,Training invoices require named contact,account.move,,r,"[(1, '=', 1)] if not user.share else ['|', ('training_is_sale_invoice', '=', False), ('training_portal_partner_ids', 'in', [user.partner_id.id])]"

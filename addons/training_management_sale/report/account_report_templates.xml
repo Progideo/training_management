@@ -1,0 +1,10 @@
+<odoo>
+    <template id="report_invoice_training_downpayment" inherit_id="account.report_invoice_document">
+        <xpath expr="//td[@name='account_invoice_line_name']/span[@t-field='line.label']" position="replace">
+            <span t-if="o.training_is_sale_invoice and line.is_downpayment"
+                  class="d-inline-block w-100 lh-sm">Down Payment</span>
+            <span t-else="" t-field="line.label"
+                  t-options="{'widget': 'text'}" class="d-inline-block w-100 lh-sm"/>
+        </xpath>
+    </template>
+</odoo>
