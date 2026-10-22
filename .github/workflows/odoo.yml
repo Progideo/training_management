@@ -1,13 +1,13 @@
-name: Odoo 20 catalogue
+name: CI Odoo
 
 on:
   pull_request:
     paths:
       - "addons/**"
-      - "tests/probes/catalogue_upgrade_probe.py"
-      - "tests/probes/s03_concurrency.py"
-      - "tests/probes/s03_history.py"
-      - "tests/probes/s03_view_bootstrap.py"
+      - "tests/probes/**"
+      - "tests/ci/**"
+      - "tests/test_odoo_ci.py"
+      - "docs/ci.md"
       - ".github/workflows/odoo.yml"
   workflow_dispatch:
 
@@ -15,9 +15,28 @@ permissions:
   contents: read
 
 jobs:
-  catalogue:
+  orchestration:
+    name: Contrôles de l’orchestration
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Installer le lecteur YAML des tests de workflow
+        run: python3 -m pip install -r tests/ci/requirements.txt
+      - name: Vérifier couverture, erreurs et contrôle final
+        run: python3 -m unittest discover -s tests -p 'test_odoo_ci.py' -v
+
+  scenarios:
+    name: Odoo — ${{ matrix.scenario }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        scenario: [incremental, fresh, history, website]
     services:
       postgres:
         image: postgres:18.6
@@ -34,88 +53,35 @@ jobs:
           --health-retries 20
     env:
       ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+      TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install, test, then preserve history across update
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p test-results
-          run_odoo() {
-            docker run --rm -i --network host \
-              -e HOST=127.0.0.1 -e PORT=5432 -e USER=odoo \
-              -e PASSWORD=fictional_ci_password \
-              -e TM_UPGRADE_PHASE="${TM_UPGRADE_PHASE:-}" \
-              -e S03_UPGRADE_PHASE="${S03_UPGRADE_PHASE:-}" \
-              -v "${TM_ADDONS_DIR:-$PWD/addons}:/mnt/extra-addons:ro" \
-              -v tm_s01_ci_data:/var/lib/odoo \
-              "$ODOO_IMAGE" odoo "$@" \
-              --db_host=127.0.0.1 --db_port=5432 \
-              --db_user=odoo --db_password=fictional_ci_password \
-              -d "${TM_TEST_DB:-tm_s01_test_ci}" --no-http --http-interface=127.0.0.1 --http-port=0 \
-              --workers=0 --max-cron-threads=0
-          }
-          run_odoo -i training_management --without-demo --stop-after-init \
-            --test-enable --test-tags=/training_management 2>&1 | tee test-results/install.log
-          TM_UPGRADE_PHASE=prepare run_odoo shell \
-            < tests/probes/catalogue_upgrade_probe.py 2>&1 | tee test-results/baseline.log
-          run_odoo -u training_management --stop-after-init \
-            --test-enable --test-tags=/training_management 2>&1 | tee test-results/update.log
-          TM_UPGRADE_PHASE=verify run_odoo shell \
-            < tests/probes/catalogue_upgrade_probe.py 2>&1 | tee test-results/history.log
-          run_odoo -i training_management_sale --without-demo --stop-after-init \
-            --test-enable --test-tags=/training_management_sale \
-            2>&1 | tee test-results/commercial-install.log
-          run_odoo shell < addons/training_management_sale/tests/probes/bank_reference_concurrency.py \
-            2>&1 | tee test-results/commercial-concurrency.log
-          TM_TEST_DB=tm_s03_test_fresh_ci run_odoo \
-            -i training_management_sale --without-demo --stop-after-init \
-            --test-enable --test-tags=/training_management_sale \
-            2>&1 | tee test-results/commercial-fresh-install.log
-          TM_TEST_DB=tm_s03_test_fresh_ci run_odoo shell \
-            < tests/probes/s03_concurrency.py 2>&1 | tee test-results/s03-concurrency.log
-          mkdir -p test-results/s02-baseline
-          git archive a0c95fa5076b3e2177ff9948d9fc0306e729df86 addons \
-            | tar -x -C test-results/s02-baseline
-          TM_TEST_DB=tm_s03_test_upgrade_ci TM_ADDONS_DIR="$PWD/test-results/s02-baseline/addons" run_odoo \
-            -i website,website_slides,training_management_sale --without-demo --stop-after-init \
-            2>&1 | tee test-results/s03-old-install.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci TM_ADDONS_DIR="$PWD/test-results/s02-baseline/addons" S03_UPGRADE_PHASE=prepare run_odoo shell \
-            < tests/probes/s03_history.py 2>&1 | tee test-results/s03-history-prepare.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci run_odoo shell \
-            < tests/probes/s03_view_bootstrap.py 2>&1 | tee test-results/s03-view-bootstrap.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci run_odoo \
-            -u training_management,training_management_sale --stop-after-init \
-            --test-enable --test-tags=/training_management,/training_management_sale \
-            2>&1 | tee test-results/s03-upgrade-tests.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci S03_UPGRADE_PHASE=verify run_odoo shell \
-            < tests/probes/s03_history.py 2>&1 | tee test-results/s03-history-verify.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci S03_UPGRADE_PHASE=prepare_s03 run_odoo shell \
-            < tests/probes/s03_history.py 2>&1 | tee test-results/s03-update-prepare.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci run_odoo \
-            -u training_management,training_management_sale --stop-after-init \
-            2>&1 | tee test-results/s03-update.log
-          TM_TEST_DB=tm_s03_test_upgrade_ci S03_UPGRADE_PHASE=verify_s03 run_odoo shell \
-            < tests/probes/s03_history.py 2>&1 | tee test-results/s03-update-verify.log
-          TM_TEST_DB=tm_s01_test_website_ci run_odoo \
-            -i website,website_slides,training_management --without-demo --stop-after-init \
-            2>&1 | tee test-results/website-baseline-install.log
-          TM_TEST_DB=tm_s01_test_website_ci TM_UPGRADE_PHASE=prepare run_odoo shell \
-            < tests/probes/catalogue_upgrade_probe.py 2>&1 | tee test-results/website-baseline.log
-          TM_TEST_DB=tm_s01_test_website_ci run_odoo \
-            -i training_management_sale --without-demo --stop-after-init \
-            --test-enable --test-tags=/training_management_sale \
-            2>&1 | tee test-results/website-commercial-install.log
-          TM_TEST_DB=tm_s01_test_website_ci run_odoo \
-            -u training_management_sale --stop-after-init \
-            --test-enable --test-tags=/training_management_sale \
-            2>&1 | tee test-results/website-commercial-update.log
-          TM_TEST_DB=tm_s01_test_website_ci TM_UPGRADE_PHASE=verify run_odoo shell \
-            < tests/probes/catalogue_upgrade_probe.py 2>&1 | tee test-results/website-history.log
+      - name: Exécuter le scénario et conserver ses mesures
+        run: bash tests/ci/run_odoo_scenario.sh "$SCENARIO"
+        env:
+          SCENARIO: ${{ matrix.scenario }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: odoo-catalogue-results
-          path: test-results/
+          name: odoo-${{ matrix.scenario }}-results
+          path: test-results/${{ matrix.scenario }}/
+          if-no-files-found: error
+
+  validation:
+    name: Validation CI Odoo
+    needs: [orchestration, scenarios]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: odoo-*-results
+          path: test-results
+      - name: Refuser tout résultat incomplet ou non réussi
+        run: python3 tests/ci/check_results.py
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
