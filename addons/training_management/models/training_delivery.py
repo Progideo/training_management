@@ -118,7 +118,7 @@ class TrainingDelivery(models.Model):
             self._serialize()
             for delivery in self:
                 if set(vals) & {"company_id", "program_id", "kind", "access_policy", "access_start", "access_end", "access_days", "start_at", "end_at"} and (delivery.enrollment_ids or delivery.allocation_ids):
-                    raise ValidationError(self.env._("A delivery with inscriptions keeps its programme, dates and access policy. Use report or extension."))
+                    raise ValidationError(self.env._("A delivery with inscriptions keeps its programme, dates and access policy. Change the dates with the dedicated action."))
                 if "company_id" in vals and delivery.allocation_ids:
                     raise ValidationError(self.env._("A delivery with allocated places keeps its company."))
                 delivery._store(vals)
@@ -154,6 +154,48 @@ class TrainingDelivery(models.Model):
                             enrollment._store({"state": "closed", "access_state": "revoked"}, reason)
                 delivery._store({"state": target}, reason)
         return True
+
+    def action_change_dates(self, start_at=None, end_at=None, access_start=None, access_end=None, reason=None):
+        """Move the session or the fixed access period of a delivery that is still to come.
+
+        ``None`` keeps the current value. Programme, company, nature and access
+        policy stay fixed; access periods already computed on enrollments are
+        never rewritten.
+        """
+        self.ensure_one()
+        with self.env.cr.savepoint():
+            self._require_coordinator()
+            self._serialize()
+            self.invalidate_recordset()
+            if self.state not in ("preparation", "confirmed"):
+                raise ValidationError(self.env._("Dates can only change while the delivery is in preparation or confirmed."))
+            requested = {"start_at": start_at, "end_at": end_at, "access_start": access_start, "access_end": access_end}
+            changes = {}
+            for key, value in requested.items():
+                value = fields.Datetime.to_datetime(value) if value is not None else None
+                if value is not None and value != self[key]:
+                    changes[key] = value
+            if not changes:
+                return True
+            if self.kind == "autonomous" and {"start_at", "end_at"} & set(changes):
+                raise ValidationError(self.env._("An autonomous offer does not require fictitious session dates."))
+            if self.access_policy != "fixed" and {"access_start", "access_end"} & set(changes):
+                raise ValidationError(self.env._("Access dates only apply to a fixed access period."))
+            reason = self._require_reason(reason)
+            if {"access_start", "access_end"} & set(changes):
+                new_start = changes.get("access_start", self.access_start)
+                new_end = changes.get("access_end", self.access_end)
+                if (new_start > self.access_start or new_end < self.access_end) and self.enrollment_ids.filtered(lambda e: e.access_state == "active"):
+                    raise ValidationError(self.env._("A fixed access period cannot be shortened while an access is active."))
+            self._store(changes, reason)
+        return True
+
+    def action_open_dates(self):
+        self.ensure_one()
+        self._require_coordinator()
+        return {"type": "ir.actions.act_window", "name": self.env._("Change Dates"),
+                "res_model": "training.delivery.dates", "view_mode": "form", "target": "new",
+                "context": {"default_delivery_id": self.id}}
 
     def action_confirm(self, reason=None):
         return self._transition("confirmed", reason)

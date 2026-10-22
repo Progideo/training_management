@@ -32,6 +32,24 @@ msgstr ""
 
 #. module: training_management
 #. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid ""
+"A delivery with inscriptions keeps its programme, dates and access policy. "
+"Change the dates with the dedicated action."
+msgstr ""
+"Une réalisation avec inscriptions conserve son programme, ses dates et sa "
+"politique d’accès. Modifiez les dates avec l’action dédiée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid "A fixed access period cannot be shortened while an access is active."
+msgstr ""
+"Une période d’accès fixe ne peut pas être raccourcie tant qu’un accès est "
+"actif."
+
+#. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_enrollment.py:0
 msgid "A postponement keeps the participant and selects another delivery."
 msgstr ""
@@ -52,6 +70,12 @@ msgstr "Conditions d’accès"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 msgid "Access and Accessibility"
 msgstr "Accès et accessibilité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid "Access dates only apply to a fixed access period."
+msgstr "Les dates d’accès ne concernent qu’une période d’accès fixe."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__accessibility_contact_id
@@ -111,6 +135,18 @@ msgstr "Mixte"
 #: model:res.groups,name:training_management.group_training_reader
 msgid "Catalogue Reader"
 msgstr "Lecteur du catalogue"
+
+#. module: training_management
+#. odoo-python
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_form
+msgid "Change Dates"
+msgstr "Modifier les dates"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_delivery_dates
+msgid "Change Training Delivery Dates"
+msgstr "Modifier les dates d’une réalisation"
 
 #. module: training_management
 #: model:ir.model.fields,help:training_management.field_training_program_version__pricing_mode
@@ -185,6 +221,15 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__create_date
 msgid "Created on"
 msgstr "Créé le"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid ""
+"Dates can only change while the delivery is in preparation or confirmed."
+msgstr ""
+"Les dates ne peuvent changer que pour une réalisation en préparation ou "
+"confirmée."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__delivery_mode
@@ -715,16 +760,6 @@ msgstr "Une session datée nécessite un début et une fin postérieure."
 #: code:addons/training_management/models/training_delivery.py:0
 msgid "A delivery with allocated places keeps its company."
 msgstr "Une réalisation avec des places attribuées conserve sa société."
-
-#. module: training_management
-#. odoo-python
-#: code:addons/training_management/models/training_delivery.py:0
-msgid ""
-"A delivery with inscriptions keeps its programme, dates and access policy. "
-"Use report or extension."
-msgstr ""
-"Une réalisation avec des inscriptions conserve son programme, ses dates et "
-"sa politique d’accès. Utilisez un report ou une prolongation."
 
 #. module: training_management
 #. odoo-python

@@ -10,6 +10,7 @@
                 <header>
                     <button name="action_confirm" type="object" string="Confirm" invisible="state != 'preparation' or below_threshold"/>
                     <button name="action_open_reason" type="object" string="Confirm below Threshold" context="{'reason_action': 'action_confirm'}" invisible="state != 'preparation' or not below_threshold"/>
+                    <button name="action_open_dates" type="object" string="Change Dates" invisible="state not in ('preparation', 'confirmed')"/>
                     <button name="action_start" type="object" string="Start" invisible="state != 'confirmed'"/>
                     <button name="action_deliver" type="object" string="Mark Delivered" invisible="state != 'ongoing'"/>
                     <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'delivered'"/>

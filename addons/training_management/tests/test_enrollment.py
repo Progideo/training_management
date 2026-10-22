@@ -549,3 +549,71 @@ class TestReservationDeadlineAndUniqueness(EnrollmentCase):
         second = self.enrollment(delivery)
         self.assertEqual(second.state, "requested")
         self.assertEqual(first.state, "cancelled")
+
+
+@tagged("post_install", "-at_install")
+class TestChangeDates(EnrollmentCase):
+    def session(self, **values):
+        start = fields.Datetime.now() + timedelta(days=20)
+        return self.delivery(kind="session", start_at=start, end_at=start + timedelta(hours=7), **values)
+
+    def test_dates_change_is_motivated_and_journaled(self):
+        delivery = self.session()
+        old_start, old_end = delivery.start_at, delivery.end_at
+        with self.assertRaises(ValidationError):
+            delivery.action_change_dates(start_at=old_start + timedelta(days=1), end_at=old_end + timedelta(days=1))
+        delivery.action_change_dates(start_at=old_start + timedelta(days=1), end_at=old_end + timedelta(days=1), reason="Trainer unavailable")
+        self.assertEqual(delivery.start_at, old_start + timedelta(days=1))
+        row = delivery.operation_ids.sorted("id")[-1]
+        self.assertEqual(row.reason, "Trainer unavailable")
+        self.assertIn("start_at", row.before)
+        self.assertIn("start_at", row.after)
+        count = len(delivery.operation_ids)
+        delivery.action_change_dates(start_at=delivery.start_at)
+        self.assertEqual(len(delivery.operation_ids), count, "An unchanged value leaves no journal line")
+
+    def test_frozen_fields_and_states(self):
+        delivery = self.session()
+        e = self.enrollment(delivery)
+        with self.assertRaises(ValidationError):
+            delivery.write({"start_at": delivery.start_at + timedelta(days=1)})
+        with self.assertRaises(ValidationError):
+            delivery.write({"capacity": 0, "program_id": self.program.id})
+        stored = e.access_end
+        delivery.action_change_dates(start_at=delivery.start_at + timedelta(days=2), end_at=delivery.end_at + timedelta(days=2), reason="Room change")
+        self.assertEqual(e.access_end, stored, "Computed access periods are never rewritten")
+        autonomous = self.delivery()
+        with self.assertRaises(ValidationError):
+            autonomous.action_change_dates(start_at=fields.Datetime.now(), end_at=fields.Datetime.now() + timedelta(hours=1), reason="Not applicable")
+        cancelled = self.session()
+        cancelled.action_cancel(reason="Cancelled offer")
+        with self.assertRaises(ValidationError):
+            cancelled.action_change_dates(start_at=cancelled.start_at + timedelta(days=1), end_at=cancelled.end_at + timedelta(days=1), reason="Too late")
+
+    def test_fixed_access_follows_and_cannot_shrink_under_active_access(self):
+        now = fields.Datetime.now()
+        delivery = self.delivery(access_policy="fixed", access_start=now + timedelta(days=1), access_end=now + timedelta(days=10))
+        delivery.action_change_dates(access_end=now + timedelta(days=12), reason="Longer access")
+        self.assertEqual(delivery.access_end, now + timedelta(days=12))
+        e = self.admitted(delivery)
+        e.action_authorize(reason="Authorized")
+        e.action_open_access(reason="Opened")
+        self.assertEqual(e.access_state, "active")
+        with self.assertRaises(ValidationError):
+            delivery.action_change_dates(access_end=now + timedelta(days=5), reason="Shorter")
+        delivery.action_change_dates(access_end=now + timedelta(days=15), reason="Extended again")
+
+    def test_assistant_and_rights(self):
+        from odoo.tests import Form
+        delivery = self.session()
+        action = delivery.action_open_dates()
+        self.assertEqual(action["res_model"], "training.delivery.dates")
+        form = Form(self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"]))
+        form.start_at = delivery.start_at + timedelta(days=1)
+        form.end_at = delivery.end_at + timedelta(days=1)
+        form.reason = "New room"
+        form.save().action_apply()
+        self.assertEqual(delivery.operation_ids.sorted("id")[-1].reason, "New room")
+        for user in (self.reader, self.internal, self.portal):
+            with self.assertRaises(AccessError):
+                delivery.with_user(user).action_change_dates(start_at=delivery.start_at + timedelta(days=1), end_at=delivery.end_at + timedelta(days=1), reason="Forbidden")

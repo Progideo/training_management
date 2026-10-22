@@ -19,6 +19,29 @@
             </form>
         </field>
     </record>
+    <record id="view_training_delivery_dates" model="ir.ui.view">
+        <field name="name">training.delivery.dates.form</field>
+        <field name="model">training.delivery.dates</field>
+        <field name="arch" type="xml">
+            <form string="Change Dates">
+                <group>
+                    <field name="company_id" invisible="1"/>
+                    <field name="kind" invisible="1"/>
+                    <field name="access_policy" invisible="1"/>
+                    <field name="delivery_id" readonly="1"/>
+                    <field name="start_at" invisible="kind != 'session'"/>
+                    <field name="end_at" invisible="kind != 'session'"/>
+                    <field name="access_start" invisible="access_policy != 'fixed'"/>
+                    <field name="access_end" invisible="access_policy != 'fixed'"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
     <record id="view_training_allocation_extend" model="ir.ui.view">
         <field name="name">training.allocation.extend.form</field>
         <field name="model">training.allocation.extend</field>

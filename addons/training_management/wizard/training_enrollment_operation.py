@@ -43,6 +43,47 @@ class TrainingEnrollmentOperation(models.TransientModel):
         return {"type": "ir.actions.act_window_close"}
 
 
+class TrainingDeliveryDates(models.TransientModel):
+    _name = "training.delivery.dates"
+    _description = "Change Training Delivery Dates"
+    _check_company_auto = True
+
+    delivery_id = fields.Many2one("training.delivery", required=True, ondelete="cascade", check_company=True)
+    company_id = fields.Many2one(related="delivery_id.company_id")
+    kind = fields.Selection(related="delivery_id.kind")
+    access_policy = fields.Selection(related="delivery_id.access_policy")
+    start_at = fields.Datetime()
+    end_at = fields.Datetime()
+    access_start = fields.Datetime()
+    access_end = fields.Datetime()
+    reason = fields.Text(required=True)
+
+    @api.model
+    def default_get(self, fields_list):
+        values = super().default_get(fields_list)
+        delivery = self.env["training.delivery"].browse(values.get("delivery_id") or self.env.context.get("default_delivery_id"))
+        if delivery:
+            for name in ("start_at", "end_at", "access_start", "access_end"):
+                if name in fields_list and name not in values:
+                    values[name] = delivery[name]
+        return values
+
+    def action_apply(self):
+        self.ensure_one()
+        self.check_access("write")
+        self.delivery_id._require_coordinator()
+        delivery = self.delivery_id
+        with self.env.cr.savepoint():
+            delivery.action_change_dates(
+                start_at=self.start_at if delivery.kind == "session" else None,
+                end_at=self.end_at if delivery.kind == "session" else None,
+                access_start=self.access_start if delivery.access_policy == "fixed" else None,
+                access_end=self.access_end if delivery.access_policy == "fixed" else None,
+                reason=self.reason,
+            )
+        return {"type": "ir.actions.act_window_close"}
+
+
 class TrainingAllocationExtend(models.TransientModel):
     _name = "training.allocation.extend"
     _description = "Extend a Training Reservation Deadline"
