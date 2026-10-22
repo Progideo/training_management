@@ -36,7 +36,8 @@ class TrainingActionReason(models.TransientModel):
         # Only controlled training models that list the action are accepted:
         # the assistant is not a way to call an arbitrary method by name.
         if self.res_model not in self.env or self.action_name not in getattr(
-                self.env[self.res_model], "_reason_actions", ()):
+            self.env[self.res_model], "_reason_actions", ()
+        ):
             raise ValidationError(self.env._("This action does not accept a reason from the assistant."))
         return self.env[self.res_model]
 

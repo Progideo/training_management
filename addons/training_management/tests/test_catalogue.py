@@ -16,44 +16,76 @@ class TestCatalogue(TransactionCase):
         cls.company = cls.env.company
         cls.other_company = cls.env["res.company"].create({"name": "Fictional Company B"})
         cls.coordinator = new_test_user(
-            cls.env, login="catalogue_coordinator",
+            cls.env,
+            login="catalogue_coordinator",
             groups="training_management.group_training_coordinator,base.group_allow_export",
-            company_id=cls.company.id, company_ids=[Command.set([cls.company.id])],
+            company_id=cls.company.id,
+            company_ids=[Command.set([cls.company.id])],
         )
         cls.reader = new_test_user(
-            cls.env, login="catalogue_reader",
+            cls.env,
+            login="catalogue_reader",
             groups="training_management.group_training_reader,base.group_allow_export",
-            company_id=cls.company.id, company_ids=[Command.set([cls.company.id])],
+            company_id=cls.company.id,
+            company_ids=[Command.set([cls.company.id])],
         )
         cls.internal = new_test_user(cls.env, login="catalogue_unassigned")
         cls.portal = new_test_user(
-            cls.env, login="catalogue_portal", groups="base.group_portal",
+            cls.env,
+            login="catalogue_portal",
+            groups="base.group_portal",
         )
-        cls.contact = cls.env["res.partner"].create({
-            "name": "Fictional Accessibility Contact", "company_id": cls.company.id,
-        })
-        cls.course = cls.env["training.course"].with_user(cls.coordinator).create({
-            "name": "Standard Course A", "company_id": cls.company.id,
-        })
-        cls.other_course = cls.env["training.course"].create({
-            "name": "Standard Course B", "company_id": cls.other_company.id,
-        })
+        cls.contact = cls.env["res.partner"].create(
+            {
+                "name": "Fictional Accessibility Contact",
+                "company_id": cls.company.id,
+            }
+        )
+        cls.course = (
+            cls.env["training.course"]
+            .with_user(cls.coordinator)
+            .create(
+                {
+                    "name": "Standard Course A",
+                    "company_id": cls.company.id,
+                }
+            )
+        )
+        cls.other_course = cls.env["training.course"].create(
+            {
+                "name": "Standard Course B",
+                "company_id": cls.other_company.id,
+            }
+        )
         cls.values = {
-            "course_id": cls.course.id, "version": "V1", "title": "Programme A",
-            "objectives": "Apply a documented method", "target_audience": "Beginners",
-            "prerequisites": "None", "content": "Practice and review",
-            "duration_hours": 7, "delivery_mode": "onsite",
+            "course_id": cls.course.id,
+            "version": "V1",
+            "title": "Programme A",
+            "objectives": "Apply a documented method",
+            "target_audience": "Beginners",
+            "prerequisites": "None",
+            "content": "Practice and review",
+            "duration_hours": 7,
+            "delivery_mode": "onsite",
             "language_id": cls.env.ref("base.lang_en").id,
-            "teaching_methods": "Guided practice", "evaluation_criteria": "Final exercise",
+            "teaching_methods": "Guided practice",
+            "evaluation_criteria": "Final exercise",
             "access_conditions": "Confirmed registration",
             "accessibility_contact_id": cls.contact.id,
             "accessibility_information": "Contact the accessibility coordinator.",
         }
 
     def new_program(self, **overrides):
-        return self.env["training.program.version"].with_user(self.coordinator).create({
-            **self.values, **overrides,
-        })
+        return (
+            self.env["training.program.version"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    **self.values,
+                    **overrides,
+                }
+            )
+        )
 
     def test_version_lifecycle_preserves_v1(self):
         v1 = self.new_program()
@@ -90,9 +122,12 @@ class TestCatalogue(TransactionCase):
         program = self.new_program()
         program.action_validate()
         for values in (
-            {"title": "Rewritten"}, {"course_id": self.other_course.id},
-            {"state": "draft"}, {"validated_by_id": self.reader.id},
-            {"validated_at": False}, {"company_id": self.other_company.id},
+            {"title": "Rewritten"},
+            {"course_id": self.other_course.id},
+            {"state": "draft"},
+            {"validated_by_id": self.reader.id},
+            {"validated_at": False},
+            {"company_id": self.other_company.id},
         ):
             with self.subTest(values=values), self.assertRaises((ValidationError, AccessError)):
                 program.write(values)
@@ -102,10 +137,16 @@ class TestCatalogue(TransactionCase):
             program.update_field_translations("title", {"en_US": "Rewritten by translation"})
 
     def test_context_cannot_create_validated_version(self):
-        program = self.env["training.program.version"].with_user(self.coordinator).with_context(
-            default_state="published", default_validated_by_id=self.reader.id,
-            default_published_at="2026-01-01 00:00:00",
-        ).create(self.values)
+        program = (
+            self.env["training.program.version"]
+            .with_user(self.coordinator)
+            .with_context(
+                default_state="published",
+                default_validated_by_id=self.reader.id,
+                default_published_at="2026-01-01 00:00:00",
+            )
+            .create(self.values)
+        )
         self.assertEqual(program.state, "draft")
         self.assertFalse(program.validated_by_id)
         self.assertFalse(program.published_at)
@@ -132,8 +173,11 @@ class TestCatalogue(TransactionCase):
         self.assertEqual(program.export_data(["version"])["datas"], [["V1"]])
         for operation in (
             lambda: program.write({"title": "Changed"}),
-            program.action_validate, program.action_publish, program.action_retire,
-            program.action_new_version, program.unlink,
+            program.action_validate,
+            program.action_publish,
+            program.action_retire,
+            program.action_new_version,
+            program.unlink,
             lambda: program.create({**self.values, "version": "V2"}),
             lambda: self.course.with_user(self.reader).write({"name": "Changed"}),
         ):
@@ -160,10 +204,13 @@ class TestCatalogue(TransactionCase):
                 program.with_user(user).create(self.values)
 
     def test_cross_company_read_write_export_create_denied(self):
-        other = self.env["training.program.version"].create({
-            **self.values, "course_id": self.other_course.id,
-            "accessibility_contact_id": False,
-        })
+        other = self.env["training.program.version"].create(
+            {
+                **self.values,
+                "course_id": self.other_course.id,
+                "accessibility_contact_id": False,
+            }
+        )
         for user in (self.reader, self.coordinator):
             record = other.with_user(user).with_context(allowed_company_ids=[self.company.id])
             self.assertFalse(record.search([("id", "=", record.id)]))
@@ -178,9 +225,12 @@ class TestCatalogue(TransactionCase):
             self.new_program(course_id=self.other_course.id, accessibility_contact_id=False)
 
     def test_cross_company_contact_refused(self):
-        contact = self.env["res.partner"].create({
-            "name": "Other contact", "company_id": self.other_company.id,
-        })
+        contact = self.env["res.partner"].create(
+            {
+                "name": "Other contact",
+                "company_id": self.other_company.id,
+            }
+        )
         with self.assertRaises(UserError), self.cr.savepoint():
             self.new_program(accessibility_contact_id=contact.id)
 
@@ -204,20 +254,29 @@ class TestCatalogue(TransactionCase):
 
     def test_source_display_name_identifies_course_and_version_in_each_language(self):
         self.env["res.lang"]._activate_lang("fr_FR")
-        self.course.update_field_translations("name", {
-            "en_US": "Project management", "fr_FR": "Gestion de projet",
-        })
+        self.course.update_field_translations(
+            "name",
+            {
+                "en_US": "Project management",
+                "fr_FR": "Gestion de projet",
+            },
+        )
         first = self.new_program(title="Same title")
         second = self.new_program(version="V2", title="Same title")
         for lang, course_name in (
-            ("fr_FR", "Gestion de projet"), ("en_US", "Project management"),
+            ("fr_FR", "Gestion de projet"),
+            ("en_US", "Project management"),
         ):
             source = second.with_context(lang=lang)
             self.assertEqual(source.display_name, f"{course_name} — V2")
             self.assertEqual(first.with_context(lang=lang).display_name, f"{course_name} — V1")
             action = source.action_new_version()
-            Wizard = self.env[action["res_model"]].with_user(self.coordinator).with_context(
-                action["context"],
+            Wizard = (
+                self.env[action["res_model"]]
+                .with_user(self.coordinator)
+                .with_context(
+                    action["context"],
+                )
             )
             form = Form(Wizard)
             self.assertEqual(form.source_id, source)
@@ -240,15 +299,11 @@ class TestCatalogue(TransactionCase):
         self.env["res.lang"]._activate_lang("fr_FR")
         source = self.new_program()
         translated_fields = [
-            name for name, field in source._fields.items()
-            if field.translate is True and field.store and field.copy
+            name for name, field in source._fields.items() if field.translate is True and field.store and field.copy
         ]
         self.assertIn("objectives", translated_fields)
         self.assertIn("title", translated_fields)
-        translations = {
-            name: {"en_US": f"English {name}", "fr_FR": f"Français {name}"}
-            for name in translated_fields
-        }
+        translations = {name: {"en_US": f"English {name}", "fr_FR": f"Français {name}"} for name in translated_fields}
         for name, values in translations.items():
             source.update_field_translations(name, values)
         source.action_validate()
@@ -258,8 +313,12 @@ class TestCatalogue(TransactionCase):
         for index, session_language in enumerate(("fr_FR", "en_US"), start=2):
             with self.subTest(session_language=session_language):
                 action = source.with_context(lang=session_language).action_new_version()
-                Wizard = self.env[action["res_model"]].with_user(self.coordinator).with_context(
-                    action["context"],
+                Wizard = (
+                    self.env[action["res_model"]]
+                    .with_user(self.coordinator)
+                    .with_context(
+                        action["context"],
+                    )
                 )
                 with Form(Wizard) as form:
                     form.version = f"V{index}"
@@ -293,10 +352,13 @@ class TestCatalogue(TransactionCase):
                     Wizard.with_user(user).create(values)
                 with self.assertRaises(AccessError):
                     wizard.with_user(user).action_create_version()
-        other = self.env["training.program.version"].create({
-            **self.values, "course_id": self.other_course.id,
-            "accessibility_contact_id": False,
-        })
+        other = self.env["training.program.version"].create(
+            {
+                **self.values,
+                "course_id": self.other_course.id,
+                "accessibility_contact_id": False,
+            }
+        )
         with self.assertRaises(AccessError), self.cr.savepoint():
             Wizard.with_user(self.coordinator).create({"source_id": other.id, "version": "V2"})
 
@@ -329,8 +391,12 @@ class TestCatalogue(TransactionCase):
 
     def test_standalone_form_persists_after_failed_validation(self):
         action = self.course.action_open_programs()
-        model = self.env["training.program.version"].with_user(self.coordinator).with_context(
-            action["context"],
+        model = (
+            self.env["training.program.version"]
+            .with_user(self.coordinator)
+            .with_context(
+                action["context"],
+            )
         )
         with Form(model) as form:
             form.version = "V1"
@@ -342,8 +408,13 @@ class TestCatalogue(TransactionCase):
             program.action_validate()
         with Form(program) as form:
             for field in (
-                "objectives", "target_audience", "prerequisites", "content",
-                "teaching_methods", "evaluation_criteria", "access_conditions",
+                "objectives",
+                "target_audience",
+                "prerequisites",
+                "content",
+                "teaching_methods",
+                "evaluation_criteria",
+                "access_conditions",
                 "accessibility_information",
             ):
                 setattr(form, field, self.values[field])

@@ -15,9 +15,9 @@ class AccountMoveSend(models.AbstractModel):
             allowed = move.training_portal_partner_ids.filtered("email")
             recipients = self.env["res.partner"].browse(move_data.get("mail_partner_ids", []))
             if not recipients or recipients - allowed:
-                raise ValidationError(_(
-                    "Send training invoice PDFs only to named contacts authorized on this invoice."
-                ))
+                raise ValidationError(
+                    _("Send training invoice PDFs only to named contacts authorized on this invoice.")
+                )
         return super()._get_mail_params(move, move_data)
 
     def _send_mail(self, move, mail_template, **kwargs):

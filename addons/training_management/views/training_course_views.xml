@@ -22,8 +22,7 @@
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
                     <group string="Standard Programmes">
-                        <button name="action_open_programs" type="object"
-                            string="Programme Versions" class="btn-primary"/>
+                        <button name="action_open_programs" type="object" string="Programme Versions" class="btn-primary"/>
                         <div class="text-muted">
                             Open programme versions to create and save each programme in its own form.
                         </div>

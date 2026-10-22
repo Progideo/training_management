@@ -11,11 +11,17 @@ class TrainingCourse(models.Model):
     name = fields.Char(required=True, translate=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
-        "res.company", required=True, default=lambda self: self.env.company,
-        ondelete="restrict", index=True,
+        "res.company",
+        required=True,
+        default=lambda self: self.env.company,
+        ondelete="restrict",
+        index=True,
     )
     program_version_ids = fields.One2many(
-        "training.program.version", "course_id", string="Programme Versions", copy=False,
+        "training.program.version",
+        "course_id",
+        string="Programme Versions",
+        copy=False,
     )
 
     @api.constrains("name")

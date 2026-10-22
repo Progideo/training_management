@@ -32,16 +32,26 @@ class IrBinary(models.AbstractModel):
         if self.env.user._is_public() or self.env.user.partner_id not in authorized:
             raise AccessError(_("This training attachment requires an authorized portal contact."))
 
-    def _find_record(self, xmlid=None, res_model="ir.attachment", res_id=None,
-                     access_token=None, field=None):
+    def _find_record(self, xmlid=None, res_model="ir.attachment", res_id=None, access_token=None, field=None):
         record = super()._find_record(xmlid, res_model, res_id, access_token, field)
         self._check_training_binary_access(record)
         return record
 
-    def _get_stream_from(self, record, field_name="raw", filename=None,
-                         filename_field="name", mimetype=None,
-                         default_mimetype="application/octet-stream"):
+    def _get_stream_from(
+        self,
+        record,
+        field_name="raw",
+        filename=None,
+        filename_field="name",
+        mimetype=None,
+        default_mimetype="application/octet-stream",
+    ):
         self._check_training_binary_access(record)
         return super()._get_stream_from(
-            record, field_name, filename, filename_field, mimetype, default_mimetype,
+            record,
+            field_name,
+            filename,
+            filename_field,
+            mimetype,
+            default_mimetype,
         )

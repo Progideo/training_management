@@ -38,9 +38,7 @@ class TrainingInvoicePaymentPortal(TrainingPortalDocumentAccess, InvoicePaymentP
     def invoice_transaction(self, invoice_id, access_token, **kwargs):
         invoice_sudo = self._document_check_access("account.move", invoice_id, access_token)
         if invoice_sudo._training_sale_invoices():
-            raise ValidationError(_(
-                "Online payment transactions are disabled for training orders and invoices."
-            ))
+            raise ValidationError(_("Online payment transactions are disabled for training orders and invoices."))
         return super().invoice_transaction(invoice_id, access_token, **kwargs)
 
 
@@ -52,7 +50,5 @@ class TrainingPaymentPortal(TrainingPortalDocumentAccess, PaymentPortal):
         except AccessError:
             raise ValidationError(_("The access token is invalid.")) from None
         if order_sudo.training_request_kind:
-            raise ValidationError(_(
-                "Online payment transactions are disabled for training orders and invoices."
-            ))
+            raise ValidationError(_("Online payment transactions are disabled for training orders and invoices."))
         return super().portal_order_transaction(order_id, access_token, **kwargs)

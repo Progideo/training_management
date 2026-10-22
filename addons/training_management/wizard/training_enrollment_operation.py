@@ -9,7 +9,16 @@ class TrainingEnrollmentOperation(models.TransientModel):
 
     enrollment_id = fields.Many2one("training.enrollment", required=True, ondelete="cascade", check_company=True)
     company_id = fields.Many2one(related="enrollment_id.company_id")
-    operation = fields.Selection([("reserve", "Propose or Reserve a Place"), ("extend", "Extend Access"), ("postpone", "Postpone to Another Delivery"), ("replace", "Replace Participant")], required=True, default="reserve")
+    operation = fields.Selection(
+        [
+            ("reserve", "Propose or Reserve a Place"),
+            ("extend", "Extend Access"),
+            ("postpone", "Postpone to Another Delivery"),
+            ("replace", "Replace Participant"),
+        ],
+        required=True,
+        default="reserve",
+    )
     deadline = fields.Datetime()
     target_id = fields.Many2one("training.enrollment", string="New Requested Enrollment", check_company=True)
     source_delivery_id = fields.Many2one(related="enrollment_id.delivery_id")
@@ -61,7 +70,9 @@ class TrainingDeliveryDates(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         values = super().default_get(fields_list)
-        delivery = self.env["training.delivery"].browse(values.get("delivery_id") or self.env.context.get("default_delivery_id"))
+        delivery = self.env["training.delivery"].browse(
+            values.get("delivery_id") or self.env.context.get("default_delivery_id")
+        )
         if delivery:
             for name in ("start_at", "end_at", "access_start", "access_end"):
                 if name in fields_list and name not in values:

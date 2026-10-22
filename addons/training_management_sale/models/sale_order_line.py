@@ -6,12 +6,17 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     training_program_id = fields.Many2one(
-        "training.program.version", string="Programme Version",
-        ondelete="restrict", check_company=True, copy=True,
+        "training.program.version",
+        string="Programme Version",
+        ondelete="restrict",
+        check_company=True,
+        copy=True,
         domain="[('state', 'in', ('validated', 'published')), ('company_id', '=', company_id)]",
     )
     training_program_label = fields.Char(
-        string="Programme Reference on Quotation", readonly=True, copy=True,
+        string="Programme Reference on Quotation",
+        readonly=True,
+        copy=True,
         help="The course and version label kept as it appeared when the quotation line was prepared.",
     )
 
@@ -22,9 +27,7 @@ class SaleOrderLine(models.Model):
             program = line.training_program_id
             if bool(course) != bool(program):
                 raise ValidationError(_("A training product and programme version must be selected together."))
-            if program and (
-                program.course_id != course or program.company_id != line.company_id
-            ):
+            if program and (program.course_id != course or program.company_id != line.company_id):
                 raise ValidationError(_("The programme must match the commercial product and company."))
             if program and line.state in ("draft", "sent") and program.state not in ("validated", "published"):
                 raise ValidationError(_("Only validated or published programmes may be quoted."))
@@ -41,8 +44,9 @@ class SaleOrderLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        vals_list = [{key: value for key, value in vals.items() if key != "training_program_label"}
-                     for vals in vals_list]
+        vals_list = [
+            {key: value for key, value in vals.items() if key != "training_program_label"} for vals in vals_list
+        ]
         lines = super().create(vals_list)
         lines._store_training_program_labels()
         return lines
@@ -64,14 +68,18 @@ class SaleOrderLine(models.Model):
             raise ValidationError(_("The training line quantity must match its per-person or package price basis."))
 
         rule_id = order.pricelist_id._get_product_rule(
-            product, **self._get_pricelist_kwargs(),
+            product,
+            **self._get_pricelist_kwargs(),
         )
         rule = self.env["product.pricelist.item"].browse(rule_id)
-        if (not rule or rule.compute_price != "fixed"
-                or rule.applied_on not in ("0_product_variant", "1_product")
-                or (rule.applied_on == "0_product_variant" and rule.product_id != product)
-                or (rule.applied_on == "1_product" and rule.product_tmpl_id != product.product_tmpl_id)
-                or self.product_no_variant_attribute_value_ids):
+        if (
+            not rule
+            or rule.compute_price != "fixed"
+            or rule.applied_on not in ("0_product_variant", "1_product")
+            or (rule.applied_on == "0_product_variant" and rule.product_id != product)
+            or (rule.applied_on == "1_product" and rule.product_tmpl_id != product.product_tmpl_id)
+            or self.product_no_variant_attribute_value_ids
+        ):
             raise ValidationError(_("Set an explicit fixed pricelist price for this training product and currency."))
 
         # Follow the same tax-mode adaptation as sale.order.line._reset_price_unit.
@@ -84,13 +92,16 @@ class SaleOrderLine(models.Model):
             raise ValidationError(_("The training fixed price cannot include converted variant supplements."))
         taxes = product.taxes_id._filter_taxes_by_company(self.company_id)
         expected_unit = product._get_tax_included_unit_price_from_price(
-            price, product_taxes=taxes,
+            price,
+            product_taxes=taxes,
             fiscal_position=order.fiscal_position_id,
             document_tax_mode=self.document_tax_mode,
         )
         expected_unit = product._adapt_price_unit_to_document_tax_mode(
-            expected_unit, taxes, self.product_uom_id, self.document_tax_mode,
+            expected_unit,
+            taxes,
+            self.product_uom_id,
+            self.document_tax_mode,
         )
-        if (order.currency_id.compare_amounts(self.price_unit, expected_unit)
-                or self.discount):
+        if order.currency_id.compare_amounts(self.price_unit, expected_unit) or self.discount:
             raise ValidationError(_("The training line must use its fixed pricelist amount without a manual discount."))

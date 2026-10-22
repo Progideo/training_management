@@ -9,29 +9,49 @@ class BankTransferNotice(models.Model):
     _check_company_auto = True
 
     order_id = fields.Many2one(
-        "sale.order", string="Training Order", required=True,
-        ondelete="restrict", check_company=True, index=True,
+        "sale.order",
+        string="Training Order",
+        required=True,
+        ondelete="restrict",
+        check_company=True,
+        index=True,
     )
     company_id = fields.Many2one(
-        "res.company", related="order_id.company_id", store=True, readonly=True,
+        "res.company",
+        related="order_id.company_id",
+        store=True,
+        readonly=True,
     )
     invoice_id = fields.Many2one(
-        "account.move", string="Claimed Invoice", ondelete="restrict",
+        "account.move",
+        string="Claimed Invoice",
+        ondelete="restrict",
         check_company=True,
     )
     currency_id = fields.Many2one(
-        "res.currency", related="order_id.currency_id", store=True, readonly=True,
+        "res.currency",
+        related="order_id.currency_id",
+        store=True,
+        readonly=True,
     )
     amount = fields.Monetary(string="Claimed Amount", required=True)
     claimed_date = fields.Date(string="Claimed Transfer Date", required=True)
     reference = fields.Char(string="Claimed Reference", required=True)
     reported_by_id = fields.Many2one(
-        "res.users", string="Reported By", default=lambda self: self.env.user,
+        "res.users",
+        string="Reported By",
+        default=lambda self: self.env.user,
         readonly=True,
     )
-    state = fields.Selection([
-        ("reported", "Unverified"), ("void", "Voided"),
-    ], default="reported", required=True, readonly=True)
+    state = fields.Selection(
+        [
+            ("reported", "Unverified"),
+            ("void", "Voided"),
+        ],
+        default="reported",
+        required=True,
+        readonly=True,
+    )
 
     @api.constrains("order_id", "invoice_id", "amount", "claimed_date", "reference")
     def _check_notice(self):
@@ -53,9 +73,7 @@ class BankTransferNotice(models.Model):
     def create(self, vals_list):
         if any(vals.get("state", "reported") != "reported" for vals in vals_list):
             raise ValidationError(_("A new transfer notice must be unverified."))
-        return super().create([
-            {**vals, "reported_by_id": self.env.user.id} for vals in vals_list
-        ])
+        return super().create([{**vals, "reported_by_id": self.env.user.id} for vals in vals_list])
 
     def write(self, vals):
         if set(vals) != {"state"} or vals["state"] != "void":

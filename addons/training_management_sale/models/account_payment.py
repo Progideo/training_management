@@ -7,18 +7,21 @@ class AccountPayment(models.Model):
 
     def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
         thread = super()._get_thread_with_access(thread_id, mode=mode, **kwargs)
-        if (thread and self.env.user.share and thread.sudo()._training_receipt_is_restricted()
-                and (self.env.user._is_public()
-                     or self.env.user.partner_id not in thread.sudo()._training_receipt_allowed_partners())):
+        if (
+            thread
+            and self.env.user.share
+            and thread.sudo()._training_receipt_is_restricted()
+            and (
+                self.env.user._is_public()
+                or self.env.user.partner_id not in thread.sudo()._training_receipt_allowed_partners()
+            )
+        ):
             return self.browse()
         return thread
 
     def _training_receipt_is_restricted(self):
         self.ensure_one()
-        return bool(
-            self.training_bank_reference
-            or self.reconciled_invoice_ids.filtered("training_is_sale_invoice")
-        )
+        return bool(self.training_bank_reference or self.reconciled_invoice_ids.filtered("training_is_sale_invoice"))
 
     def _training_receipt_allowed_partners(self):
         self.ensure_one()
@@ -36,7 +39,8 @@ class AccountPayment(models.Model):
         for payment in self.filtered(lambda item: item._training_receipt_is_restricted()):
             recipients[payment.id] = {
                 "partner_ids": payment._training_receipt_allowed_partners().ids,
-                "email_to": "", "email_cc": "",
+                "email_to": "",
+                "email_cc": "",
             }
         return recipients
 
@@ -45,26 +49,34 @@ class AccountPayment(models.Model):
         if not self._training_receipt_is_restricted():
             return recipients
         allowed_ids = set(self._training_receipt_allowed_partners().ids)
-        return [recipient for recipient in recipients
-                if not recipient["share"] or recipient["id"] in allowed_ids]
+        return [recipient for recipient in recipients if not recipient["share"] or recipient["id"] in allowed_ids]
 
     training_bank_reference = fields.Char(
-        string="Training Bank Reference", copy=False, index=True,
+        string="Training Bank Reference",
+        copy=False,
+        index=True,
         help="Reference checked against the bank evidence, separate from the invoice memo.",
     )
     training_duplicate_reference_reason = fields.Char(
-        string="Repeated Reference Reason", copy=False,
+        string="Repeated Reference Reason",
+        copy=False,
         help="Explain an intentional allocation of one transfer across several payments.",
     )
     training_bank_verified = fields.Boolean(
-        string="Bank Receipt Checked", copy=False,
+        string="Bank Receipt Checked",
+        copy=False,
         help="The accountant confirms having checked the bank receipt before recording this payment.",
     )
     training_bank_verified_by_id = fields.Many2one(
-        "res.users", string="Bank Receipt Checked By", copy=False, readonly=True,
+        "res.users",
+        string="Bank Receipt Checked By",
+        copy=False,
+        readonly=True,
     )
     training_bank_verified_at = fields.Datetime(
-        string="Bank Receipt Checked At", copy=False, readonly=True,
+        string="Bank Receipt Checked At",
+        copy=False,
+        readonly=True,
     )
 
     @api.model_create_multi
@@ -77,14 +89,16 @@ class AccountPayment(models.Model):
             if {"training_bank_verified_by_id", "training_bank_verified_at"} & set(vals):
                 raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
             if "training_bank_reference" in vals:
-                vals["training_bank_reference"] = (
-                    vals["training_bank_reference"] or ""
-                ).strip().upper() or False
+                vals["training_bank_reference"] = (vals["training_bank_reference"] or "").strip().upper() or False
         # Native create accepts an already paid state; enter it through the same
         # guarded write as action_post, after all draft records exist.
-        if any("default_" + field in self.env.context for field in (
-            "training_bank_verified_by_id", "training_bank_verified_at",
-        )):
+        if any(
+            "default_" + field in self.env.context
+            for field in (
+                "training_bank_verified_by_id",
+                "training_bank_verified_at",
+            )
+        ):
             raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
         default_state = self.default_get(["state"]).get("state", "draft")
         states = [vals.get("state", default_state) for vals in vals_list]
@@ -92,10 +106,12 @@ class AccountPayment(models.Model):
             return self._create_training_guarded_payments(vals_list, states)
 
     def _create_training_guarded_payments(self, vals_list, states):
-        payments = super().create([
-            {**vals, "state": "draft"} if state in ("paid", "reconciled") else vals
-            for vals, state in zip(vals_list, states)
-        ])
+        payments = super().create(
+            [
+                {**vals, "state": "draft"} if state in ("paid", "reconciled") else vals
+                for vals, state in zip(vals_list, states)
+            ]
+        )
         for payment, state in zip(payments, states):
             target_state = state if state in ("paid", "reconciled") else payment.state
             if target_state in ("paid", "reconciled"):
@@ -105,14 +121,11 @@ class AccountPayment(models.Model):
     def write(self, vals):
         if {"training_bank_verified_by_id", "training_bank_verified_at"} & set(vals):
             raise ValidationError(_("The bank check audit fields are set when the payment is posted."))
-        if {"training_bank_reference", "training_duplicate_reference_reason",
-                "training_bank_verified"} & set(vals):
+        if {"training_bank_reference", "training_duplicate_reference_reason", "training_bank_verified"} & set(vals):
             if any(payment.state != "draft" for payment in self):
                 raise ValidationError(_("The bank reference of a posted payment cannot be changed."))
             if "training_bank_reference" in vals:
-                vals["training_bank_reference"] = (
-                    vals["training_bank_reference"] or ""
-                ).strip().upper() or False
+                vals["training_bank_reference"] = (vals["training_bank_reference"] or "").strip().upper() or False
         self.check_access("write")
         # A caller can change state through RPC/import as well as action_post.
         # Apply simultaneous reference/check changes before checking the target state.
@@ -121,21 +134,29 @@ class AccountPayment(models.Model):
                 other_vals = {key: value for key, value in vals.items() if key != "state"}
                 if other_vals:
                     self.write(other_vals)
-                tagged = self.filtered(lambda payment: payment.training_bank_reference and (
-                    payment.state not in ("paid", "reconciled")
-                    or not payment.training_bank_verified_by_id or not payment.training_bank_verified_at
-                ))
+                tagged = self.filtered(
+                    lambda payment: (
+                        payment.training_bank_reference
+                        and (
+                            payment.state not in ("paid", "reconciled")
+                            or not payment.training_bank_verified_by_id
+                            or not payment.training_bank_verified_at
+                        )
+                    )
+                )
                 tagged._check_training_bank_posting()
                 if tagged:
-                    super(AccountPayment, tagged).write({
-                        "training_bank_verified_by_id": self.env.user.id,
-                        "training_bank_verified_at": fields.Datetime.now(),
-                    })
+                    super(AccountPayment, tagged).write(
+                        {
+                            "training_bank_verified_by_id": self.env.user.id,
+                            "training_bank_verified_at": fields.Datetime.now(),
+                        }
+                    )
                 # A payment default_state must not leak into creation of its
                 # account.move (whose valid states differ from payment states).
-                posting_self = self.with_context({
-                    key: value for key, value in self.env.context.items() if key != "default_state"
-                })
+                posting_self = self.with_context(
+                    {key: value for key, value in self.env.context.items() if key != "default_state"}
+                )
                 return super(AccountPayment, posting_self).write({"state": vals["state"]})
         return super().write(vals)
 
@@ -147,13 +168,11 @@ class AccountPayment(models.Model):
             or payment.payment_method_line_id.code != "manual"
             for payment in tagged_payments
         ):
-            raise ValidationError(_(
-                "A training bank reference requires an incoming bank payment with the manual method."
-            ))
+            raise ValidationError(
+                _("A training bank reference requires an incoming bank payment with the manual method.")
+            )
         if any(not payment.training_bank_verified for payment in tagged_payments):
-            raise ValidationError(_(
-                "Confirm that the bank receipt was checked before posting a training payment."
-            ))
+            raise ValidationError(_("Confirm that the bank receipt was checked before posting a training payment."))
         payments = tagged_payments
         for journal_id in sorted(set(payments.journal_id.ids)):
             # A lock alone does not refresh Odoo's REPEATABLE READ snapshot.
@@ -169,16 +188,21 @@ class AccountPayment(models.Model):
             key = (payment.company_id.id, payment.journal_id.id, payment.training_bank_reference)
             # A finance user may not see every payment of the company. The lookup
             # only returns a boolean and is scoped to this journal and company.
-            existing = self.sudo().search([
-                ("company_id", "=", payment.company_id.id),
-                ("journal_id", "=", payment.journal_id.id),
-                ("training_bank_reference", "=", payment.training_bank_reference),
-                ("state", "in", ("paid", "reconciled")),
-                ("id", "!=", payment.id),
-            ], limit=1)
+            existing = self.sudo().search(
+                [
+                    ("company_id", "=", payment.company_id.id),
+                    ("journal_id", "=", payment.journal_id.id),
+                    ("training_bank_reference", "=", payment.training_bank_reference),
+                    ("state", "in", ("paid", "reconciled")),
+                    ("id", "!=", payment.id),
+                ],
+                limit=1,
+            )
             if (existing or key in seen) and not (payment.training_duplicate_reference_reason or "").strip():
-                raise ValidationError(_(
-                    "This bank reference was already recorded in this company and journal. "
-                    "Explain the intentional split before continuing."
-                ))
+                raise ValidationError(
+                    _(
+                        "This bank reference was already recorded in this company and journal. "
+                        "Explain the intentional split before continuing."
+                    )
+                )
             seen.add(key)

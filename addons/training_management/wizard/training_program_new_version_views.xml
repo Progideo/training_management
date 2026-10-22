@@ -10,8 +10,7 @@
                 </group>
                 <p>The new draft keeps the source content and its translations.</p>
                 <footer>
-                    <button name="action_create_version" type="object"
-                        string="Create Draft" class="btn-primary"/>
+                    <button name="action_create_version" type="object" string="Create Draft" class="btn-primary"/>
                     <button string="Cancel" special="cancel" class="btn-secondary"/>
                 </footer>
             </form>

@@ -8,8 +8,12 @@ class TrainingProgramNewVersion(models.TransientModel):
     _check_company_auto = True
 
     source_id = fields.Many2one(
-        "training.program.version", string="Source Programme",
-        required=True, readonly=True, ondelete="cascade", check_company=True,
+        "training.program.version",
+        string="Source Programme",
+        required=True,
+        readonly=True,
+        ondelete="cascade",
+        check_company=True,
     )
     company_id = fields.Many2one(related="source_id.company_id", store=True)
     version = fields.Char(string="Version Reference", required=True)

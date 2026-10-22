@@ -5,7 +5,9 @@ from odoo.exceptions import ValidationError
 class TrainingSeatAllocation(models.Model):
     _inherit = "training.seat.allocation"
 
-    sale_line_id = fields.Many2one("sale.order.line", string="Commercial Line", ondelete="restrict", check_company=True, index=True)
+    sale_line_id = fields.Many2one(
+        "sale.order.line", string="Commercial Line", ondelete="restrict", check_company=True, index=True
+    )
 
     @api.private
     def _check_source(self):
@@ -32,10 +34,19 @@ class TrainingSeatAllocation(models.Model):
         line.invalidate_recordset()
         # This column is a concurrency fence only, including stale snapshots.
         super(SaleOrderLine, line).write({"training_allocation_revision": line.training_allocation_revision + 1})
-        if (order.company_id != self.company_id or line.training_program_id != self.delivery_id.program_id
-                or order.partner_id != self.customer_id or not order.training_request_kind
-                or order.state == "cancel" or (require_confirmed and order.state != "sale")):
-            raise ValidationError(_("The allocation must match a readable commercial line, customer, company and programme; commitment requires a confirmed order."))
+        if (
+            order.company_id != self.company_id
+            or line.training_program_id != self.delivery_id.program_id
+            or order.partner_id != self.customer_id
+            or not order.training_request_kind
+            or order.state == "cancel"
+            or (require_confirmed and order.state != "sale")
+        ):
+            raise ValidationError(
+                _(
+                    "The allocation must match a readable commercial line, customer, company and programme; commitment requires a confirmed order."
+                )
+            )
         lots = self.search([("sale_line_id.order_id", "=", order.id)])
         committed = sum(lot.quantity for lot in lots if lot._available())
         # S02 fixes the explicit contractual participant count on the order.
@@ -74,7 +85,11 @@ class SaleOrderLine(models.Model):
             lots = self.env["training.seat.allocation"].sudo().search([("sale_line_id", "in", self.ids)])
             # Only live lots, or lots still carrying an open enrollment, bind the line.
             if any(lot._holds_source() for lot in lots):
-                raise ValidationError(_("Commercial lines with allocated training places are fixed. Use a controlled commercial revision."))
+                raise ValidationError(
+                    _(
+                        "Commercial lines with allocated training places are fixed. Use a controlled commercial revision."
+                    )
+                )
         return super().write(vals)
 
 
@@ -92,14 +107,24 @@ class SaleOrder(models.Model):
     def write(self, vals):
         if "training_allocation_revision" in vals:
             raise ValidationError(_("The allocation revision is server-managed."))
-        protected = {"training_attendee_count", "partner_id", "company_id", "training_request_kind", "training_requested_program_id"}
+        protected = {
+            "training_attendee_count",
+            "partner_id",
+            "company_id",
+            "training_request_kind",
+            "training_requested_program_id",
+        }
         if set(vals) & protected or vals.get("state") == "cancel":
             self.check_access("write")
             lots = self.env["training.seat.allocation"].sudo().search([("sale_line_id.order_id", "in", self.ids)])
             # A cancelled or expired lot without an open enrollment no longer binds the order.
             bound = lots.filtered(lambda lot: lot._holds_source())
             if bound and set(vals) & protected:
-                raise ValidationError(_("Orders with training allocations keep their customer, programme and participant entitlement."))
+                raise ValidationError(
+                    _("Orders with training allocations keep their customer, programme and participant entitlement.")
+                )
             if bound and vals.get("state") == "cancel":
-                raise ValidationError(_("Cancel the training allocations explicitly before cancelling the commercial order."))
+                raise ValidationError(
+                    _("Cancel the training allocations explicitly before cancelling the commercial order.")
+                )
         return super().write(vals)

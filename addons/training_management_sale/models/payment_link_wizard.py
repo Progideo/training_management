@@ -18,14 +18,13 @@ class PaymentLinkWizard(models.TransientModel):
         else:
             return
         if is_training:
-            raise ValidationError(_(
-                "Online payment links are disabled for training orders and invoices."
-            ))
+            raise ValidationError(_("Online payment links are disabled for training orders and invoices."))
 
     @api.model
     def default_get(self, fields_list):
         self._check_training_document_link(
-            self.env.context.get("active_model"), self.env.context.get("active_id"),
+            self.env.context.get("active_model"),
+            self.env.context.get("active_id"),
         )
         return super().default_get(fields_list)
 

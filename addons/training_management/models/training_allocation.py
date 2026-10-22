@@ -11,23 +11,34 @@ class TrainingSeatAllocation(models.Model):
     _check_company_auto = True
     _rec_name = "customer_id"
 
-    delivery_id = fields.Many2one("training.delivery", required=True, ondelete="restrict", check_company=True, index=True)
+    delivery_id = fields.Many2one(
+        "training.delivery", required=True, ondelete="restrict", check_company=True, index=True
+    )
     # Keep a company on an empty native form: a related value would be False
     # until delivery selection, making its check_company domain circular.
     # create() derives the stored company from the checked delivery; identity
     # cannot be rewritten afterwards. Existing stored company values are kept.
-    company_id = fields.Many2one("res.company", required=True, readonly=True,
-                                 default=lambda self: self.env.company, index=True)
+    company_id = fields.Many2one(
+        "res.company", required=True, readonly=True, default=lambda self: self.env.company, index=True
+    )
     customer_id = fields.Many2one("res.partner", required=True, ondelete="restrict", check_company=True)
     quantity = fields.Integer(required=True, default=1)
     source_reference = fields.Char(string="Reservation Reference", required=True)
     expires_at = fields.Datetime(required=True)
-    state = fields.Selection([("reserved", "Reserved"), ("confirmed", "Confirmed"), ("expired", "Expired"), ("cancelled", "Cancelled")], default="reserved", required=True, readonly=True, copy=False)
+    state = fields.Selection(
+        [("reserved", "Reserved"), ("confirmed", "Confirmed"), ("expired", "Expired"), ("cancelled", "Cancelled")],
+        default="reserved",
+        required=True,
+        readonly=True,
+        copy=False,
+    )
     enrollment_ids = fields.One2many("training.enrollment", "allocation_id")
     unnamed_seats = fields.Integer(compute="_compute_unnamed")
 
     _positive_quantity = models.Constraint("CHECK(quantity > 0)", "Allocate a positive number of places.")
-    _unique_source = models.Constraint("UNIQUE(delivery_id, source_reference)", "This reservation reference already exists for the delivery.")
+    _unique_source = models.Constraint(
+        "UNIQUE(delivery_id, source_reference)", "This reservation reference already exists for the delivery."
+    )
 
     _reason_actions = ("action_confirm", "action_cancel")
 
@@ -42,12 +53,18 @@ class TrainingSeatAllocation(models.Model):
     def _compute_unnamed(self):
         now = fields.Datetime.now()
         for lot in self:
-            lot.unnamed_seats = lot.quantity - len(lot.enrollment_ids.filtered(lambda e: e._occupies(now))) if lot._available(now) else 0
+            lot.unnamed_seats = (
+                lot.quantity - len(lot.enrollment_ids.filtered(lambda e: e._occupies(now)))
+                if lot._available(now)
+                else 0
+            )
 
     @api.private
     def _available(self, now=None):
         self.ensure_one()
-        return self.state == "confirmed" or (self.state == "reserved" and self.expires_at and self.expires_at > (now or fields.Datetime.now()))
+        return self.state == "confirmed" or (
+            self.state == "reserved" and self.expires_at and self.expires_at > (now or fields.Datetime.now())
+        )
 
     @api.private
     def _holds_source(self, now=None):
@@ -72,18 +89,26 @@ class TrainingSeatAllocation(models.Model):
                 values.update(state="reserved", enrollment_ids=[])
                 values["source_reference"] = (values.get("source_reference") or "").strip()
                 prepared.append(values)
-            deliveries = self.env["training.delivery"].browse([v.get("delivery_id") or self.env.context.get("default_delivery_id") for v in prepared])
+            deliveries = self.env["training.delivery"].browse(
+                [v.get("delivery_id") or self.env.context.get("default_delivery_id") for v in prepared]
+            )
             deliveries._serialize()
             if any(d.state in ("delivered", "closed", "cancelled") for d in deliveries):
                 raise ValidationError(self.env._("This delivery no longer accepts reservations."))
             for values in prepared:
-                delivery = self.env["training.delivery"].browse(values.get("delivery_id") or self.env.context.get("default_delivery_id"))
+                delivery = self.env["training.delivery"].browse(
+                    values.get("delivery_id") or self.env.context.get("default_delivery_id")
+                )
                 values["company_id"] = delivery.company_id.id
-            records = super(TrainingSeatAllocation, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)).create(prepared)
+            records = super(
+                TrainingSeatAllocation, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)
+            ).create(prepared)
             for record in records:
                 if record.expires_at <= fields.Datetime.now() or not record.source_reference:
                     raise ValidationError(self.env._("A reservation needs a reference and a future expiry."))
-                self.env["training.operation"]._record(record, {}, {"quantity": record.quantity, "state": record.state}, False)
+                self.env["training.operation"]._record(
+                    record, {}, {"quantity": record.quantity, "state": record.state}, False
+                )
             deliveries._check_capacity()
             return records
 
@@ -129,11 +154,22 @@ class TrainingSeatAllocation(models.Model):
             self._require_coordinator()
             self.delivery_id._serialize()
             self.invalidate_recordset()
-            if type(quantity) is not int or quantity <= 0 or quantity >= self.quantity or self.state not in ("reserved", "confirmed"):
-                raise ValidationError(self.env._("Release a positive number below the allocation quantity, or cancel the whole allocation."))
+            if (
+                type(quantity) is not int
+                or quantity <= 0
+                or quantity >= self.quantity
+                or self.state not in ("reserved", "confirmed")
+            ):
+                raise ValidationError(
+                    self.env._(
+                        "Release a positive number below the allocation quantity, or cancel the whole allocation."
+                    )
+                )
             remaining = self.quantity - quantity
             if len(self.enrollment_ids.filtered(lambda e: e._occupies())) > remaining:
-                raise ValidationError(self.env._("Cancel or transfer the affected enrollments before releasing their places."))
+                raise ValidationError(
+                    self.env._("Cancel or transfer the affected enrollments before releasing their places.")
+                )
             self._store({"quantity": remaining}, self._require_reason(reason))
         return True
 
@@ -145,7 +181,11 @@ class TrainingSeatAllocation(models.Model):
             self.invalidate_recordset()
             now = fields.Datetime.now()
             deadline = fields.Datetime.to_datetime(expires_at)
-            if self.state != "reserved" or not self._available(now) or self.delivery_id.state in ("delivered", "closed", "cancelled"):
+            if (
+                self.state != "reserved"
+                or not self._available(now)
+                or self.delivery_id.state in ("delivered", "closed", "cancelled")
+            ):
                 raise ValidationError(self.env._("Only a live reservation can be extended."))
             if not deadline or deadline <= max(self.expires_at, now):
                 raise ValidationError(self.env._("An extension needs a future deadline later than the current one."))
@@ -167,13 +207,23 @@ class TrainingSeatAllocation(models.Model):
     def action_open_extend(self):
         self.ensure_one()
         self._require_coordinator()
-        return {"type": "ir.actions.act_window", "name": self.env._("Extend Deadline"),
-                "res_model": "training.allocation.extend", "view_mode": "form", "target": "new",
-                "context": {"default_allocation_id": self.id}}
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Extend Deadline"),
+            "res_model": "training.allocation.extend",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_allocation_id": self.id},
+        }
 
     def action_open_release(self):
         self.ensure_one()
         self._require_coordinator()
-        return {"type": "ir.actions.act_window", "name": self.env._("Release Places"),
-                "res_model": "training.allocation.release", "view_mode": "form", "target": "new",
-                "context": {"default_allocation_id": self.id}}
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Release Places"),
+            "res_model": "training.allocation.release",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_allocation_id": self.id},
+        }

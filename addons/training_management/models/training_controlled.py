@@ -39,8 +39,9 @@ class TrainingOperation(models.Model):
         if value is False or value == "":
             return "—"
         if kind == "datetime":
-            return format_datetime(self.env, fields.Datetime.to_datetime(value),
-                                   tz=self.env.context.get("tz") or self.env.user.tz or "UTC")
+            return format_datetime(
+                self.env, fields.Datetime.to_datetime(value), tz=self.env.context.get("tz") or self.env.user.tz or "UTC"
+            )
         if kind == "date":
             return format_date(self.env, fields.Date.to_date(value))
         return dict(description.get("selection", [])).get(value, value)
@@ -91,18 +92,26 @@ class TrainingOperation(models.Model):
             if field is not None and field.type == "many2one":
                 # Display names only, read narrowly: the actor may not read the linked record.
                 comodel = record.env[field.comodel_name].sudo()
-                labels[key] = {side: (comodel.browse(values[key]).exists().display_name or None) if values.get(key) else None
-                               for side, values in (("before", before), ("after", after))}
+                labels[key] = {
+                    side: (comodel.browse(values[key]).exists().display_name or None) if values.get(key) else None
+                    for side, values in (("before", before), ("after", after))
+                }
         # Narrow elevation: append a server-authored audit row after access checks.
         # No history create/write/unlink permission is granted to business users.
-        return super(TrainingOperation, self.sudo()).create({
-            "delivery_id": delivery.id, "model_name": record._name,
-            "record_id": record.id, "record_label": record.display_name, "actor_id": self.env.uid,
-            "occurred_at": fields.Datetime.now(), "reason": reason or False,
-            "before": json.dumps(before, default=str, sort_keys=True),
-            "after": json.dumps(after, default=str, sort_keys=True),
-            "labels": json.dumps(labels, sort_keys=True) if labels else False,
-        })
+        return super(TrainingOperation, self.sudo()).create(
+            {
+                "delivery_id": delivery.id,
+                "model_name": record._name,
+                "record_id": record.id,
+                "record_label": record.display_name,
+                "actor_id": self.env.uid,
+                "occurred_at": fields.Datetime.now(),
+                "reason": reason or False,
+                "before": json.dumps(before, default=str, sort_keys=True),
+                "after": json.dumps(after, default=str, sort_keys=True),
+                "labels": json.dumps(labels, sort_keys=True) if labels else False,
+            }
+        )
 
 
 class TrainingControlled(models.AbstractModel):
@@ -159,10 +168,16 @@ class TrainingControlled(models.AbstractModel):
         if action not in self._reason_actions:
             raise ValidationError(self.env._("This action does not accept a reason from the assistant."))
         return {
-            "type": "ir.actions.act_window", "name": self.env._("Reason for the Action"),
-            "res_model": "training.action.reason", "view_mode": "form", "target": "new",
-            "context": {"default_res_model": self._name, "default_res_ids": ",".join(map(str, self.ids)),
-                        "default_action_name": action},
+            "type": "ir.actions.act_window",
+            "name": self.env._("Reason for the Action"),
+            "res_model": "training.action.reason",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_res_model": self._name,
+                "default_res_ids": ",".join(map(str, self.ids)),
+                "default_action_name": action,
+            },
         }
 
     def unlink(self):

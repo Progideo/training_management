@@ -12,23 +12,70 @@ class TestAllocationCommerce(EnrollmentCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.coordinator = new_test_user(cls.env, login="s03_commercial_coord", groups="training_management.group_training_coordinator,sales_team.group_sale_salesman", company_id=cls.company.id, company_ids=[Command.set(cls.company.ids)])
+        cls.coordinator = new_test_user(
+            cls.env,
+            login="s03_commercial_coord",
+            groups="training_management.group_training_coordinator,sales_team.group_sale_salesman",
+            company_id=cls.company.id,
+            company_ids=[Command.set(cls.company.ids)],
+        )
         cls.seller = new_test_user(cls.env, login="s03_seller", groups="sales_team.group_sale_salesman")
         cls.finance = new_test_user(cls.env, login="s03_finance", groups="account.group_account_invoice")
-        cls.product = cls.env["product.template"].create({"name": "Fictional S03 Package", "type": "service", "company_id": cls.company.id, "training_course_id": cls.course.id, "training_price_basis": "package", "taxes_id": [Command.clear()]}).product_variant_id
+        cls.product = (
+            cls.env["product.template"]
+            .create(
+                {
+                    "name": "Fictional S03 Package",
+                    "type": "service",
+                    "company_id": cls.company.id,
+                    "training_course_id": cls.course.id,
+                    "training_price_basis": "package",
+                    "taxes_id": [Command.clear()],
+                }
+            )
+            .product_variant_id
+        )
         cls.eur = cls.env.ref("base.EUR")
         cls.eur.active = True
-        cls.pricelist = cls.env["product.pricelist"].create({"name": "Fictional S03 EUR", "currency_id": cls.eur.id, "company_id": cls.company.id})
-        cls.env["product.pricelist.item"].create({"pricelist_id": cls.pricelist.id, "product_tmpl_id": cls.product.product_tmpl_id.id, "applied_on": "1_product", "compute_price": "fixed", "fixed_price": 100})
+        cls.pricelist = cls.env["product.pricelist"].create(
+            {"name": "Fictional S03 EUR", "currency_id": cls.eur.id, "company_id": cls.company.id}
+        )
+        cls.env["product.pricelist.item"].create(
+            {
+                "pricelist_id": cls.pricelist.id,
+                "product_tmpl_id": cls.product.product_tmpl_id.id,
+                "applied_on": "1_product",
+                "compute_price": "fixed",
+                "fixed_price": 100,
+            }
+        )
 
     def order(self, count=10):
-        order = self.env["sale.order"].with_user(self.coordinator).create({
-            "partner_id": self.customer.id, "user_id": self.coordinator.id,
-            "pricelist_id": self.pricelist.id, "training_request_kind": "group",
-            "training_requested_program_id": self.program.id,
-            "training_requested_currency_id": self.eur.id, "training_attendee_count": count,
-            "order_line": [Command.create({"product_id": self.product.id, "product_uom_qty": 1, "price_unit": 100, "training_program_id": self.program.id})],
-        })
+        order = (
+            self.env["sale.order"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "partner_id": self.customer.id,
+                    "user_id": self.coordinator.id,
+                    "pricelist_id": self.pricelist.id,
+                    "training_request_kind": "group",
+                    "training_requested_program_id": self.program.id,
+                    "training_requested_currency_id": self.eur.id,
+                    "training_attendee_count": count,
+                    "order_line": [
+                        Command.create(
+                            {
+                                "product_id": self.product.id,
+                                "product_uom_qty": 1,
+                                "price_unit": 100,
+                                "training_program_id": self.program.id,
+                            }
+                        )
+                    ],
+                }
+            )
+        )
         order.action_confirm()
         return order
 
@@ -40,7 +87,9 @@ class TestAllocationCommerce(EnrollmentCase):
         lot.action_confirm()
         for index in range(7):
             person = self.env["res.partner"].create({"name": "Fictional Buyer Employee %s" % index})
-            e = self.enrollment(delivery, participant_id=person.id, user_id=False, allocation_id=lot.id, free_reason=False)
+            e = self.enrollment(
+                delivery, participant_id=person.id, user_id=False, allocation_id=lot.id, free_reason=False
+            )
             e.action_validate_prerequisites(reason="Review completed")
             e.action_confirm()
             self.assertEqual(e.access_state, "unopened")
@@ -87,17 +136,28 @@ class TestAllocationCommerce(EnrollmentCase):
         second.action_confirm()
         self.assertEqual(first.quantity + second.quantity, 10)
         self.assertEqual(order.training_attendee_count, 10)
-        self.assertTrue(first.delivery_id.operation_ids.filtered(lambda row: 'quantity' in row.before))
+        self.assertTrue(first.delivery_id.operation_ids.filtered(lambda row: "quantity" in row.before))
 
     def test_source_identity_company_and_unreadable_order_refused(self):
         order = self.order(count=1)
         other = self.env["res.partner"].create({"name": "Another Fictional Customer"})
         with self.assertRaises(ValidationError):
             self.lot(self.delivery(), quantity=1, sale_line_id=order.order_line.id, customer_id=other.id)
-        coordinator_only = new_test_user(self.env, login="s03_coord_without_sales", groups="training_management.group_training_coordinator")
+        coordinator_only = new_test_user(
+            self.env, login="s03_coord_without_sales", groups="training_management.group_training_coordinator"
+        )
         delivery = self.delivery().with_user(coordinator_only)
         with self.assertRaises(AccessError):
-            self.env["training.seat.allocation"].with_user(coordinator_only).create({"delivery_id": delivery.id, "quantity": 1, "source_reference": "UNREADABLE", "customer_id": self.customer.id, "sale_line_id": order.order_line.id, "expires_at": fields.Datetime.now() + timedelta(days=1)})
+            self.env["training.seat.allocation"].with_user(coordinator_only).create(
+                {
+                    "delivery_id": delivery.id,
+                    "quantity": 1,
+                    "source_reference": "UNREADABLE",
+                    "customer_id": self.customer.id,
+                    "sale_line_id": order.order_line.id,
+                    "expires_at": fields.Datetime.now() + timedelta(days=1),
+                }
+            )
         self.assertFalse(delivery.allocation_ids)
 
     def test_multiple_lines_do_not_multiply_order_entitlement(self):
@@ -110,6 +170,7 @@ class TestAllocationCommerce(EnrollmentCase):
 
     def test_native_partial_release_wizard(self):
         from odoo.tests import Form
+
         order = self.order()
         lot = self.lot(self.delivery(), sale_line_id=order.order_line.id)
         lot.action_confirm()
@@ -169,8 +230,15 @@ class TestAllocationCommerce(EnrollmentCase):
         self.assertEqual(lot.with_user(seller).state, "confirmed")
         self.assertEqual(lot.with_user(seller).quantity, 2)
         self.assertEqual(e.with_user(seller).state, "confirmed")
-        for record, name in ((e, "prerequisites"), (e, "user_id"), (e, "access_state"), (e, "access_start"),
-                             (e, "access_end"), (e, "effective_access"), (delivery, "operation_ids")):
+        for record, name in (
+            (e, "prerequisites"),
+            (e, "user_id"),
+            (e, "access_state"),
+            (e, "access_start"),
+            (e, "access_end"),
+            (e, "effective_access"),
+            (delivery, "operation_ids"),
+        ):
             with self.subTest(field=name), self.assertRaises(AccessError):
                 record.with_user(seller).read([name])
         with self.assertRaises(AccessError):
@@ -179,13 +247,20 @@ class TestAllocationCommerce(EnrollmentCase):
             with self.assertRaises(AccessError):
                 record.with_user(seller)._require_coordinator()
         with self.assertRaises(AccessError):
-            self.env["training.enrollment"].with_user(seller).create({"delivery_id": delivery.id, "participant_id": self.portal.partner_id.id})
+            self.env["training.enrollment"].with_user(seller).create(
+                {"delivery_id": delivery.id, "participant_id": self.portal.partner_id.id}
+            )
         with self.assertRaises((AccessError, ValidationError)):
             e.with_user(seller).unlink()
         self.assertTrue(e.exists())
 
     def test_salesperson_of_another_company_sees_nothing(self):
         delivery = self.delivery()
-        other = new_test_user(self.env, login="s03_seller_b", groups="sales_team.group_sale_salesman",
-                              company_id=self.other_company.id, company_ids=[Command.set(self.other_company.ids)])
+        other = new_test_user(
+            self.env,
+            login="s03_seller_b",
+            groups="sales_team.group_sale_salesman",
+            company_id=self.other_company.id,
+            company_ids=[Command.set(self.other_company.ids)],
+        )
         self.assertFalse(self.env["training.delivery"].with_user(other).search([("id", "=", delivery.id)]))

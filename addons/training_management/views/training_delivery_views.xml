@@ -1,10 +1,24 @@
 <odoo>
     <record id="view_training_delivery_list" model="ir.ui.view">
-        <field name="name">training.delivery.list</field><field name="model">training.delivery</field>
-        <field name="arch" type="xml"><list><field name="reference"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/><field name="program_id"/><field name="kind"/><field name="state"/><field name="capacity"/><field name="occupied_seats"/><field name="below_threshold"/></list></field>
+        <field name="name">training.delivery.list</field>
+        <field name="model">training.delivery</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="program_id"/>
+                <field name="kind"/>
+                <field name="state"/>
+                <field name="capacity"/>
+                <field name="occupied_seats"/>
+                <field name="below_threshold"/>
+            </list>
+        </field>
     </record>
     <record id="view_training_delivery_search" model="ir.ui.view">
-        <field name="name">training.delivery.search</field><field name="model">training.delivery</field>
+        <field name="name">training.delivery.search</field>
+        <field name="model">training.delivery</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Delivery" filter_domain="['|', ('name', 'ilike', self), ('reference', 'ilike', self)]"/>
@@ -22,7 +36,8 @@
         </field>
     </record>
     <record id="view_training_delivery_form" model="ir.ui.view">
-        <field name="name">training.delivery.form</field><field name="model">training.delivery</field>
+        <field name="name">training.delivery.form</field>
+        <field name="model">training.delivery</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -35,28 +50,69 @@
                     <button name="action_open_reason" type="object" string="Cancel Delivery" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled')" confirm="Cancel the delivery, revoke its enrollments and release its allocations? Commercial documents are preserved."/>
                     <field name="state" widget="statusbar"/>
                 </header>
-                <sheet><group>
-                    <field name="reference"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/>
-                    <field name="program_id" domain="[('state', 'in', ('validated', 'published', 'retired'))]"/>
-                    <field name="kind"/><field name="delivery_mode"/><field name="responsible_id"/>
-                    <field name="start_at" invisible="kind == 'autonomous'"/><field name="end_at" invisible="kind == 'autonomous'"/><field name="timezone"/>
-                    <field name="capacity"/><field name="occupied_seats"/><field name="opening_threshold"/><field name="below_threshold"/>
-                    <field name="access_policy"/><field name="access_start" invisible="access_policy != 'fixed'"/><field name="access_end" invisible="access_policy != 'fixed'"/><field name="access_days" invisible="access_policy != 'duration'"/>
-                </group><notebook>
-                    <page string="Places"><field name="allocation_ids" readonly="1"/></page>
-                    <page string="Enrollments"><field name="enrollment_ids" readonly="1"/></page>
-                    <page string="History"><field name="operation_ids" readonly="1"><list create="0" edit="0" delete="0"><field name="occurred_at"/><field name="actor_id"/><field name="record_label"/><field name="reason"/><field name="changes"/></list></field></page>
-                </notebook></sheet>
+                <sheet>
+                    <group>
+                        <field name="reference"/>
+                        <field name="name"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="program_id" domain="[('state', 'in', ('validated', 'published', 'retired'))]"/>
+                        <field name="kind"/>
+                        <field name="delivery_mode"/>
+                        <field name="responsible_id"/>
+                        <field name="start_at" invisible="kind == 'autonomous'"/>
+                        <field name="end_at" invisible="kind == 'autonomous'"/>
+                        <field name="timezone"/>
+                        <field name="capacity"/>
+                        <field name="occupied_seats"/>
+                        <field name="opening_threshold"/>
+                        <field name="below_threshold"/>
+                        <field name="access_policy"/>
+                        <field name="access_start" invisible="access_policy != 'fixed'"/>
+                        <field name="access_end" invisible="access_policy != 'fixed'"/>
+                        <field name="access_days" invisible="access_policy != 'duration'"/>
+                    </group>
+                    <notebook>
+                        <page string="Places">
+                            <field name="allocation_ids" readonly="1"/>
+                        </page>
+                        <page string="Enrollments">
+                            <field name="enrollment_ids" readonly="1"/>
+                        </page>
+                        <page string="History">
+                            <field name="operation_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="occurred_at"/>
+                                    <field name="actor_id"/>
+                                    <field name="record_label"/>
+                                    <field name="reason"/>
+                                    <field name="changes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
                 <chatter/>
             </form>
         </field>
     </record>
     <record id="view_training_allocation_list" model="ir.ui.view">
-        <field name="name">training.seat.allocation.list</field><field name="model">training.seat.allocation</field>
-        <field name="arch" type="xml"><list><field name="delivery_id"/><field name="customer_id"/><field name="source_reference"/><field name="quantity"/><field name="unnamed_seats"/><field name="expires_at"/><field name="state"/></list></field>
+        <field name="name">training.seat.allocation.list</field>
+        <field name="model">training.seat.allocation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="delivery_id"/>
+                <field name="customer_id"/>
+                <field name="source_reference"/>
+                <field name="quantity"/>
+                <field name="unnamed_seats"/>
+                <field name="expires_at"/>
+                <field name="state"/>
+            </list>
+        </field>
     </record>
     <record id="view_training_allocation_search" model="ir.ui.view">
-        <field name="name">training.seat.allocation.search</field><field name="model">training.seat.allocation</field>
+        <field name="name">training.seat.allocation.search</field>
+        <field name="model">training.seat.allocation</field>
         <field name="arch" type="xml">
             <search>
                 <field name="source_reference"/>
@@ -74,15 +130,53 @@
         </field>
     </record>
     <record id="view_training_allocation_form" model="ir.ui.view">
-        <field name="name">training.seat.allocation.form</field><field name="model">training.seat.allocation</field>
-        <field name="arch" type="xml"><form><header><button name="action_confirm" type="object" string="Confirm Allocation" invisible="state != 'reserved'"/><button name="action_open_extend" type="object" string="Extend Deadline" invisible="state != 'reserved'"/><button name="action_open_release" type="object" string="Release Places" invisible="state not in ('reserved', 'confirmed')"/><button name="action_expire" type="object" string="Record Expiry" invisible="state != 'reserved'"/><button name="action_open_reason" type="object" string="Cancel Allocation" context="{'reason_action': 'action_cancel'}" invisible="state in ('expired', 'cancelled')"/><field name="state" widget="statusbar"/></header><sheet><group><field name="company_id" invisible="1"/><field name="delivery_id"/><field name="customer_id"/><field name="source_reference"/><field name="quantity"/><field name="unnamed_seats"/><field name="expires_at"/></group><field name="enrollment_ids" readonly="1"/></sheet><chatter/></form></field>
+        <field name="name">training.seat.allocation.form</field>
+        <field name="model">training.seat.allocation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm Allocation" invisible="state != 'reserved'"/>
+                    <button name="action_open_extend" type="object" string="Extend Deadline" invisible="state != 'reserved'"/>
+                    <button name="action_open_release" type="object" string="Release Places" invisible="state not in ('reserved', 'confirmed')"/>
+                    <button name="action_expire" type="object" string="Record Expiry" invisible="state != 'reserved'"/>
+                    <button name="action_open_reason" type="object" string="Cancel Allocation" context="{'reason_action': 'action_cancel'}" invisible="state in ('expired', 'cancelled')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="company_id" invisible="1"/>
+                        <field name="delivery_id"/>
+                        <field name="customer_id"/>
+                        <field name="source_reference"/>
+                        <field name="quantity"/>
+                        <field name="unnamed_seats"/>
+                        <field name="expires_at"/>
+                    </group>
+                    <field name="enrollment_ids" readonly="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
     </record>
     <record id="view_training_enrollment_list" model="ir.ui.view">
-        <field name="name">training.enrollment.list</field><field name="model">training.enrollment</field>
-        <field name="arch" type="xml"><list><field name="requested_at"/><field name="delivery_id"/><field name="participant_id"/><field name="allocation_id"/><field name="state"/><field name="prerequisites"/><field name="commercially_authorized"/><field name="effective_access"/></list></field>
+        <field name="name">training.enrollment.list</field>
+        <field name="model">training.enrollment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="requested_at"/>
+                <field name="delivery_id"/>
+                <field name="participant_id"/>
+                <field name="allocation_id"/>
+                <field name="state"/>
+                <field name="prerequisites"/>
+                <field name="commercially_authorized"/>
+                <field name="effective_access"/>
+            </list>
+        </field>
     </record>
     <record id="view_training_enrollment_search" model="ir.ui.view">
-        <field name="name">training.enrollment.search</field><field name="model">training.enrollment</field>
+        <field name="name">training.enrollment.search</field>
+        <field name="model">training.enrollment</field>
         <field name="arch" type="xml">
             <search>
                 <field name="participant_id"/>
@@ -102,35 +196,71 @@
         </field>
     </record>
     <record id="view_training_enrollment_form" model="ir.ui.view">
-        <field name="name">training.enrollment.form</field><field name="model">training.enrollment</field>
-        <field name="arch" type="xml"><form><header>
-            <button name="action_wait" type="object" string="Waiting List" invisible="state != 'requested'"/>
-            <button name="action_open_operation" type="object" string="Reserve a Place" context="{'operation': 'reserve'}" invisible="state not in ('requested', 'waiting', 'reserved')"/>
-            <button name="action_open_operation" type="object" string="Extend Access" context="{'operation': 'extend'}" invisible="state != 'confirmed' or not access_end"/>
-            <button name="action_open_operation" type="object" string="Postpone" context="{'operation': 'postpone'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-            <button name="action_open_operation" type="object" string="Replace Participant" context="{'operation': 'replace'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-            <button name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-            <button name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-            <button name="action_confirm" type="object" string="Confirm Enrollment" invisible="state not in ('requested', 'reserved')"/>
-            <button name="action_open_reason" type="object" string="Authorize Commercially" context="{'reason_action': 'action_authorize'}" invisible="state != 'confirmed' or commercially_authorized"/>
-            <button name="action_open_reason" type="object" string="Withdraw Authorization" context="{'reason_action': 'action_revoke_authorization'}" invisible="not commercially_authorized"/>
-            <button name="action_open_reason" type="object" string="Open / Resume Access" context="{'reason_action': 'action_open_access'}" invisible="state != 'confirmed' or access_state == 'revoked'"/>
-            <button name="action_open_reason" type="object" string="Suspend Access" context="{'reason_action': 'action_suspend_access'}" invisible="access_state != 'active'"/>
-            <button name="action_open_reason" type="object" string="Revoke Access" context="{'reason_action': 'action_revoke_access'}" invisible="access_state == 'revoked'"/>
-            <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'confirmed'"/>
-            <button name="action_open_reason" type="object" string="Abandon" context="{'reason_action': 'action_abandon'}" invisible="state != 'confirmed'"/>
-            <button name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
-            <field name="state" widget="statusbar"/>
-        </header><sheet><group>
-            <field name="company_id" invisible="1"/><field name="delivery_id"/><field name="program_id"/><field name="participant_id"/><field name="user_id"/>
-            <field name="allocation_id" domain="[('delivery_id', '=', delivery_id)]"/><field name="free_reason"/><field name="requested_at"/><field name="reservation_end"/>
-            <field name="prerequisites"/><field name="commercially_authorized"/><field name="access_state"/><field name="effective_access"/>
-            <field name="access_start"/><field name="access_end"/><field name="successor_id"/>
-        </group></sheet><chatter/></form></field>
+        <field name="name">training.enrollment.form</field>
+        <field name="model">training.enrollment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_wait" type="object" string="Waiting List" invisible="state != 'requested'"/>
+                    <button name="action_open_operation" type="object" string="Reserve a Place" context="{'operation': 'reserve'}" invisible="state not in ('requested', 'waiting', 'reserved')"/>
+                    <button name="action_open_operation" type="object" string="Extend Access" context="{'operation': 'extend'}" invisible="state != 'confirmed' or not access_end"/>
+                    <button name="action_open_operation" type="object" string="Postpone" context="{'operation': 'postpone'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button name="action_open_operation" type="object" string="Replace Participant" context="{'operation': 'replace'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <button name="action_confirm" type="object" string="Confirm Enrollment" invisible="state not in ('requested', 'reserved')"/>
+                    <button name="action_open_reason" type="object" string="Authorize Commercially" context="{'reason_action': 'action_authorize'}" invisible="state != 'confirmed' or commercially_authorized"/>
+                    <button name="action_open_reason" type="object" string="Withdraw Authorization" context="{'reason_action': 'action_revoke_authorization'}" invisible="not commercially_authorized"/>
+                    <button name="action_open_reason" type="object" string="Open / Resume Access" context="{'reason_action': 'action_open_access'}" invisible="state != 'confirmed' or access_state == 'revoked'"/>
+                    <button name="action_open_reason" type="object" string="Suspend Access" context="{'reason_action': 'action_suspend_access'}" invisible="access_state != 'active'"/>
+                    <button name="action_open_reason" type="object" string="Revoke Access" context="{'reason_action': 'action_revoke_access'}" invisible="access_state == 'revoked'"/>
+                    <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'confirmed'"/>
+                    <button name="action_open_reason" type="object" string="Abandon" context="{'reason_action': 'action_abandon'}" invisible="state != 'confirmed'"/>
+                    <button name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="company_id" invisible="1"/>
+                        <field name="delivery_id"/>
+                        <field name="program_id"/>
+                        <field name="participant_id"/>
+                        <field name="user_id"/>
+                        <field name="allocation_id" domain="[('delivery_id', '=', delivery_id)]"/>
+                        <field name="free_reason"/>
+                        <field name="requested_at"/>
+                        <field name="reservation_end"/>
+                        <field name="prerequisites"/>
+                        <field name="commercially_authorized"/>
+                        <field name="access_state"/>
+                        <field name="effective_access"/>
+                        <field name="access_start"/>
+                        <field name="access_end"/>
+                        <field name="successor_id"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
     </record>
-    <record id="action_training_deliveries" model="ir.actions.act_window"><field name="name">Deliveries</field><field name="res_model">training.delivery</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_training_delivery_search"/></record>
-    <record id="action_training_allocations" model="ir.actions.act_window"><field name="name">Seat Allocations</field><field name="res_model">training.seat.allocation</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_training_allocation_search"/></record>
-    <record id="action_training_enrollments" model="ir.actions.act_window"><field name="name">Enrollments</field><field name="res_model">training.enrollment</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_training_enrollment_search"/></record>
+    <record id="action_training_deliveries" model="ir.actions.act_window">
+        <field name="name">Deliveries</field>
+        <field name="res_model">training.delivery</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_delivery_search"/>
+    </record>
+    <record id="action_training_allocations" model="ir.actions.act_window">
+        <field name="name">Seat Allocations</field>
+        <field name="res_model">training.seat.allocation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_allocation_search"/>
+    </record>
+    <record id="action_training_enrollments" model="ir.actions.act_window">
+        <field name="name">Enrollments</field>
+        <field name="res_model">training.enrollment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_enrollment_search"/>
+    </record>
     <menuitem id="menu_training_deliveries" name="Deliveries" parent="menu_training_root" action="action_training_deliveries" sequence="30" groups="training_management.group_training_coordinator"/>
     <menuitem id="menu_training_allocations" name="Seat Allocations" parent="menu_training_root" action="action_training_allocations" sequence="40" groups="training_management.group_training_coordinator"/>
     <menuitem id="menu_training_enrollments" name="Enrollments" parent="menu_training_root" action="action_training_enrollments" sequence="50" groups="training_management.group_training_coordinator"/>

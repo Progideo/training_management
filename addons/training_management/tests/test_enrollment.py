@@ -19,41 +19,88 @@ class EnrollmentCase(TransactionCase):
         super().setUpClass()
         cls.company = cls.env.company
         cls.other_company = cls.env["res.company"].create({"name": "Fictional S03 B"})
-        cls.coordinator = new_test_user(cls.env, login="s03_coord", groups="training_management.group_training_coordinator,base.group_allow_export", company_id=cls.company.id, company_ids=[Command.set(cls.company.ids)])
+        cls.coordinator = new_test_user(
+            cls.env,
+            login="s03_coord",
+            groups="training_management.group_training_coordinator,base.group_allow_export",
+            company_id=cls.company.id,
+            company_ids=[Command.set(cls.company.ids)],
+        )
         cls.reader = new_test_user(cls.env, login="s03_reader", groups="training_management.group_training_reader")
         cls.internal = new_test_user(cls.env, login="s03_internal")
         cls.portal = new_test_user(cls.env, login="s03_participant", groups="base.group_portal")
         cls.portal_b = new_test_user(cls.env, login="s03_other_participant", groups="base.group_portal")
         cls.customer = cls.env["res.partner"].create({"name": "Fictional S03 Buyer"})
         cls.course = cls.env["training.course"].create({"name": "Fictional S03 Course", "company_id": cls.company.id})
-        cls.program = cls.env["training.program.version"].create({
-            "course_id": cls.course.id, "version": "S03-V1", "title": "Fictional S03 Programme",
-            "objectives": "Practice", "target_audience": "Beginners", "prerequisites": "Reviewed manually",
-            "content": "Practice", "duration_hours": 7, "delivery_mode": "elearning",
-            "language_id": cls.env.ref("base.lang_en").id, "teaching_methods": "Exercises",
-            "evaluation_criteria": "Review", "access_conditions": "Manual authorization",
-            "accessibility_contact_id": cls.customer.id, "accessibility_information": "Contact coordination",
-        })
+        cls.program = cls.env["training.program.version"].create(
+            {
+                "course_id": cls.course.id,
+                "version": "S03-V1",
+                "title": "Fictional S03 Programme",
+                "objectives": "Practice",
+                "target_audience": "Beginners",
+                "prerequisites": "Reviewed manually",
+                "content": "Practice",
+                "duration_hours": 7,
+                "delivery_mode": "elearning",
+                "language_id": cls.env.ref("base.lang_en").id,
+                "teaching_methods": "Exercises",
+                "evaluation_criteria": "Review",
+                "access_conditions": "Manual authorization",
+                "accessibility_contact_id": cls.customer.id,
+                "accessibility_information": "Contact coordination",
+            }
+        )
         cls.program.action_validate()
 
     def delivery(self, **values):
-        return self.env["training.delivery"].with_user(self.coordinator).create({
-            "name": "Fictional autonomous offer", "company_id": self.company.id,
-            "program_id": self.program.id, "kind": "autonomous", "capacity": 10,
-            "access_policy": "duration", "access_days": 10, **values,
-        })
+        return (
+            self.env["training.delivery"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Fictional autonomous offer",
+                    "company_id": self.company.id,
+                    "program_id": self.program.id,
+                    "kind": "autonomous",
+                    "capacity": 10,
+                    "access_policy": "duration",
+                    "access_days": 10,
+                    **values,
+                }
+            )
+        )
 
     def lot(self, delivery, **values):
-        return self.env["training.seat.allocation"].with_user(self.coordinator).create({
-            "delivery_id": delivery.id, "customer_id": self.customer.id, "quantity": 10,
-            "source_reference": "FICT-RESERVATION", "expires_at": fields.Datetime.now() + timedelta(days=2), **values,
-        })
+        return (
+            self.env["training.seat.allocation"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "delivery_id": delivery.id,
+                    "customer_id": self.customer.id,
+                    "quantity": 10,
+                    "source_reference": "FICT-RESERVATION",
+                    "expires_at": fields.Datetime.now() + timedelta(days=2),
+                    **values,
+                }
+            )
+        )
 
     def enrollment(self, delivery, **values):
-        return self.env["training.enrollment"].with_user(self.coordinator).create({
-            "delivery_id": delivery.id, "participant_id": self.portal.partner_id.id,
-            "user_id": self.portal.id, "free_reason": "Fictional invitation", **values,
-        })
+        return (
+            self.env["training.enrollment"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "delivery_id": delivery.id,
+                    "participant_id": self.portal.partner_id.id,
+                    "user_id": self.portal.id,
+                    "free_reason": "Fictional invitation",
+                    **values,
+                }
+            )
+        )
 
     def admitted(self, delivery=None):
         enrollment = self.enrollment(delivery or self.delivery())
@@ -62,16 +109,16 @@ class EnrollmentCase(TransactionCase):
         return enrollment
 
 
-
 @tagged("post_install", "-at_install")
 class TestEnrollment(EnrollmentCase):
-
     def test_ten_places_seven_names_and_eighth_not_double_counted(self):
         delivery = self.delivery()
         lot = self.lot(delivery)
         for index in range(7):
             person = self.env["res.partner"].create({"name": "Fictional Person %s" % index})
-            e = self.enrollment(delivery, participant_id=person.id, user_id=False, allocation_id=lot.id, free_reason=False)
+            e = self.enrollment(
+                delivery, participant_id=person.id, user_id=False, allocation_id=lot.id, free_reason=False
+            )
             e.action_reserve()
         self.assertEqual(lot.unnamed_seats, 3)
         self.assertEqual(delivery.occupied_seats, 10)
@@ -119,14 +166,18 @@ class TestEnrollment(EnrollmentCase):
         e.action_authorize(reason="Fictional new decision")
         e.action_extend_access(original_end + timedelta(days=3), reason="Fictional extension")
         self.assertEqual(e.access_end, original_end + timedelta(days=3))
-        self.assertTrue(e.delivery_id.operation_ids.filtered(lambda row: 'access_end' in row.after))
+        self.assertTrue(e.delivery_id.operation_ids.filtered(lambda row: "access_end" in row.after))
         e.action_revoke_access(reason="Fictional revocation")
         with self.assertRaises(ValidationError):
             e.action_open_access(reason="Fictional reopening")
 
     def test_fixed_access_scheduled_and_disabled_account(self):
         now = fields.Datetime.now()
-        e = self.admitted(self.delivery(access_policy="fixed", access_start=now + timedelta(days=1), access_end=now + timedelta(days=3)))
+        e = self.admitted(
+            self.delivery(
+                access_policy="fixed", access_start=now + timedelta(days=1), access_end=now + timedelta(days=3)
+            )
+        )
         e.action_authorize(reason="Fictional commercial decision")
         e.action_open_access(reason="Fictional opening")
         self.assertEqual(e.effective_access, "scheduled")
@@ -182,10 +233,29 @@ class TestEnrollment(EnrollmentCase):
     def test_direct_write_context_and_history_protected(self):
         delivery = self.delivery()
         e = self.enrollment(delivery)
-        for values in ({"state": "confirmed"}, {"commercially_authorized": True}, {"access_state": "active"}, {"requested_at": "2000-01-01"}, {"participant_id": self.portal_b.partner_id.id}):
+        for values in (
+            {"state": "confirmed"},
+            {"commercially_authorized": True},
+            {"access_state": "active"},
+            {"requested_at": "2000-01-01"},
+            {"participant_id": self.portal_b.partner_id.id},
+        ):
             with self.assertRaises(ValidationError):
                 e.write(values)
-        seeded = self.env["training.enrollment"].with_user(self.coordinator).with_context(default_state="confirmed", default_commercially_authorized=True, default_access_state="active").create({"delivery_id": delivery.id, "participant_id": self.portal_b.partner_id.id, "free_reason": "Fictional invitation"})
+        seeded = (
+            self.env["training.enrollment"]
+            .with_user(self.coordinator)
+            .with_context(
+                default_state="confirmed", default_commercially_authorized=True, default_access_state="active"
+            )
+            .create(
+                {
+                    "delivery_id": delivery.id,
+                    "participant_id": self.portal_b.partner_id.id,
+                    "free_reason": "Fictional invitation",
+                }
+            )
+        )
         self.assertEqual(seeded.state, "requested")
         self.assertFalse(seeded.commercially_authorized)
         self.assertEqual(seeded.access_state, "unopened")
@@ -202,15 +272,31 @@ class TestEnrollment(EnrollmentCase):
         e = self.enrollment(self.delivery())
         for user in (self.reader, self.internal, self.portal, self.portal_b, self.env.ref("base.public_user")):
             with self.subTest(user=user.login):
-                for model in ("training.delivery", "training.seat.allocation", "training.enrollment", "training.operation"):
+                for model in (
+                    "training.delivery",
+                    "training.seat.allocation",
+                    "training.enrollment",
+                    "training.operation",
+                ):
                     with self.assertRaises(AccessError):
                         self.env[model].with_user(user).search([])
                 with self.assertRaises(AccessError):
                     e.with_user(user).action_confirm()
         other_course = self.env["training.course"].create({"name": "B", "company_id": self.other_company.id})
-        other_program = self.program.copy({"course_id": other_course.id, "version": "B1", "accessibility_contact_id": self.customer.id})
+        other_program = self.program.copy(
+            {"course_id": other_course.id, "version": "B1", "accessibility_contact_id": self.customer.id}
+        )
         other_program.action_validate()
-        other = self.env["training.delivery"].create({"name": "B", "company_id": self.other_company.id, "program_id": other_program.id, "kind": "autonomous", "access_policy": "duration", "access_days": 2})
+        other = self.env["training.delivery"].create(
+            {
+                "name": "B",
+                "company_id": self.other_company.id,
+                "program_id": other_program.id,
+                "kind": "autonomous",
+                "access_policy": "duration",
+                "access_days": 2,
+            }
+        )
         with self.assertRaises(AccessError):
             other.with_user(self.coordinator).read(["name"])
         with self.assertRaises(AccessError):
@@ -244,10 +330,21 @@ class TestEnrollment(EnrollmentCase):
         with patch("odoo.fields.Datetime.now", return_value=future):
             self.assertFalse(e._occupies())
             self.assertEqual(delivery._occupancy(), 0)
-        other = self.env["training.enrollment"].with_user(self.coordinator).with_context(
-            default_company_id=self.other_company.id,
-            default_program_id=False,
-        ).create({"delivery_id": delivery.id, "participant_id": self.portal_b.partner_id.id, "free_reason": "Fictional invitation"})
+        other = (
+            self.env["training.enrollment"]
+            .with_user(self.coordinator)
+            .with_context(
+                default_company_id=self.other_company.id,
+                default_program_id=False,
+            )
+            .create(
+                {
+                    "delivery_id": delivery.id,
+                    "participant_id": self.portal_b.partner_id.id,
+                    "free_reason": "Fictional invitation",
+                }
+            )
+        )
         self.assertEqual(other.company_id, delivery.company_id)
         self.assertEqual(other.program_id, delivery.program_id)
 
@@ -267,6 +364,7 @@ class TestEnrollment(EnrollmentCase):
 
     def test_native_forms_and_parameter_wizard(self):
         from odoo.tests import Form
+
         offer = Form(self.env["training.delivery"].with_user(self.coordinator))
         offer.name = "Fictional native offer"
         offer.program_id = self.program
@@ -274,7 +372,9 @@ class TestEnrollment(EnrollmentCase):
         offer.access_policy = "duration"
         offer.access_days = 4
         delivery = offer.save()
-        enrollment_form = Form(self.env["training.enrollment"].with_user(self.coordinator).with_context(default_delivery_id=delivery.id))
+        enrollment_form = Form(
+            self.env["training.enrollment"].with_user(self.coordinator).with_context(default_delivery_id=delivery.id)
+        )
         enrollment_form.participant_id = self.portal.partner_id
         enrollment_form.user_id = self.portal
         enrollment_form.free_reason = "Fictional invitation"
@@ -289,12 +389,16 @@ class TestEnrollment(EnrollmentCase):
 
     def test_french_delivery_and_access_labels(self):
         from odoo.tools.translate import load_language
+
         load_language(self.cr, "fr_FR")
         model = self.env["training.enrollment"].with_context(lang="fr_FR")
         state = dict(model.fields_get(["state"])["state"]["selection"])
         self.assertEqual(state["requested"], "Demandée")
         self.assertEqual(state["confirmed"], "Confirmée")
-        self.assertEqual(self.env.ref("training_management.action_training_deliveries").with_context(lang="fr_FR").name, "Réalisations")
+        self.assertEqual(
+            self.env.ref("training_management.action_training_deliveries").with_context(lang="fr_FR").name,
+            "Réalisations",
+        )
 
 
 @tagged("post_install", "-at_install")
@@ -354,25 +458,36 @@ class TestReasonPerAction(EnrollmentCase):
     def test_reason_assistant_only_calls_listed_public_actions(self):
         e = self.enrollment(self.delivery())
         wizard_model = self.env["training.action.reason"].with_user(self.coordinator)
-        wizard = wizard_model.create({"res_model": e._name, "res_ids": str(e.id),
-                                      "action_name": "action_validate_prerequisites", "reason": "Assistant decision"})
+        wizard = wizard_model.create(
+            {
+                "res_model": e._name,
+                "res_ids": str(e.id),
+                "action_name": "action_validate_prerequisites",
+                "reason": "Assistant decision",
+            }
+        )
         self.assertEqual(wizard.target_count, 1)
         self.assertEqual(wizard.action_label, self.env._("Validate Prerequisites"))
         wizard.action_apply()
         self.assertEqual(e.prerequisites, "validated")
         self.assertIn("Assistant decision", self.reasons(e))
-        blank = wizard_model.create({"res_model": e._name, "res_ids": str(e.id),
-                                     "action_name": "action_waive_prerequisites", "reason": "  "})
+        blank = wizard_model.create(
+            {"res_model": e._name, "res_ids": str(e.id), "action_name": "action_waive_prerequisites", "reason": "  "}
+        )
         with self.assertRaises(ValidationError):
             blank.action_apply()
-        for values in ({"res_model": e._name, "action_name": "unlink"}, {"res_model": e._name, "action_name": "write"},
-                       {"res_model": "res.partner", "action_name": "action_archive"}):
+        for values in (
+            {"res_model": e._name, "action_name": "unlink"},
+            {"res_model": e._name, "action_name": "write"},
+            {"res_model": "res.partner", "action_name": "action_archive"},
+        ):
             with self.subTest(values=values):
                 bad = wizard_model.create({**values, "res_ids": str(e.id), "reason": "Forbidden"})
                 with self.assertRaises(ValidationError):
                     bad.action_apply()
-        gone = wizard_model.create({"res_model": e._name, "res_ids": "0",
-                                    "action_name": "action_waive_prerequisites", "reason": "Missing"})
+        gone = wizard_model.create(
+            {"res_model": e._name, "res_ids": "0", "action_name": "action_waive_prerequisites", "reason": "Missing"}
+        )
         with self.assertRaises(ValidationError):
             gone.action_apply()
         for user in (self.reader, self.internal, self.portal):
@@ -421,7 +536,9 @@ class TestLifecycleAndAccess(EnrollmentCase):
         self.assertEqual(confirmed.state, "closed")
         self.assertEqual(confirmed.access_state, "revoked")
         self.assertNotEqual(confirmed.effective_access, "active")
-        rows = delivery.operation_ids.filtered(lambda row: row.model_name == "training.enrollment" and row.record_id == confirmed.id)
+        rows = delivery.operation_ids.filtered(
+            lambda row: row.model_name == "training.enrollment" and row.record_id == confirmed.id
+        )
         self.assertEqual(rows[:1].reason, "Fictional closure")
 
     def test_closed_or_cancelled_delivery_blocks_effective_access(self):
@@ -453,7 +570,9 @@ class TestLifecycleAndAccess(EnrollmentCase):
         with self.assertRaises(ValidationError):
             e.action_cancel(reason="Terminal")
         replaced_source = self.admitted()
-        replacement = self.enrollment(replaced_source.delivery_id, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
+        replacement = self.enrollment(
+            replaced_source.delivery_id, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id
+        )
         replaced_source.action_replace(replacement.id, reason="Another person attends")
         self.assertEqual(replaced_source.state, "replaced")
 
@@ -501,7 +620,9 @@ class TestReservationDeadlineAndUniqueness(EnrollmentCase):
             lot.action_extend_deadline(None, reason="No new deadline")
         lot.action_extend_deadline(new, reason="Customer asked for time")
         self.assertEqual(lot.expires_at, new)
-        row = delivery.operation_ids.filtered(lambda r: r.model_name == "training.seat.allocation" and r.record_id == lot.id)[:1]
+        row = delivery.operation_ids.filtered(
+            lambda r: r.model_name == "training.seat.allocation" and r.record_id == lot.id
+        )[:1]
         self.assertEqual(row.reason, "Customer asked for time")
         self.assertEqual(json.loads(row.before)["expires_at"], str(old))
         self.assertEqual(json.loads(row.after)["expires_at"], str(new))
@@ -524,6 +645,7 @@ class TestReservationDeadlineAndUniqueness(EnrollmentCase):
 
     def test_extension_assistant_and_rights(self):
         from odoo.tests import Form
+
         lot = self.lot(self.delivery())
         old = lot.expires_at
         action = lot.action_open_extend()
@@ -540,7 +662,11 @@ class TestReservationDeadlineAndUniqueness(EnrollmentCase):
     def test_database_refuses_two_open_enrollments_for_one_person(self):
         delivery = self.delivery()
         first = self.enrollment(delivery)
-        values = {"delivery_id": delivery.id, "company_id": delivery.company_id.id, "participant_id": first.participant_id.id}
+        values = {
+            "delivery_id": delivery.id,
+            "company_id": delivery.company_id.id,
+            "participant_id": first.participant_id.id,
+        }
         with mute_logger("odoo.sql_db"), self.assertRaises(IntegrityError):
             with self.env.cr.savepoint():
                 # Bypass the model checks to prove the database guard itself.
@@ -562,7 +688,9 @@ class TestChangeDates(EnrollmentCase):
         old_start, old_end = delivery.start_at, delivery.end_at
         with self.assertRaises(ValidationError):
             delivery.action_change_dates(start_at=old_start + timedelta(days=1), end_at=old_end + timedelta(days=1))
-        delivery.action_change_dates(start_at=old_start + timedelta(days=1), end_at=old_end + timedelta(days=1), reason="Trainer unavailable")
+        delivery.action_change_dates(
+            start_at=old_start + timedelta(days=1), end_at=old_end + timedelta(days=1), reason="Trainer unavailable"
+        )
         self.assertEqual(delivery.start_at, old_start + timedelta(days=1))
         row = delivery.operation_ids.sorted("id")[-1]
         self.assertEqual(row.reason, "Trainer unavailable")
@@ -580,19 +708,33 @@ class TestChangeDates(EnrollmentCase):
         with self.assertRaises(ValidationError):
             delivery.write({"capacity": 0, "program_id": self.program.id})
         stored = e.access_end
-        delivery.action_change_dates(start_at=delivery.start_at + timedelta(days=2), end_at=delivery.end_at + timedelta(days=2), reason="Room change")
+        delivery.action_change_dates(
+            start_at=delivery.start_at + timedelta(days=2),
+            end_at=delivery.end_at + timedelta(days=2),
+            reason="Room change",
+        )
         self.assertEqual(e.access_end, stored, "Computed access periods are never rewritten")
         autonomous = self.delivery()
         with self.assertRaises(ValidationError):
-            autonomous.action_change_dates(start_at=fields.Datetime.now(), end_at=fields.Datetime.now() + timedelta(hours=1), reason="Not applicable")
+            autonomous.action_change_dates(
+                start_at=fields.Datetime.now(),
+                end_at=fields.Datetime.now() + timedelta(hours=1),
+                reason="Not applicable",
+            )
         cancelled = self.session()
         cancelled.action_cancel(reason="Cancelled offer")
         with self.assertRaises(ValidationError):
-            cancelled.action_change_dates(start_at=cancelled.start_at + timedelta(days=1), end_at=cancelled.end_at + timedelta(days=1), reason="Too late")
+            cancelled.action_change_dates(
+                start_at=cancelled.start_at + timedelta(days=1),
+                end_at=cancelled.end_at + timedelta(days=1),
+                reason="Too late",
+            )
 
     def test_fixed_access_follows_and_cannot_shrink_under_active_access(self):
         now = fields.Datetime.now()
-        delivery = self.delivery(access_policy="fixed", access_start=now + timedelta(days=1), access_end=now + timedelta(days=10))
+        delivery = self.delivery(
+            access_policy="fixed", access_start=now + timedelta(days=1), access_end=now + timedelta(days=10)
+        )
         delivery.action_change_dates(access_end=now + timedelta(days=12), reason="Longer access")
         self.assertEqual(delivery.access_end, now + timedelta(days=12))
         e = self.admitted(delivery)
@@ -605,6 +747,7 @@ class TestChangeDates(EnrollmentCase):
 
     def test_assistant_and_rights(self):
         from odoo.tests import Form
+
         delivery = self.session()
         action = delivery.action_open_dates()
         self.assertEqual(action["res_model"], "training.delivery.dates")
@@ -616,7 +759,11 @@ class TestChangeDates(EnrollmentCase):
         self.assertEqual(delivery.operation_ids.sorted("id")[-1].reason, "New room")
         for user in (self.reader, self.internal, self.portal):
             with self.assertRaises(AccessError):
-                delivery.with_user(user).action_change_dates(start_at=delivery.start_at + timedelta(days=1), end_at=delivery.end_at + timedelta(days=1), reason="Forbidden")
+                delivery.with_user(user).action_change_dates(
+                    start_at=delivery.start_at + timedelta(days=1),
+                    end_at=delivery.end_at + timedelta(days=1),
+                    reason="Forbidden",
+                )
 
 
 @tagged("post_install", "-at_install")
@@ -629,13 +776,24 @@ class TestErgonomics(EnrollmentCase):
         self.assertTrue(first.reference and second.reference)
         self.assertNotEqual(first.reference, second.reference)
         self.assertEqual(first.name, "Free name")
-        self.assertEqual(self.env["training.delivery"].with_user(self.coordinator).search([("name", "=", "Free name"), ("id", "=", first.id)]), first)
-        self.assertEqual(self.env["training.delivery"].with_user(self.coordinator).name_search(first.reference)[0][0], first.id)
+        self.assertEqual(
+            self.env["training.delivery"]
+            .with_user(self.coordinator)
+            .search([("name", "=", "Free name"), ("id", "=", first.id)]),
+            first,
+        )
+        self.assertEqual(
+            self.env["training.delivery"].with_user(self.coordinator).name_search(first.reference)[0][0], first.id
+        )
         with self.assertRaises(ValidationError):
             first.write({"reference": "FORGED"})
         # Each company numbers independently; the unique key includes the company.
         self.env["training.delivery"]._next_reference(self.other_company)
-        own = self.env["ir.sequence"].sudo().search([("code", "=", "training.delivery"), ("company_id", "=", self.other_company.id)])
+        own = (
+            self.env["ir.sequence"]
+            .sudo()
+            .search([("code", "=", "training.delivery"), ("company_id", "=", self.other_company.id)])
+        )
         self.assertEqual(len(own), 1)
         sequences = self.env["ir.sequence"].sudo().search([("code", "=", "training.delivery")])
         self.assertEqual(len(sequences.filtered(lambda s: s.company_id == self.company)), 1)
@@ -674,9 +832,16 @@ class TestErgonomics(EnrollmentCase):
         (first | second).action_validate_prerequisites(reason="Reviewed")
         action = self.env.ref("training_management.action_enrollment_confirm_selection")
         self.assertEqual(action.binding_model_id.model, "training.enrollment")
-        wizard = self.env["training.action.reason"].with_user(self.coordinator).with_context(
-            active_model="training.enrollment", active_ids=(first | second).ids, default_action_name="action_confirm"
-        ).create({"reason": "Group decision"})
+        wizard = (
+            self.env["training.action.reason"]
+            .with_user(self.coordinator)
+            .with_context(
+                active_model="training.enrollment",
+                active_ids=(first | second).ids,
+                default_action_name="action_confirm",
+            )
+            .create({"reason": "Group decision"})
+        )
         self.assertEqual(wizard.target_count, 2)
         wizard.action_apply()
         self.assertEqual((first | second).mapped("state"), ["confirmed", "confirmed"])

@@ -35,8 +35,9 @@ class TestNativeCreation(EnrollmentCase):
         for name in ("training.enrollment", "training.seat.allocation"):
             model = self.env[name].with_user(self.coordinator)
             draft = model.new({})
-            domain = safe_eval(model.fields_get(["delivery_id"])["delivery_id"]["domain"],
-                               {"company_id": draft.company_id.id})
+            domain = safe_eval(
+                model.fields_get(["delivery_id"])["delivery_id"]["domain"], {"company_id": draft.company_id.id}
+            )
             choices = self.env["training.delivery"].with_user(self.coordinator).search(domain)
             self.assertIn(delivery, choices)
         with Form(self.env["training.enrollment"].with_user(self.coordinator)) as form:
@@ -61,8 +62,9 @@ class TestNativeCreation(EnrollmentCase):
         draft = self.env["training.enrollment"].new({})
         self.assertEqual(draft.display_name, self.env._("New Enrollment"))
         source = self.enrollment(self.delivery())
-        replacement = self.enrollment(source.delivery_id, participant_id=self.portal_b.partner_id.id,
-                                      user_id=self.portal_b.id)
+        replacement = self.enrollment(
+            source.delivery_id, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id
+        )
         report = self.enrollment(self.delivery())
         self.assertNotEqual(source.display_name, report.display_name)
         self.assertIn(source.delivery_id.name, source.display_name)
@@ -70,11 +72,20 @@ class TestNativeCreation(EnrollmentCase):
         wizard = self.env["training.enrollment.operation"].with_user(self.coordinator)
         view = wizard.get_view(view_id=self.env.ref("training_management.view_training_enrollment_operation").id)
         from lxml import etree
+
         domain_text = etree.fromstring(view["arch"]).xpath("//field[@name='target_id']/@domain")[0]
         for operation, expected in (("replace", replacement), ("postpone", report)):
-            domain = safe_eval(domain_text, dict(operation=operation, company_id=self.company.id,
-                              enrollment_id=source.id, source_delivery_id=source.delivery_id.id,
-                              source_allocation_id=False, source_participant_id=source.participant_id.id))
+            domain = safe_eval(
+                domain_text,
+                dict(
+                    operation=operation,
+                    company_id=self.company.id,
+                    enrollment_id=source.id,
+                    source_delivery_id=source.delivery_id.id,
+                    source_allocation_id=False,
+                    source_participant_id=source.participant_id.id,
+                ),
+            )
             choices = self.env["training.enrollment"].with_user(self.coordinator).search(domain)
             self.assertIn(expected, choices)
             self.assertNotIn(source, choices)
@@ -88,6 +99,7 @@ class TestNativeCreation(EnrollmentCase):
 
     def test_audit_rendering_localizes_without_rewriting_evidence(self):
         from odoo.tools.translate import load_language
+
         load_language(self.env.cr, "fr_FR")
         enrollment = self.admitted()
         enrollment.action_authorize(reason="Fictional commercial decision")
@@ -103,6 +115,7 @@ class TestNativeCreation(EnrollmentCase):
         self.assertIn("Oui", text)
         start = enrollment.access_start
         from odoo.tools.misc import format_datetime
+
         expected = format_datetime(fr.env, start, tz="Africa/Casablanca")
         self.assertIn(expected, text)
         self.assertNotIn(str(start), text)

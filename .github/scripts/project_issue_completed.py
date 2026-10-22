@@ -56,7 +56,8 @@ class GitHub:
     def target(self):
         cursor = None
         while True:
-            data = self.graphql("""
+            data = self.graphql(
+                """
               query($cursor: String) {
                 organization(login: "Progideo") {
                   projectV2(number: 1) {
@@ -72,7 +73,9 @@ class GitHub:
                   }
                 }
               }
-            """, {"cursor": cursor})
+            """,
+                {"cursor": cursor},
+            )
             project = (data.get("organization") or {}).get("projectV2")
             if not project:
                 raise APIError("Project nº 1 inaccessible.")
@@ -90,7 +93,8 @@ class GitHub:
     def item(self, number, project_id):
         cursor = None
         while True:
-            data = self.graphql("""
+            data = self.graphql(
+                """
               query($number: Int!, $cursor: String) {
                 repository(owner: "Progideo", name: "training_management") {
                   issue(number: $number) {
@@ -108,7 +112,9 @@ class GitHub:
                   }
                 }
               }
-            """, {"number": number, "cursor": cursor})
+            """,
+                {"number": number, "cursor": cursor},
+            )
             issue = (data.get("repository") or {}).get("issue")
             if not issue:
                 raise APIError("Issue inaccessible dans le dépôt attendu.")
@@ -121,20 +127,21 @@ class GitHub:
             cursor = items["pageInfo"]["endCursor"]
 
     def set_done(self, project_id, item_id, field_id, option_id):
-        self.graphql("""
+        self.graphql(
+            """
           mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
             updateProjectV2ItemFieldValue(input: {
               projectId: $project, itemId: $item, fieldId: $field,
               value: {singleSelectOptionId: $option}
             }) { projectV2Item { id } }
           }
-        """, {"project": project_id, "item": item_id,
-              "field": field_id, "option": option_id})
+        """,
+            {"project": project_id, "item": item_id, "field": field_id, "option": option_id},
+        )
 
 
 def completed(issue):
-    return (not issue.get("pull_request") and issue.get("state") == "closed"
-            and issue.get("state_reason") == "completed")
+    return not issue.get("pull_request") and issue.get("state") == "closed" and issue.get("state_reason") == "completed"
 
 
 def synchronize(api, number, *, dry_run=True, allow_write=False, sleep=time.sleep):
@@ -175,7 +182,8 @@ def main():
     if not token:
         raise RuntimeError("Jeton GitHub App absent.")
     result = synchronize(
-        GitHub(token), int(number),
+        GitHub(token),
+        int(number),
         dry_run=os.environ.get("DRY_RUN", "true") != "false",
         allow_write=os.environ.get("PROJECT_AUTOMATION_ENABLED") == "true",
     )
