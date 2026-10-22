@@ -29,15 +29,14 @@ class TrainingEnrollmentOperation(models.TransientModel):
             raise ValidationError(_("A reason is required."))
         with self.env.cr.savepoint():
             enrollment = self.enrollment_id
-            enrollment.write({"change_reason": self.reason})
             if self.operation == "reserve":
-                enrollment.action_reserve(self.deadline)
+                enrollment.action_reserve(self.deadline, reason=self.reason)
             elif self.operation == "extend":
-                enrollment.action_extend_access(self.deadline)
+                enrollment.action_extend_access(self.deadline, reason=self.reason)
             else:
                 if not self.target_id:
                     raise ValidationError(_("Choose a new requested enrollment."))
-                enrollment.action_transfer(self.target_id.id, replacement=self.operation == "replace")
+                enrollment.action_transfer(self.target_id.id, replacement=self.operation == "replace", reason=self.reason)
         return {"type": "ir.actions.act_window_close"}
 
 
@@ -56,6 +55,5 @@ class TrainingAllocationRelease(models.TransientModel):
         self.check_access("write")
         self.allocation_id._require_coordinator()
         with self.env.cr.savepoint():
-            self.allocation_id.write({"change_reason": self.reason})
-            self.allocation_id.action_release_places(self.quantity)
+            self.allocation_id.action_release_places(self.quantity, reason=self.reason)
         return {"type": "ir.actions.act_window_close"}

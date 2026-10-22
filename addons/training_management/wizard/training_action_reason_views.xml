@@ -1,0 +1,22 @@
+<odoo>
+    <record id="view_training_action_reason" model="ir.ui.view">
+        <field name="name">training.action.reason.form</field>
+        <field name="model">training.action.reason</field>
+        <field name="arch" type="xml">
+            <form string="Reason for the Action">
+                <group>
+                    <field name="res_model" invisible="1"/>
+                    <field name="res_ids" invisible="1"/>
+                    <field name="action_name" invisible="1"/>
+                    <field name="action_label"/>
+                    <field name="target_count"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

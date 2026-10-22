@@ -38,8 +38,8 @@ def delivery(capacity=1):
 
 first_delivery = delivery()
 entries = restricted["training.enrollment"].create([{"delivery_id": first_delivery.id,
-    "participant_id": person.id, "free_reason": "Fictional invitation", "change_reason": "Review"} for person in people])
-entries.action_validate_prerequisites()
+    "participant_id": person.id, "free_reason": "Fictional invitation"} for person in people])
+entries.action_validate_prerequisites(reason="Review")
 duplicate_delivery = delivery(10)
 commercial_deliveries = delivery() | delivery()
 product = env["product.template"].create({"name": "Fictional race package " + suffix, "type": "service",

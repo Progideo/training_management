@@ -8,11 +8,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'preparation'"/>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'preparation' or below_threshold"/>
+                    <button name="action_open_reason" type="object" string="Confirm below Threshold" context="{'reason_action': 'action_confirm'}" invisible="state != 'preparation' or not below_threshold"/>
                     <button name="action_start" type="object" string="Start" invisible="state != 'confirmed'"/>
                     <button name="action_deliver" type="object" string="Mark Delivered" invisible="state != 'ongoing'"/>
-                    <button name="action_close" type="object" string="Close" invisible="state != 'delivered'"/>
-                    <button name="action_cancel" type="object" string="Cancel Delivery" invisible="state in ('closed', 'cancelled')" confirm="Cancel the delivery, revoke its enrollments and release its allocations? Commercial documents are preserved."/>
+                    <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'delivered'"/>
+                    <button name="action_open_reason" type="object" string="Cancel Delivery" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled')" confirm="Cancel the delivery, revoke its enrollments and release its allocations? Commercial documents are preserved."/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet><group>
@@ -22,7 +23,6 @@
                     <field name="start_at" invisible="kind == 'autonomous'"/><field name="end_at" invisible="kind == 'autonomous'"/><field name="timezone"/>
                     <field name="capacity"/><field name="occupied_seats"/><field name="opening_threshold"/><field name="below_threshold"/>
                     <field name="access_policy"/><field name="access_start" invisible="access_policy != 'fixed'"/><field name="access_end" invisible="access_policy != 'fixed'"/><field name="access_days" invisible="access_policy != 'duration'"/>
-                    <field name="change_reason"/>
                 </group><notebook>
                     <page string="Places"><field name="allocation_ids" readonly="1"/></page>
                     <page string="Enrollments"><field name="enrollment_ids" readonly="1"/></page>
@@ -37,7 +37,7 @@
     </record>
     <record id="view_training_allocation_form" model="ir.ui.view">
         <field name="name">training.seat.allocation.form</field><field name="model">training.seat.allocation</field>
-        <field name="arch" type="xml"><form><header><button name="action_confirm" type="object" string="Confirm Allocation" invisible="state != 'reserved'"/><button name="action_open_release" type="object" string="Release Places" invisible="state not in ('reserved', 'confirmed')"/><button name="action_expire" type="object" string="Record Expiry" invisible="state != 'reserved'"/><button name="action_cancel" type="object" string="Cancel Allocation" invisible="state in ('expired', 'cancelled')"/><field name="state" widget="statusbar"/></header><sheet><group><field name="company_id" invisible="1"/><field name="delivery_id"/><field name="customer_id"/><field name="source_reference"/><field name="quantity"/><field name="unnamed_seats"/><field name="expires_at"/><field name="change_reason"/></group><field name="enrollment_ids" readonly="1"/></sheet></form></field>
+        <field name="arch" type="xml"><form><header><button name="action_confirm" type="object" string="Confirm Allocation" invisible="state != 'reserved'"/><button name="action_open_release" type="object" string="Release Places" invisible="state not in ('reserved', 'confirmed')"/><button name="action_expire" type="object" string="Record Expiry" invisible="state != 'reserved'"/><button name="action_open_reason" type="object" string="Cancel Allocation" context="{'reason_action': 'action_cancel'}" invisible="state in ('expired', 'cancelled')"/><field name="state" widget="statusbar"/></header><sheet><group><field name="company_id" invisible="1"/><field name="delivery_id"/><field name="customer_id"/><field name="source_reference"/><field name="quantity"/><field name="unnamed_seats"/><field name="expires_at"/></group><field name="enrollment_ids" readonly="1"/></sheet></form></field>
     </record>
     <record id="view_training_enrollment_list" model="ir.ui.view">
         <field name="name">training.enrollment.list</field><field name="model">training.enrollment</field>
@@ -48,23 +48,23 @@
         <field name="arch" type="xml"><form><header>
             <button name="action_wait" type="object" string="Waiting List" invisible="state != 'requested'"/>
             <button name="action_open_operation" type="object" string="Reserve / Extend / Transfer"/>
-            <button name="action_validate_prerequisites" type="object" string="Validate Prerequisites" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
-            <button name="action_waive_prerequisites" type="object" string="Waive Prerequisites" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
+            <button name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
+            <button name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
             <button name="action_confirm" type="object" string="Confirm Enrollment" invisible="state not in ('requested', 'reserved')"/>
-            <button name="action_authorize" type="object" string="Authorize Commercially" invisible="state != 'confirmed' or commercially_authorized"/>
-            <button name="action_revoke_authorization" type="object" string="Withdraw Authorization" invisible="not commercially_authorized"/>
-            <button name="action_open_access" type="object" string="Open / Resume Access" invisible="state != 'confirmed' or access_state == 'revoked'"/>
-            <button name="action_suspend_access" type="object" string="Suspend Access" invisible="access_state != 'active'"/>
-            <button name="action_revoke_access" type="object" string="Revoke Access" invisible="access_state == 'revoked'"/>
-            <button name="action_close" type="object" string="Close" invisible="state != 'confirmed'"/>
-            <button name="action_abandon" type="object" string="Abandon" invisible="state != 'confirmed'"/>
-            <button name="action_cancel" type="object" string="Cancel Enrollment" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
+            <button name="action_open_reason" type="object" string="Authorize Commercially" context="{'reason_action': 'action_authorize'}" invisible="state != 'confirmed' or commercially_authorized"/>
+            <button name="action_open_reason" type="object" string="Withdraw Authorization" context="{'reason_action': 'action_revoke_authorization'}" invisible="not commercially_authorized"/>
+            <button name="action_open_reason" type="object" string="Open / Resume Access" context="{'reason_action': 'action_open_access'}" invisible="state != 'confirmed' or access_state == 'revoked'"/>
+            <button name="action_open_reason" type="object" string="Suspend Access" context="{'reason_action': 'action_suspend_access'}" invisible="access_state != 'active'"/>
+            <button name="action_open_reason" type="object" string="Revoke Access" context="{'reason_action': 'action_revoke_access'}" invisible="access_state == 'revoked'"/>
+            <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'confirmed'"/>
+            <button name="action_open_reason" type="object" string="Abandon" context="{'reason_action': 'action_abandon'}" invisible="state != 'confirmed'"/>
+            <button name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
             <field name="state" widget="statusbar"/>
         </header><sheet><group>
             <field name="company_id" invisible="1"/><field name="delivery_id"/><field name="program_id"/><field name="participant_id"/><field name="user_id"/>
             <field name="allocation_id" domain="[('delivery_id', '=', delivery_id)]"/><field name="free_reason"/><field name="requested_at"/><field name="reservation_end"/>
             <field name="prerequisites"/><field name="commercially_authorized"/><field name="access_state"/><field name="effective_access"/>
-            <field name="access_start"/><field name="access_end"/><field name="successor_id"/><field name="change_reason"/>
+            <field name="access_start"/><field name="access_end"/><field name="successor_id"/>
         </group></sheet></form></field>
     </record>
     <record id="action_training_deliveries" model="ir.actions.act_window"><field name="name">Deliveries</field><field name="res_model">training.delivery</field><field name="view_mode">list,form</field></record>

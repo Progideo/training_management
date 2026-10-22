@@ -53,8 +53,7 @@ class EnrollmentCase(TransactionCase):
 
     def admitted(self, delivery=None):
         enrollment = self.enrollment(delivery or self.delivery())
-        enrollment.change_reason = "Manual review / B2B deferred payment decision"
-        enrollment.action_validate_prerequisites()
+        enrollment.action_validate_prerequisites(reason="Manual review / B2B deferred payment decision")
         enrollment.action_confirm()
         return enrollment
 
@@ -99,33 +98,33 @@ class TestEnrollment(EnrollmentCase):
         self.assertEqual(e.effective_access, "unopened")
         with self.assertRaises(ValidationError):
             e.action_open_access()
-        e.action_authorize()
+        e.action_authorize(reason="Fictional commercial decision")
         self.assertEqual(e.effective_access, "unopened")
-        e.action_open_access()
+        e.action_open_access(reason="Fictional opening")
         original_end = e.access_end
-        e.action_open_access()
+        e.action_open_access(reason="Fictional repeated opening")
         self.assertEqual(e.access_end, original_end)
         self.assertEqual(e.effective_access, "active")
         self.assertEqual(e._effective_state(original_end), "expired")
-        e.action_suspend_access()
+        e.action_suspend_access(reason="Fictional suspension")
         self.assertEqual(e.effective_access, "suspended")
-        e.action_open_access()
+        e.action_open_access(reason="Fictional resumption")
         self.assertEqual(e.access_end, original_end)
-        e.action_revoke_authorization()
+        e.action_revoke_authorization(reason="Fictional withdrawal")
         self.assertEqual(e.effective_access, "blocked")
-        e.action_authorize()
-        e.action_extend_access(original_end + timedelta(days=3))
+        e.action_authorize(reason="Fictional new decision")
+        e.action_extend_access(original_end + timedelta(days=3), reason="Fictional extension")
         self.assertEqual(e.access_end, original_end + timedelta(days=3))
         self.assertTrue(e.delivery_id.operation_ids.filtered(lambda row: 'access_end' in row.after))
-        e.action_revoke_access()
+        e.action_revoke_access(reason="Fictional revocation")
         with self.assertRaises(ValidationError):
-            e.action_open_access()
+            e.action_open_access(reason="Fictional reopening")
 
     def test_fixed_access_scheduled_and_disabled_account(self):
         now = fields.Datetime.now()
         e = self.admitted(self.delivery(access_policy="fixed", access_start=now + timedelta(days=1), access_end=now + timedelta(days=3)))
-        e.action_authorize()
-        e.action_open_access()
+        e.action_authorize(reason="Fictional commercial decision")
+        e.action_open_access(reason="Fictional opening")
         self.assertEqual(e.effective_access, "scheduled")
         self.portal.active = False
         self.assertEqual(e._effective_state(now + timedelta(days=2)), "blocked")
@@ -159,11 +158,11 @@ class TestEnrollment(EnrollmentCase):
 
     def test_transfer_and_replacement_no_admission_or_access_copied(self):
         old = self.admitted()
-        old.action_authorize()
-        old.action_open_access()
+        old.action_authorize(reason="Fictional commercial decision")
+        old.action_open_access(reason="Fictional opening")
         new = self.enrollment(old.delivery_id, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
-        old.action_transfer(new.id, replacement=True)
-        old.action_transfer(new.id, replacement=True)
+        old.action_transfer(new.id, replacement=True, reason="Fictional replacement")
+        old.action_transfer(new.id, replacement=True, reason="Fictional replacement")
         self.assertEqual(old.state, "replaced")
         self.assertEqual(old.access_state, "revoked")
         self.assertEqual(old.successor_id, new)
@@ -172,8 +171,7 @@ class TestEnrollment(EnrollmentCase):
         self.assertFalse(new.commercially_authorized)
         self.assertFalse(new.access_end)
         target = self.enrollment(self.delivery(), participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
-        new.change_reason = "Report requested"
-        new.action_transfer(target.id)
+        new.action_transfer(target.id, reason="Report requested")
         self.assertEqual(new.successor_id, target)
         self.assertEqual(new.state, "cancelled")
 
@@ -220,12 +218,13 @@ class TestEnrollment(EnrollmentCase):
         delivery = self.delivery(opening_threshold=3)
         with self.assertRaises(ValidationError):
             delivery.action_confirm()
-        delivery.change_reason = "Explicit opening below threshold"
-        delivery.action_confirm()
+        delivery.action_confirm(reason="Explicit opening below threshold")
         e = self.admitted(delivery)
         with self.assertRaises(ValidationError):
             delivery.write({"access_days": 20})
-        delivery.action_cancel()
+        with self.assertRaises(ValidationError):
+            delivery.action_cancel()
+        delivery.action_cancel(reason="Fictional cancellation")
         self.assertEqual(e.state, "cancelled")
         self.assertEqual(e.access_state, "revoked")
         self.assertEqual(delivery.state, "cancelled")
@@ -250,8 +249,7 @@ class TestEnrollment(EnrollmentCase):
 
     def test_terminal_admission_and_financial_independence(self):
         e = self.admitted()
-        e.change_reason = "Cancellation, finance reviewed separately"
-        e.action_cancel()
+        e.action_cancel(reason="Cancellation, finance reviewed separately")
         self.assertEqual(e.access_state, "revoked")
         with self.assertRaises(ValidationError):
             e.action_validate_prerequisites()
@@ -293,3 +291,90 @@ class TestEnrollment(EnrollmentCase):
         self.assertEqual(state["requested"], "Demandée")
         self.assertEqual(state["confirmed"], "Confirmée")
         self.assertEqual(self.env.ref("training_management.action_training_deliveries").with_context(lang="fr_FR").name, "Réalisations")
+
+
+@tagged("post_install", "-at_install")
+class TestReasonPerAction(EnrollmentCase):
+    """S03.1 §1: every motivated action takes its own reason, kept nowhere but the history."""
+
+    def reasons(self, record):
+        rows = record.delivery_id.operation_ids if record._name != "training.delivery" else record.operation_ids
+        return rows.filtered(lambda row: row.model_name == record._name and row.record_id == record.id).mapped("reason")
+
+    def test_two_decisions_two_reasons_and_no_stored_reason(self):
+        e = self.enrollment(self.delivery())
+        for model in ("training.delivery", "training.seat.allocation", "training.enrollment", "training.controlled"):
+            self.assertNotIn("change_reason", self.env[model]._fields)
+        e.action_validate_prerequisites(reason="First decision")
+        with self.assertRaises(ValidationError):
+            e.action_waive_prerequisites()
+        with self.assertRaises(ValidationError):
+            e.action_waive_prerequisites(reason="   ")
+        self.assertEqual(e.prerequisites, "validated")
+        e.action_waive_prerequisites(reason="Second decision")
+        self.assertEqual(e.prerequisites, "waived")
+        reasons = self.reasons(e)
+        self.assertIn("First decision", reasons)
+        self.assertIn("Second decision", reasons)
+        e.action_confirm()
+        with self.assertRaises(ValidationError):
+            e.action_authorize()
+        self.assertFalse(e.commercially_authorized)
+        e.action_authorize(reason="Third decision")
+        with self.assertRaises(ValidationError):
+            e.action_open_access()
+        self.assertEqual(e.access_state, "unopened")
+
+    def test_delivery_and_lot_actions_need_a_reason_each_time(self):
+        delivery = self.delivery()
+        lot = self.lot(delivery)
+        with self.assertRaises(ValidationError):
+            lot.action_release_places(2)
+        lot.action_release_places(2, reason="Release for another delivery")
+        with self.assertRaises(ValidationError):
+            lot.action_release_places(1)
+        with self.assertRaises(ValidationError):
+            lot.action_cancel()
+        lot.action_cancel(reason="Lot withdrawn")
+        self.assertEqual(lot.state, "cancelled")
+        self.assertEqual(self.reasons(lot)[:2], ["Lot withdrawn", "Release for another delivery"])
+        delivery.action_confirm()
+        delivery.action_start()
+        delivery.action_deliver()
+        with self.assertRaises(ValidationError):
+            delivery.action_close()
+        delivery.action_close(reason="Delivery finished")
+        self.assertEqual(delivery.state, "closed")
+        self.assertIn("Delivery finished", self.reasons(delivery))
+
+    def test_reason_assistant_only_calls_listed_public_actions(self):
+        e = self.enrollment(self.delivery())
+        wizard_model = self.env["training.action.reason"].with_user(self.coordinator)
+        wizard = wizard_model.create({"res_model": e._name, "res_ids": str(e.id),
+                                      "action_name": "action_validate_prerequisites", "reason": "Assistant decision"})
+        self.assertEqual(wizard.target_count, 1)
+        self.assertEqual(wizard.action_label, self.env._("Validate Prerequisites"))
+        wizard.action_apply()
+        self.assertEqual(e.prerequisites, "validated")
+        self.assertIn("Assistant decision", self.reasons(e))
+        blank = wizard_model.create({"res_model": e._name, "res_ids": str(e.id),
+                                     "action_name": "action_waive_prerequisites", "reason": "  "})
+        with self.assertRaises(ValidationError):
+            blank.action_apply()
+        for values in ({"res_model": e._name, "action_name": "unlink"}, {"res_model": e._name, "action_name": "write"},
+                       {"res_model": "res.partner", "action_name": "action_archive"}):
+            with self.subTest(values=values):
+                bad = wizard_model.create({**values, "res_ids": str(e.id), "reason": "Forbidden"})
+                with self.assertRaises(ValidationError):
+                    bad.action_apply()
+        gone = wizard_model.create({"res_model": e._name, "res_ids": "0",
+                                    "action_name": "action_waive_prerequisites", "reason": "Missing"})
+        with self.assertRaises(ValidationError):
+            gone.action_apply()
+        for user in (self.reader, self.internal, self.portal):
+            with self.assertRaises(AccessError):
+                e.with_user(user).action_open_reason()
+        action = e.with_user(self.coordinator).with_context(reason_action="action_cancel").action_open_reason()
+        self.assertEqual(action["res_model"], "training.action.reason")
+        with self.assertRaises(ValidationError):
+            e.with_user(self.coordinator).with_context(reason_action="unlink").action_open_reason()

@@ -19,3 +19,4 @@ access_enrollment_operation_coordinator,Enrollment operation coordinator,trainin
 rule_enrollment_operation_company,Enrollment operation allowed companies,training.enrollment.operation,,crud,"[('company_id', 'in', company_ids)]"
 access_allocation_release_coordinator,Release places coordinator,training.allocation.release,training_management.group_training_coordinator,crud,
 rule_allocation_release_company,Release places allowed companies,training.allocation.release,,crud,"[('company_id', 'in', company_ids)]"
+access_action_reason_coordinator,Training action reason coordinator,training.action.reason,training_management.group_training_coordinator,crud,

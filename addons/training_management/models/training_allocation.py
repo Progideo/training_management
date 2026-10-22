@@ -29,6 +29,15 @@ class TrainingSeatAllocation(models.Model):
     _positive_quantity = models.Constraint("CHECK(quantity > 0)", "Allocate a positive number of places.")
     _unique_source = models.Constraint("UNIQUE(delivery_id, source_reference)", "This reservation reference already exists for the delivery.")
 
+    _reason_actions = ("action_confirm", "action_cancel")
+
+    @api.private
+    def _reason_labels(self):
+        return {
+            "action_confirm": self.env._("Confirm Allocation"),
+            "action_cancel": self.env._("Cancel Allocation"),
+        }
+
     @api.depends("quantity", "state", "expires_at", "enrollment_ids.state", "enrollment_ids.reservation_end")
     def _compute_unnamed(self):
         now = fields.Datetime.now()
@@ -74,11 +83,11 @@ class TrainingSeatAllocation(models.Model):
 
     def write(self, vals):
         self._require_coordinator()
-        if set(vals) - {"change_reason"}:
+        if vals:
             raise ValidationError(self.env._("An allocation is fixed; cancel it and create a new reservation."))
         return super().write(vals)
 
-    def action_confirm(self):
+    def action_confirm(self, reason=None):
         self._require_coordinator()
         with self.env.cr.savepoint():
             self.delivery_id._serialize()
@@ -89,11 +98,11 @@ class TrainingSeatAllocation(models.Model):
                 if not lot._available() or lot.delivery_id.state in ("closed", "cancelled", "delivered"):
                     raise ValidationError(self.env._("Only a live reservation can be confirmed."))
                 lot._check_source()
-                lot._store({"state": "confirmed"}, lot.change_reason)
+                lot._store({"state": "confirmed"}, reason)
             self.delivery_id._check_capacity()
         return True
 
-    def action_cancel(self):
+    def action_cancel(self, reason=None):
         self._require_coordinator()
         with self.env.cr.savepoint():
             self.delivery_id._serialize()
@@ -101,13 +110,13 @@ class TrainingSeatAllocation(models.Model):
             for lot in self:
                 if lot.state == "cancelled":
                     continue
-                reason = lot._reason()
+                reason = lot._require_reason(reason)
                 for enrollment in lot.enrollment_ids.filtered(lambda e: e.state not in TERMINAL):
                     enrollment._store({"state": "cancelled", "access_state": "revoked"}, reason)
                 lot._store({"state": "cancelled"}, reason)
         return True
 
-    def action_release_places(self, quantity):
+    def action_release_places(self, quantity, reason=None):
         self.ensure_one()
         with self.env.cr.savepoint():
             self._require_coordinator()
@@ -118,7 +127,7 @@ class TrainingSeatAllocation(models.Model):
             remaining = self.quantity - quantity
             if len(self.enrollment_ids.filtered(lambda e: e._occupies())) > remaining:
                 raise ValidationError(self.env._("Cancel or transfer the affected enrollments before releasing their places."))
-            self._store({"quantity": remaining}, self._reason())
+            self._store({"quantity": remaining}, self._require_reason(reason))
         return True
 
     def action_expire(self):

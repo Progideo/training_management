@@ -40,6 +40,28 @@ class TrainingEnrollment(models.Model):
     effective_access = fields.Selection([("unopened", "Unopened"), ("active", "Active"), ("scheduled", "Scheduled"), ("expired", "Expired"), ("suspended", "Suspended"), ("revoked", "Revoked"), ("blocked", "Blocked")], compute="_compute_effective_access")
     successor_id = fields.Many2one("training.enrollment", readonly=True, copy=False, ondelete="restrict", check_company=True)
 
+    _reason_actions = (
+        "action_validate_prerequisites", "action_waive_prerequisites", "action_authorize",
+        "action_revoke_authorization", "action_open_access", "action_suspend_access",
+        "action_revoke_access", "action_cancel", "action_abandon", "action_close", "action_confirm",
+    )
+
+    @api.private
+    def _reason_labels(self):
+        return {
+            "action_validate_prerequisites": self.env._("Validate Prerequisites"),
+            "action_waive_prerequisites": self.env._("Waive Prerequisites"),
+            "action_authorize": self.env._("Authorize Commercially"),
+            "action_revoke_authorization": self.env._("Withdraw Authorization"),
+            "action_open_access": self.env._("Open / Resume Access"),
+            "action_suspend_access": self.env._("Suspend Access"),
+            "action_revoke_access": self.env._("Revoke Access"),
+            "action_cancel": self.env._("Cancel Enrollment"),
+            "action_abandon": self.env._("Abandon"),
+            "action_close": self.env._("Close"),
+            "action_confirm": self.env._("Confirm Enrollment"),
+        }
+
     @api.depends("participant_id.display_name", "delivery_id.display_name")
     @api.depends_context("lang")
     def _compute_display_name(self):
@@ -90,7 +112,7 @@ class TrainingEnrollment(models.Model):
             prepared = []
             for values in vals_list:
                 values = dict(values)
-                if set(values) - {"delivery_id", "participant_id", "user_id", "allocation_id", "free_reason", "change_reason"}:
+                if set(values) - {"delivery_id", "participant_id", "user_id", "allocation_id", "free_reason"}:
                     raise ValidationError(self.env._("Create a requested enrollment without admission metadata."))
                 values.update(state="requested", requested_at=fields.Datetime.now(), prerequisites="pending", commercially_authorized=False, access_state="unopened", access_start=False, access_end=False, reservation_end=False, successor_id=False)
                 prepared.append(values)
@@ -111,14 +133,14 @@ class TrainingEnrollment(models.Model):
 
     def write(self, vals):
         self._require_coordinator()
-        if set(vals) - {"user_id", "change_reason"}:
+        if set(vals) - {"user_id"}:
             raise ValidationError(self.env._("Use admission and access actions; enrollment identity and origin are fixed."))
         with self.env.cr.savepoint():
             self.delivery_id._serialize()
             for enrollment in self:
                 if "user_id" in vals and enrollment.access_state != "unopened":
                     raise ValidationError(self.env._("The account of an activated enrollment is fixed."))
-                enrollment._store(vals, enrollment.change_reason)
+                enrollment._store(vals)
                 enrollment._check_identity()
         return True
 
@@ -140,7 +162,7 @@ class TrainingEnrollment(models.Model):
                 e._store({"state": "waiting"})
         return self._action(change)
 
-    def action_reserve(self, expires_at=None):
+    def action_reserve(self, expires_at=None, reason=None):
         def change(e):
             if e.state == "reserved" and e._occupies():
                 return
@@ -149,23 +171,23 @@ class TrainingEnrollment(models.Model):
             deadline = fields.Datetime.to_datetime(expires_at or (e.allocation_id.expires_at if e.allocation_id else False))
             if not deadline or deadline <= fields.Datetime.now():
                 raise ValidationError(self.env._("Set a future reservation deadline."))
-            e._store({"state": "reserved", "reservation_end": deadline}, e.change_reason)
+            e._store({"state": "reserved", "reservation_end": deadline}, reason)
             e._validate_seat()
         return self._action(change)
 
     @api.private
-    def _review_prerequisites(self, target):
+    def _review_prerequisites(self, target, reason):
         def change(e):
             if e.state in TERMINAL:
                 raise ValidationError(self.env._("A terminal enrollment keeps its admission history."))
-            e._store({"prerequisites": target}, e._reason())
+            e._store({"prerequisites": target}, e._require_reason(reason))
         return self._action(change)
 
-    def action_validate_prerequisites(self):
-        return self._review_prerequisites("validated")
+    def action_validate_prerequisites(self, reason=None):
+        return self._review_prerequisites("validated", reason)
 
-    def action_waive_prerequisites(self):
-        return self._review_prerequisites("waived")
+    def action_waive_prerequisites(self, reason=None):
+        return self._review_prerequisites("waived", reason)
 
     @api.private
     def _check_admission(self):
@@ -181,29 +203,29 @@ class TrainingEnrollment(models.Model):
             self.allocation_id._check_source()
         self._validate_seat()
 
-    def action_confirm(self):
+    def action_confirm(self, reason=None):
         def change(e):
             if e.state == "confirmed":
                 return
             if e.state not in ("requested", "reserved") or (e.state == "reserved" and not e._occupies()):
                 raise ValidationError(self.env._("Confirm a request or a non-expired reservation. Propose waiting places manually first."))
-            e._store({"state": "confirmed"}, e.change_reason)
+            e._store({"state": "confirmed"}, reason)
             e._check_admission()
         return self._action(change)
 
-    def action_authorize(self):
+    def action_authorize(self, reason=None):
         def change(e):
             if e.state != "confirmed":
                 raise ValidationError(self.env._("Confirm the enrollment before commercial authorization."))
             e._check_admission()
             if not e.commercially_authorized:
-                e._store({"commercially_authorized": True}, e._reason())
+                e._store({"commercially_authorized": True}, e._require_reason(reason))
         return self._action(change)
 
-    def action_revoke_authorization(self):
-        return self._action(lambda e: e._store({"commercially_authorized": False}, e._reason()))
+    def action_revoke_authorization(self, reason=None):
+        return self._action(lambda e: e._store({"commercially_authorized": False}, e._require_reason(reason)))
 
-    def action_open_access(self):
+    def action_open_access(self, reason=None):
         def change(e):
             if e.access_state == "active":
                 return
@@ -220,25 +242,25 @@ class TrainingEnrollment(models.Model):
                 values.update(access_start=start, access_end=end)
             if (values.get("access_end") or e.access_end) <= fields.Datetime.now():
                 raise ValidationError(self.env._("Extend an expired period before opening access."))
-            e._store(values, e._reason())
+            e._store(values, e._require_reason(reason))
         return self._action(change)
 
-    def action_suspend_access(self):
+    def action_suspend_access(self, reason=None):
         def change(e):
             if e.state != "confirmed" or e.access_state != "active":
                 raise ValidationError(self.env._("Only active access on a confirmed enrollment can be suspended."))
-            e._store({"access_state": "suspended"}, e._reason())
+            e._store({"access_state": "suspended"}, e._require_reason(reason))
         return self._action(change)
 
-    def action_revoke_access(self):
-        return self._action(lambda e: e._store({"access_state": "revoked"}, e._reason()))
+    def action_revoke_access(self, reason=None):
+        return self._action(lambda e: e._store({"access_state": "revoked"}, e._require_reason(reason)))
 
-    def action_extend_access(self, end_at=None):
+    def action_extend_access(self, end_at=None, reason=None):
         def change(e):
             end = fields.Datetime.to_datetime(end_at)
             if not e.access_end or not end or end <= max(e.access_end, fields.Datetime.now()) or e.state != "confirmed":
                 raise ValidationError(self.env._("An extension requires a confirmed enrollment and a later access end."))
-            e._store({"access_end": end}, e._reason())
+            e._store({"access_end": end}, e._require_reason(reason))
         return self._action(change)
 
     @api.private
@@ -263,7 +285,7 @@ class TrainingEnrollment(models.Model):
             enrollment.effective_access = enrollment._effective_state()
 
     @api.private
-    def _finish(self, target):
+    def _finish(self, target, reason):
         def change(e):
             if e.state == target:
                 return
@@ -271,19 +293,19 @@ class TrainingEnrollment(models.Model):
                 raise ValidationError(self.env._("A terminal enrollment cannot change its history."))
             if target in ("closed", "abandoned") and e.state != "confirmed":
                 raise ValidationError(self.env._("Only a confirmed enrollment may be closed or abandoned."))
-            e._store({"state": target, "access_state": "revoked"}, e._reason())
+            e._store({"state": target, "access_state": "revoked"}, e._require_reason(reason))
         return self._action(change)
 
-    def action_cancel(self):
-        return self._finish("cancelled")
+    def action_cancel(self, reason=None):
+        return self._finish("cancelled", reason)
 
-    def action_abandon(self):
-        return self._finish("abandoned")
+    def action_abandon(self, reason=None):
+        return self._finish("abandoned", reason)
 
-    def action_close(self):
-        return self._finish("closed")
+    def action_close(self, reason=None):
+        return self._finish("closed", reason)
 
-    def action_transfer(self, target_id, replacement=False):
+    def action_transfer(self, target_id, replacement=False, reason=None):
         self.ensure_one()
         target = self.browse(target_id)
         target.ensure_one()
@@ -306,8 +328,8 @@ class TrainingEnrollment(models.Model):
                     raise ValidationError(self.env._("A replacement uses the same delivery and allocation with a different person."))
             elif self.participant_id != target.participant_id or self.delivery_id == target.delivery_id:
                 raise ValidationError(self.env._("A report keeps the participant and selects another delivery."))
-            self._store({"state": "replaced" if replacement else "cancelled", "access_state": "revoked", "successor_id": target.id}, self._reason())
-            target._store({"change_reason": target.change_reason}, self.env._("Linked from enrollment %s", self.id))
+            self._store({"state": "replaced" if replacement else "cancelled", "access_state": "revoked", "successor_id": target.id}, self._require_reason(reason))
+            self.env["training.operation"]._record(target, {}, {}, self.env._("Linked from enrollment %s", self.id))
         return True
 
 

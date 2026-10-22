@@ -16,6 +16,7 @@
         "views/training_menus.xml",
         "views/training_delivery_views.xml",
         "wizard/training_enrollment_operation_views.xml",
+        "wizard/training_action_reason_views.xml",
     ],
     "application": True,
     "installable": True,

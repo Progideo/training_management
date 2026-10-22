@@ -37,6 +37,16 @@ class TrainingDelivery(models.Model):
 
     _valid_capacity = models.Constraint("CHECK(capacity >= 0 AND opening_threshold >= 0 AND access_days >= 0)", "Capacity, threshold and duration cannot be negative.")
 
+    _reason_actions = ("action_confirm", "action_cancel", "action_close")
+
+    @api.private
+    def _reason_labels(self):
+        return {
+            "action_confirm": self.env._("Confirm below Threshold"),
+            "action_cancel": self.env._("Cancel Delivery"),
+            "action_close": self.env._("Close"),
+        }
+
     @api.private
     def _serialize(self):
         self._require_coordinator()
@@ -111,12 +121,12 @@ class TrainingDelivery(models.Model):
                     raise ValidationError(self.env._("A delivery with inscriptions keeps its programme, dates and access policy. Use report or extension."))
                 if "company_id" in vals and delivery.allocation_ids:
                     raise ValidationError(self.env._("A delivery with allocated places keeps its company."))
-                delivery._store(vals, delivery.change_reason)
+                delivery._store(vals)
             self._check_definition()
         return True
 
     @api.private
-    def _transition(self, target):
+    def _transition(self, target, reason=None):
         with self.env.cr.savepoint():
             self._serialize()
             transitions = {"preparation": "confirmed", "confirmed": "ongoing", "ongoing": "delivered", "delivered": "closed"}
@@ -126,7 +136,7 @@ class TrainingDelivery(models.Model):
                 if target == "cancelled":
                     if delivery.state in ("closed", "cancelled"):
                         raise ValidationError(self.env._("A closed delivery cannot be cancelled."))
-                    reason = delivery._reason()
+                    reason = delivery._require_reason(reason)
                     for enrollment in delivery.enrollment_ids.filtered(lambda e: e.state not in TERMINAL):
                         enrollment._store({"state": "cancelled", "access_state": "revoked"}, reason)
                     for lot in delivery.allocation_ids.filtered(lambda lot: lot.state in ("reserved", "confirmed")):
@@ -135,12 +145,14 @@ class TrainingDelivery(models.Model):
                     if transitions.get(delivery.state) != target:
                         raise ValidationError(self.env._("This delivery transition is not allowed."))
                     if target == "confirmed" and delivery._occupancy() < delivery.opening_threshold:
-                        delivery._reason()
-                delivery._store({"state": target}, delivery.change_reason)
+                        reason = delivery._require_reason(reason)
+                    elif target == "closed":
+                        reason = delivery._require_reason(reason)
+                delivery._store({"state": target}, reason)
         return True
 
-    def action_confirm(self):
-        return self._transition("confirmed")
+    def action_confirm(self, reason=None):
+        return self._transition("confirmed", reason)
 
     def action_start(self):
         return self._transition("ongoing")
@@ -148,8 +160,8 @@ class TrainingDelivery(models.Model):
     def action_deliver(self):
         return self._transition("delivered")
 
-    def action_close(self):
-        return self._transition("closed")
+    def action_close(self, reason=None):
+        return self._transition("closed", reason)
 
-    def action_cancel(self):
-        return self._transition("cancelled")
+    def action_cancel(self, reason=None):
+        return self._transition("cancelled", reason)

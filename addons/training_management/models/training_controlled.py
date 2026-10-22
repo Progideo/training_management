@@ -91,7 +91,9 @@ class TrainingControlled(models.AbstractModel):
     _name = "training.controlled"
     _description = "Controlled Training Record"
 
-    change_reason = fields.Text(string="Reason for Next Action", copy=False)
+    # Public actions that accept a reason from the generic reason assistant.
+    # Each concrete model lists its own; the assistant refuses anything else.
+    _reason_actions = ()
 
     @api.private
     def _require_coordinator(self):
@@ -100,12 +102,17 @@ class TrainingControlled(models.AbstractModel):
             raise AccessError(self.env._("Only a training coordinator may perform this operation."))
 
     @api.private
-    def _reason(self):
-        self.ensure_one()
-        reason = (self.change_reason or "").strip()
+    def _require_reason(self, reason):
+        # Every motivated action receives its own reason; nothing is kept on
+        # the record afterwards. The history keeps the evidence.
+        reason = (reason or "").strip()
         if not reason:
             raise ValidationError(self.env._("Enter a reason before performing this action."))
         return reason
+
+    @api.private
+    def _reason_labels(self):
+        return {}
 
     @api.private
     def _store(self, values, reason=False):
@@ -114,6 +121,19 @@ class TrainingControlled(models.AbstractModel):
         result = super(TrainingControlled, self).write(values)
         self.env["training.operation"]._record(self, before, values, reason)
         return result
+
+    def action_open_reason(self):
+        """Open the generic reason assistant for the action named in the context."""
+        self._require_coordinator()
+        action = self.env.context.get("reason_action")
+        if action not in self._reason_actions:
+            raise ValidationError(self.env._("This action does not accept a reason from the assistant."))
+        return {
+            "type": "ir.actions.act_window", "name": self.env._("Reason for the Action"),
+            "res_model": "training.action.reason", "view_mode": "form", "target": "new",
+            "context": {"default_res_model": self._name, "default_res_ids": ",".join(map(str, self.ids)),
+                        "default_action_name": action},
+        }
 
     def unlink(self):
         raise ValidationError(self.env._("Keep training records and their history; use the cancellation workflow."))

@@ -40,8 +40,7 @@ class TestAllocationCommerce(EnrollmentCase):
         for index in range(7):
             person = self.env["res.partner"].create({"name": "Fictional Buyer Employee %s" % index})
             e = self.enrollment(delivery, participant_id=person.id, user_id=False, allocation_id=lot.id, free_reason=False)
-            e.change_reason = "Review completed"
-            e.action_validate_prerequisites()
+            e.action_validate_prerequisites(reason="Review completed")
             e.action_confirm()
             self.assertEqual(e.access_state, "unopened")
         self.assertEqual(lot.unnamed_seats, 3)
@@ -62,19 +61,17 @@ class TestAllocationCommerce(EnrollmentCase):
         lot = self.lot(delivery, quantity=1, sale_line_id=order.order_line.id)
         lot.action_confirm()
         e = self.enrollment(delivery, allocation_id=lot.id, free_reason=False)
-        e.change_reason = "Approved B2B payment after delivery"
-        e.action_waive_prerequisites()
+        e.action_waive_prerequisites(reason="Approved B2B payment after delivery")
         e.action_confirm()
-        e.action_authorize()
-        e.action_open_access()
+        e.action_authorize(reason="Fictional B2B authorization")
+        e.action_open_access(reason="Fictional B2B opening")
         self.assertEqual(e.effective_access, "active")
         self.assertFalse(order.invoice_ids)
         self.assertFalse(order.training_portal_partner_ids)
         for user in (self.seller, self.finance, self.portal):
             with self.assertRaises(AccessError):
-                e.with_user(user).action_authorize()
-        lot.change_reason = "Cancel participation, review financial impact separately"
-        lot.action_cancel()
+                e.with_user(user).action_authorize(reason="Forbidden attempt")
+        lot.action_cancel(reason="Cancel participation, review financial impact separately")
         self.assertEqual(e.access_state, "revoked")
         self.assertEqual(order.state, "sale")
         order.action_cancel()
@@ -83,8 +80,7 @@ class TestAllocationCommerce(EnrollmentCase):
         order = self.order()
         first = self.lot(self.delivery(), sale_line_id=order.order_line.id)
         first.action_confirm()
-        first.change_reason = "Release two places for another realization"
-        first.action_release_places(2)
+        first.action_release_places(2, reason="Release two places for another realization")
         self.assertEqual(first.quantity, 8)
         second = self.lot(self.delivery(), quantity=2, sale_line_id=order.order_line.id)
         second.action_confirm()

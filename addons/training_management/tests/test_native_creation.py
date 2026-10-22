@@ -90,8 +90,8 @@ class TestNativeCreation(EnrollmentCase):
         from odoo.tools.translate import load_language
         load_language(self.env.cr, "fr_FR")
         enrollment = self.admitted()
-        enrollment.action_authorize()
-        enrollment.action_open_access()
+        enrollment.action_authorize(reason="Fictional commercial decision")
+        enrollment.action_open_access(reason="Fictional opening")
         self.assertIn(f"(Enrollment {enrollment.id})", enrollment.with_context(lang="en_US").display_name)
         self.assertIn(f"(Inscription {enrollment.id})", enrollment.with_context(lang="fr_FR").display_name)
         rows = enrollment.delivery_id.operation_ids
