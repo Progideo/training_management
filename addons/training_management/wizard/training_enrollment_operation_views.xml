@@ -7,9 +7,12 @@
                 <group>
                     <field name="company_id" invisible="1"/>
                     <field name="enrollment_id" readonly="1"/>
+                    <field name="source_delivery_id" invisible="1"/>
+                    <field name="source_participant_id" invisible="1"/>
+                    <field name="source_allocation_id" invisible="1"/>
                     <field name="operation"/>
                     <field name="deadline" invisible="operation not in ('reserve', 'extend')"/>
-                    <field name="target_id" invisible="operation not in ('report', 'replace')" domain="[('state', '=', 'requested'), ('company_id', '=', company_id)]"/>
+                    <field name="target_id" invisible="operation not in ('report', 'replace')" options="{'no_create': True}" domain="[('state', '=', 'requested'), ('company_id', '=', company_id), ('id', '!=', enrollment_id)] + ([('delivery_id', '=', source_delivery_id), ('allocation_id', '=', source_allocation_id), ('participant_id', '!=', source_participant_id)] if operation == 'replace' else [('delivery_id', '!=', source_delivery_id), ('participant_id', '=', source_participant_id)])"/>
                     <field name="reason"/>
                 </group>
                 <footer><button name="action_apply" type="object" string="Apply" class="btn-primary"/><button special="cancel" string="Cancel"/></footer>

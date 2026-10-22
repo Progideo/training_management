@@ -2,6 +2,7 @@ import json
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.tools.misc import format_date, format_datetime
 
 
 TERMINAL = {"closed", "cancelled", "replaced", "abandoned"}
@@ -24,6 +25,24 @@ class TrainingOperation(models.Model):
     before = fields.Text()
     after = fields.Text()
 
+    @api.private
+    def _format_change_value(self, value, description):
+        if value is None:
+            return "—"
+        kind = description.get("type")
+        if kind == "boolean":
+            return self.env._("Yes") if value else self.env._("No")
+        if value is False or value == "":
+            return "—"
+        if kind == "datetime":
+            return format_datetime(self.env, fields.Datetime.to_datetime(value),
+                                   tz=self.env.context.get("tz") or self.env.user.tz or "UTC")
+        if kind == "date":
+            return format_date(self.env, fields.Date.to_date(value))
+        return dict(description.get("selection", [])).get(value, value)
+
+    @api.depends("before", "after", "model_name")
+    @api.depends_context("lang", "tz", "uid")
     def _compute_changes(self):
         for row in self:
             before = json.loads(row.before or "{}")
@@ -33,14 +52,13 @@ class TrainingOperation(models.Model):
             for key, value in after.items():
                 description = descriptions.get(key, {})
                 label = description.get("string", key)
-                selection = dict(description.get("selection", []))
                 if description.get("type") == "many2one":
                     # The record label is captured separately; don't expose raw
                     # relation ids or follow a possibly reassigned historical link.
                     lines.append(label)
                 else:
-                    old = selection.get(before.get(key), before.get(key, "—"))
-                    new = selection.get(value, value)
+                    old = row._format_change_value(before.get(key), description)
+                    new = row._format_change_value(value, description)
                     lines.append(f"{label}: {old} → {new}")
             row.changes = "\n".join(lines)
 

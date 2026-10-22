@@ -232,3 +232,41 @@ S07/S08 : émargement et documents de clôture. P05 : portail entreprise et mand
 M01 : reprise Odoo 19. Les relevés et imports bancaires restent reportés et non
 validés ; les encaissements manuels S02 et leurs garde-fous restent applicables.
 Aucun paiement en ligne, remboursement automatique ou changement de production.
+
+
+## Correctifs de recette native du 22 octobre 2026
+
+La recette du commit S03 `80ad50c` a révélé deux blocages que les créations ORM
+ne démontraient pas : calcul des places sur un lot sans échéance encore saisie,
+et sélection circulaire de la réalisation lorsque la société liée était vide.
+Le correctif `training_management` **20.0.1.1.1** rend le calcul tolérant aux
+formulaires incomplets, tout en exigeant une échéance future à l'enregistrement.
+
+Sur les lots et inscriptions, la société stockée démarre sur la société courante
+Odoo ; le domaine natif `check_company` peut ainsi proposer ses réalisations.
+Pour travailler dans une autre société autorisée, sélectionner cette société
+comme société courante avant la création. À l'enregistrement, la société est
+dérivée de la réalisation après le contrôle de coordination et de ses droits ;
+l'identité reste ensuite figée. Les colonnes et leurs valeurs existantes sont
+conservées ; aucune société n'est réaffectée par la mise à jour. Les règles
+serveur, droits et contrôles intersociétés restent applicables.
+
+Les inscriptions portent désormais un libellé incluant participant, réalisation
+et référence de dossier. L'assistant filtre les demandes selon le remplacement
+(même réalisation et lot, autre personne) ou le report (même personne, autre
+réalisation), exclut la source et efface le choix en changeant d'opération.
+Les contrôles métier serveur de transfert restent l'autorité.
+
+Le rendu du journal traduit les booléens, représente les valeurs vides par un
+tiret et formate les dates selon la langue et le fuseau du lecteur. Les JSON
+avant/après et les libellés historiques capturés restent inchangés. Sur écran
+étroit, le journal natif reste un tableau à défilement horizontal.
+
+Recette de régression : repartir des formulaires **Nouveau lot** et **Nouvelle
+inscription**, sans réalisation injectée par contexte ni dossier précréé ;
+choisir la réalisation, saisir les champs, enregistrer puis confirmer avec un
+coordinateur réellement restreint. Vérifier le refus d'échéance manquante,
+les choix limités à la société courante, les transferts et le rendu français du
+journal. Une création automatisée ou un test Form ne remplace pas cette recette
+navigateur. Les preuves privées et résultats effectifs sont résumés dans la PR
+du correctif ; cette section ne vaut pas constat de réussite.

@@ -15,7 +15,12 @@ class TrainingEnrollment(models.Model):
     _order = "requested_at, id"
 
     delivery_id = fields.Many2one("training.delivery", required=True, ondelete="restrict", check_company=True, index=True)
-    company_id = fields.Many2one(related="delivery_id.company_id", store=True)
+    # Keep a company on an empty native form: a related value would be False
+    # until delivery selection, making its check_company domain circular.
+    # create() derives the stored company from the checked delivery; identity
+    # cannot be rewritten afterwards. Existing stored company values are kept.
+    company_id = fields.Many2one("res.company", required=True, readonly=True,
+                                 default=lambda self: self.env.company, index=True)
     program_id = fields.Many2one(related="delivery_id.program_id", store=True)
     participant_id = fields.Many2one("res.partner", required=True, ondelete="restrict", check_company=True, index=True)
     user_id = fields.Many2one("res.users", ondelete="restrict", check_company=True)
@@ -34,6 +39,20 @@ class TrainingEnrollment(models.Model):
     access_end = fields.Datetime(readonly=True, copy=False)
     effective_access = fields.Selection([("unopened", "Unopened"), ("active", "Active"), ("scheduled", "Scheduled"), ("expired", "Expired"), ("suspended", "Suspended"), ("revoked", "Revoked"), ("blocked", "Blocked")], compute="_compute_effective_access")
     successor_id = fields.Many2one("training.enrollment", readonly=True, copy=False, ondelete="restrict", check_company=True)
+
+    @api.depends("participant_id.display_name", "delivery_id.display_name")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for enrollment in self:
+            if not enrollment.id:
+                enrollment.display_name = self.env._("New Enrollment")
+                continue
+            enrollment.display_name = self.env._(
+                "%(participant)s — %(delivery)s (Enrollment %(reference)s)",
+                participant=enrollment.participant_id.display_name or "—",
+                delivery=enrollment.delivery_id.display_name or "—",
+                reference=enrollment.id if isinstance(enrollment.id, int) else "—",
+            )
 
     @api.private
     def _occupies(self, now=None):

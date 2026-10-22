@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
@@ -12,7 +12,14 @@ class TrainingEnrollmentOperation(models.TransientModel):
     operation = fields.Selection([("reserve", "Propose or Reserve a Place"), ("extend", "Extend Access"), ("report", "Report to Another Delivery"), ("replace", "Replace Participant")], required=True, default="reserve")
     deadline = fields.Datetime()
     target_id = fields.Many2one("training.enrollment", string="New Requested Enrollment", check_company=True)
+    source_delivery_id = fields.Many2one(related="enrollment_id.delivery_id")
+    source_participant_id = fields.Many2one(related="enrollment_id.participant_id")
+    source_allocation_id = fields.Many2one(related="enrollment_id.allocation_id")
     reason = fields.Text(required=True)
+
+    @api.onchange("operation")
+    def _onchange_operation(self):
+        self.target_id = False
 
     def action_apply(self):
         self.ensure_one()

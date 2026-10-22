@@ -268,9 +268,11 @@ msgstr ""
 "Une nouvelle version doit être un brouillon sans données de validation."
 
 #. module: training_management
+#. odoo-python
 #: model:res.groups.privilege,placeholder:training_management.privilege_training
+#: code:addons/training_management/models/training_controlled.py:0
 msgid "No"
-msgstr "Aucun"
+msgstr "Non"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__objectives
@@ -1567,3 +1569,21 @@ msgstr "Zéro signifie sans limite."
 #: model:ir.model.fields,field_description:training_management.field_training_operation__changes
 msgid "Changes"
 msgstr "Modifications"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_enrollment.py:0
+msgid "%(participant)s — %(delivery)s (Enrollment %(reference)s)"
+msgstr "%(participant)s — %(delivery)s (Inscription %(reference)s)"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_controlled.py:0
+msgid "Yes"
+msgstr "Oui"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_enrollment.py:0
+msgid "New Enrollment"
+msgstr "Nouvelle inscription"

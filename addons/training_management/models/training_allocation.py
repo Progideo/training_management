@@ -12,7 +12,12 @@ class TrainingSeatAllocation(models.Model):
     _rec_name = "customer_id"
 
     delivery_id = fields.Many2one("training.delivery", required=True, ondelete="restrict", check_company=True, index=True)
-    company_id = fields.Many2one(related="delivery_id.company_id", store=True)
+    # Keep a company on an empty native form: a related value would be False
+    # until delivery selection, making its check_company domain circular.
+    # create() derives the stored company from the checked delivery; identity
+    # cannot be rewritten afterwards. Existing stored company values are kept.
+    company_id = fields.Many2one("res.company", required=True, readonly=True,
+                                 default=lambda self: self.env.company, index=True)
     customer_id = fields.Many2one("res.partner", required=True, ondelete="restrict", check_company=True)
     quantity = fields.Integer(required=True, default=1)
     source_reference = fields.Char(string="Reservation Reference", required=True)
@@ -33,7 +38,7 @@ class TrainingSeatAllocation(models.Model):
     @api.private
     def _available(self, now=None):
         self.ensure_one()
-        return self.state == "confirmed" or (self.state == "reserved" and self.expires_at > (now or fields.Datetime.now()))
+        return self.state == "confirmed" or (self.state == "reserved" and self.expires_at and self.expires_at > (now or fields.Datetime.now()))
 
     @api.private
     def _check_source(self):
