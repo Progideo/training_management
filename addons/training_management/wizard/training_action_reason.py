@@ -61,8 +61,8 @@ class TrainingActionReason(models.TransientModel):
         self.ensure_one()
         model = self._model()
         ids = self._record_ids()
-        records = model.browse(ids).exists()
-        if not ids or len(records) != len(set(ids)):
+        records = model.browse([i for i in ids if i]).exists()
+        if not ids or not all(ids) or len(records) != len(set(ids)):
             raise ValidationError(self.env._("The selected records no longer exist."))
         records.check_access("write")
         getattr(records, self.action_name)(reason=self.reason)
