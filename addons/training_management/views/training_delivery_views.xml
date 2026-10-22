@@ -48,8 +48,8 @@
         <field name="arch" type="xml"><form><header>
             <button name="action_wait" type="object" string="Waiting List" invisible="state != 'requested'"/>
             <button name="action_open_operation" type="object" string="Reserve / Extend / Transfer"/>
-            <button name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
-            <button name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
+            <button name="action_open_reason" type="object" string="Validate Prerequisites" context="{'reason_action': 'action_validate_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
+            <button name="action_open_reason" type="object" string="Waive Prerequisites" context="{'reason_action': 'action_waive_prerequisites'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
             <button name="action_confirm" type="object" string="Confirm Enrollment" invisible="state not in ('requested', 'reserved')"/>
             <button name="action_open_reason" type="object" string="Authorize Commercially" context="{'reason_action': 'action_authorize'}" invisible="state != 'confirmed' or commercially_authorized"/>
             <button name="action_open_reason" type="object" string="Withdraw Authorization" context="{'reason_action': 'action_revoke_authorization'}" invisible="not commercially_authorized"/>
@@ -58,7 +58,7 @@
             <button name="action_open_reason" type="object" string="Revoke Access" context="{'reason_action': 'action_revoke_access'}" invisible="access_state == 'revoked'"/>
             <button name="action_open_reason" type="object" string="Close" context="{'reason_action': 'action_close'}" invisible="state != 'confirmed'"/>
             <button name="action_open_reason" type="object" string="Abandon" context="{'reason_action': 'action_abandon'}" invisible="state != 'confirmed'"/>
-            <button name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned')"/>
+            <button name="action_open_reason" type="object" string="Cancel Enrollment" context="{'reason_action': 'action_cancel'}" invisible="state in ('closed', 'cancelled', 'replaced', 'abandoned', 'postponed')"/>
             <field name="state" widget="statusbar"/>
         </header><sheet><group>
             <field name="company_id" invisible="1"/><field name="delivery_id"/><field name="program_id"/><field name="participant_id"/><field name="user_id"/>

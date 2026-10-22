@@ -30,7 +30,7 @@ class TrainingEnrollment(models.Model):
     state = fields.Selection([(v, label) for v, label in [
         ("requested", "Requested"), ("reserved", "Reserved"), ("waiting", "Waiting"),
         ("confirmed", "Confirmed"), ("closed", "Closed"), ("cancelled", "Cancelled"),
-        ("replaced", "Replaced"), ("abandoned", "Abandoned")]], default="requested", required=True, readonly=True, copy=False)
+        ("replaced", "Replaced"), ("abandoned", "Abandoned"), ("postponed", "Postponed")]], default="requested", required=True, readonly=True, copy=False)
     reservation_end = fields.Datetime(readonly=True, copy=False)
     prerequisites = fields.Selection([("pending", "Pending"), ("validated", "Validated"), ("waived", "Waived")], default="pending", required=True, readonly=True, copy=False)
     commercially_authorized = fields.Boolean(readonly=True, copy=False)
@@ -223,7 +223,13 @@ class TrainingEnrollment(models.Model):
         return self._action(change)
 
     def action_revoke_authorization(self, reason=None):
-        return self._action(lambda e: e._store({"commercially_authorized": False}, e._require_reason(reason)))
+        def change(e):
+            if not e.commercially_authorized:
+                return
+            if e.state != "confirmed":
+                raise ValidationError(self.env._("Only a confirmed enrollment can have its authorization withdrawn."))
+            e._store({"commercially_authorized": False}, e._require_reason(reason))
+        return self._action(change)
 
     def action_open_access(self, reason=None):
         def change(e):
@@ -253,7 +259,13 @@ class TrainingEnrollment(models.Model):
         return self._action(change)
 
     def action_revoke_access(self, reason=None):
-        return self._action(lambda e: e._store({"access_state": "revoked"}, e._require_reason(reason)))
+        def change(e):
+            if e.access_state == "revoked":
+                return
+            if e.state != "confirmed":
+                raise ValidationError(self.env._("Only a confirmed enrollment can have its access revoked."))
+            e._store({"access_state": "revoked"}, e._require_reason(reason))
+        return self._action(change)
 
     def action_extend_access(self, end_at=None, reason=None):
         def change(e):
@@ -271,7 +283,7 @@ class TrainingEnrollment(models.Model):
             return self.access_state
         if (self.state != "confirmed" or not self.commercially_authorized or self.prerequisites == "pending"
                 or not self.user_id or not self.user_id.active or self.user_id.partner_id != self.participant_id
-                or self.delivery_id.state == "cancelled"):
+                or self.delivery_id.state in ("closed", "cancelled")):
             return "blocked"
         if not self.access_start or not self.access_end:
             return "blocked"
@@ -305,13 +317,18 @@ class TrainingEnrollment(models.Model):
     def action_close(self, reason=None):
         return self._finish("closed", reason)
 
-    def action_transfer(self, target_id, replacement=False, reason=None):
+    def action_replace(self, target_id, reason=None):
+        return self._transfer(target_id, True, reason)
+
+    def action_postpone(self, target_id, reason=None):
+        return self._transfer(target_id, False, reason)
+
+    @api.private
+    def _transfer(self, target_id, replacement, reason):
         self.ensure_one()
         target = self.browse(target_id)
         target.ensure_one()
         target._require_coordinator()
-        if type(replacement) is not bool:
-            raise ValidationError(self.env._("Choose report or replacement explicitly."))
         with self.env.cr.savepoint():
             self._require_coordinator()
             (self.delivery_id | target.delivery_id)._serialize()
@@ -327,8 +344,8 @@ class TrainingEnrollment(models.Model):
                 if self.delivery_id != target.delivery_id or self.participant_id == target.participant_id or self.allocation_id != target.allocation_id:
                     raise ValidationError(self.env._("A replacement uses the same delivery and allocation with a different person."))
             elif self.participant_id != target.participant_id or self.delivery_id == target.delivery_id:
-                raise ValidationError(self.env._("A report keeps the participant and selects another delivery."))
-            self._store({"state": "replaced" if replacement else "cancelled", "access_state": "revoked", "successor_id": target.id}, self._require_reason(reason))
+                raise ValidationError(self.env._("A postponement keeps the participant and selects another delivery."))
+            self._store({"state": "replaced" if replacement else "postponed", "access_state": "revoked", "successor_id": target.id}, self._require_reason(reason))
             self.env["training.operation"]._record(target, {}, {}, self.env._("Linked from enrollment %s", self.id))
         return True
 

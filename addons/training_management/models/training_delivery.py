@@ -148,6 +148,10 @@ class TrainingDelivery(models.Model):
                         reason = delivery._require_reason(reason)
                     elif target == "closed":
                         reason = delivery._require_reason(reason)
+                        if delivery.enrollment_ids.filtered(lambda e: e.state in ("requested", "reserved", "waiting")):
+                            raise ValidationError(self.env._("Settle requested, reserved and waiting enrollments before closing the delivery."))
+                        for enrollment in delivery.enrollment_ids.filtered(lambda e: e.state == "confirmed"):
+                            enrollment._store({"state": "closed", "access_state": "revoked"}, reason)
                 delivery._store({"state": target}, reason)
         return True
 

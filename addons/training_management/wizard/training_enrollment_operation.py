@@ -9,7 +9,7 @@ class TrainingEnrollmentOperation(models.TransientModel):
 
     enrollment_id = fields.Many2one("training.enrollment", required=True, ondelete="cascade", check_company=True)
     company_id = fields.Many2one(related="enrollment_id.company_id")
-    operation = fields.Selection([("reserve", "Propose or Reserve a Place"), ("extend", "Extend Access"), ("report", "Report to Another Delivery"), ("replace", "Replace Participant")], required=True, default="reserve")
+    operation = fields.Selection([("reserve", "Propose or Reserve a Place"), ("extend", "Extend Access"), ("postpone", "Postpone to Another Delivery"), ("replace", "Replace Participant")], required=True, default="reserve")
     deadline = fields.Datetime()
     target_id = fields.Many2one("training.enrollment", string="New Requested Enrollment", check_company=True)
     source_delivery_id = fields.Many2one(related="enrollment_id.delivery_id")
@@ -36,7 +36,10 @@ class TrainingEnrollmentOperation(models.TransientModel):
             else:
                 if not self.target_id:
                     raise ValidationError(_("Choose a new requested enrollment."))
-                enrollment.action_transfer(self.target_id.id, replacement=self.operation == "replace", reason=self.reason)
+                if self.operation == "replace":
+                    enrollment.action_replace(self.target_id.id, reason=self.reason)
+                else:
+                    enrollment.action_postpone(self.target_id.id, reason=self.reason)
         return {"type": "ir.actions.act_window_close"}
 
 

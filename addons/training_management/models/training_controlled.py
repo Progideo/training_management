@@ -5,7 +5,7 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.misc import format_date, format_datetime
 
 
-TERMINAL = {"closed", "cancelled", "replaced", "abandoned"}
+TERMINAL = {"closed", "cancelled", "replaced", "abandoned", "postponed"}
 
 
 class TrainingOperation(models.Model):

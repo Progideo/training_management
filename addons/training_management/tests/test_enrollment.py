@@ -1,7 +1,7 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from odoo import Command, fields
+from odoo import Command, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
 
@@ -161,8 +161,8 @@ class TestEnrollment(EnrollmentCase):
         old.action_authorize(reason="Fictional commercial decision")
         old.action_open_access(reason="Fictional opening")
         new = self.enrollment(old.delivery_id, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
-        old.action_transfer(new.id, replacement=True, reason="Fictional replacement")
-        old.action_transfer(new.id, replacement=True, reason="Fictional replacement")
+        old.action_replace(new.id, reason="Fictional replacement")
+        old.action_replace(new.id, reason="Fictional replacement")
         self.assertEqual(old.state, "replaced")
         self.assertEqual(old.access_state, "revoked")
         self.assertEqual(old.successor_id, new)
@@ -171,9 +171,9 @@ class TestEnrollment(EnrollmentCase):
         self.assertFalse(new.commercially_authorized)
         self.assertFalse(new.access_end)
         target = self.enrollment(self.delivery(), participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
-        new.action_transfer(target.id, reason="Report requested")
+        new.action_postpone(target.id, reason="Report requested")
         self.assertEqual(new.successor_id, target)
-        self.assertEqual(new.state, "cancelled")
+        self.assertEqual(new.state, "postponed")
 
     def test_direct_write_context_and_history_protected(self):
         delivery = self.delivery()
@@ -378,3 +378,103 @@ class TestReasonPerAction(EnrollmentCase):
         self.assertEqual(action["res_model"], "training.action.reason")
         with self.assertRaises(ValidationError):
             e.with_user(self.coordinator).with_context(reason_action="unlink").action_open_reason()
+
+
+@tagged("post_install", "-at_install")
+class TestLifecycleAndAccess(EnrollmentCase):
+    """S03.1 §2: closure, postponement and idempotent withdrawals."""
+
+    def test_closure_requires_settled_enrollments(self):
+        for setup in ("requested", "waiting", "reserved"):
+            with self.subTest(state=setup):
+                delivery = self.delivery()
+                pending = self.enrollment(delivery)
+                if setup == "waiting":
+                    pending.action_wait()
+                elif setup == "reserved":
+                    pending.action_reserve(fields.Datetime.now() + timedelta(days=1))
+                self.assertEqual(pending.state, setup)
+                delivery.action_confirm()
+                delivery.action_start()
+                delivery.action_deliver()
+                with self.assertRaises(ValidationError):
+                    delivery.action_close(reason="Fictional closure")
+                self.assertEqual(delivery.state, "delivered")
+                pending.action_cancel(reason="Request withdrawn")
+                delivery.action_close(reason="Fictional closure")
+                self.assertEqual(delivery.state, "closed")
+
+    def test_closure_closes_confirmed_enrollments_and_revokes_access(self):
+        delivery = self.delivery()
+        confirmed = self.admitted(delivery)
+        confirmed.action_authorize(reason="Fictional commercial decision")
+        confirmed.action_open_access(reason="Fictional opening")
+        delivery.action_confirm()
+        delivery.action_start()
+        delivery.action_deliver()
+        delivery.action_close(reason="Fictional closure")
+        self.assertEqual(delivery.state, "closed")
+        self.assertEqual(confirmed.state, "closed")
+        self.assertEqual(confirmed.access_state, "revoked")
+        self.assertNotEqual(confirmed.effective_access, "active")
+        rows = delivery.operation_ids.filtered(lambda row: row.model_name == "training.enrollment" and row.record_id == confirmed.id)
+        self.assertEqual(rows[:1].reason, "Fictional closure")
+
+    def test_closed_or_cancelled_delivery_blocks_effective_access(self):
+        e = self.admitted()
+        e.action_authorize(reason="Fictional commercial decision")
+        e.action_open_access(reason="Fictional opening")
+        self.assertEqual(e._effective_state(), "active")
+        for state in ("closed", "cancelled"):
+            models.BaseModel.write(e.delivery_id, {"state": state})
+            e.invalidate_recordset()
+            self.assertEqual(e._effective_state(), "blocked", state)
+
+    def test_postponement_has_its_own_terminal_state(self):
+        e = self.admitted()
+        e.action_authorize(reason="Fictional commercial decision")
+        e.action_open_access(reason="Fictional opening")
+        target = self.enrollment(self.delivery())
+        with self.assertRaises(ValidationError):
+            e.action_postpone(target.id)
+        e.action_postpone(target.id, reason="Moved to a later session")
+        self.assertEqual(e.state, "postponed")
+        self.assertEqual(e.access_state, "revoked")
+        self.assertEqual(e.successor_id, target)
+        self.assertEqual(target.state, "requested")
+        self.assertEqual(target.prerequisites, "pending")
+        self.assertFalse(target.commercially_authorized)
+        with self.assertRaises(ValidationError):
+            e.action_validate_prerequisites(reason="Terminal")
+        with self.assertRaises(ValidationError):
+            e.action_cancel(reason="Terminal")
+        replaced_source = self.admitted()
+        replacement = self.enrollment(replaced_source.delivery_id, participant_id=self.portal_b.partner_id.id, user_id=self.portal_b.id)
+        replaced_source.action_replace(replacement.id, reason="Another person attends")
+        self.assertEqual(replaced_source.state, "replaced")
+
+    def test_withdrawals_are_guarded_and_idempotent(self):
+        delivery = self.delivery()
+        e = self.admitted(delivery)
+        e.action_authorize(reason="Fictional commercial decision")
+        e.action_revoke_authorization(reason="First withdrawal")
+        rows = len(delivery.operation_ids)
+        e.action_revoke_authorization(reason="Second withdrawal")
+        e.action_revoke_authorization()
+        self.assertEqual(len(delivery.operation_ids), rows)
+        e.action_revoke_access(reason="First revocation")
+        rows = len(delivery.operation_ids)
+        e.action_revoke_access(reason="Second revocation")
+        e.action_revoke_access()
+        self.assertEqual(len(delivery.operation_ids), rows)
+        requested = self.enrollment(self.delivery())
+        with self.assertRaises(ValidationError):
+            requested.action_revoke_access(reason="Never opened")
+        self.assertEqual(requested.access_state, "unopened")
+        cancelled = self.admitted()
+        cancelled.action_authorize(reason="Fictional commercial decision")
+        cancelled.action_cancel(reason="Cancelled before the session")
+        self.assertTrue(cancelled.commercially_authorized)
+        with self.assertRaises(ValidationError):
+            cancelled.action_revoke_authorization(reason="Terminal enrollment")
+        cancelled.action_revoke_access(reason="Already revoked")

@@ -71,7 +71,7 @@ class TestNativeCreation(EnrollmentCase):
         view = wizard.get_view(view_id=self.env.ref("training_management.view_training_enrollment_operation").id)
         from lxml import etree
         domain_text = etree.fromstring(view["arch"]).xpath("//field[@name='target_id']/@domain")[0]
-        for operation, expected in (("replace", replacement), ("report", report)):
+        for operation, expected in (("replace", replacement), ("postpone", report)):
             domain = safe_eval(domain_text, dict(operation=operation, company_id=self.company.id,
                               enrollment_id=source.id, source_delivery_id=source.delivery_id.id,
                               source_allocation_id=False, source_participant_id=source.participant_id.id))
@@ -82,7 +82,7 @@ class TestNativeCreation(EnrollmentCase):
         with Form(wizard.with_context(default_enrollment_id=source.id)) as form:
             form.operation = "replace"
             form.target_id = replacement
-            form.operation = "report"
+            form.operation = "postpone"
             self.assertFalse(form.target_id)
             form.reason = "Fictional report choice"
 

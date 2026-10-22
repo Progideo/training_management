@@ -32,6 +32,13 @@ msgstr ""
 
 #. module: training_management
 #. odoo-python
+#: code:addons/training_management/models/training_enrollment.py:0
+msgid "A postponement keeps the participant and selects another delivery."
+msgstr ""
+"Un report conserve le participant et sélectionne une autre réalisation."
+
+#. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_program.py:0
 msgid "A programme title and version reference are required."
 msgstr "Le titre du programme et la référence de version sont obligatoires."
@@ -312,6 +319,28 @@ msgid "On site"
 msgstr "Présentiel"
 
 #. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_enrollment.py:0
+msgid "Only a confirmed enrollment can have its access revoked."
+msgstr "Seule une inscription confirmée peut voir son accès révoqué."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_enrollment.py:0
+msgid "Only a confirmed enrollment can have its authorization withdrawn."
+msgstr "Seule une inscription confirmée peut voir son autorisation retirée."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_enrollment_operation__operation__postpone
+msgid "Postpone to Another Delivery"
+msgstr "Reporter vers une autre réalisation"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__postponed
+msgid "Postponed"
+msgstr "Reportée"
+
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__prerequisites
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__prerequisites
 msgid "Prerequisites"
@@ -415,6 +444,16 @@ msgstr "Enregistrez le contenu du programme avant de changer son état."
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__target_count
 msgid "Selected Records"
 msgstr "Enregistrements sélectionnés"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_delivery.py:0
+msgid ""
+"Settle requested, reserved and waiting enrollments before closing the "
+"delivery."
+msgstr ""
+"Traitez les inscriptions demandées, réservées et en attente avant de "
+"clôturer la réalisation."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__course_id
@@ -666,13 +705,6 @@ msgstr ""
 
 #. module: training_management
 #. odoo-python
-#: code:addons/training_management/models/training_enrollment.py:0
-msgid "A report keeps the participant and selects another delivery."
-msgstr ""
-"Un report conserve le participant et sélectionne une autre réalisation."
-
-#. module: training_management
-#. odoo-python
 #: code:addons/training_management/models/training_allocation.py:0
 msgid "A reservation needs a reference and a future expiry."
 msgstr "Une réservation nécessite une référence et une échéance future."
@@ -902,12 +934,6 @@ msgstr "Sélectionnez une version de programme validée."
 #: code:addons/training_management/models/training_enrollment.py:0
 msgid "Choose an available allocation for this delivery."
 msgstr "Sélectionnez un lot disponible pour cette réalisation."
-
-#. module: training_management
-#. odoo-python
-#: code:addons/training_management/models/training_enrollment.py:0
-msgid "Choose report or replacement explicitly."
-msgstr "Choisissez explicitement un report ou un remplacement."
 
 #. module: training_management
 #. odoo-python
@@ -1316,11 +1342,6 @@ msgstr "Remplacer le participant"
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__replaced
 msgid "Replaced"
 msgstr "Remplacée"
-
-#. module: training_management
-#: model:ir.model.fields.selection,name:training_management.selection__training_enrollment_operation__operation__report
-msgid "Report to Another Delivery"
-msgstr "Reporter vers une autre réalisation"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__requested
