@@ -1,4 +1,4 @@
-from odoo import api, models, _
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
@@ -8,15 +8,9 @@ class AccountPartialReconcile(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         line_ids = {
-            vals[field]
-            for vals in vals_list
-            for field in ("debit_move_id", "credit_move_id")
-            if vals.get(field)
+            vals[field] for vals in vals_list for field in ("debit_move_id", "credit_move_id") if vals.get(field)
         }
-        lines = {
-            line.id: line
-            for line in self.env["account.move.line"].browse(line_ids)
-        }
+        lines = {line.id: line for line in self.env["account.move.line"].browse(line_ids)}
         for vals in vals_list:
             debit_line = lines.get(vals.get("debit_move_id"))
             credit_line = lines.get(vals.get("credit_move_id"))
@@ -30,10 +24,11 @@ class AccountPartialReconcile(models.Model):
                     statement_line.journal_id.type != "bank"
                     or statement_line.currency_id != invoice_line.move_id.currency_id
                 ):
-                    raise ValidationError(_(
-                        "A training invoice can only be matched with a bank statement line "
-                        "in the invoice currency."
-                    ))
+                    raise ValidationError(
+                        self.env._(
+                            "A training invoice can only be matched with a bank statement line in the invoice currency."
+                        )
+                    )
                 if statement_line:
                     continue
                 if not payment_line.payment_id:
@@ -49,8 +44,10 @@ class AccountPartialReconcile(models.Model):
                     or payment.payment_method_line_id.code != "manual"
                     or payment.currency_id != invoice_line.move_id.currency_id
                 ):
-                    raise ValidationError(_(
-                        "A training invoice can only be matched with an incoming manual bank payment "
-                        "bearing a bank reference in the invoice currency."
-                    ))
+                    raise ValidationError(
+                        self.env._(
+                            "A training invoice can only be matched with an incoming manual bank payment "
+                            "bearing a bank reference in the invoice currency."
+                        )
+                    )
         return super().create(vals_list)

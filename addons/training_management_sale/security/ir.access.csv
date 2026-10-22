@@ -6,3 +6,6 @@ access_transfer_notice_accounting,Transfer notices for accounting,training.bank.
 rule_transfer_notice_company,Transfer notices allowed companies,training.bank.transfer.notice,,crud,"[('company_id', 'in', company_ids)]"
 rule_training_sale_portal,Training quotations require named contact,sale.order,,r,"[(1, '=', 1)] if not user.share else ['|', ('training_request_kind', '=', False), ('training_portal_partner_ids', 'in', [user.partner_id.id])]"
 rule_training_invoice_portal,Training invoices require named contact,account.move,,r,"[(1, '=', 1)] if not user.share else ['|', ('training_is_sale_invoice', '=', False), ('training_portal_partner_ids', 'in', [user.partner_id.id])]"
+access_delivery_sales,Training deliveries for sales,training.delivery,sales_team.group_sale_salesman,r,
+access_allocation_sales,Training seat allocations for sales,training.seat.allocation,sales_team.group_sale_salesman,r,
+access_enrollment_sales,Training enrollment states for sales,training.enrollment,sales_team.group_sale_salesman,r,

@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# Package initializers import their modules for Odoo to load them.
+"**/__init__.py" = ["F401"]
+# Probes run in `odoo shell`, which provides `env`.
+"**/probes/*.py" = ["F821"]

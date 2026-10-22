@@ -8,6 +8,18 @@ pour `main`, ni ruleset applicable ; le renommage ne nécessite aucune modificat
 des protections. Si un contrôle requis est ajouté ultérieurement, sélectionner
 le contrôle final, et vérifier les noms avant de les changer.
 
+## Style et règles Odoo
+
+Le job d’orchestration exécute `pre-commit run --all-files`, configuré par
+[.pre-commit-config.yaml](../.pre-commit-config.yaml) et [pyproject.toml](../pyproject.toml) :
+`ruff check` et `ruff format` (longueur de ligne 120, règles E4/E7/E9/F ; F401 toléré
+dans les `__init__.py`, `env` toléré dans les sondes `odoo shell`) puis `pylint-odoo`
+avec ses règles par défaut (`--enable=odoolint`). En local : `pip install pre-commit`
+puis `pre-commit run --all-files` avant de pousser. La version de `pylint-odoo`
+n’est pas épinglée (aucun dépôt de hooks externe) : un durcissement de ses
+règles peut donc faire échouer le contrôle sans changement du dépôt ; épingler
+alors la version fautive. Les vues XML sont indentées à raison d’un élément par ligne.
+
 ## Quatre scénarios indépendants
 
 Chaque entrée de la matrice utilise son propre runner, service PostgreSQL 18.6,

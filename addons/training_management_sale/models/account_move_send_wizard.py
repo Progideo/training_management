@@ -1,10 +1,10 @@
 from odoo import models
 
 
-class AccountMoveSendWizard(models.TransientModel):
+class AccountMoveSendWizard(models.TransientModel):  # pylint: disable=no-wizard-in-models  # extends a native wizard; moving the file is out of scope
     _inherit = "account.move.send.wizard"
 
-    def _compute_mail_partners(self):
+    def _compute_mail_partners(self):  # pylint: disable=missing-return  # compute method, nothing to return
         super()._compute_mail_partners()
         for wizard in self.filtered(lambda item: item.move_id.training_is_sale_invoice):
             wizard.mail_partner_ids = wizard.move_id.training_portal_partner_ids.filtered("email")

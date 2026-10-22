@@ -8,50 +8,35 @@
                 <group name="training_offer" string="Training Offer" invisible="not training_request_kind">
                     <group>
                         <field name="training_request_kind" readonly="state in ['sale', 'cancel']"/>
-                        <field name="training_requested_program_id" readonly="state in ['sale', 'cancel']"
-                            options="{'no_create': True}"/>
+                        <field name="training_requested_program_id" readonly="state in ['sale', 'cancel']" options="{'no_create': True}"/>
                     </group>
                     <group>
                         <field name="training_attendee_count" readonly="state in ['sale', 'cancel']"/>
-                        <field name="training_requested_currency_id" readonly="state in ['sale', 'cancel']"
-                            options="{'no_create': True}"/>
-                        <field name="training_sponsor_id" readonly="state in ['sale', 'cancel']"
-                            options="{'no_create': True}"/>
-                        <field name="training_expected_payer_id" readonly="state in ['sale', 'cancel']"
-                            options="{'no_create': True}"/>
-                        <field name="training_admin_contact_id" readonly="state in ['sale', 'cancel']"
-                            options="{'no_create': True}"/>
-                        <field name="training_portal_partner_ids" widget="many2many_tags"
-                            options="{'no_create': True}"/>
+                        <field name="training_requested_currency_id" readonly="state in ['sale', 'cancel']" options="{'no_create': True}"/>
+                        <field name="training_sponsor_id" readonly="state in ['sale', 'cancel']" options="{'no_create': True}"/>
+                        <field name="training_expected_payer_id" readonly="state in ['sale', 'cancel']" options="{'no_create': True}"/>
+                        <field name="training_admin_contact_id" readonly="state in ['sale', 'cancel']" options="{'no_create': True}"/>
+                        <field name="training_portal_partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
                     </group>
                 </group>
             </xpath>
             <xpath expr="//list[@name='sol_list']/column[@name='product_and_description']" position="after">
-                <field name="training_program_id" string="Programme Version"
-                    optional="show" readonly="parent.state in ['sale', 'cancel']"
-                    options="{'no_create': True}"/>
+                <field name="training_program_id" string="Programme Version" optional="show" readonly="parent.state in ['sale', 'cancel']" options="{'no_create': True}"/>
             </xpath>
             <xpath expr="//field[@name='order_line']/form//field[@name='name'][1]" position="after">
-                <field name="training_program_id" string="Programme Version"
-                    invisible="display_type" readonly="parent.state in ['sale', 'cancel']"
-                    options="{'no_create': True}"/>
+                <field name="training_program_id" string="Programme Version" invisible="display_type" readonly="parent.state in ['sale', 'cancel']" options="{'no_create': True}"/>
             </xpath>
             <xpath expr="//notebook" position="inside">
-                <page name="training_transfer_notices" string="Unverified Transfer Notices"
-                    groups="sales_team.group_sale_salesman,account.group_account_invoice"
-                    invisible="not training_request_kind or state != 'sale'">
+                <page name="training_transfer_notices" string="Unverified Transfer Notices" groups="sales_team.group_sale_salesman,account.group_account_invoice" invisible="not training_request_kind or state != 'sale'">
                     <field name="training_transfer_notice_ids" readonly="state != 'sale'">
                         <list editable="bottom" create="1" delete="0">
                             <field name="claimed_date"/>
                             <field name="reference"/>
-                            <field name="invoice_id" optional="show"
-                                groups="account.group_account_invoice"/>
+                            <field name="invoice_id" optional="show" groups="account.group_account_invoice"/>
                             <field name="currency_id" column_invisible="True"/>
                             <field name="amount"/>
                             <field name="state" readonly="True"/>
-                            <button name="action_void" type="object" string="Void"
-                                groups="account.group_account_invoice"
-                                invisible="state == 'void'"/>
+                            <button name="action_void" type="object" string="Void" groups="account.group_account_invoice" invisible="state == 'void'"/>
                         </list>
                     </field>
                     <div>An unverified notice does not reduce the invoice balance.</div>

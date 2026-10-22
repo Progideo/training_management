@@ -12,15 +12,73 @@
                     <field name="source_allocation_id" invisible="1"/>
                     <field name="operation"/>
                     <field name="deadline" invisible="operation not in ('reserve', 'extend')"/>
-                    <field name="target_id" invisible="operation not in ('report', 'replace')" options="{'no_create': True}" domain="[('state', '=', 'requested'), ('company_id', '=', company_id), ('id', '!=', enrollment_id)] + ([('delivery_id', '=', source_delivery_id), ('allocation_id', '=', source_allocation_id), ('participant_id', '!=', source_participant_id)] if operation == 'replace' else [('delivery_id', '!=', source_delivery_id), ('participant_id', '=', source_participant_id)])"/>
+                    <field name="target_id" invisible="operation not in ('postpone', 'replace')" options="{'no_create': True}" domain="[('state', '=', 'requested'), ('company_id', '=', company_id), ('id', '!=', enrollment_id)] + ([('delivery_id', '=', source_delivery_id), ('allocation_id', '=', source_allocation_id), ('participant_id', '!=', source_participant_id)] if operation == 'replace' else [('delivery_id', '!=', source_delivery_id), ('participant_id', '=', source_participant_id)])"/>
                     <field name="reason"/>
                 </group>
-                <footer><button name="action_apply" type="object" string="Apply" class="btn-primary"/><button special="cancel" string="Cancel"/></footer>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_delivery_dates" model="ir.ui.view">
+        <field name="name">training.delivery.dates.form</field>
+        <field name="model">training.delivery.dates</field>
+        <field name="arch" type="xml">
+            <form string="Change Dates">
+                <group>
+                    <field name="company_id" invisible="1"/>
+                    <field name="kind" invisible="1"/>
+                    <field name="access_policy" invisible="1"/>
+                    <field name="delivery_id" readonly="1"/>
+                    <field name="start_at" invisible="kind != 'session'"/>
+                    <field name="end_at" invisible="kind != 'session'"/>
+                    <field name="access_start" invisible="access_policy != 'fixed'"/>
+                    <field name="access_end" invisible="access_policy != 'fixed'"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_allocation_extend" model="ir.ui.view">
+        <field name="name">training.allocation.extend.form</field>
+        <field name="model">training.allocation.extend</field>
+        <field name="arch" type="xml">
+            <form string="Extend Deadline">
+                <group>
+                    <field name="company_id" invisible="1"/>
+                    <field name="allocation_id" readonly="1"/>
+                    <field name="expires_at"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
             </form>
         </field>
     </record>
     <record id="view_training_allocation_release" model="ir.ui.view">
-        <field name="name">training.allocation.release.form</field><field name="model">training.allocation.release</field>
-        <field name="arch" type="xml"><form string="Release Places"><group><field name="company_id" invisible="1"/><field name="allocation_id" readonly="1"/><field name="quantity"/><field name="reason"/></group><footer><button name="action_apply" type="object" string="Apply" class="btn-primary"/><button special="cancel" string="Cancel"/></footer></form></field>
+        <field name="name">training.allocation.release.form</field>
+        <field name="model">training.allocation.release</field>
+        <field name="arch" type="xml">
+            <form string="Release Places">
+                <group>
+                    <field name="company_id" invisible="1"/>
+                    <field name="allocation_id" readonly="1"/>
+                    <field name="quantity"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
     </record>
 </odoo>

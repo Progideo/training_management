@@ -91,6 +91,8 @@ Pour chaque incrément :
 - Fournir une procédure de recette courte.
 - Indiquer les tests réellement exécutés et leurs résultats.
 
+La simplicité d’usage et l’ergonomie font partie de la recette : un parcours fréquent doit rester court pour la personne qui l’exécute. Un garde-fou doit protéger une exigence identifiée ; sans exigence, ne pas l’ajouter.
+
 Vérifier régulièrement l’installation sur base vierge et la mise à jour sur base existante. Préserver les historiques et prévoir les migrations nécessaires.
 
 Ne jamais présenter une hypothèse comme une capacité démontrée, un test non exécuté comme réussi ou une fonctionnalité simulée comme opérationnelle.
@@ -102,6 +104,8 @@ GitHub est la référence pour le code, les issues, les pull requests, les déci
 Éviter les duplications : les issues portent le besoin, les pull requests expliquent les changements et leur validation, la documentation conserve les décisions durables.
 
 Ne pas créer de suivi parallèle dans Jira ou Confluence sans demande explicite.
+
+Rester simple et concis dans la documentation : une page par incrément (décisions, règles, recette courte), des phrases courtes, aucune répétition d’un document à l’autre (renvoyer par un lien), ni historique d’autorisations ni résultats d’exécution, qui restent dans les pull requests. Le même principe vaut pour les descriptions de PR et les réponses : résultat, validation réalisée, limite, prochaine action.
 
 Maintenir les documents concernés lorsqu’une décision validée change le périmètre ou l’architecture. Ne pas modifier silencieusement une exigence validée pour faciliter l’implémentation.
 

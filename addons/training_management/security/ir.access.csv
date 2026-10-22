@@ -17,5 +17,10 @@ access_operation_coordinator,training.operation coordinator,training.operation,t
 rule_operation_company,Training history allowed companies,training.operation,,crud,"[('company_id', 'in', company_ids)]"
 access_enrollment_operation_coordinator,Enrollment operation coordinator,training.enrollment.operation,training_management.group_training_coordinator,crud,
 rule_enrollment_operation_company,Enrollment operation allowed companies,training.enrollment.operation,,crud,"[('company_id', 'in', company_ids)]"
+access_delivery_dates_coordinator,Change delivery dates coordinator,training.delivery.dates,training_management.group_training_coordinator,crud,
+rule_delivery_dates_company,Change delivery dates allowed companies,training.delivery.dates,,crud,"[('company_id', 'in', company_ids)]"
+access_allocation_extend_coordinator,Extend places deadline coordinator,training.allocation.extend,training_management.group_training_coordinator,crud,
+rule_allocation_extend_company,Extend places deadline allowed companies,training.allocation.extend,,crud,"[('company_id', 'in', company_ids)]"
 access_allocation_release_coordinator,Release places coordinator,training.allocation.release,training_management.group_training_coordinator,crud,
 rule_allocation_release_company,Release places allowed companies,training.allocation.release,,crud,"[('company_id', 'in', company_ids)]"
+access_action_reason_coordinator,Training action reason coordinator,training.action.reason,training_management.group_training_coordinator,crud,

@@ -16,32 +16,42 @@ def run_probe(env):
         raise RuntimeError("This probe requires a disposable tm_s01_test_* database.")
     results = {}
     try:
-        user = env["res.users"].with_context(no_reset_password=True).create({
-            "name": "Fictional survey participant",
-            "login": "fictional-survey-participant",
-            "group_ids": [Command.set([env.ref("base.group_portal").id])],
-        })
-        survey = env["survey.survey"].create({
-            "title": "Fictional native coverage probe",
-            "questions_layout": "one_page",
-            "questions_selection": "all",
-            "scoring_type": "scoring_with_answers",
-            "is_attempts_limited": False,
-            "is_time_limited": True,
-            "time_limit": 10,
-            "certification": False,
-            "users_login_required": True,
-        })
-        question = env["survey.question"].create({
-            "survey_id": survey.id,
-            "title": "Select exactly A and B",
-            "question_type": "multiple_choice",
-            "suggested_answer_ids": [
-                Command.create({"value": "A", "answer_score": 1, "is_correct": True}),
-                Command.create({"value": "B", "answer_score": 1, "is_correct": True}),
-                Command.create({"value": "C", "answer_score": 0, "is_correct": False}),
-            ],
-        })
+        user = (
+            env["res.users"]
+            .with_context(no_reset_password=True)
+            .create(
+                {
+                    "name": "Fictional survey participant",
+                    "login": "fictional-survey-participant",
+                    "group_ids": [Command.set([env.ref("base.group_portal").id])],
+                }
+            )
+        )
+        survey = env["survey.survey"].create(
+            {
+                "title": "Fictional native coverage probe",
+                "questions_layout": "one_page",
+                "questions_selection": "all",
+                "scoring_type": "scoring_with_answers",
+                "is_attempts_limited": False,
+                "is_time_limited": True,
+                "time_limit": 10,
+                "certification": False,
+                "users_login_required": True,
+            }
+        )
+        question = env["survey.question"].create(
+            {
+                "survey_id": survey.id,
+                "title": "Select exactly A and B",
+                "question_type": "multiple_choice",
+                "suggested_answer_ids": [
+                    Command.create({"value": "A", "answer_score": 1, "is_correct": True}),
+                    Command.create({"value": "B", "answer_score": 1, "is_correct": True}),
+                    Command.create({"value": "C", "answer_score": 0, "is_correct": False}),
+                ],
+            }
+        )
         first = survey._create_answer(user=user)
         first._save_lines(question, question.suggested_answer_ids.ids)
         results["all_choices_including_wrong_score"] = first.scoring_percentage
@@ -60,10 +70,12 @@ def run_probe(env):
         )
         assert results["simultaneous_unfinished_attempts"] == 2
 
-        second.write({
-            "state": "in_progress",
-            "start_datetime": fields.Datetime.now() - timedelta(minutes=11),
-        })
+        second.write(
+            {
+                "state": "in_progress",
+                "start_datetime": fields.Datetime.now() - timedelta(minutes=11),
+            }
+        )
         results["expired_at_ten_minutes"] = second.survey_time_limit_reached
         survey.time_limit = 20
         results["expired_after_source_duration_change"] = second.survey_time_limit_reached

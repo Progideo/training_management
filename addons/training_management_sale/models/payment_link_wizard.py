@@ -1,8 +1,8 @@
-from odoo import api, models, _
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
-class PaymentLinkWizard(models.TransientModel):
+class PaymentLinkWizard(models.TransientModel):  # pylint: disable=no-wizard-in-models  # extends a native wizard; moving the file is out of scope
     _inherit = "payment.link.wizard"
 
     @api.model
@@ -18,14 +18,13 @@ class PaymentLinkWizard(models.TransientModel):
         else:
             return
         if is_training:
-            raise ValidationError(_(
-                "Online payment links are disabled for training orders and invoices."
-            ))
+            raise ValidationError(self.env._("Online payment links are disabled for training orders and invoices."))
 
     @api.model
     def default_get(self, fields_list):
         self._check_training_document_link(
-            self.env.context.get("active_model"), self.env.context.get("active_id"),
+            self.env.context.get("active_model"),
+            self.env.context.get("active_id"),
         )
         return super().default_get(fields_list)
 

@@ -1,4 +1,4 @@
-from odoo import models, _
+from odoo import models
 from odoo.exceptions import AccessError
 from odoo.fields import Domain
 
@@ -17,7 +17,7 @@ class MailMessage(models.Model):
     def _check_training_message_access(self):
         if self and not self.env.su and self.env.user.share:
             if self.sudo().filtered_domain(self._training_message_access_domain()) != self:
-                raise AccessError(_("This training message requires a currently authorized contact."))
+                raise AccessError(self.env._("This training message requires a currently authorized contact."))
 
     def read(self, fields=None, load="_classic_read"):
         self._check_training_message_access()
@@ -28,8 +28,7 @@ class MailMessage(models.Model):
             return Domain.TRUE
         partner_id = self.env.user.partner_id.id
         result = Domain.TRUE
-        for model, flag in (("sale.order", "training_request_kind"),
-                            ("account.move", "training_is_sale_invoice")):
+        for model, flag in (("sale.order", "training_request_kind"), ("account.move", "training_is_sale_invoice")):
             allowed = Domain(flag, "=", False)
             if not self.env.user._is_public():
                 allowed |= Domain("training_portal_partner_ids", "in", [partner_id])
@@ -42,14 +41,16 @@ class MailMessage(models.Model):
         # no body or recipient data is returned by this permission calculation.
         messages = self.sudo().search_fetch([("model", "=", "account.payment")], ["res_id"])
         payments = self.env["account.payment"].sudo().browse(messages.mapped("res_id")).exists()
-        forbidden = payments.filtered(lambda payment:
-            payment._training_receipt_is_restricted() and (
-                self.env.user._is_public()
-                or self.env.user.partner_id not in payment._training_receipt_allowed_partners()
+        forbidden = payments.filtered(
+            lambda payment: (
+                payment._training_receipt_is_restricted()
+                and (
+                    self.env.user._is_public()
+                    or self.env.user.partner_id not in payment._training_receipt_allowed_partners()
+                )
             )
         )
-        return result & (Domain("model", "!=", "account.payment")
-                         | ~Domain("res_id", "in", forbidden.ids))
+        return result & (Domain("model", "!=", "account.payment") | ~Domain("res_id", "in", forbidden.ids))
 
     def _get_with_access(self, mode="read", **kwargs):
         # Controllers may pass a sudoed message. Reapply the current user's

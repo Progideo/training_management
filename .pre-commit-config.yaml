@@ -1,0 +1,24 @@
+# Local hooks: tools are installed by pre-commit itself, no repository to pin.
+# Run `pre-commit run --all-files` before pushing; the same command runs in CI.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check
+        language: python
+        additional_dependencies: ["ruff==0.16.9"]
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: python
+        additional_dependencies: ["ruff==0.16.9"]
+        types: [python]
+      - id: pylint-odoo
+        name: pylint-odoo (default rules)
+        entry: pylint --load-plugins=pylint_odoo --disable=all --enable=odoolint
+        language: python
+        additional_dependencies: ["pylint-odoo"]
+        files: ^addons/
+        types: [python]

@@ -9,6 +9,8 @@ on:
       - "tests/test_odoo_ci.py"
       - "docs/ci.md"
       - ".github/workflows/odoo.yml"
+      - ".pre-commit-config.yaml"
+      - "pyproject.toml"
   workflow_dispatch:
 
 permissions:
@@ -18,7 +20,7 @@ jobs:
   orchestration:
     name: Contrôles de l’orchestration
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,6 +29,12 @@ jobs:
         run: python3 -m pip install -r tests/ci/requirements.txt
       - name: Vérifier couverture, erreurs et contrôle final
         run: python3 -m unittest discover -s tests -p 'test_odoo_ci.py' -v
+      - name: Installer pre-commit
+        run: python3 -m pip install pre-commit
+      - name: Style et règles Odoo (ruff, pylint-odoo)
+        run: |
+          set -o pipefail
+          pre-commit run --all-files --show-diff-on-failure 2>&1 | tee pre-commit.log
 
   scenarios:
     name: Odoo — ${{ matrix.scenario }}

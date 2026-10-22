@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -10,31 +10,52 @@ class TrainingProgramVersion(models.Model):
     _check_company_auto = True
 
     course_id = fields.Many2one(
-        "training.course", string="Standard Course", required=True,
-        ondelete="restrict", check_company=True, index=True,
+        "training.course",
+        string="Standard Course",
+        required=True,
+        ondelete="restrict",
+        check_company=True,
+        index=True,
     )
     company_id = fields.Many2one(
-        related="course_id.company_id", store=True, index=True,
+        related="course_id.company_id",
+        store=True,
+        index=True,
     )
     version = fields.Char(string="Version Reference", required=True)
     title = fields.Char(string="Programme Title", required=True, translate=True)
-    state = fields.Selection([
-        ("draft", "Draft"), ("validated", "Validated"),
-        ("published", "Published"), ("retired", "Retired"),
-    ], default="draft", required=True, copy=False, readonly=True, index=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("validated", "Validated"),
+            ("published", "Published"),
+            ("retired", "Retired"),
+        ],
+        default="draft",
+        required=True,
+        copy=False,
+        readonly=True,
+        index=True,
+    )
     objectives = fields.Text(translate=True)
     target_audience = fields.Text(translate=True)
     prerequisites = fields.Text(translate=True)
     content = fields.Text(translate=True)
     duration_hours = fields.Float(string="Duration (hours)")
-    delivery_mode = fields.Selection([
-        ("onsite", "On site"), ("remote", "Remote"),
-        ("blended", "Blended"), ("elearning", "eLearning"),
-    ])
+    delivery_mode = fields.Selection(
+        [
+            ("onsite", "On site"),
+            ("remote", "Remote"),
+            ("blended", "Blended"),
+            ("elearning", "eLearning"),
+        ]
+    )
     language_id = fields.Many2one(
-        "res.lang", string="Programme Language",
+        "res.lang",
+        string="Programme Language",
         default=lambda self: self.env["res.lang"].search(
-            [("code", "=", self.env.lang or "en_US")], limit=1,
+            [("code", "=", self.env.lang or "en_US")],
+            limit=1,
         ),
         ondelete="restrict",
     )
@@ -42,15 +63,18 @@ class TrainingProgramVersion(models.Model):
     evaluation_criteria = fields.Text(translate=True)
     access_conditions = fields.Text(translate=True)
     accessibility_contact_id = fields.Many2one(
-        "res.partner", string="Accessibility Contact",
-        ondelete="restrict", check_company=True,
+        "res.partner",
+        ondelete="restrict",
+        check_company=True,
     )
     accessibility_information = fields.Text(
-        string="Accessibility Information", translate=True,
+        translate=True,
         help="Contact instructions preserved in this programme version.",
     )
     pricing_mode = fields.Selection(
-        [("quotation", "On quotation")], default="quotation", required=True,
+        [("quotation", "On quotation")],
+        default="quotation",
+        required=True,
         help="Commercial prices will be managed by standard Odoo products and quotations.",
     )
     validated_by_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
@@ -61,24 +85,36 @@ class TrainingProgramVersion(models.Model):
     retired_at = fields.Datetime(readonly=True, copy=False)
 
     _unique_version = models.Constraint(
-        "UNIQUE(course_id, version)", "The version reference must be unique for each course.",
+        "UNIQUE(course_id, version)",
+        "The version reference must be unique for each course.",
     )
     _positive_duration = models.Constraint(
-        "CHECK(duration_hours >= 0)", "Duration cannot be negative.",
+        "CHECK(duration_hours >= 0)",
+        "Duration cannot be negative.",
     )
 
     @api.depends("course_id.name", "version")
     @api.depends_context("lang")
     def _compute_display_name(self):
         for program in self:
-            program.display_name = " — ".join(filter(None, (
-                program.course_id.name, program.version,
-            )))
+            program.display_name = " — ".join(
+                filter(
+                    None,
+                    (
+                        program.course_id.name,
+                        program.version,
+                    ),
+                )
+            )
 
     def _audit_fields(self):
         return {
-            "validated_by_id", "validated_at", "published_by_id",
-            "published_at", "retired_by_id", "retired_at",
+            "validated_by_id",
+            "validated_at",
+            "published_by_id",
+            "published_at",
+            "retired_by_id",
+            "retired_at",
         }
 
     def _lock_courses(self, extra_course_id=None):
@@ -95,9 +131,9 @@ class TrainingProgramVersion(models.Model):
         for vals in vals_list:
             vals = dict(vals)
             if vals.get("state", "draft") != "draft" or self._audit_fields().intersection(vals):
-                raise ValidationError(_("New programme versions must be drafts without validation metadata."))
+                raise ValidationError(self.env._("New programme versions must be drafts without validation metadata."))
             if "company_id" in vals:
-                raise ValidationError(_("The programme company is defined by its course."))
+                raise ValidationError(self.env._("The programme company is defined by its course."))
             vals["state"] = "draft"
             vals.update(dict.fromkeys(self._audit_fields(), False))
             vals["version"] = (vals.get("version") or "").strip()
@@ -112,26 +148,32 @@ class TrainingProgramVersion(models.Model):
     def _check_identification(self):
         for program in self:
             if not (program.title or "").strip() or not (program.version or "").strip():
-                raise ValidationError(_("A programme title and version reference are required."))
+                raise ValidationError(self.env._("A programme title and version reference are required."))
 
     def _check_complete(self):
         required_fields = (
-            "objectives", "target_audience", "prerequisites", "content",
-            "delivery_mode", "language_id", "teaching_methods",
-            "evaluation_criteria", "access_conditions", "accessibility_contact_id",
+            "objectives",
+            "target_audience",
+            "prerequisites",
+            "content",
+            "delivery_mode",
+            "language_id",
+            "teaching_methods",
+            "evaluation_criteria",
+            "access_conditions",
+            "accessibility_contact_id",
             "accessibility_information",
         )
         for program in self:
             missing = [
-                name for name in required_fields
-                if not program[name] or (
-                    isinstance(program[name], str) and not program[name].strip()
-                )
+                name
+                for name in required_fields
+                if not program[name] or (isinstance(program[name], str) and not program[name].strip())
             ]
             if missing or program.duration_hours <= 0:
-                raise ValidationError(_(
-                    "Complete all programme information and enter a positive duration before validation."
-                ))
+                raise ValidationError(
+                    self.env._("Complete all programme information and enter a positive duration before validation.")
+                )
 
     def write(self, vals):
         self.check_access("write")
@@ -139,30 +181,32 @@ class TrainingProgramVersion(models.Model):
         self.lock_for_update()
         self.invalidate_recordset()
         if self._audit_fields().intersection(vals) or "company_id" in vals:
-            raise ValidationError(_("Validation metadata and programme company cannot be edited."))
+            raise ValidationError(self.env._("Validation metadata and programme company cannot be edited."))
         values = dict(vals)
         if "version" in values:
             values["version"] = (values["version"] or "").strip()
         if any(record.state != "draft" for record in self) and set(values) - {"state"}:
-            raise ValidationError(_("Validated programme content is immutable. Create a new draft version."))
+            raise ValidationError(self.env._("Validated programme content is immutable. Create a new draft version."))
         target = values.get("state")
         if "state" in values and not target:
-            raise ValidationError(_("This programme status transition is not allowed."))
+            raise ValidationError(self.env._("This programme status transition is not allowed."))
         if target:
             transitions = {"draft": "validated", "validated": "published", "published": "retired"}
             if set(values) != {"state"}:
-                raise ValidationError(_("Save programme content before changing its status."))
+                raise ValidationError(self.env._("Save programme content before changing its status."))
             if any(record.state != target and transitions.get(record.state) != target for record in self):
-                raise ValidationError(_("This programme status transition is not allowed."))
+                raise ValidationError(self.env._("This programme status transition is not allowed."))
             changing = self.filtered(lambda record: record.state != target)
             if not changing:
                 return True
             if target in ("validated", "published"):
                 changing._check_complete()
-            values.update({
-                f"{target}_by_id": self.env.uid,
-                f"{target}_at": fields.Datetime.now(),
-            })
+            values.update(
+                {
+                    f"{target}_by_id": self.env.uid,
+                    f"{target}_at": fields.Datetime.now(),
+                }
+            )
             return super(TrainingProgramVersion, changing).write(values)
         return super().write(values)
 
@@ -181,7 +225,7 @@ class TrainingProgramVersion(models.Model):
         self.check_access("create")
         return {
             "type": "ir.actions.act_window",
-            "name": _("New Programme Version"),
+            "name": self.env._("New Programme Version"),
             "res_model": "training.program.new.version",
             "view_mode": "form",
             "target": "new",
@@ -198,4 +242,4 @@ class TrainingProgramVersion(models.Model):
         self.lock_for_update()
         self.invalidate_recordset(["state"])
         if any(program.state != "draft" for program in self):
-            raise ValidationError(_("Validated programme versions cannot be deleted."))
+            raise ValidationError(self.env._("Validated programme versions cannot be deleted."))
