@@ -1,4 +1,5 @@
 from . import training_course
+from . import training_category
 from . import training_program
 from . import training_controlled
 from . import training_delivery
@@ -8,3 +9,4 @@ from . import training_schedule
 from . import training_preparation
 from . import training_invitation
 from . import training_attachment
+from . import training_program_pdf

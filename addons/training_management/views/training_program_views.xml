@@ -7,6 +7,7 @@
                 <field name="course_id"/>
                 <field name="version"/>
                 <field name="title"/>
+                <field name="category_id"/>
                 <field name="delivery_mode"/>
                 <field name="duration_hours"/>
                 <field name="state"/>
@@ -21,9 +22,12 @@
             <form duplicate="false">
                 <header>
                     <button name="action_validate" type="object" string="Validate" class="btn-primary" invisible="state != 'draft'" groups="training_management.group_training_coordinator"/>
+                    <button name="action_download_pdf" type="object" class="btn-primary" string="Download Programme PDF" invisible="state == 'draft' or not pdf_attachment_id"/>
                     <button name="action_publish" type="object" string="Publish Programme" invisible="state != 'validated'" groups="training_management.group_training_coordinator"/>
                     <button name="action_retire" type="object" string="Retire" invisible="state != 'published'" groups="training_management.group_training_coordinator"/>
                     <button name="action_new_version" type="object" string="New Version" groups="training_management.group_training_coordinator"/>
+                    <button name="action_preview_pdf" type="object" string="Preview Draft PDF" invisible="state != 'draft'"/>
+                    <button name="action_reconstruct_pdf" type="object" string="Reconstruct Historical PDF" invisible="not pdf_legacy or pdf_sha256" groups="training_management.group_training_coordinator"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,validated,published,retired"/>
                 </header>
                 <sheet>
@@ -44,6 +48,10 @@
                             <field name="pricing_mode" readonly="state != 'draft'"/>
                         </group>
                     </group>
+                    <field name="pdf_legacy" invisible="1"/>
+                    <field name="pdf_sha256" invisible="1"/>
+                    <field name="pdf_attachment_id" invisible="1"/>
+                    <div class="alert alert-info" invisible="not pdf_legacy or pdf_sha256" role="status">No historical PDF is available. Reconstruction creates a new document dated today.</div>
                     <notebook>
                         <page string="Programme">
                             <group>
@@ -70,6 +78,10 @@
                                 <field name="published_at"/>
                                 <field name="retired_by_id"/>
                                 <field name="retired_at"/>
+                                <field name="pdf_generated_by_id"/>
+                                <field name="pdf_generated_at"/>
+                                <field name="pdf_language_code"/>
+                                <field name="pdf_reconstructed"/>
                             </group>
                         </page>
                     </notebook>
@@ -85,9 +97,11 @@
                 <field name="title"/>
                 <field name="course_id"/>
                 <field name="version"/>
+                <field name="category_id"/>
                 <field name="delivery_mode"/>
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
                 <filter name="published" string="Published" domain="[('state', '=', 'published')]"/>
+                <filter name="historical_pdf_missing" string="Historical PDF to Reconstruct" domain="[('pdf_legacy', '=', True), ('pdf_sha256', '=', False)]"/>
                 <group>
                     <filter name="group_course" string="Standard Course" context="{'group_by': 'course_id'}"/>
                     <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
@@ -99,5 +113,14 @@
         <field name="name">Programme Versions</field>
         <field name="res_model">training.program.version</field>
         <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_reconstruct_programme_pdf_selection" model="ir.actions.server">
+        <field name="name">Reconstruct Historical PDF</field>
+        <field name="model_id" ref="model_training_program_version"/>
+        <field name="binding_model_id" ref="model_training_program_version"/>
+        <field name="binding_view_types">list</field>
+        <field name="group_ids" eval="[(4, ref('training_management.group_training_coordinator'))]"/>
+        <field name="state">code</field>
+        <field name="code">records.action_reconstruct_pdf()</field>
     </record>
 </odoo>

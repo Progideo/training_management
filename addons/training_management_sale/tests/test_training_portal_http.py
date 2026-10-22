@@ -55,6 +55,7 @@ class TestTrainingPortalHttp(HttpCase):
                 "company_id": company.id,
             }
         )
+        course.category_id = cls.env["training.category"].create({"name": "Learning", "company_id": company.id})
         program = cls.env["training.program.version"].create(
             {
                 "course_id": course.id,

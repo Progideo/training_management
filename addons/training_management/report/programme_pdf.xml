@@ -1,0 +1,64 @@
+<odoo>
+    <record id="paperformat_programme_pdf" model="report.paperformat">
+        <field name="name">Training Programme A4</field>
+        <field name="format">A4</field>
+        <field name="margin_top">16</field><field name="margin_bottom">16</field>
+        <field name="margin_left">16</field><field name="margin_right">16</field>
+        <field name="header_spacing">0</field>
+    </record>
+    <record id="action_programme_pdf_preview" model="ir.actions.report">
+        <field name="name">Draft Programme PDF</field>
+        <field name="model">training.program.version</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_management.programme_pdf_document</field>
+        <field name="paperformat_id" ref="paperformat_programme_pdf"/>
+        <field name="group_ids" eval="[(4, ref('training_management.group_training_reader'))]"/>
+    </record>
+    <template id="programme_pdf_document">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    body { font-family: DejaVu Sans, sans-serif; font-size: 11pt; color: #202b38; }
+                    h1 { font-size: 21pt; } h2 { font-size: 13pt; margin-top: 18pt; page-break-after: avoid; }
+                    .text { white-space: pre-wrap; line-height: 1.45; overflow-wrap: anywhere; }
+                    .notice { padding: 10pt; border: 1pt solid #596e84; margin: 12pt 0; }
+                    .meta { line-height: 1.7; } img { max-height: 55pt; max-width: 180pt; }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <t t-foreach="docs" t-as="o">
+                        <div class="article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Organisation logo"/>
+                            <p t-out="o.company_id.name"/>
+                            <h1 t-out="o.title"/>
+                            <div class="meta">
+                                <div><strong>Version: </strong><span t-out="o.version"/></div>
+                                <div><strong>Duration (hours): </strong><span t-out="o.duration_hours"/></div>
+                                <div><strong>Delivery mode: </strong><span t-field="o.delivery_mode"/></div>
+                                <div><strong>Language: </strong><span t-out="o.language_id.name"/></div>
+                                <div><strong>Price: </strong><span>On quotation</span></div>
+                            </div>
+                            <p t-if="draft" class="notice"><strong>Draft — not a reference document</strong></p>
+                            <p t-if="reconstructed" class="notice">
+                                Reconstructed from preserved programme content on <span t-out="generated_at"/> (UTC).
+                                This does not reproduce a historical document sent to a customer.
+                            </p>
+                            <h2>Objectives</h2><div class="text" t-out="o.objectives"/>
+                            <h2>Target audience</h2><div class="text" t-out="o.target_audience"/>
+                            <h2>Prerequisites</h2><div class="text" t-out="o.prerequisites"/>
+                            <h2>Programme content</h2><div class="text" t-out="o.content"/>
+                            <h2>Teaching methods</h2><div class="text" t-out="o.teaching_methods"/>
+                            <h2>Evaluation</h2><div class="text" t-out="o.evaluation_criteria"/>
+                            <h2>Access conditions</h2><div class="text" t-out="o.access_conditions"/>
+                            <h2>Accessibility</h2>
+                            <p t-out="o.accessibility_contact_id.name"/>
+                            <div class="text" t-out="o.accessibility_information"/>
+                        </div>
+                    </t>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -1,6 +1,6 @@
 # Catalogue — Catégories et PDF du programme
 
-**Cadrage validé ; développement non commencé.** Lot distinct de S04 ([PR #54](https://github.com/Progideo/training_management/pull/54)).
+**Cadrage validé.** Lot distinct de S04 ([PR #54](https://github.com/Progideo/training_management/pull/54)).
 Références : CAT01–CAT02, SEC01–SEC02 et UX01 de la
 [spécification](references/Training_Management_Specification_Fonctionnelle_v2.md),
 [S01 #11](https://github.com/Progideo/training_management/issues/11),
@@ -67,8 +67,10 @@ Le code de rapport réutilise une pièce par nom/modèle/identifiant lorsque
 `attachment_use` est activé. Il peut continuer le rendu si l'enregistrement de la
 pièce échoue par manque de droits. Ce mécanisme seul ne garantit donc ni le gel
 métier ni l'atomicité validation/fichier. La présence de `wkhtmltopdf` est vérifiée ;
-le rendu complet QWeb du futur programme et son fonctionnement HTTP restent à
-recetter. Ne pas confondre capacité native observée et fonctionnalité livrée.
+le rendu métier utilise QWeb et le moteur Community `base_report_wkhtmltox`
+(LGPL-3), déclaré explicitement avec Web. Le HTML autonome évite le chargement
+d'assets HTTP pendant la validation. La route de rapport PDF retourne elle aussi
+le fichier conservé pour une version figée ; le rendu HTML reste limité aux brouillons.
 
 Architecture retenue : petit référentiel `training.category` dans
 `training_management` (nom traduisible, société, actif), relation unique depuis
@@ -119,7 +121,7 @@ Un fichier manquant ou altéré est signalé ; pas de régénération silencieus
 
 Les versions antérieures à ce lot n'ont pas de PDF historique démontré. Ne pas
 inventer un fichier ni sa date à la mise à jour. Prévoir pour le coordinateur une
-action ponctuelle, sur sélection, de génération depuis le contenu déjà figé,
+action « Reconstituer le PDF historique », sur fiche ou sélection, de génération depuis le contenu déjà figé,
 datée du jour et signalée comme reconstitution. Elle conserve tout fichier déjà
 référencé et ne prétend pas reproduire une pièce ancienne envoyée au client.
 Les pièces commerciales existantes restent intactes ; aucune reprise Odoo 19

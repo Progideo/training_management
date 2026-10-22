@@ -3,3 +3,5 @@ from . import test_enrollment
 
 from . import test_native_creation
 from . import test_preparation
+
+from . import test_program_pdf

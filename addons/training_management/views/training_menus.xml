@@ -2,4 +2,5 @@
     <menuitem id="menu_training_root" name="Formations" sequence="25" groups="training_management.group_training_reader"/>
     <menuitem id="menu_training_courses" name="Standard Courses" parent="menu_training_root" action="action_training_courses" sequence="10"/>
     <menuitem id="menu_training_programs" name="Programme Versions" parent="menu_training_root" action="action_training_programs" sequence="20"/>
+    <menuitem id="menu_training_categories" name="Training Categories" parent="menu_training_root" action="action_training_categories" sequence="90" groups="training_management.group_training_coordinator"/>
 </odoo>

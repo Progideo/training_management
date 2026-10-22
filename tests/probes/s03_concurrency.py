@@ -48,6 +48,13 @@ program = env["training.program.version"].create(
         "accessibility_information": "Contact us",
     }
 )
+if "training.category" in env and not program.course_id.category_id:
+    program.course_id.category_id = env["training.category"].create(
+        {
+            "name": "Fictional probe category",
+            "company_id": program.company_id.id,
+        }
+    )
 program.action_validate()
 context = {"allowed_company_ids": company.ids}
 restricted = env(user=coordinator, context=context)

@@ -7,7 +7,7 @@ from odoo.tools import mute_logger
 
 
 @tagged("post_install", "-at_install")
-class TestCatalogue(TransactionCase):
+class CatalogueCase(TransactionCase):
     """CAT01 (internal scope), CAT02 and SEC01 with restricted users."""
 
     @classmethod
@@ -51,6 +51,7 @@ class TestCatalogue(TransactionCase):
                 }
             )
         )
+        cls.course.category_id = cls.env["training.category"].create({"name": "Learning", "company_id": cls.company.id})
         cls.other_course = cls.env["training.course"].create(
             {
                 "name": "Standard Course B",
@@ -87,6 +88,9 @@ class TestCatalogue(TransactionCase):
             )
         )
 
+
+@tagged("post_install", "-at_install")
+class TestCatalogue(CatalogueCase):
     def test_version_lifecycle_preserves_v1(self):
         v1 = self.new_program()
         v1.action_validate()

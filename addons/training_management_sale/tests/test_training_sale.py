@@ -35,6 +35,7 @@ class TestTrainingSale(TransactionCase):
                 "company_id": cls.company.id,
             }
         )
+        cls.course.category_id = cls.env["training.category"].create({"name": "Learning", "company_id": cls.company.id})
         cls.program = cls.env["training.program.version"].create(
             {
                 "course_id": cls.course.id,
@@ -70,6 +71,25 @@ class TestTrainingSale(TransactionCase):
         )
         cls.eur = cls.env.ref("base.EUR")
         cls.partner = cls.env["res.partner"].create({"name": "Fictional Buyer"})
+
+    def test_sales_pdf_keeps_the_quoted_version_without_extra_permissions(self):
+        order = self.env["sale.order"].with_user(self.salesperson).create({"partner_id": self.partner.id})
+        line = (
+            self.env["sale.order.line"]
+            .with_user(self.salesperson)
+            .create({"order_id": order.id, "product_id": self.product.id, "training_program_id": self.program.id})
+        )
+        original = bytes(self.program.pdf_attachment_id.raw)
+        v2 = self.program.copy({"version": "V2", "content": "New content"})
+        v2.action_validate()
+        v2.action_publish()
+        quoted = line.training_program_id
+        self.assertEqual(quoted, self.program)
+        self.assertEqual(bytes(quoted._reference_pdf().raw), original)
+        self.assertIn(str(self.program.pdf_attachment_id.id), quoted.action_download_pdf()["url"])
+        self.assertEqual(quoted.category_id, self.course.category_id)
+        with self.assertRaises(AccessError):
+            quoted.action_reconstruct_pdf()
 
     def test_crm_qualification_opens_native_quotation_with_version(self):
         lead = (

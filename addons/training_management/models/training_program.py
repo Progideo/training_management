@@ -207,11 +207,22 @@ class TrainingProgramVersion(models.Model):
                     f"{target}_at": fields.Datetime.now(),
                 }
             )
-            return super(TrainingProgramVersion, changing).write(values)
+            # A failed PDF must roll back every member of a validation batch,
+            # including the state/audit written before rendering.
+            with self.env.cr.savepoint():
+                result = super(TrainingProgramVersion, changing).write(values)
+                if target == "validated":
+                    changing._freeze_program_pdf()
+                return result
         return super().write(values)
 
     def action_validate(self):
         return self.write({"state": "validated"})
+
+    @api.private
+    def _store_pdf_metadata(self, values):
+        self._require_pdf_coordinator()
+        return super().write(values)  # pylint: disable=super-method-mismatch  # private metadata write after controlled generation
 
     def action_publish(self):
         return self.write({"state": "published"})
