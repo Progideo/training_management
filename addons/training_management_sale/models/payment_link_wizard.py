@@ -2,7 +2,7 @@ from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
-class PaymentLinkWizard(models.TransientModel):
+class PaymentLinkWizard(models.TransientModel):  # pylint: disable=no-wizard-in-models  # extends a native wizard; moving the file is out of scope
     _inherit = "payment.link.wizard"
 
     @api.model

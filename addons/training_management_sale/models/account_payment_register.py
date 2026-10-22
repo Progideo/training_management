@@ -2,7 +2,7 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
-class AccountPaymentRegister(models.TransientModel):
+class AccountPaymentRegister(models.TransientModel):  # pylint: disable=no-wizard-in-models  # extends a native wizard; moving the file is out of scope
     _inherit = "account.payment.register"
 
     training_bank_payment_required = fields.Boolean(

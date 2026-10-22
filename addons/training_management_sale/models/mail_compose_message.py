@@ -2,7 +2,7 @@ from odoo import models
 from odoo.exceptions import ValidationError
 
 
-class MailComposeMessage(models.TransientModel):
+class MailComposeMessage(models.TransientModel):  # pylint: disable=no-wizard-in-models  # extends a native wizard; moving the file is out of scope
     _inherit = "mail.compose.message"
 
     def _compute_recipient_partners(self):  # pylint: disable=missing-return  # compute method, nothing to return

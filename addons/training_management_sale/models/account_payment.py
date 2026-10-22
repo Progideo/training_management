@@ -153,7 +153,7 @@ class AccountPayment(models.Model):
                     )
                 # A payment default_state must not leak into creation of its
                 # account.move (whose valid states differ from payment states).
-                posting_self = self.with_context(
+                posting_self = self.with_context(  # pylint: disable=context-overridden  # the given context replaces the current one on purpose
                     {key: value for key, value in self.env.context.items() if key != "default_state"}
                 )
                 return super(AccountPayment, posting_self).write({"state": vals["state"]})

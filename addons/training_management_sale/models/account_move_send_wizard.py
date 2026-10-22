@@ -1,7 +1,7 @@
 from odoo import models
 
 
-class AccountMoveSendWizard(models.TransientModel):
+class AccountMoveSendWizard(models.TransientModel):  # pylint: disable=no-wizard-in-models  # extends a native wizard; moving the file is out of scope
     _inherit = "account.move.send.wizard"
 
     def _compute_mail_partners(self):  # pylint: disable=missing-return  # compute method, nothing to return
