@@ -111,7 +111,7 @@ class TrainingInvitation(models.Model):
                 mail = (
                     self.env["mail.mail"]
                     .sudo()
-                    .with_context(clean_context)
+                    .with_context(clean_context)  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
                     .create(
                         {
                             "subject": "%s — %s" % (title, session.name),
@@ -125,7 +125,7 @@ class TrainingInvitation(models.Model):
                         }
                     )
                 )
-                super(TrainingInvitation, self.sudo().with_context(clean_context)).create(
+                super(TrainingInvitation, self.sudo().with_context(clean_context)).create(  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
                     {
                         "delivery_id": delivery.id,
                         "session_id": session.id,

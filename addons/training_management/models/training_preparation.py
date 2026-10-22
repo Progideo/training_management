@@ -228,7 +228,7 @@ class TrainingAdaptation(models.Model):
         ):
             raise AccessError(self.env._("Only adaptation content can be supplied."))
         clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
-        records = super(TrainingAdaptation, self.with_context(clean_context)).create(vals_list)
+        records = super(TrainingAdaptation, self.with_context(clean_context)).create(vals_list)  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
         for record in records:
             record._audit(False)
         return records

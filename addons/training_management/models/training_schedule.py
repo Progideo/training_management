@@ -262,7 +262,7 @@ class TrainingSession(models.Model):
         # validated input above may define a session; generated values are not
         # allowed to enter through defaults (UTC instants, company, cancellation).
         clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
-        records = super(TrainingSession, self.with_context(clean_context)).create(vals_list)  # pylint: disable=super-method-mismatch  # shared checked creation helper
+        records = super(TrainingSession, self.with_context(clean_context)).create(vals_list)  # pylint: disable=super-method-mismatch,context-overridden  # deliberately discard untrusted defaults
         for record in records:
             self.env["training.operation"]._record(
                 record, {}, {"name": record.name, "start_at": record.start_at, "end_at": record.end_at}, reason
