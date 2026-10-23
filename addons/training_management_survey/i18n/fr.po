@@ -1,0 +1,879 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* training_management_survey
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0-20261015\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-23 13:40+0000\n"
+"PO-Revision-Date: 2026-10-23 13:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Answered"
+msgstr "Répondu"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Answered: %s / %s. Marked for review: %s."
+msgstr "Questions répondues : %s / %s. À revoir : %s."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid ""
+"Answers received by the server are saved. Unsaved changes will be reported "
+"here."
+msgstr "Les réponses reçues par le serveur sont sauvegardées. Les changements non sauvegardés sont signalés ici."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Assign a published exam from this programme to an evaluation activity."
+msgstr "Affectez un examen publié de ce programme à une activité d’évaluation."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.activity_form
+msgid ""
+"Assign a published mock exam. Its authoritative result determines "
+"completion."
+msgstr "Affectez un examen blanc publié. Son résultat de référence détermine la réalisation de l’activité."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__attempt_id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__attempt_id
+msgid "Attempt"
+msgstr "Tentative"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__author_id
+msgid "Author"
+msgstr "Auteur"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Authorized revision resource"
+msgstr "Ressource de révision autorisée"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.revise_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/wizard/revise.py:0
+msgid "Choose a completed mock exam attempt."
+msgstr "Choisissez une tentative d’examen blanc terminée."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Choose a programme and version."
+msgstr "Choisissez un programme et une version."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Choose answers from this question."
+msgstr "Choisissez des réponses appartenant à cette question."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Choose one answer for a QCU question."
+msgstr "Choisissez une seule réponse pour une question à choix unique."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Clear answer"
+msgstr "Effacer la réponse"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_company_id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.learning_exam_link
+msgid "Complete the assigned mock exam to reach the required threshold."
+msgstr "Réalisez l’examen blanc affecté pour atteindre le seuil demandé."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Confirm and retake the mock exam"
+msgstr "Confirmer et repasser l’examen blanc"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Confirm and start the mock exam"
+msgstr "Confirmer et commencer l’examen blanc"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Confirm final submission"
+msgstr "Confirmer la remise définitive"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Correction is available only after submission."
+msgstr "Le corrigé est disponible uniquement après la remise."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.course_exam_form
+msgid "Create Mock Exam"
+msgstr "Créer un examen blanc"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__create_uid
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__create_uid
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__create_date
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__create_date
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_learning_activity__criterion
+msgid "Criterion"
+msgstr "Critère"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_ir_binary__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_ir_http__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question_answer__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input_line__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_service__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_learning_activity__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_learning_service__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_program_version__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: training_management_survey
+#: model:ir.model.fields.selection,name:training_management_survey.selection__survey_survey__training_state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Duration:"
+msgstr "Durée :"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Exam evidence is generated by the server."
+msgstr "Les preuves d’examen sont produites par le serveur."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Expected answers:"
+msgstr "Réponses attendues :"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Explain the new version."
+msgstr "Motivez la nouvelle version."
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "Service de diffusion des fichiers pour les contrôleurs"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question__training_explanation
+msgid "Final Explanation"
+msgstr "Explication finale"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_ir_http
+msgid "HTTP Routing"
+msgstr "Routage HTTP"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_ir_binary__id
+#: model:ir.model.fields,field_description:training_management_survey.field_ir_http__id
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question__id
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question_answer__id
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__id
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__id
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input_line__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_service__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_learning_activity__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_learning_service__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_program_version__id
+msgid "ID"
+msgstr "ID"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Initial result preserved:"
+msgstr "Résultat initial conservé :"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid ""
+"JavaScript is required for answer saving and navigation. This attempt "
+"remains timed; reload after enabling JavaScript."
+msgstr "JavaScript est nécessaire pour sauvegarder les réponses et naviguer. Le temps continue de s’écouler ; rechargez après avoir activé JavaScript."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Keep activities with exam attempts unchanged; add a new activity."
+msgstr "Conservez les activités ayant des tentatives ; ajoutez une nouvelle activité."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Keep the exam history."
+msgstr "Conservez l’historique des examens."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Keep the exam programme and publication history unchanged."
+msgstr "Conservez le programme de l’examen et l’historique de publication."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__write_uid
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__write_uid
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__write_date
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__write_date
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__line_ids
+msgid "Line"
+msgstr "Ligne"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question__training_theme
+msgid "Main Theme"
+msgstr "Thème principal"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Mark for review"
+msgstr "Marquer à revoir"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_review_ids
+msgid "Marked for Review"
+msgstr "Questions à revoir"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Marked for review"
+msgstr "À revoir"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__maximum
+msgid "Maximum"
+msgstr "Maximum"
+
+#. module: training_management_survey
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_learning_activity__criterion__evaluation
+msgid "Mock Exam Threshold"
+msgstr "Seuil d’examen blanc"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_learning_activity__training_exam_id
+msgid "Mock Exam Version"
+msgstr "Version d’examen blanc"
+
+#. module: training_management_survey
+#: model:ir.actions.act_window,name:training_management_survey.exam_action
+#: model:ir.ui.menu,name:training_management_survey.exam_menu
+msgid "Mock Exams"
+msgstr "Examens blancs"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Mock exam — no official certification."
+msgstr "Examen blanc — sans certification officielle."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.learning_exam_link
+msgid "Mock exam:"
+msgstr "Examen blanc :"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_exam_revision
+msgid "Motivated Exam Result Revision"
+msgstr "Révision motivée d’un résultat d’examen"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.revise_form
+msgid "Motivated Result Revision"
+msgstr "Révision motivée du résultat"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "My attempts"
+msgstr "Mes tentatives"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "My attempts / retake the mock exam"
+msgstr "Mes tentatives / repasser l’examen blanc"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_history
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_home
+msgid "My mock exam attempts"
+msgstr "Mes tentatives d’examen blanc"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "My training"
+msgstr "Ma formation"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_form
+msgid "New Exam Version"
+msgstr "Nouvelle version d’examen"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "New attempts require active access and completed prerequisites."
+msgstr "Une nouvelle tentative nécessite des droits actifs et les activités préalables réalisées."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Next"
+msgstr "Suivante"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_history
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "No attempt yet."
+msgstr "Aucune tentative pour le moment."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "No published mock exam is assigned."
+msgstr "Aucun examen blanc publié n’est affecté."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Not evaluated"
+msgstr "Non évalué"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid ""
+"Not saved. Check your connection. Reload to recover only answers already "
+"received by the server."
+msgstr "Non sauvegardé. Vérifiez votre connexion. Rechargez pour retrouver uniquement les réponses déjà reçues par le serveur."
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Not saved. Reload to recover answers already received by the server."
+msgstr "Non sauvegardé. Rechargez pour retrouver les réponses déjà reçues par le serveur."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__points
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Points"
+msgstr "Points"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__points_by_question
+msgid "Points By Question"
+msgstr "Points par question"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__previous_id
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Previous"
+msgstr "Précédente"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__previous_points
+msgid "Previous Points"
+msgstr "Points précédents"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_history
+msgid ""
+"Previous results remain available after access expiry. Suspension or "
+"revocation blocks access."
+msgstr "Les résultats précédents restent consultables après expiration des accès. La suspension ou la révocation bloque leur consultation."
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_exam_service
+msgid "Private Native Survey Exam Operations"
+msgstr "Opérations privées d’examen sur les sondages natifs"
+
+#. module: training_management_survey
+#: model:ir.module.module,summary:base.module_training_management_survey
+msgid "Private versioned mock exams using native Odoo Surveys"
+msgstr "Examens blancs privés et versionnés avec les sondages natifs Odoo"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Provide a reason and points for every completed question."
+msgstr "Indiquez un motif et les points de chaque question de la tentative terminée."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_form
+msgid "Publish Mock Exam"
+msgstr "Publier l’examen blanc"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Publish exams through the checked action."
+msgstr "Publiez les examens avec l’action prévue."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Publish this version first."
+msgstr "Publiez d’abord cette version."
+
+#. module: training_management_survey
+#: model:ir.model.fields.selection,name:training_management_survey.selection__survey_survey__training_state__published
+msgid "Published"
+msgstr "Publié"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Published exams are immutable. Create a new version."
+msgstr "Les examens publiés sont figés. Créez une nouvelle version."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_form
+msgid ""
+"Published exams preserve their questions, correction, themes and duration. "
+"Create a new version to change them. Mock exams never deliver official "
+"certificates."
+msgstr "Les examens publiés conservent leurs questions, leur corrigé, leurs thèmes et leur durée. Créez une nouvelle version pour les modifier. Les examens blancs ne délivrent aucun certificat officiel."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__question_id
+msgid "Question"
+msgstr "Question"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Question %s"
+msgstr "Question %s"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Question palette"
+msgstr "Palette des questions"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__reason
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.revise_form
+msgid "Record Revision"
+msgstr "Enregistrer la révision"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Result and correction"
+msgstr "Résultat et corrigé"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Result and final correction"
+msgstr "Résultat et corrigé final"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Result revisions are immutable."
+msgstr "Les révisions de résultats sont immuables."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Results by theme"
+msgstr "Résultats par thème"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Resume"
+msgstr "Reprendre"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Resume the active attempt"
+msgstr "Reprendre la tentative en cours"
+
+#. module: training_management_survey
+#: model:ir.model.constraint,message:training_management_survey.constraint_survey_user_input_training_one_active
+msgid "Resume the active attempt before starting another one."
+msgstr "Reprenez la tentative en cours avant d’en commencer une autre."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Resume the active attempt in your other training space first."
+msgstr "Reprenez d’abord la tentative en cours dans votre autre espace de formation."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid ""
+"Retaking starts a new attempt with the full duration. Previous results are "
+"preserved."
+msgstr "Repasser ouvre une nouvelle tentative avec la durée complète. Les résultats précédents sont conservés."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Review and submit"
+msgstr "Vérifier et remettre"
+
+#. module: training_management_survey
+#: model:ir.actions.act_window,name:training_management_survey.revise_action
+msgid "Revise Exam Result"
+msgstr "Réviser le résultat d’examen"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_exam_revise
+msgid "Revise a Completed Exam Result"
+msgstr "Réviser un résultat d’examen terminé"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_exam_revise_line
+msgid "Revised Question Points"
+msgstr "Points révisés par question"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Revised points must be between zero and the question maximum."
+msgstr "Les points révisés doivent être compris entre zéro et le maximum de la question."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question__training_material_id
+msgid "Revision PDF"
+msgstr "PDF de révision"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Saved on the server."
+msgstr "Sauvegardé sur le serveur."
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Saving…"
+msgstr "Sauvegarde en cours…"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Score"
+msgstr "Score"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Start this mock exam from your training space."
+msgstr "Commencez cet examen blanc depuis votre espace de formation."
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid ""
+"Submission blocked: some answers are not saved. Reload and verify your saved"
+" answers."
+msgstr "Remise bloquée : certaines réponses ne sont pas sauvegardées. Rechargez et vérifiez vos réponses sauvegardées."
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Submission not confirmed. Check your connection and retry."
+msgstr "Remise non confirmée. Vérifiez votre connexion et réessayez."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Submission summary"
+msgstr "Récapitulatif de remise"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Submitting ends this attempt. Its answers cannot then be changed."
+msgstr "La remise termine cette tentative. Ses réponses ne pourront plus être modifiées."
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_survey_survey
+msgid "Survey"
+msgstr "Sondage"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_survey_question_answer
+msgid "Survey Label"
+msgstr "Proposition de réponse"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_survey_question
+msgid "Survey Question"
+msgstr "Question de sondage"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_survey_user_input
+msgid "Survey User Input"
+msgstr "Tentative de sondage"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_survey_user_input_line
+msgid "Survey User Input Line"
+msgstr "Réponse de sondage"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Theme"
+msgstr "Thème"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "This mock exam result does not guarantee success in an official exam."
+msgstr "Ce résultat d’examen blanc ne garantit aucune réussite à un examen officiel."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/binary.py:0
+msgid "This private exam file is unavailable."
+msgstr "Ce fichier d’examen privé est indisponible."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "This private exam is unavailable."
+msgstr "Cet examen privé est indisponible."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Threshold not reached"
+msgstr "Seuil non atteint"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Threshold reached"
+msgstr "Seuil atteint"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid ""
+"Time elapsed. Only answers received before the server deadline are retained."
+" Reconnect to see the result."
+msgstr "Temps écoulé. Seules les réponses reçues avant l’échéance du serveur sont conservées. Reconnectez-vous pour consulter le résultat."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Time remaining: <strong class=\"o_survey_timer\" role=\"timer\"/>"
+msgstr "Temps restant : <strong class=\"o_survey_timer\" role=\"timer\"/>"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_activity_id
+msgid "Training Activity"
+msgstr "Activité pédagogique"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_adjustment_ids
+msgid "Training Adjustment"
+msgstr "Révisions du résultat"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_enrollment_id
+msgid "Training Enrollment"
+msgstr "Inscription de formation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_family_id
+msgid "Training Family"
+msgstr "Examen de référence"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_learning_activity
+msgid "Training Learning Activity"
+msgstr "Activité pédagogique"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_learning_service
+msgid "Training Learning Operations"
+msgstr "Opérations pédagogiques"
+
+#. module: training_management_survey
+#: model:ir.module.module,shortdesc:base.module_training_management_survey
+msgid "Training Management — Mock Exams"
+msgstr "Training Management — Examens blancs"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_form
+#: model_terms:ir.ui.view,arch_db:training_management_survey.question_form
+msgid "Training Mock Exam"
+msgstr "Examen blanc de formation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_origin_id
+msgid "Training Origin"
+msgstr "Examen initial"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_question__training_program_id
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_program_id
+msgid "Training Program"
+msgstr "Programme de formation"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_program_version
+msgid "Training Programme Version"
+msgstr "Version du programme de formation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_revision_reason
+msgid "Training Revision Reason"
+msgstr "Motif de nouvelle version"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_state
+msgid "Training State"
+msgstr "État de publication"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_version
+msgid "Training Version"
+msgstr "Version d’examen"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Training coordination is required."
+msgstr "Les droits de coordination des formations sont nécessaires."
+
+#. module: training_management_survey
+#: model:ir.actions.server,name:training_management_survey.cron_expire_exams_ir_actions_server
+msgid "Training: close expired mock exams"
+msgstr "Formations : clôturer les examens blancs expirés"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Unanswered"
+msgstr "Sans réponse"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Unclassified"
+msgstr "Sans thème"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Use a positive duration and at least one question."
+msgstr "Indiquez une durée positive et au moins une question."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Use a threshold between 0 and 100."
+msgstr "Indiquez un seuil entre 0 et 100."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Use fixed QCU/QCM questions, positive points and a valid correction."
+msgstr "Utilisez des questions fixes QCU/QCM, des points positifs et un corrigé valide."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/wizard/revise.py:0
+msgid "Use one revision line per question."
+msgstr "Utilisez une seule ligne de révision par question."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Use the checked exam operations."
+msgstr "Utilisez les actions d’examen prévues."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Use the checked exam operations; completed answers are immutable."
+msgstr "Utilisez les actions d’examen prévues ; les réponses terminées sont immuables."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/attempt.py:0
+msgid "Use the motivated result revision action."
+msgstr "Utilisez l’action de révision motivée du résultat."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Use the published original exam from the same programme."
+msgstr "Utilisez l’examen initial publié du même programme."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_result
+msgid "Your answers:"
+msgstr "Vos réponses :"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid ""
+"minutes. Time runs continuously after confirmation, including while "
+"disconnected."
+msgstr "minutes. Le temps s’écoule sans interruption après confirmation, même en cas de déconnexion."

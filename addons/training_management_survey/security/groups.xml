@@ -1,0 +1,3 @@
+<odoo><record id="training_management.group_training_coordinator" model="res.groups">
+    <field name="implied_ids" eval="[(4, ref('survey.group_survey_user'))]"/>
+</record></odoo>

@@ -70,6 +70,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S04 — besoins, aménagements et séances | [s04-preparation-sessions.md](s04-preparation-sessions.md) |
 | S02.1 — politique documentaire et protections natives | [s02-1-document-policy.md](s02-1-document-policy.md) |
 | S05 — supports privés, activités, progression et tutorat | [s05-private-materials.md](s05-private-materials.md) |
+| S06 — examens blancs, navigation et thèmes | [s06-mock-exams.md](s06-mock-exams.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et

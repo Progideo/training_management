@@ -46,6 +46,10 @@ Les autorisations d'export et contrôles de cohérence multi-sociétés sont ceu
 standard. Les libellés sont exportés via `odoo.tools.translate.trans_export` ;
 l'ancien argument serveur `--i18n-export` n'existe pas dans cette version.
 
+L’intégration des écarts pour S06/P07/P08 est décrite dans
+[s06-mock-exams.md](s06-mock-exams.md). Les constats ci-dessous restent ceux
+de l’étude initiale du standard, avant cette intégration.
+
 ## Surveys : code observé
 
 | Exigence | Constat précis dans les sources installées | Conclusion |
