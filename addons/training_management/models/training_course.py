@@ -10,6 +10,7 @@ class TrainingCourse(models.Model):
 
     name = fields.Char(required=True, translate=True)
     active = fields.Boolean(default=True)
+    category_id = fields.Many2one("training.category", ondelete="restrict", check_company=True, index=True)
     company_id = fields.Many2one(
         "res.company",
         required=True,

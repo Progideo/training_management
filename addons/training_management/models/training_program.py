@@ -130,6 +130,8 @@ class TrainingProgramVersion(models.Model):
         prepared = []
         for vals in vals_list:
             vals = dict(vals)
+            if "category_id" in vals:
+                raise ValidationError(self.env._("The programme category is defined by its course."))
             if vals.get("state", "draft") != "draft" or self._audit_fields().intersection(vals):
                 raise ValidationError(self.env._("New programme versions must be drafts without validation metadata."))
             if "company_id" in vals:
@@ -177,6 +179,8 @@ class TrainingProgramVersion(models.Model):
 
     def write(self, vals):
         self.check_access("write")
+        if "category_id" in vals:
+            raise ValidationError(self.env._("The programme category is defined by its course."))
         self._lock_courses(vals.get("course_id"))
         self.lock_for_update()
         self.invalidate_recordset()
@@ -207,11 +211,22 @@ class TrainingProgramVersion(models.Model):
                     f"{target}_at": fields.Datetime.now(),
                 }
             )
-            return super(TrainingProgramVersion, changing).write(values)
+            # A failed PDF must roll back every member of a validation batch,
+            # including the state/audit written before rendering.
+            with self.env.cr.savepoint():
+                result = super(TrainingProgramVersion, changing).write(values)
+                if target == "validated":
+                    changing._freeze_program_pdf()
+                return result
         return super().write(values)
 
     def action_validate(self):
         return self.write({"state": "validated"})
+
+    @api.private
+    def _store_pdf_metadata(self, values):
+        self._require_pdf_coordinator()
+        return super().write(values)  # pylint: disable=super-method-mismatch  # private metadata write after controlled generation
 
     def action_publish(self):
         return self.write({"state": "published"})

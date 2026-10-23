@@ -51,6 +51,13 @@ program = env["training.program.version"].create(
         "accessibility_information": "Contact coordination",
     }
 )
+if "training.category" in env and not program.course_id.category_id:
+    program.course_id.category_id = env["training.category"].create(
+        {
+            "name": "Fictional probe category",
+            "company_id": program.company_id.id,
+        }
+    )
 program.action_validate()
 deliveries = (
     env["training.delivery"]

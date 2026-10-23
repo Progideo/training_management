@@ -1,4 +1,4 @@
-"""Final CI gate: only complete, successful jobs and all 21 steps may pass."""
+"""Final CI gate: every declared step, including the legacy bridge, must pass."""
 
 import csv
 import json

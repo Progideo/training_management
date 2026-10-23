@@ -107,6 +107,7 @@ msgstr "Méthode de l’action"
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__access_state__active
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__effective_access__active
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__active
+#: model:ir.model.fields,field_description:training_management.field_training_category__active
 msgid "Active"
 msgstr "Actif"
 
@@ -129,6 +130,7 @@ msgstr ""
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_category_form
 msgid "Archived"
 msgstr "Archivé"
 
@@ -184,6 +186,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_session__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_category__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -234,6 +237,7 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_session__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_category__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -257,6 +261,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_session__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_category__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -300,6 +305,9 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_session__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__display_name
+#: model:ir.model.fields,field_description:training_management.field_ir_actions_report__display_name
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_programme_pdf_document__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_category__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -372,6 +380,9 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_session__id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__id
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__id
+#: model:ir.model.fields,field_description:training_management.field_ir_actions_report__id
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_programme_pdf_document__id
+#: model:ir.model.fields,field_description:training_management.field_training_category__id
 msgid "ID"
 msgstr "ID"
 
@@ -400,6 +411,7 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_session__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_category__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -423,6 +435,7 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_session__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_category__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -437,6 +450,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_session__name
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__name
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__name
+#: model:ir.model.fields,field_description:training_management.field_training_category__name
 msgid "Name"
 msgstr "Nom"
 
@@ -480,6 +494,7 @@ msgstr "Non terminées"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__objectives
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
 msgid "Objectives"
 msgstr "Objectifs"
 
@@ -531,6 +546,7 @@ msgstr "Reportée"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__prerequisites
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__prerequisites
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
 msgid "Prerequisites"
 msgstr "Prérequis"
 
@@ -3157,3 +3173,316 @@ msgstr "Motif obligatoire"
 #, python-format
 msgid "Resource conflicts: %s"
 msgstr "Conflits de ressources : %s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid ""
+"(UTC).\n"
+"                                This does not reproduce a historical document sent to a customer."
+msgstr ""
+"(UTC).\n"
+"                                Ce fichier ne reproduit pas un document historique envoyé au client."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "<strong>Delivery mode: </strong>"
+msgstr "<strong>Modalité : </strong>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "<strong>Draft — not a reference document</strong>"
+msgstr "<strong>Brouillon — document sans valeur de référence</strong>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "<strong>Duration (hours): </strong>"
+msgstr "<strong>Durée (heures) : </strong>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "<strong>Language: </strong>"
+msgstr "<strong>Langue : </strong>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "<strong>Price: </strong><span>On quotation</span>"
+msgstr "<strong>Prix : </strong><span>Sur devis</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "<strong>Version: </strong>"
+msgstr "<strong>Version : </strong>"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "A reference programme PDF cannot be changed or shared by token."
+msgstr ""
+"Le PDF de référence du programme ne peut être ni modifié ni partagé par "
+"jeton."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "A reference programme PDF cannot be deleted."
+msgstr "Le PDF de référence du programme ne peut pas être supprimé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_category.py:0
+msgid ""
+"A training category keeps its company. Create a category in the other "
+"company."
+msgstr ""
+"Une catégorie pédagogique conserve sa société. Créez une catégorie dans "
+"l’autre société."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Access conditions"
+msgstr "Conditions d’accès"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Accessibility"
+msgstr "Accessibilité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_category.py:0
+msgid "Archive categories used by courses instead of deleting them."
+msgstr ""
+"Archivez les catégories utilisées par des formations au lieu de les "
+"supprimer."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_course__category_id
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__category_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_course_search
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid ""
+"Choose the course category before validating or publishing its programme."
+msgstr ""
+"Choisissez la catégorie de la formation avant de valider ou publier son "
+"programme."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Download Programme PDF"
+msgstr "Télécharger le programme PDF"
+
+#. module: training_management
+#: model:ir.actions.report,name:training_management.action_programme_pdf_preview
+#: model:ir.model,name:training_management.model_report_training_management_programme_pdf_document
+msgid "Draft Programme PDF"
+msgstr "Programme PDF en brouillon"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_category.py:0
+msgid "Enter a category name."
+msgstr "Saisissez un nom de catégorie."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Evaluation"
+msgstr "Évaluation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/tests/test_program_pdf.py:0
+msgid "Fictional engine failure"
+msgstr "Échec fictif du moteur PDF"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_legacy
+msgid "Historical Programme"
+msgstr "Programme historique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid ""
+"No historical PDF is available. Reconstruction creates a new document dated "
+"today."
+msgstr ""
+"Aucun PDF historique n’est disponible. La reconstitution crée un nouveau "
+"document daté du jour."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid ""
+"No reference PDF is available. Ask the coordinator to check this programme."
+msgstr ""
+"Aucun PDF de référence n’est disponible. Demandez au coordinateur de "
+"vérifier ce programme."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid ""
+"Only historical programmes without a reference PDF can be reconstructed."
+msgstr ""
+"Seuls les programmes historiques sans PDF de référence peuvent être "
+"reconstitués."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid "Only the training coordinator may generate the programme PDF."
+msgstr "Seul le coordinateur de formation peut générer le PDF du programme."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Organisation logo"
+msgstr "Logo de l’organisme"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_sha256
+msgid "PDF Fingerprint"
+msgstr "Empreinte du PDF"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_generated_by_id
+msgid "PDF Generated By"
+msgstr "PDF généré par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_generated_at
+msgid "PDF Generated On"
+msgstr "PDF généré le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_language_code
+msgid "PDF Language"
+msgstr "Langue du PDF"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid "PDF generation failed. The programme has not been validated."
+msgstr "La génération du PDF a échoué. Le programme n’a pas été validé."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Preview Draft PDF"
+msgstr "Prévisualiser le PDF brouillon"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_attachment_id
+msgid "Programme PDF"
+msgstr "Programme PDF"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Programme content"
+msgstr "Contenu du programme"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+#: model:ir.actions.server,name:training_management.action_reconstruct_programme_pdf_selection
+msgid "Reconstruct Historical PDF"
+msgstr "Reconstituer le PDF historique"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__pdf_reconstructed
+msgid "Reconstructed PDF"
+msgstr "PDF reconstitué"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Reconstructed from preserved programme content on"
+msgstr "Document reconstitué à partir du programme conservé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_ir_attachment__training_program_id
+#: model:ir.model.fields,field_description:training_management.field_product_document__training_program_id
+msgid "Reference Programme"
+msgstr "Programme de référence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid ""
+"Reference programme PDFs are created only during controlled generation."
+msgstr ""
+"Les PDF de référence des programmes sont créés uniquement par la génération "
+"contrôlée."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_ir_actions_report
+msgid "Report Action"
+msgstr "Action de rapport"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid "Select a programme to print."
+msgstr "Sélectionnez un programme à imprimer."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Target audience"
+msgstr "Public concerné"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+msgid "Teaching methods"
+msgstr "Méthodes pédagogiques"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid "The reference PDF already exists and cannot be replaced."
+msgstr "Le PDF de référence existe déjà et ne peut pas être remplacé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid ""
+"The reference PDF is missing or altered. It will not be regenerated "
+"automatically."
+msgstr ""
+"Le PDF de référence est absent ou altéré. Il ne sera pas régénéré "
+"automatiquement."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "The reference PDF link is invalid."
+msgstr "Le lien du PDF de référence est invalide."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_categories
+#: model:ir.ui.menu,name:training_management.menu_training_categories
+msgid "Training Categories"
+msgstr "Catégories de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_category
+msgid "Training Category"
+msgstr "Catégorie de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program_pdf.py:0
+msgid "Use Download Programme PDF to obtain the preserved reference document."
+msgstr ""
+"Utilisez « Télécharger le programme PDF » pour obtenir le document de "
+"référence conservé."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
+msgid "Historical PDF to Reconstruct"
+msgstr "PDF historique à reconstituer"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "The programme category is defined by its course."
+msgstr "La catégorie du programme est définie par sa formation."

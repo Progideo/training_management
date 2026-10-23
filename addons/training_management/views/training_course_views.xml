@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="category_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </list>
         </field>
@@ -19,6 +20,7 @@
                     <field name="active" invisible="1"/>
                     <group>
                         <field name="name"/>
+                <field name="category_id"/>
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
                     <group string="Standard Programmes">
@@ -37,6 +39,8 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="category_id"/>
+                <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
                 <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
             </search>
         </field>

@@ -18,5 +18,7 @@ for module, path in (
     ("training_management", "views/trainer_portal_templates.xml"),
 ):
     convert_file(env, module, path, None, mode="update")
+# New catalogue/PDF views are deliberately NOT prepared here. The module's
+# migration must support their creation during the normal update.
 env.cr.commit()
 print("S03_NATIVE_VIEW_BOOTSTRAP_OK")

@@ -28,15 +28,15 @@ cleanup() {
 }
 trap cleanup EXIT
 run_odoo() {
-  docker run --rm -i --name "$container" --network host \
-    -e HOST=127.0.0.1 -e PORT=5432 -e USER=odoo \
+  docker run --rm -i --name "$container" --network "${TM_CI_NETWORK:-host}" \
+    -e HOST="${TM_CI_DB_HOST:-127.0.0.1}" -e PORT=5432 -e USER=odoo \
     -e PASSWORD=fictional_ci_password \
     -e TM_UPGRADE_PHASE="${TM_UPGRADE_PHASE:-}" \
     -e S03_UPGRADE_PHASE="${S03_UPGRADE_PHASE:-}" \
     -v "${TM_ADDONS_DIR:-$repo/addons}:/mnt/extra-addons:ro" \
     -v "$volume:/var/lib/odoo" \
     "$ODOO_IMAGE" odoo "$@" \
-    --db_host=127.0.0.1 --db_port=5432 \
+    --db_host="${TM_CI_DB_HOST:-127.0.0.1}" --db_port=5432 \
     --db_user=odoo --db_password=fictional_ci_password \
     -d "${TM_TEST_DB:-tm_s01_test_ci}" --no-http --http-interface=127.0.0.1 --http-port=0 \
     --workers=0 --max-cron-threads=0
@@ -80,7 +80,11 @@ case "$scenario" in
       -i website,website_slides,training_management_sale --without-demo --stop-after-init
     TM_TEST_DB=tm_s03_test_upgrade_ci TM_ADDONS_DIR="${work_dir}/s02-baseline/addons" S03_UPGRADE_PHASE=prepare run_step s03-history-prepare run_odoo \
       shell < tests/probes/s03_history.py
-    TM_TEST_DB=tm_s03_test_upgrade_ci run_step s03-view-bootstrap run_odoo \
+    # The legacy Website bootstrap predates the new attachment schema. Run it
+    # with its reviewed S04 registry, then perform normal native upgrades.
+    mkdir -p "$work_dir/s04-bridge"
+    git archive 2d42f8dd1b8431dd25507a494e97cb5df9011504 addons | tar -x -C "$work_dir/s04-bridge"
+    TM_TEST_DB=tm_s03_test_upgrade_ci TM_ADDONS_DIR="${work_dir}/s04-bridge/addons" run_step s03-view-bootstrap run_odoo \
       shell < tests/probes/s03_view_bootstrap.py
     TM_TEST_DB=tm_s03_test_upgrade_ci run_step s03-upgrade-tests run_odoo \
       -u training_management,training_management_sale --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale

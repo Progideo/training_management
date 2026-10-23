@@ -31,7 +31,7 @@ Les données sont fictives ; aucun accès OVH ou secret de déploiement n’est 
 | --- | --- | ---: |
 | `incremental` | Installation/test du socle ; préparation de l’historique catalogue ; mise à jour/test du socle ; comparaison de l’historique ; installation/test Ventes sur ce socle ; concurrence des références bancaires | 6 |
 | `fresh` | Installation/test Ventes sur base vierge ; concurrence S03 réelle | 2 |
-| `history` | Installation S02 avec Website/eLearning depuis `a0c95fa` ; préparation historique S02 ; préchargement XML natif ; mise à jour/tests S03 ; comparaison S02 ; préparation historique S03 ; seconde mise à jour ; comparaison S03 | 8 |
+| `history` | Installation S02 avec Website/eLearning depuis `a0c95fa` ; préparation historique S02 ; préchargement XML avec le registre S04 figé ; mise à jour/tests actuels ; comparaison S02 ; préparation historique S03 ; seconde mise à jour ; comparaison S03 | 8 |
 | `website` | Installation Website/eLearning/socle courant ; préparation catalogue ; installation/tests Ventes ; mise à jour/tests Ventes ; comparaison catalogue | 5 |
 
 L’installation progressive socle → Ventes reste dans un seul scénario : la séparer
@@ -41,10 +41,14 @@ Les profils restreints, cas multi-sociétés et intégrations continuent à êtr
 exécutés par les mêmes suites Odoo ; aucun test d’addon n’est modifié.
 
 Le contrat [coverage.json](../tests/ci/coverage.json) recense les 21 appels du
-workflow au commit de référence `80ad50c`. Les tests comparent ce contrat au
-workflow historique puis aux invocations effectives du nouveau script, y compris
-le contenu des sondes transmis sur l’entrée standard. Un changement intentionnel
-de couverture devra actualiser ce contrat et sa justification.
+workflow de référence `80ad50c`. Les tests les comparent aux invocations effectives
+du script, y compris le contenu des sondes transmis sur l'entrée standard.
+Le préparateur historique utilise le registre S04 figé pour les anciennes vues
+S03/S04 uniquement. Le lot catégories/PDF est aussi testé par une mise à jour
+directe S04 avec et sans Website, sans préparation des vues ; voir le
+[cadrage et la migration](catalogue-categories-pdf.md). Aucune étape
+ni suite de tests n'est retirée. Un changement intentionnel de couverture doit
+actualiser ce contrat et sa justification.
 
 ## Exécution et diagnostic
 

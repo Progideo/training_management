@@ -9,3 +9,4 @@ rule_training_invoice_portal,Training invoices require named contact,account.mov
 access_delivery_sales,Training deliveries for sales,training.delivery,sales_team.group_sale_salesman,r,
 access_allocation_sales,Training seat allocations for sales,training.seat.allocation,sales_team.group_sale_salesman,r,
 access_enrollment_sales,Training enrollment states for sales,training.enrollment,sales_team.group_sale_salesman,r,
+access_category_sales,Training categories for sales,training.category,sales_team.group_sale_salesman,r,

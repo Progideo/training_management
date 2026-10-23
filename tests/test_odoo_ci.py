@@ -95,6 +95,7 @@ class ScenarioContracts(unittest.TestCase):
                     self.assertEqual(call["stdin_sha256"], hashlib.sha256(data).hexdigest())
                     mount = next(x for x in args if x.endswith(":/mnt/extra-addons:ro"))
                     self.assertEqual("s02-baseline/addons:" in mount, step["baseline"])
+                    self.assertEqual("s04-bridge/addons:" in mount, step["step"] == "s03-view-bootstrap")
                     self.assertIn("--no-http", args)
                     self.assertIn("--max-cron-threads=0", args)
                     self.assertIn("--workers=0", args)

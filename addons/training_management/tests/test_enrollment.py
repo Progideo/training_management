@@ -32,6 +32,7 @@ class EnrollmentCase(TransactionCase):
         cls.portal_b = new_test_user(cls.env, login="s03_other_participant", groups="base.group_portal")
         cls.customer = cls.env["res.partner"].create({"name": "Fictional S03 Buyer"})
         cls.course = cls.env["training.course"].create({"name": "Fictional S03 Course", "company_id": cls.company.id})
+        cls.course.category_id = cls.env["training.category"].create({"name": "Learning", "company_id": cls.company.id})
         cls.program = cls.env["training.program.version"].create(
             {
                 "course_id": cls.course.id,
@@ -283,6 +284,9 @@ class TestEnrollment(EnrollmentCase):
                 with self.assertRaises(AccessError):
                     e.with_user(user).action_confirm()
         other_course = self.env["training.course"].create({"name": "B", "company_id": self.other_company.id})
+        other_course.category_id = self.env["training.category"].create(
+            {"name": "Learning B", "company_id": self.other_company.id}
+        )
         other_program = self.program.copy(
             {"course_id": other_course.id, "version": "B1", "accessibility_contact_id": self.customer.id}
         )
