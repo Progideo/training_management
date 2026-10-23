@@ -1,3 +1,4 @@
+from . import training_document_policy
 from . import crm_lead
 from . import product_template
 from . import product_pricelist

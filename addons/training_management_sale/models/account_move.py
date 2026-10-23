@@ -43,14 +43,8 @@ class AccountMove(models.Model):
 
     def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
         thread = super()._get_thread_with_access(thread_id, mode=mode, **kwargs)
-        if (
-            thread
-            and self.env.user.share
-            and thread.sudo().training_is_sale_invoice
-            and (
-                self.env.user._is_public() or self.env.user.partner_id not in thread.sudo().training_portal_partner_ids
-            )
-        ):
+        # Native token/author paths still need the current document grant.
+        if thread and not self.env["training.document.policy"]._can_read(thread):
             return self.browse()
         return thread
 
@@ -73,7 +67,7 @@ class AccountMove(models.Model):
         recipients = super()._message_get_default_recipients(with_cc=with_cc, all_tos=all_tos)
         for invoice in self.filtered("training_is_sale_invoice"):
             recipients[invoice.id] = {
-                "partner_ids": invoice.training_portal_partner_ids.filtered("email").ids,
+                "partner_ids": self.env["training.document.policy"]._partners(invoice, email_only=True).ids,
                 "email_to": "",
                 "email_cc": "",
             }
@@ -81,10 +75,7 @@ class AccountMove(models.Model):
 
     def _notify_get_recipients(self, message, **kwargs):
         recipients = super()._notify_get_recipients(message, **kwargs)
-        if not self.training_is_sale_invoice:
-            return recipients
-        authorized_ids = set(self.training_portal_partner_ids.ids)
-        return [recipient for recipient in recipients if not recipient["share"] or recipient["id"] in authorized_ids]
+        return self.env["training.document.policy"]._filter_notifications(self, recipients)
 
     def _has_to_be_paid(self):
         self.ensure_one()
