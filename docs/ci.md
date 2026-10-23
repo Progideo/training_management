@@ -43,8 +43,10 @@ exécutés par les mêmes suites Odoo ; aucun test d’addon n’est modifié.
 Le contrat [coverage.json](../tests/ci/coverage.json) recense les 21 appels du
 workflow de référence `80ad50c`. Les tests les comparent aux invocations effectives
 du script, y compris le contenu des sondes transmis sur l'entrée standard.
-Le préparateur historique utilise le registre S04 figé et initialise les
-emplacements des vues nouvelles avant leur chargement définitif ; aucune étape
+Le préparateur historique utilise le registre S04 figé pour les anciennes vues
+S03/S04 uniquement. Le lot catégories/PDF est aussi testé par une mise à jour
+directe S04 avec et sans Website, sans préparation des vues ; voir le
+[cadrage et la migration](catalogue-categories-pdf.md). Aucune étape
 ni suite de tests n'est retirée. Un changement intentionnel de couverture doit
 actualiser ce contrat et sa justification.
 

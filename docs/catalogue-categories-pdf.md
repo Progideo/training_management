@@ -168,10 +168,14 @@ le justifier après contrôle des droits métier ; aucun `sudo()` global sur le 
 Ces critères sont des tests prévus. Les preuves des vérifications natives et,
 ultérieurement, les résultats de recette restent dans la PR du lot.
 
-Pour l'ancienne fixture S02 avec Website, le préparateur historique utilise le
-registre S04 figé et crée par l'ORM les emplacements des nouvelles vues du lot.
-Leur contenu définitif est chargé par la mise à jour native, après initialisation
-des nouveaux modèles. Cela préserve le défaut Website de visibilité sans patch
-ni modification SQL et évite de charger le code actuel sur un ancien schéma.
-Les 21 étapes historiques sont conservées. La mise à jour depuis S04 sans Website
-reste vérifiée directement, sans ce préparateur.
+La reprise S04 est testée directement avec et sans Website, sans précréation
+de vues. Dans l’image Community vérifiée, le registre partiel de mise à jour ne
+porte pas encore le défaut ORM `visibility` de Website lors de la création des
+vues du socle. La migration fournit temporairement son défaut natif `public`
+uniquement si la colonne requise existe sans défaut SQL. La phase native `post`
+retire ce défaut avant validation de la transaction du module. Aucune valeur existante,
+contrainte, permission ni source du cœur n’est modifiée. Un échec annule aussi
+ce changement de schéma ; un défaut SQL préexistant est conservé.
+
+Le préparateur historique S02 reste limité aux anciennes vues S03/S04. Il ne
+prépare aucune vue catégories/PDF ; les 21 étapes historiques sont conservées.

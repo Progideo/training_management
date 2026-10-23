@@ -38,7 +38,9 @@ step() {
   printf '%s OK\n' "$name"
 }
 git -C "$repo" archive 2d42f8dd1b8431dd25507a494e97cb5df9011504 addons | tar -x -C "$work_dir"
-TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i training_management_sale --without-demo --stop-after-init
+baseline_modules=training_management_sale
+if [[ "${TM_CATPDF_WITH_WEBSITE:-false}" == true ]]; then baseline_modules=website,training_management_sale; fi
+TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i "$baseline_modules" --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" CATALOGUE_PHASE=prepare step prepare run_odoo shell --no-http < "$repo/tests/probes/catalogue_pdf_history.py"
 step upgrade run_odoo -u training_management,training_management_sale --stop-after-init --test-enable --test-tags=/training_management:TestProgrammePdf,/training_management:TestProgrammePdfHttp
 CATALOGUE_PHASE=verify step history run_odoo shell --no-http < "$repo/tests/probes/catalogue_pdf_history.py"
