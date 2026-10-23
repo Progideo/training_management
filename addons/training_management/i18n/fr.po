@@ -189,6 +189,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_category__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_material__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -242,6 +246,10 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_category__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_material__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -268,6 +276,10 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_category__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_material__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -318,6 +330,13 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_document_policy__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_material__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__display_name
+#: model:ir.model.fields,field_description:training_management.field_mail_message__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_evidence__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -397,6 +416,13 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_document_policy__id
 #: model:ir.model.fields,field_description:training_management.field_training_material__id
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__id
+#: model:ir.model.fields,field_description:training_management.field_mail_message__id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_evidence__id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -428,6 +454,10 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_category__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_material__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -454,6 +484,10 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_category__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_material__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -470,6 +504,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__name
 #: model:ir.model.fields,field_description:training_management.field_training_category__name
 #: model:ir.model.fields,field_description:training_management.field_training_material__name
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__name
 msgid "Name"
 msgstr "Nom"
 
@@ -746,12 +781,14 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_state
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__state
 msgid "State"
 msgstr "État"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__distribution_state
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__distribution_state
 msgid "Status"
 msgstr "État"
 
@@ -870,6 +907,7 @@ msgstr "Valider"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__prerequisites__validated
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__validated
 msgid "Validated"
 msgstr "Validé"
 
@@ -1375,6 +1413,8 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_session__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1401,6 +1441,9 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__enrollment_ids
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -1482,6 +1525,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__kind
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__kind
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -1591,6 +1635,7 @@ msgstr "Participant"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__prerequisites__pending
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__pending
 msgid "Pending"
 msgstr "À vérifier"
 
@@ -1726,6 +1771,7 @@ msgstr "Responsable"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__revision
 #: model:ir.model.fields,field_description:training_management.field_training_material__revision
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__revision
 msgid "Revision"
 msgstr "Révision"
 
@@ -2036,6 +2082,7 @@ msgstr "Nouvelle inscription"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_needaction
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_needaction
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_needaction
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_needaction
 msgid "Action Needed"
 msgstr "Nécessite une action"
 
@@ -2078,6 +2125,7 @@ msgstr "Icône de type d'activité"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_attachment_count
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_attachment_count
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_attachment_count
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_attachment_count
 msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
 
@@ -2085,6 +2133,7 @@ msgstr "Nombre de pièces jointes"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_follower_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_follower_ids
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_follower_ids
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_follower_ids
 msgid "Followers"
 msgstr "Abonnés"
 
@@ -2092,6 +2141,7 @@ msgstr "Abonnés"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_partner_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_partner_ids
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_partner_ids
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Abonnés (Partenaires)"
 
@@ -2099,6 +2149,7 @@ msgstr "Abonnés (Partenaires)"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__has_message
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__has_message
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__has_message
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__has_message
 msgid "Has Message"
 msgstr "A un message"
 
@@ -2120,6 +2171,7 @@ msgstr "Icône pour indiquer une activité d'exception."
 #: model:ir.model.fields,help:training_management.field_training_delivery__message_needaction
 #: model:ir.model.fields,help:training_management.field_training_enrollment__message_needaction
 #: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_needaction
+#: model:ir.model.fields,help:training_management.field_training_learning_entry__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages demandent votre attention."
 
@@ -2130,6 +2182,8 @@ msgstr "Si coché, de nouveaux messages demandent votre attention."
 #: model:ir.model.fields,help:training_management.field_training_delivery__message_has_sms_error
 #: model:ir.model.fields,help:training_management.field_training_enrollment__message_has_sms_error
 #: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_has_sms_error
+#: model:ir.model.fields,help:training_management.field_training_learning_entry__message_has_error
+#: model:ir.model.fields,help:training_management.field_training_learning_entry__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si coché, certains messages ont une erreur de livraison."
 
@@ -2137,6 +2191,7 @@ msgstr "Si coché, certains messages ont une erreur de livraison."
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_is_follower
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_is_follower
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_is_follower
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_is_follower
 msgid "Is Follower"
 msgstr "Est un abonné"
 
@@ -2144,6 +2199,7 @@ msgstr "Est un abonné"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_has_error
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_has_error
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_has_error
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_has_error
 msgid "Message Delivery error"
 msgstr "Erreur d'envoi du message"
 
@@ -2151,6 +2207,7 @@ msgstr "Erreur d'envoi du message"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_ids
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_ids
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_ids
 msgid "Messages"
 msgstr "Messages"
 
@@ -2186,6 +2243,7 @@ msgstr "Type d'activités à venir"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_needaction_counter
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_needaction_counter
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_needaction_counter
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_needaction_counter
 msgid "Number of Actions"
 msgstr "Nombre d'actions"
 
@@ -2193,6 +2251,7 @@ msgstr "Nombre d'actions"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_has_error_counter
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_has_error_counter
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_has_error_counter
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_has_error_counter
 msgid "Number of errors"
 msgstr "Nombre d'erreurs"
 
@@ -2200,6 +2259,7 @@ msgstr "Nombre d'erreurs"
 #: model:ir.model.fields,help:training_management.field_training_delivery__message_needaction_counter
 #: model:ir.model.fields,help:training_management.field_training_enrollment__message_needaction_counter
 #: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_needaction_counter
+#: model:ir.model.fields,help:training_management.field_training_learning_entry__message_needaction_counter
 msgid "Number of messages requiring action"
 msgstr "Nombre de messages nécessitant une action"
 
@@ -2207,6 +2267,7 @@ msgstr "Nombre de messages nécessitant une action"
 #: model:ir.model.fields,help:training_management.field_training_delivery__message_has_error_counter
 #: model:ir.model.fields,help:training_management.field_training_enrollment__message_has_error_counter
 #: model:ir.model.fields,help:training_management.field_training_seat_allocation__message_has_error_counter
+#: model:ir.model.fields,help:training_management.field_training_learning_entry__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr "Nombre de messages avec des erreurs d'envoi"
 
@@ -2442,6 +2503,7 @@ msgstr "Créez entre 1 et 100 séances avec un intervalle positif."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation__decision
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__decision
 msgid "Decision"
 msgstr "Décision"
 
@@ -2499,6 +2561,7 @@ msgstr "Export"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__fingerprint
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__fingerprint
 msgid "Fingerprint"
 msgstr "Empreinte"
 
@@ -2589,6 +2652,7 @@ msgstr "Lieu"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__mail_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__mail_id
 msgid "Mail"
 msgstr "Courriel"
 
@@ -2784,6 +2848,7 @@ msgstr "Capacité de la salle"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__message_has_sms_error
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__message_has_sms_error
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__message_has_sms_error
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "Erreur d’envoi du SMS"
 
@@ -3597,6 +3662,7 @@ msgstr "Service de diffusion des fichiers pour les contrôleurs"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__filename
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__filename
 msgid "Filename"
 msgstr "Nom du fichier"
 
@@ -3642,6 +3708,7 @@ msgstr "Support"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__material_assignment_ids
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__material_assignment_id
 msgid "Material Assignment"
 msgstr "Affectation de support"
 
@@ -3746,11 +3813,13 @@ msgstr "Agenda"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__sequence
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__sequence
 msgid "Sequence"
 msgstr "Ordre"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__sha256
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sha256
 msgid "Sha256"
 msgstr "Empreinte SHA-256"
 
@@ -3843,5 +3912,759 @@ msgstr "Retiré"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_material.py:0
-msgid "Bulk export of private support records is unavailable. Download an authorized PDF instead."
-msgstr "L’export en masse des supports privés est indisponible. Téléchargez un PDF autorisé."
+#: code:addons/training_management/models/training_attachment.py:0
+msgid ""
+"Bulk export of private support records is unavailable. Download an "
+"authorized PDF instead."
+msgstr ""
+"L’export en masse des supports privés est indisponible. Téléchargez un PDF "
+"autorisé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_message.py:0
+msgid "A message cannot be reassigned to private learning work."
+msgstr "Un message ne peut pas être réaffecté à un travail pédagogique privé."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__decision__accepted
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Accepted"
+msgstr "Accepté"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Activities and progress"
+msgstr "Activités et progression"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__activity_id
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__activity_id
+msgid "Activity"
+msgstr "Activité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Activity dependencies cannot form a cycle."
+msgstr "Les dépendances entre activités ne peuvent pas former de cycle."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_learning
+msgid "Add Learning Activity"
+msgstr "Ajouter une activité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_enrollment_learning
+msgid ""
+"An individual tutor overrides the delivery tutor. Private work is available "
+"only to the participant and the assigned tutor."
+msgstr ""
+"Le tuteur individuel remplace celui de la réalisation. Seuls le participant "
+"et le tuteur affecté accèdent aux travaux privés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "An optional activity cannot block a required activity."
+msgstr ""
+"Une activité facultative ne peut pas bloquer une activité obligatoire."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Ask for private help"
+msgstr "Demander une aide privée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Assign an active tutor authorized for this operating company."
+msgstr "Affectez un tuteur actif autorisé pour cette société exploitante."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__decision__changes
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__changes
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Changes Requested"
+msgstr "À reprendre"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Changes requested: consult the private feedback below."
+msgstr "Travail à reprendre : consultez la correction privée ci-dessous."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Choose Accepted or Changes Requested."
+msgstr "Choisissez « Accepté » ou « À reprendre »."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Choose a PDF reference from this delivery."
+msgstr "Choisissez une référence PDF de cette réalisation."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Choose a status"
+msgstr "Choisir un statut"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Choose a supported learning action."
+msgstr "Choisissez une action pédagogique prise en charge."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Complete the prerequisite activities first."
+msgstr "Réalisez d’abord les activités préalables."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__completed
+msgid "Completed"
+msgstr "Réalisé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Completion criterion met."
+msgstr "Critère de réalisation rempli."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__kind__correction
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Correction"
+msgstr "Correction"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Correction or validation"
+msgstr "Correction ou validation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Create a new private help request instead of changing its origin."
+msgstr ""
+"Créez une nouvelle demande d’aide privée au lieu de modifier son origine."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__criterion
+msgid "Criterion"
+msgstr "Critère"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Deadline:"
+msgstr "Échéance :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Declare consultation"
+msgstr "Déclarer la consultation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__declared_at
+msgid "Declared At"
+msgstr "Consultation déclarée le"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_activity__criterion__declaration
+msgid "Declared Consultation"
+msgstr "Consultation déclarée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__due_days
+msgid "Due After Access Opens (Days)"
+msgstr "Échéance après ouverture des accès (jours)"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_learning_progress
+msgid "Enrollment Activity Progress"
+msgstr "Progression d’une activité par inscription"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Enter a message or select a named file."
+msgstr "Saisissez un message ou choisissez un fichier nommé."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__entry_id
+msgid "Entry"
+msgstr "Échange"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__evaluation_threshold
+msgid "Evaluation Threshold (%)"
+msgstr "Seuil d’évaluation (%)"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_activity__criterion__evaluation
+msgid "Evaluation Threshold (S06)"
+msgstr "Seuil d’évaluation (S06)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.view_learning_activity_form
+msgid ""
+"Evaluation completion awaits an authoritative result from the S06 exams "
+"integration."
+msgstr ""
+"La réalisation attend un résultat de référence fourni par l’intégration des "
+"examens S06."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__event_key
+msgid "Event Key"
+msgstr "Référence technique de notification"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_activity__criterion__submission
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__kind__submission
+msgid "Exercise Submission"
+msgstr "Remise d’exercice"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Exercise submission"
+msgstr "Remise d’exercice"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "In reply to the message dated"
+msgstr "En réponse au message du"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__learning_inactivity_days
+msgid "Inactivity Before Reminder (Days)"
+msgstr "Inactivité avant relance (jours)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_learning
+msgid "Individual Notification Journal"
+msgstr "Journal des notifications individuelles"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__learning_tutor_id
+msgid "Individual Tutor"
+msgstr "Tuteur individuel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__instructions
+msgid "Instructions"
+msgstr "Consignes"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid ""
+"Keep activities with recorded work unchanged; add a new activity instead."
+msgstr ""
+"Conservez les activités ayant déjà des travaux ; ajoutez une nouvelle "
+"activité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Keep activities with recorded work."
+msgstr "Conservez les activités ayant déjà des travaux."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Keep learning evidence and its history unchanged."
+msgstr ""
+"Conservez les preuves pédagogiques et leur historique sans les modifier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_message.py:0
+msgid "Keep private learning messages unchanged."
+msgstr "Conservez les messages pédagogiques privés sans les modifier."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_progress__latest_submission_id
+msgid "Latest Submission"
+msgstr "Dernière remise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Latest work submitted."
+msgstr "Dernière version remise."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__learning_activity_ids
+msgid "Learning Activity"
+msgstr "Activité pédagogique"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__learning_due_days
+msgid "Learning Deadline After Access Opens (Days)"
+msgstr "Échéance pédagogique après ouverture des accès (jours)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__learning_notice_ids
+msgid "Learning Notice"
+msgstr "Notification pédagogique"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_learning_notice
+msgid "Learning Notification Journal"
+msgstr "Journal des notifications pédagogiques"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__learning_progress_ids
+msgid "Learning Progress"
+msgstr "Progression pédagogique"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__learning_tutor_id
+msgid "Learning Tutor"
+msgstr "Tuteur de la réalisation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Learning activities"
+msgstr "Activités pédagogiques"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_learning
+#: model_terms:ir.ui.view,arch_db:training_management.view_enrollment_learning
+msgid "Learning and Tutoring"
+msgstr "Activités et accompagnement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Learning evidence cannot be copied."
+msgstr "Les preuves pédagogiques ne peuvent pas être copiées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Learning evidence is generated by the authorized learning action."
+msgstr "Les preuves sont produites par l’action pédagogique autorisée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_mail.py:0
+msgid "Learning notifications contain only the authorized sign-in link."
+msgstr ""
+"Les notifications pédagogiques contiennent uniquement le lien de connexion "
+"autorisé."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_mail_message
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__message_id
+msgid "Message"
+msgstr "Message"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutor
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutoring
+msgid "My tutoring assignments"
+msgstr "Mes accompagnements"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "New work was recorded. Reload before continuing."
+msgstr ""
+"Un nouveau travail a été enregistré. Rechargez la page avant de continuer."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutoring
+msgid "No current tutoring assignment."
+msgstr "Aucun accompagnement en cours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_notice.py:0
+msgid "No currently authorized recipient with an email address."
+msgstr ""
+"Aucun destinataire actuellement habilité avec une adresse électronique."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "No required learning activity is configured."
+msgstr "Aucune activité obligatoire n’est configurée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__not_queued_reason
+msgid "Not Queued Reason"
+msgstr "Motif d’absence d’envoi"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid ""
+"Only the participant and the currently assigned tutor can read these "
+"exchanges."
+msgstr ""
+"Seuls le participant et le tuteur actuellement affecté peuvent lire ces "
+"échanges."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Open the assigned PDF"
+msgstr "Ouvrir le PDF associé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_notice.py:0
+msgid "Open training space"
+msgstr "Ouvrir l’espace formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Opening a PDF does not validate learning or attendance."
+msgstr "Ouvrir un PDF ne valide ni un acquis ni une présence."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__optional
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Optional"
+msgstr "Facultatif"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__parent_id
+msgid "Parent"
+msgstr "Échange précédent"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__dependency_ids
+msgid "Prerequisite Activities"
+msgstr "Activités préalables"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Prerequisite activities must belong to the same delivery."
+msgstr "Les activités préalables doivent appartenir à la même réalisation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__kind__answer
+msgid "Private Answer"
+msgstr "Réponse privée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__data
+msgid "Private File"
+msgstr "Fichier privé"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__kind__question
+msgid "Private Help Request"
+msgstr "Demande d’aide privée"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_learning_entry
+msgid "Private Learning Entry"
+msgstr "Échange pédagogique privé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Private answer"
+msgstr "Réponse privée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Private file (optional)"
+msgstr "Fichier privé (facultatif)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Private help request"
+msgstr "Demande d’aide privée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Private learning evidence cannot be exported in bulk."
+msgstr ""
+"Les preuves pédagogiques privées ne peuvent pas être exportées en masse."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Private learning files cannot be changed, shared or reassigned."
+msgstr ""
+"Les fichiers pédagogiques privés ne peuvent pas être modifiés, partagés ou "
+"réaffectés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_message.py:0
+msgid "Private learning messages cannot be copied."
+msgstr "Les messages pédagogiques privés ne peuvent pas être copiés."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Private work and help"
+msgstr "Travaux et aide privés"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_activity__progress_ids
+msgid "Progress"
+msgstr "Progression"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_id
+msgid "Recipient"
+msgstr "Destinataire"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_email
+msgid "Recipient Email"
+msgstr "Adresse du destinataire"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_language
+msgid "Recipient Language"
+msgstr "Langue du destinataire"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_learning_activity_form
+msgid "Recorded work preserves this activity and its completion criterion."
+msgstr ""
+"Les travaux enregistrés conservent cette activité et son critère de "
+"réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Reload this page before submitting your work."
+msgstr "Rechargez cette page avant de remettre votre travail."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__learning_reminder_days
+msgid "Reminder Interval (Days)"
+msgstr "Intervalle entre relances (jours)"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Reply to the exact private help request."
+msgstr "Répondez à la demande d’aide privée concernée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__request_key
+msgid "Request Key"
+msgstr "Référence de soumission"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Required"
+msgstr "Obligatoire"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Required activities completed"
+msgstr "Activités obligatoires réalisées"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Review status"
+msgstr "Statut de la correction"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Save correction"
+msgstr "Enregistrer la correction"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sealed_at
+msgid "Sealed At"
+msgstr "Conservé le"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Send private answer"
+msgstr "Envoyer la réponse privée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Send private request"
+msgstr "Envoyer la demande privée"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_learning_evidence
+msgid "Server-authored Learning Evidence"
+msgstr "Preuve pédagogique produite par le serveur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_notice.py:0
+msgid "Sign in to your training space to view the current information."
+msgstr ""
+"Connectez-vous à votre espace formation pour consulter les informations à "
+"jour."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Submit a new version"
+msgstr "Remettre une nouvelle version"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__submitted
+msgid "Submitted"
+msgstr "Remis"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_learning_progress_one_progress
+msgid "This activity already has a progress record."
+msgstr "Cette activité possède déjà un suivi de progression."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "This activity does not accept exercise submissions or corrections."
+msgstr "Cette activité n’accepte pas de remise d’exercice ni de correction."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_learning_notice_one_event
+msgid "This learning notification is already journaled."
+msgstr "Cette notification pédagogique est déjà journalisée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_mail.py:0
+msgid "This learning notification no longer has an authorized recipient."
+msgstr "Cette notification pédagogique n’a plus de destinataire habilité."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_learning_entry_one_request
+msgid "This learning request has already been processed."
+msgstr "Cette demande pédagogique a déjà été traitée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_message.py:0
+#: code:addons/training_management/models/training_document_policy.py:0
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "This private learning record is unavailable."
+msgstr "Ce dossier pédagogique privé est indisponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "This submission identifier already belongs to different work."
+msgstr "Cette référence de soumission correspond déjà à un autre travail."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_learning_activity
+msgid "Training Learning Activity"
+msgstr "Activité pédagogique de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_learning_service
+msgid "Training Learning Operations"
+msgstr "Opérations pédagogiques de formation"
+
+#. module: training_management
+#: model:ir.actions.server,name:training_management.cron_learning_reminders_ir_actions_server
+msgid "Training: configured inactivity reminders"
+msgstr "Formations : relances d’inactivité configurées"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_activity__criterion__validation
+msgid "Tutor Validation"
+msgstr "Validation du tuteur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Use non-negative deadlines and a threshold between 0 and 100."
+msgstr ""
+"Utilisez des échéances positives ou nulles et un seuil compris entre 0 et "
+"100."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid ""
+"Use non-negative learning settings and an interval when reminders are "
+"enabled."
+msgstr ""
+"Utilisez des paramètres positifs ou nuls et un intervalle lorsque les "
+"relances sont activées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_service.py:0
+msgid "Use the completion criterion configured for this activity."
+msgstr "Utilisez le critère de réalisation configuré pour cette activité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_message.py:0
+msgid "Use the private learning form to submit or reply."
+msgstr ""
+"Utilisez le formulaire pédagogique privé pour remettre un travail ou "
+"répondre."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Use the private learning form to upload a file."
+msgstr "Utilisez le formulaire pédagogique privé pour déposer un fichier."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Validated by the assigned tutor."
+msgstr "Validé par le tuteur affecté."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning_notice.py:0
+msgid "Your training space needs attention"
+msgstr "Votre espace formation attend votre attention"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_learning
+msgid ""
+"Zero disables the deadline or inactivity reminder. A reminder interval is "
+"required when inactivity reminders are enabled."
+msgstr ""
+"Zéro désactive l’échéance ou la relance d’inactivité. Un intervalle entre "
+"relances est nécessaire lorsqu’elles sont activées."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_learning_activity__due_days
+msgid "Zero uses the delivery deadline, if configured."
+msgstr "Zéro utilise l’échéance de la réalisation si elle est configurée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "required activities completed."
+msgstr "activités obligatoires réalisées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid ""
+"A tutor has not yet been assigned. Your request will be kept; contact "
+"coordination for tutor assignment."
+msgstr ""
+"Aucun tuteur n’est encore affecté. Votre demande sera conservée ; contactez "
+"la coordination pour l’affectation d’un tuteur."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__reminder
+msgid "Inactivity Reminder"
+msgstr "Relance d’inactivité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_learning_notice__event_kind
+msgid "Notification"
+msgstr "Notification"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__entry
+msgid "Private Learning Update"
+msgstr "Mise à jour pédagogique privée"

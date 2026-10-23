@@ -4,6 +4,7 @@ from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.web.controllers.binary import Binary
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
+from odoo.http.stream import content_disposition
 from odoo.tools.misc import format_datetime
 
 
@@ -51,6 +52,11 @@ class TrainingParticipantPortal(http.Controller):
             else False,
             "materials": self._material_rows(delivery),
         }
+        # Import lazily: the tutoring controller reuses the participant response
+        # and privacy headers without copying its programme/schedule workflow.
+        from .learning_portal import learning_values
+
+        values["learning"] = learning_values(enrollment)
         return self._private(request.render("training_management.portal_training", values))
 
     @staticmethod
@@ -91,11 +97,15 @@ class TrainingPrivateBinary(Binary):
         if record:
             policy = request.env["training.document.policy"]
             document = policy._document(record)
-            if document and document._name in ("training.material", "training.program.version"):
+            if policy._is_pedagogical(document):
                 try:
                     policy._check_read(record)
                 except (AccessError, MissingError):
                     raise request.not_found() from None
+                if document._name == "training.learning.entry":
+                    response.headers["Content-Disposition"] = content_disposition(
+                        document.sudo().filename or "download"
+                    )
                 return TrainingParticipantPortal._private(response)
         return response
 
@@ -157,6 +167,16 @@ class TrainingPrivateBinary(Binary):
 
 
 class TrainingPrivateAttachment(AttachmentController):
+    def _render_text_attachment(self, attachment, head=False, unique=False):
+        policy = request.env["training.document.policy"]
+        policy._check_read(attachment)
+        response = super()._render_text_attachment(attachment, head=head, unique=unique)
+        return (
+            TrainingParticipantPortal._private(response)
+            if policy._is_pedagogical(policy._document(attachment))
+            else response
+        )
+
     def _make_zip(self, name, attachments):
         # Native ZIP already calls ir.binary for every file; keep those checks.
         response = super()._make_zip(name, attachments)
@@ -170,7 +190,7 @@ class TrainingPrivateAttachment(AttachmentController):
         # directly, without ir.binary. Recheck the current grant before extraction.
         policy = request.env["training.document.policy"]
         document = policy._document(attachment)
-        if document and document._name in ("training.material", "training.program.version"):
+        if policy._is_pedagogical(document):
             try:
                 policy._check_read(attachment)
             except (AccessError, MissingError):

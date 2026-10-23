@@ -1,0 +1,50 @@
+<odoo>
+    <record id="view_learning_activity_form" model="ir.ui.view">
+        <field name="name">training.learning.activity.form</field><field name="model">training.learning.activity</field>
+        <field name="arch" type="xml"><form><sheet>
+            <field name="company_id" invisible="1"/><field name="progress_ids" invisible="1"/>
+            <div class="alert alert-info" role="status" invisible="not progress_ids">Recorded work preserves this activity and its completion criterion.</div>
+            <group><field name="name" readonly="progress_ids"/><field name="delivery_id" readonly="id"/>
+                <field name="sequence" readonly="progress_ids"/><field name="criterion" readonly="progress_ids"/>
+                <field name="optional" readonly="progress_ids"/><field name="due_days" readonly="progress_ids"/>
+                <field name="evaluation_threshold" readonly="progress_ids" invisible="criterion != 'evaluation'"/>
+                <field name="material_assignment_id" domain="[('delivery_id', '=', delivery_id)]" options="{'no_create': True}" readonly="progress_ids"/>
+                <field name="dependency_ids" widget="many2many_tags" domain="[('delivery_id', '=', delivery_id), ('id', '!=', id)]" options="{'no_create': True}" readonly="progress_ids"/>
+            </group><label for="instructions"/><field name="instructions" readonly="progress_ids"/>
+            <div class="alert alert-info" role="status" invisible="criterion != 'evaluation'">Evaluation completion awaits an authoritative result from the S06 exams integration.</div>
+        </sheet></form></field>
+    </record>
+    <record id="view_delivery_learning" model="ir.ui.view">
+        <field name="name">training.delivery.learning</field><field name="model">training.delivery</field>
+        <field name="inherit_id" ref="view_training_delivery_form"/>
+        <field name="arch" type="xml"><xpath expr="//notebook" position="inside">
+            <page string="Learning and Tutoring" groups="training_management.group_training_coordinator">
+                <group><field name="learning_tutor_id" options="{'no_create': True}" domain="[('active', '=', True), ('company_ids', 'in', company_id)]"/>
+                    <field name="learning_due_days"/><field name="learning_inactivity_days"/><field name="learning_reminder_days"/>
+                </group>
+                <p>Zero disables the deadline or inactivity reminder. A reminder interval is required when inactivity reminders are enabled.</p>
+                <button name="action_add_learning_activity" type="object" string="Add Learning Activity" class="btn-primary"/>
+                <field name="learning_activity_ids" readonly="1"><list create="false" delete="false"><field name="sequence"/><field name="name"/><field name="criterion"/><field name="optional"/><field name="due_days"/></list></field>
+                <separator string="Individual Notification Journal"/>
+                <field name="learning_notice_ids" readonly="1"><list create="false" delete="false"><field name="create_date"/><field name="enrollment_id"/><field name="recipient_id"/><field name="event_kind"/><field name="distribution_state"/><field name="not_queued_reason"/></list></field>
+            </page>
+        </xpath></field>
+    </record>
+    <record id="view_learning_notice_form" model="ir.ui.view">
+        <field name="name">training.learning.notice.form</field><field name="model">training.learning.notice</field>
+        <field name="arch" type="xml"><form create="false" edit="false" delete="false" duplicate="false"><sheet><group>
+            <field name="event_kind"/><field name="create_date"/><field name="enrollment_id"/><field name="recipient_id"/><field name="distribution_state"/><field name="not_queued_reason"/>
+        </group></sheet></form></field>
+    </record>
+    <record id="view_enrollment_learning" model="ir.ui.view">
+        <field name="name">training.enrollment.learning</field><field name="model">training.enrollment</field>
+        <field name="inherit_id" ref="view_training_enrollment_form"/>
+        <field name="arch" type="xml"><xpath expr="//sheet" position="inside">
+            <group string="Learning and Tutoring" groups="training_management.group_training_coordinator">
+                <field name="learning_tutor_id" options="{'no_create': True}" domain="[('active', '=', True), ('company_ids', 'in', company_id)]"/>
+                <p>An individual tutor overrides the delivery tutor. Private work is available only to the participant and the assigned tutor.</p>
+            </group>
+            <field name="learning_progress_ids" readonly="1" groups="training_management.group_training_coordinator"><list create="false" delete="false"><field name="activity_id"/><field name="state"/><field name="completed"/><field name="declared_at"/></list></field>
+        </xpath></field>
+    </record>
+</odoo>

@@ -190,7 +190,14 @@ class TrainingEnrollment(models.Model):
             prepared = []
             for values in vals_list:
                 values = dict(values)
-                if set(values) - {"delivery_id", "participant_id", "user_id", "allocation_id", "free_reason"}:
+                if set(values) - {
+                    "delivery_id",
+                    "participant_id",
+                    "user_id",
+                    "allocation_id",
+                    "free_reason",
+                    "learning_tutor_id",
+                }:
                     raise ValidationError(self.env._("Create a requested enrollment without admission metadata."))
                 values.update(
                     state="requested",

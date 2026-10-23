@@ -31,6 +31,26 @@ class IrAttachment(models.Model):
         vals_list = [dict(vals) for vals in vals_list]
         for vals in vals_list:
             source_model = vals.get("res_model") or self.env.context.get("default_res_model")
+            if source_model == "training.learning.entry":
+                vals.update(self._add_missing_default_values(vals))
+                entry = self.env["training.learning.entry"].sudo().browse(vals.get("res_id")).exists()
+                if not entry:
+                    raise ValidationError(self.env._("Use the private learning form to upload a file."))
+                self.env["training.document.policy"]._check_read(entry)
+                if (
+                    entry.sealed_at
+                    or entry.create_uid != self.env.user
+                    or vals.get("res_field") != "data"
+                    or vals.get("public")
+                    or vals.get("access_token")
+                    or vals.get("url")
+                    or vals.get("type", "binary") != "binary"
+                    or self.sudo().search_count(
+                        [("res_model", "=", entry._name), ("res_id", "=", entry.id), ("res_field", "=", "data")]
+                    )
+                ):
+                    raise ValidationError(self.env._("Use the private learning form to upload a file."))
+                vals["company_id"] = entry.company_id.id
             if source_model == "training.material":
                 vals.update(self._add_missing_default_values(vals))
                 material = self.env["training.material"].browse(
@@ -50,7 +70,13 @@ class IrAttachment(models.Model):
                     or vals.get("access_token")
                     or vals.get("type", "binary") != "binary"
                     or vals.get("url")
-                    or self.sudo().search_count([("res_model", "=", "training.material"), ("res_id", "=", material.id)])
+                    or self.sudo().search_count(
+                        [
+                            ("res_model", "=", "training.material"),
+                            ("res_id", "=", material.id),
+                            ("res_field", "=", "data"),
+                        ]
+                    )
                 ):
                     raise ValidationError(self.env._("Use the PDF field of a new private support version."))
         # An untrusted default_* context cannot forge the protected marker.
@@ -80,6 +106,10 @@ class IrAttachment(models.Model):
         )
 
     def write(self, vals):
+        if vals.get("res_model") == "training.learning.entry" or any(
+            a.res_model == "training.learning.entry" for a in self.sudo()
+        ):
+            raise ValidationError(self.env._("Private learning files cannot be changed, shared or reassigned."))
         protected = self.sudo().filtered(lambda item: item.res_model == "training.material")
         if protected or vals.get("res_model") == "training.material":
             if not protected or set(vals) & {
@@ -103,7 +133,7 @@ class IrAttachment(models.Model):
         return super().write(vals)
 
     def _export_rows(self, fields, *, _is_toplevel_call=True):
-        if any(item.res_model == "training.material" for item in self.sudo()):
+        if any(item.res_model in ("training.material", "training.learning.entry") for item in self.sudo()):
             self.check_access("read")
             raise UserError(
                 self.env._("Bulk export of private support records is unavailable. Download an authorized PDF instead.")
@@ -111,13 +141,13 @@ class IrAttachment(models.Model):
         return super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
 
     def copy_data(self, default=None):
-        if any(item.res_model == "training.material" for item in self.sudo()):
+        if any(item.res_model in ("training.material", "training.learning.entry") for item in self.sudo()):
             raise ValidationError(self.env._("Private support files cannot be copied."))
         return super().copy_data(default)
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_material(self):
-        if any(item.res_model == "training.material" for item in self.sudo()):
+        if any(item.res_model in ("training.material", "training.learning.entry") for item in self.sudo()):
             raise ValidationError(self.env._("Keep private support files and their history."))
 
     @api.ondelete(at_uninstall=False)
@@ -151,7 +181,7 @@ class IrAttachment(models.Model):
         self._check_adaptation_access()
         policy = self.env["training.document.policy"]
         document = policy._document(self)
-        if document and document._name in ("training.material", "training.program.version"):
+        if policy._is_pedagogical(document):
             policy._check_read(self)
             return True
         return super()._can_return_content(field_name, access_token)

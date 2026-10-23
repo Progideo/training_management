@@ -387,6 +387,7 @@ class TestTrainingMaterialHttp(MaterialCase, HttpCase):
         attachment = self.attachment(material)
         programme_file = self.program.pdf_attachment_id
         field_token = limited_field_access_token(attachment, "raw", scope="binary")
+        enrollment.instructor_summary = "Fictional private instructor instructions S05"
         urls = [
             f"/web/content/{attachment.id}",
             f"/web/content/training.material/{material.id}/data",
@@ -400,8 +401,8 @@ class TestTrainingMaterialHttp(MaterialCase, HttpCase):
         response = self.url_open(f"/my/trainings/{enrollment.id}")
         self.assertEqual(response.status_code, 200)
         self.assertIn(material.name, response.text)
-        self.assertIn("No scheduled session", response.text)
-        self.assertNotIn("Participants and useful instructions", response.text)
+        self.assertIn('class="o_training_empty_schedule"', response.text)
+        self.assertNotIn(enrollment.instructor_summary, response.text)
         self.assertIn("no-store", response.headers["Cache-Control"])
         for url in urls:
             response = self.url_open(url)
