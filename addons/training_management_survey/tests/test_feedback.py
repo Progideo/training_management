@@ -422,6 +422,10 @@ class TestFeedback(FeedbackCase):
 
     def test_review_secret_rotation_keeps_anonymous_one_use(self):
         campaign, users, question = self.campaign()
+        for user in (self.coordinator, self.quality, self.supervisor, users[0]):
+            # Native default_get does not enforce model ACLs before field defaults.
+            with self.assertRaises(AccessError):
+                self.env["training.feedback.spent"].with_user(user).default_get(["digest_key"])
         self.submit(campaign, users[0], question)
         params = self.env["ir.config_parameter"].sudo()
         original = params.get_str("database.secret")

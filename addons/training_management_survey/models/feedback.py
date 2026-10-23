@@ -110,6 +110,9 @@ class FeedbackSpent(models.Model):
     def _default_digest_key(self):
         # Freeze the native key, including for existing pools during an upgrade.
         # Rotating database.secret must not reauthorize already used invitations.
+        # default_get itself is public and does not check model ACLs in native Odoo.
+        if not self.env.su:
+            raise AccessError(self.env._("Private technical ledger."))
         secret = self.env["ir.config_parameter"].sudo().get_str("database.secret")
         if not secret:
             raise ValidationError(self.env._("The native database secret is unavailable."))
