@@ -241,7 +241,7 @@ class LearningEntry(models.Model):
 
 
 class TrainingDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # S05 learning and S09 evaluations have separate roles
 
     learning_activity_ids = fields.One2many("training.learning.activity", "delivery_id", groups=COORDINATOR)
     learning_tutor_id = fields.Many2one("res.users", ondelete="restrict", groups=COORDINATOR)
