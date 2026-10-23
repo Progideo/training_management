@@ -1,0 +1,49 @@
+name: S08 closure documents
+on:
+  pull_request:
+    paths:
+      - "addons/**"
+      - "tests/probes/s021_history.py"
+      - "tests/probes/s052_history.py"
+      - "tests/probes/s06_history.py"
+      - "tests/probes/s07_history.py"
+      - "tests/probes/s08_history.py"
+      - "tests/probes/s08_upgrade_baseline.py"
+      - "tests/probes/s08_concurrency.py"
+      - "tests/probes/catalogue_upgrade_probe.py"
+      - "tests/ci/run_s08.sh"
+      - ".github/workflows/s08.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  documents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S07 histories and test documents, isolation and concurrent requests
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s08.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s08-results
+          path: test-results/s08/
+          if-no-files-found: error

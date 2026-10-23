@@ -3,3 +3,5 @@ from . import material_portal
 
 from . import learning_portal
 from . import attendance_portal
+
+from . import closure_portal

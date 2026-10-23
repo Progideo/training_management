@@ -10,6 +10,7 @@ from odoo.exceptions import UserError, ValidationError
 
 
 CONFIDENTIAL_MODELS = ("training.adaptation", "training.adaptation.history")
+S08_MODELS = ("training.proof", "training.document")
 
 
 class IrAttachment(models.Model):
@@ -26,6 +27,8 @@ class IrAttachment(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        if any(v.get("res_model", self.env.context.get("default_res_model")) in S08_MODELS for v in vals_list):
+            raise ValidationError(self.env._("Use the controlled evidence or document field."))
         if any(
             vals.get("res_model", self.env.context.get("default_res_model"))
             in ("training.attendance.event", "training.attendance.edit")
@@ -114,6 +117,8 @@ class IrAttachment(models.Model):
         )
 
     def write(self, vals):
+        if vals.get("res_model") in S08_MODELS or any(a.res_model in S08_MODELS for a in self.sudo()):
+            raise ValidationError(self.env._("Keep preserved S08 documents unchanged."))
         if vals.get("res_model") in ("training.attendance.event", "training.attendance.edit") or any(
             a.res_model in ("training.attendance.event", "training.attendance.edit") for a in self.sudo()
         ):

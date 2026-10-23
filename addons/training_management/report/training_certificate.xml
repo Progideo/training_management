@@ -1,0 +1,33 @@
+<odoo>
+    <record id="action_training_certificate" model="ir.actions.report">
+        <field name="name">Training Certificate</field>
+        <field name="model">training.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_management.certificate_document</field>
+        <field name="paperformat_id" ref="paperformat_programme_pdf"/>
+        <field name="group_ids" eval="[(4, ref('group_training_quality'))]"/>
+    </record>
+    <!-- Version S08-QWEB-1: change the version identifier for future revisions. -->
+    <template id="certificate_document">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <style>body { font-family: DejaVu Sans, sans-serif; font-size: 12pt; line-height: 1.7; color: #24354a; } h1 { font-size: 24pt; } .footer { margin-top: 40pt; font-size: 10pt; }</style>
+            </head>
+            <body>
+                <p t-out="issuer"/>
+                <h1>Attestation de <t t-if="values['kind'] == 'participation'">participation</t><t t-elif="values['kind'] == 'completion'">réalisation</t><t t-else="">réussite</t></h1>
+                <p>Référence : <span t-out="values['reference']"/></p>
+                <p>Bénéficiaire : <strong t-out="values['beneficiary']"/></p>
+                <p>Formation : <strong t-out="values['programme']"/> — version <span t-out="values['programme_version']"/></p>
+                <p>Réalisation : <span t-out="values['delivery']"/></p>
+                <p t-if="values['start']">Du <span t-out="values['start']"/> au <span t-out="values['end']"/> (UTC).</p>
+                <p t-if="values['kind'] == 'participation'">Durée de présence réellement validée : <strong t-out="values['minutes']"/> minutes.</p>
+                <p t-elif="values['kind'] == 'completion'">Les activités obligatoires et leurs justificatifs ont été contrôlés.</p>
+                <p t-else="">Le seuil de l'évaluation dédiée des acquis a été atteint et validé.</p>
+                <p>Émise le <span t-out="issued_at"/> (UTC), par <span t-out="issued_by"/>.</p>
+                <p class="footer">Ce document ne constitue pas une certification officielle ou une certification Qualiopi.<br/>Modèle : <span t-out="values['template']"/></p>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -167,6 +167,10 @@ msgstr ""
 "Les tarifs commerciaux seront gérés par les produits et devis standards "
 "Odoo."
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_document__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_proof__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__company_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__company_id
@@ -226,6 +230,10 @@ msgstr "Consignes de contact conservées dans cette version du programme."
 msgid "Content"
 msgstr "Contenu"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_document__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_proof__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__create_uid
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__create_uid
@@ -259,6 +267,10 @@ msgstr "Contenu"
 msgid "Created by"
 msgstr "Créé par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_document__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_proof__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__create_date
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__create_date
@@ -307,6 +319,11 @@ msgstr ""
 msgid "Delivery Mode"
 msgstr "Modalité"
 
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_certificate_document__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_closure__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_document__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_proof__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__display_name
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__display_name
@@ -398,6 +415,11 @@ msgstr "Prolonger l’échéance"
 msgid "Formations"
 msgstr "Formations"
 
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_certificate_document__id
+#: model:ir.model.fields,field_description:training_management.field_training_closure__id
+#: model:ir.model.fields,field_description:training_management.field_training_document__id
+#: model:ir.model.fields,field_description:training_management.field_training_proof__id
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__id
@@ -450,6 +472,10 @@ msgstr "ID"
 msgid "Labels"
 msgstr "Libellés"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_document__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_proof__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__write_uid
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__write_uid
@@ -483,6 +509,10 @@ msgstr "Libellés"
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_document__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_proof__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__write_date
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__write_date
@@ -521,6 +551,7 @@ msgstr "Dernière modification le"
 msgid "Model"
 msgstr "Modèle"
 
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__name
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__name
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__name
@@ -797,6 +828,7 @@ msgstr "Formation standard"
 msgid "Standard training catalogue and controlled programme versions"
 msgstr "Catalogue de formations standards et versions de programme contrôlées"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__state
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__state
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__state
@@ -938,11 +970,13 @@ msgstr "Valider"
 msgid "Validated"
 msgstr "Validé"
 
+#: model:ir.model.fields,field_description:training_management.field_training_proof__validated_at
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_at
 msgid "Validated At"
 msgstr "Validé le"
 
+#: model:ir.model.fields,field_description:training_management.field_training_proof__validated_by_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_by_id
 msgid "Validated By"
@@ -1318,6 +1352,7 @@ msgstr "Sélectionnez un lot disponible pour cette réalisation."
 msgid "Close"
 msgstr "Clôturer"
 
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure__state__closed
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__closed
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__closed
@@ -1402,6 +1437,7 @@ msgstr "Créez une inscription demandée sans métadonnées d’admission."
 msgid "Create a reservation before confirming its places."
 msgstr "Créez une réservation avant de confirmer ses places."
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__customer_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__customer_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
@@ -1429,6 +1465,7 @@ msgstr "Réalisée"
 msgid "Deliveries"
 msgstr "Réalisations"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__delivery_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_operation__delivery_id
@@ -1469,6 +1506,7 @@ msgstr "Accès effectif"
 msgid "End At"
 msgstr "Fin"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__enrollment_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__enrollment_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__enrollment_id
@@ -1705,6 +1743,7 @@ msgstr "Proposer ou réserver une place"
 msgid "Quantity"
 msgstr "Nombre de places"
 
+#: model:ir.model.fields,field_description:training_management.field_training_proof__reason
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__reason
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__reason
@@ -1803,6 +1842,7 @@ msgstr "Réserver / prolonger / transférer"
 msgid "Reserved"
 msgstr "Réservée"
 
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__responsible_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__responsible_id
 msgid "Responsible"
@@ -3390,6 +3430,7 @@ msgstr ""
 "Archivez les catégories utilisées par des formations au lieu de les "
 "supprimer."
 
+#: model:ir.model.fields,field_description:training_management.field_training_proof__category
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__category_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__category_id
@@ -3706,6 +3747,8 @@ msgstr "Référence PDF de réalisation"
 msgid "File streaming helper model for controllers"
 msgstr "Service de diffusion des fichiers pour les contrôleurs"
 
+#: model:ir.model.fields,field_description:training_management.field_training_document__filename
+#: model:ir.model.fields,field_description:training_management.field_training_proof__filename
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__filename
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__filename
@@ -3815,6 +3858,7 @@ msgstr "Les preuves du PDF sont générées par le serveur."
 msgid "Preserved Evidence"
 msgstr "Preuves conservées"
 
+#: model:ir.model.fields,field_description:training_management.field_training_proof__previous_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__previous_id
 msgid "Previous"
@@ -3866,6 +3910,8 @@ msgstr "Agenda"
 msgid "Sequence"
 msgstr "Ordre"
 
+#: model:ir.model.fields,field_description:training_management.field_training_document__sha256
+#: model:ir.model.fields,field_description:training_management.field_training_proof__sha256
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sha256
@@ -3925,6 +3971,7 @@ msgstr "Utilisez Nouvelle version PDF pour conserver le fichier original."
 msgid "Use the PDF field of a new private support version."
 msgstr "Utilisez le champ PDF d’une nouvelle version de support privé."
 
+#: model:ir.model.fields,field_description:training_management.field_training_proof__version
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__version
 msgid "Version"
@@ -4858,6 +4905,8 @@ msgstr "Correction du coordinateur"
 msgid "Correct Validated Attendance"
 msgstr "Corriger une présence validée"
 
+#: model:ir.model.fields,field_description:training_management.field_training_document__data
+#: model:ir.model.fields,field_description:training_management.field_training_proof__data
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__data
 msgid "Data"
@@ -5192,3 +5241,780 @@ msgid ""
 msgstr ""
 "La séance ou le texte de confirmation a changé. Rechargez puis confirmez les"
 " informations affichées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "(UTC), par"
+msgstr "(UTC), par"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "(UTC)."
+msgstr "(UTC)."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "A complete dossier does not constitute Qualiopi certification."
+msgstr "Un dossier complet ne constitue pas une certification Qualiopi."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid ""
+"A non-applicable piece or exemption requires a reason and no empty "
+"substitute file."
+msgstr ""
+"Une non-applicabilité ou dérogation exige un motif et aucun fichier de "
+"substitution vide."
+
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+msgid "Achievement Certificate"
+msgstr "Attestation de réussite"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "An explicitly assigned quality role is required."
+msgstr "Un rôle qualité explicitement attribué est requis."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__materials
+msgid "Applicable Materials"
+msgstr "Supports applicables"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_retention_form
+msgid "Approve Policy"
+msgstr "Approuver la politique"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__approved_at
+msgid "Approved At"
+msgstr "Approuvé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__approved_by_id
+msgid "Approved By"
+msgstr "Approuvé par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__archive_policy
+msgid "Archive Policy"
+msgstr "Règles d’archivage"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Assessment score and threshold must be between 0 and 100."
+msgstr "Le score et le seuil doivent être compris entre 0 et 100."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid ""
+"Assign an active quality reviewer authorized for this operating company."
+msgstr ""
+"Affectez un responsable qualité actif et habilité pour cette société "
+"exploitante."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__resources
+msgid "Assignments and Resources"
+msgstr "Affectations et moyens"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Attach the PDF evidence before validation."
+msgstr "Joignez la preuve PDF avant validation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__attendance
+msgid "Attendance or Activity Traces"
+msgstr "Présences ou traces d’activités"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Attestation de"
+msgstr "Attestation de"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__author
+msgid "Author"
+msgstr "Auteur"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_proof__author
+msgid "Author of the original evidence; uploader is separately recorded."
+msgstr ""
+"Auteur de la preuve d’origine ; le déposant est enregistré séparément."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Bénéficiaire :"
+msgstr "Bénéficiaire :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid ""
+"Ce document ne constitue pas une certification officielle ou une "
+"certification Qualiopi.<br/>Modèle :"
+msgstr ""
+"Ce document ne constitue pas une certification officielle ou une "
+"certification Qualiopi.<br/>Modèle :"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Certificate PDF generation failed."
+msgstr "La génération du PDF de l’attestation a échoué."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__certificate
+msgid "Certificates"
+msgstr "Attestations"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Choose an approved retention policy."
+msgstr "Choisissez une politique de conservation approuvée."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_document__kind__client
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Client Export"
+msgstr "Export client"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_document__client_shared
+#: model:ir.model.fields,field_description:training_management.field_training_proof__client_shared
+msgid "Client Shared"
+msgstr "Partage client autorisé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Close Dossier"
+msgstr "Clôturer le dossier"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__closed_at
+msgid "Closed At"
+msgstr "Clôturé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__closed_by_id
+msgid "Closed By"
+msgstr "Clôturé par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__closure_ids
+msgid "Closure"
+msgstr "Clôture"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+msgid "Closure Dossier"
+msgstr "Dossier de clôture"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_closure
+#: model:ir.ui.menu,name:training_management.menu_training_closure
+msgid "Closure Dossiers"
+msgstr "Dossiers de clôture"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__commercial
+msgid "Commercial Documents"
+msgstr "Pièces commerciales"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Complete every required activity and review its supporting evidence."
+msgstr ""
+"Terminez toutes les activités obligatoires et contrôlez leurs justificatifs."
+
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+msgid "Completion Certificate"
+msgstr "Attestation de réalisation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__confidentiality
+msgid "Confidentiality"
+msgstr "Confidentialité"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__completion
+msgid "Controlled Completion Evidence"
+msgstr "Justificatif de réalisation contrôlé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Create a new version with its own provenance."
+msgstr "Créez une nouvelle version avec sa propre provenance."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Create the closure dossier and assign its quality reviewer first."
+msgstr ""
+"Créez d’abord le dossier de clôture et affectez son responsable qualité."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__assessment
+msgid "Dedicated Learning Assessment"
+msgstr "Évaluation dédiée des acquis"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_proof__score
+msgid ""
+"Dedicated learning assessment only, never imported automatically from a mock"
+" exam."
+msgstr ""
+"Évaluation dédiée des acquis uniquement ; aucun import automatique depuis un"
+" examen blanc."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__deletion_policy
+msgid "Deletion Policy"
+msgstr "Règles de suppression"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__disposition
+msgid "Disposition"
+msgstr "Traitement de la pièce"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_document__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_proof__dossier_id
+msgid "Dossier"
+msgstr "Dossier"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Dossier identity and audit fields are controlled by the server."
+msgstr ""
+"L’identité du dossier et ses champs d’audit sont contrôlés par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Download S08 documents through authenticated access only."
+msgstr "Téléchargez les documents S08 uniquement après authentification."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Download an authorized preserved document."
+msgstr "Téléchargez un document conservé et autorisé."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Du"
+msgstr "Du"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__duration_days
+msgid "Duration Days"
+msgstr "Durée en jours"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Durée de présence réellement validée :"
+msgstr "Durée de présence réellement validée :"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__roster
+msgid "Enrollment List"
+msgstr "Liste des inscrits"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__evidence_ids
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__disposition__file
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Evidence"
+msgstr "Preuves"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Evidence cannot have a future production date."
+msgstr "La date de production d’une preuve ne peut pas être future."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Evidence versions and validation are server controlled."
+msgstr ""
+"Les versions et la validation des preuves sont contrôlées par le serveur."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__disposition__waiver
+msgid "Exemption"
+msgstr "Dérogation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__client_contact_ids
+msgid "Explicit Client Recipients"
+msgstr "Destinataires clients explicitement habilités"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Explicit recipients must belong to this dossier's customer."
+msgstr "Les destinataires doivent appartenir au client de ce dossier."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__feedback
+msgid "Feedback"
+msgstr "Retours"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__incidents
+msgid "Incidents and Improvements"
+msgstr "Incidents et améliorations"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Individual results and confidential notes cannot be client shared."
+msgstr ""
+"Les résultats individuels et notes confidentielles ne peuvent pas être "
+"partagés avec le client."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__positioning
+msgid "Initial Assessment"
+msgstr "Positionnement initial"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__confidentiality__internal
+msgid "Internal"
+msgstr "Interne"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_document__kind__internal
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Internal Export"
+msgstr "Export interne"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__invitation
+msgid "Invitations"
+msgstr "Convocations"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid ""
+"Issue documents for a confirmed or completed enrollment before dossier "
+"closure."
+msgstr ""
+"Délivrez les documents pour une inscription confirmée ou terminée avant la "
+"clôture du dossier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep approved policies; create a new policy version."
+msgstr "Conservez les politiques approuvées ; créez une nouvelle version."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep approved retention policies."
+msgstr "Conservez les politiques de conservation approuvées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep closure dossiers and their evidence."
+msgstr "Conservez les dossiers de clôture et leurs preuves."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep dossier identity and closed dossiers unchanged."
+msgstr "Conservez l’identité du dossier et le contenu des dossiers clôturés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep every proof version, including drafts and exemptions."
+msgstr ""
+"Conservez toutes les versions des preuves, y compris les brouillons et "
+"dérogations."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep the reviewer and retention policy once evidence exists."
+msgstr ""
+"Conservez le responsable qualité et la politique de conservation dès qu’une "
+"preuve existe."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Keep validated evidence; create a new version."
+msgstr "Conservez les preuves validées ; créez une nouvelle version."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Le seuil de l'évaluation dédiée des acquis a été atteint et validé."
+msgstr "Le seuil de l'évaluation dédiée des acquis a été atteint et validé."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__frozen
+msgid "Legal Hold"
+msgstr "Gel de conservation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Les activités obligatoires et leurs justificatifs ont été contrôlés."
+msgstr "Les activités obligatoires et leurs justificatifs ont été contrôlés."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__missing
+msgid "Missing"
+msgstr "Pièces manquantes"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_documents
+#: model_terms:ir.ui.view,arch_db:training_management.portal_documents_link
+msgid "My training documents"
+msgstr "Mes documents de formation"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__need
+msgid "Needs and Accepted Programme"
+msgstr "Besoin et programme accepté"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_documents
+msgid "No authorized document is available."
+msgstr "Aucun document autorisé n’est disponible."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_closure__frozen
+msgid "No automatic deletion, even after retention expires."
+msgstr ""
+"Aucune suppression automatique, même après l’échéance de conservation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__disposition__not_applicable
+msgid "Not Applicable"
+msgstr "Non applicable"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_closure_unique_enrollment
+msgid "One closure dossier per enrollment."
+msgstr "Un seul dossier de clôture par inscription."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_proof__client_shared
+msgid "Only client-safe categories can be included in the client export."
+msgstr ""
+"Seules les catégories autorisées au client peuvent figurer dans son export."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Only coordinators create closure dossiers."
+msgstr "Seuls les coordinateurs créent les dossiers de clôture."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Only the quality reviewer assigned to this dossier may approve it."
+msgstr "Seul le responsable qualité affecté à ce dossier peut l’approuver."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure__state__open
+msgid "Open"
+msgstr "Ouvert"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_proof__source
+msgid "Origin, original document/event identifier and extraction method."
+msgstr ""
+"Origine, identifiant du document ou événement d’origine et méthode "
+"d’extraction."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__output_ids
+msgid "Output"
+msgstr "Document conservé"
+
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+msgid "Participation Certificate"
+msgstr "Attestation de participation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Participation requires a positive validated attendance duration."
+msgstr ""
+"La participation exige une durée de présence validée strictement positive."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Preserved Documents"
+msgstr "Documents conservés"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__produced_at
+msgid "Produced At"
+msgstr "Produit le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__purpose
+msgid "Purpose"
+msgstr "Finalité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__quality_id
+msgid "Quality"
+msgstr "Responsable qualité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Record evidence provenance and author."
+msgstr "Renseignez la provenance et l’auteur de la preuve."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_retention_category__deletion_policy
+msgid "Requests are reviewed manually; no automatic purge."
+msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__retention_id
+msgid "Retention"
+msgstr "Conservation"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_retention
+#: model:ir.ui.menu,name:training_management.menu_training_retention
+msgid "Retention Policies"
+msgstr "Politiques de conservation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid ""
+"Review missing evidence; approve a reasoned exemption where applicable."
+msgstr ""
+"Contrôlez les pièces manquantes ; approuvez une dérogation motivée si elle "
+"s’applique."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Réalisation :"
+msgstr "Réalisation :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Référence :"
+msgstr "Référence :"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__score
+msgid "Score"
+msgstr "Score"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Select explicit authorized client recipients before exporting."
+msgstr ""
+"Choisissez les destinataires clients explicitement habilités avant l’export."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_proof__confidentiality__sensitive
+msgid "Sensitive / Assigned Quality Only"
+msgstr "Sensible / responsable qualité affecté uniquement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Set a positive approved duration and an authorized responsible user."
+msgstr "Définissez une durée approuvée positive et un responsable habilité."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__share_certificates
+msgid "Share Issued Certificates with Explicit Client Recipients"
+msgstr ""
+"Partager les attestations émises avec les destinataires clients habilités"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__source
+msgid "Source"
+msgstr "Source"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "The dedicated learning assessment threshold has not been reached."
+msgstr "Le seuil de l’évaluation dédiée des acquis n’est pas atteint."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "The dossier is closed."
+msgstr "Le dossier est clôturé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "The dossier is closed; keep its evidence unchanged."
+msgstr "Le dossier est clôturé ; conservez ses preuves sans modification."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "This dossier is unavailable."
+msgstr "Ce dossier est indisponible."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_proof_unique_version
+msgid "This proof version already exists."
+msgstr "Cette version de preuve existe déjà."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__threshold
+msgid "Threshold"
+msgstr "Seuil"
+
+#. module: training_management
+#: model:ir.actions.report,name:training_management.action_training_certificate
+msgid "Training Certificate"
+msgstr "Attestation de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_report_training_management_certificate_document
+msgid "Training Certificate Access"
+msgstr "Accès aux attestations de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_closure
+msgid "Training Closure Dossier"
+msgstr "Dossier de clôture de formation"
+
+#. module: training_management
+#: model:res.groups,name:training_management.group_training_quality
+msgid "Training Quality Reviewer"
+msgstr "Responsable qualité des formations"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_retention_category
+msgid "Training Retention Policy"
+msgstr "Politique de conservation de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Use Approve Policy."
+msgstr "Utilisez l’action Approuver la politique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Use the controlled dossier export to retain its manifest."
+msgstr "Utilisez l’export contrôlé du dossier pour conserver son manifeste."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Use the preserved certificate download action."
+msgstr "Utilisez le téléchargement de l’attestation conservée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_proof_form
+msgid "Validate Evidence / Exemption"
+msgstr "Valider la preuve ou la dérogation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Validate the dedicated evidence required for this certificate."
+msgstr "Validez la preuve dédiée requise pour cette attestation."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_proof
+msgid "Versioned Training Proof"
+msgstr "Preuve de formation versionnée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "au"
+msgstr "au"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "minutes."
+msgstr "minutes."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "participation"
+msgstr "participation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "réalisation"
+msgstr "réalisation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "réussite"
+msgstr "réussite"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Émise le"
+msgstr "Émise le"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "— version"
+msgstr "— version"
+
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+msgid "Formation :"
+msgstr "Formation :"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/ir_binary.py:0
+msgid "Only the authorized preserved file can be downloaded."
+msgstr "Seul le fichier conservé et autorisé peut être téléchargé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Use the controlled evidence or document field."
+msgstr "Utilisez le champ de preuve ou de document contrôlé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Keep preserved S08 documents unchanged."
+msgstr "Conservez les documents S08 sans modification."
+
+#. module: training_management
+#. . odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "A coordinator or assigned quality role is required."
+msgstr "Un rôle de coordinateur ou de responsable qualité affecté est requis."

@@ -282,7 +282,7 @@ class TrainingDelivery(models.Model):
 
 
 class TrainingEnrollment(models.Model):
-    _inherit = "training.enrollment"
+    _inherit = "training.enrollment"  # pylint: disable=consider-merging-classes-inherited  # S05 progress and S08 document issuance have separate lifecycles
 
     learning_tutor_id = fields.Many2one(
         "res.users", ondelete="restrict", string="Individual Tutor", groups=COORDINATOR, copy=False
