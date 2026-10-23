@@ -33,7 +33,8 @@ périmètre contrôlé de chaque dossier. Leur pertinence reste contrôlée huma
    liée à la précédente. La qualité valide les pièces ou une non-applicabilité/
    dérogation motivée. Une version validée ne se réécrit ni ne se supprime.
 5. La qualité délivre les attestations directement dans le dossier de l’inscription confirmée ou terminée :
-   participation = somme des seules durées S07 retenues et validées ; réalisation =
+   participation = somme des seules durées S07 retenues et validées, y compris après
+   un abandon ; réalisation =
    activités S05 obligatoires terminées et justificatif de réalisation contrôlé ;
    réussite = PDF d’évaluation dédiée des acquis, score et seuil validés.
    Une dérogation ne remplace pas ces critères de délivrance. Un examen blanc réussi

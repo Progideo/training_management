@@ -567,7 +567,9 @@ class ClosureEnrollment(models.Model):
             raise ValidationError(self.env._("Create the closure dossier and assign its quality reviewer first."))
         dossier._authorize(quality=True)
         dossier._serialize()
-        if self.state not in ("confirmed", "closed") or dossier.state == "closed":
+        if dossier.state == "closed":
+            raise ValidationError(self.env._("The dossier is closed."))
+        if kind != "participation" and self.state not in ("confirmed", "closed"):
             raise ValidationError(
                 self.env._("Issue documents for a confirmed or completed enrollment before dossier closure.")
             )
