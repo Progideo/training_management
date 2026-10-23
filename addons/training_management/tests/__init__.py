@@ -8,3 +8,4 @@ from . import test_program_pdf
 from . import test_material
 
 from . import test_learning
+from . import test_attendance

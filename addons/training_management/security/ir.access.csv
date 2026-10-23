@@ -53,3 +53,10 @@ access_learning_entry_internal,Private learning mission,training.learning.entry,
 rule_learning_entry_company,Private learning company,training.learning.entry,,crud,"[('company_id', 'in', company_ids)]"
 access_learning_notice_coordinator,Learning notification journal,training.learning.notice,training_management.group_training_coordinator,r,
 rule_learning_notice_company,Learning notification company,training.learning.notice,,crud,"[('company_id', 'in', company_ids)]"
+access_attendance_coordinator,Attendance coordinator,training.attendance,training_management.group_training_coordinator,r,
+rule_attendance_company,Attendance company,training.attendance,,crud,"[('company_id', 'in', company_ids)]"
+access_attendance_event_coordinator,Attendance history coordinator,training.attendance.event,training_management.group_training_coordinator,r,
+rule_attendance_event_company,Attendance history company,training.attendance.event,,crud,"[('company_id', 'in', company_ids)]"
+access_attendance_edit,Attendance assistant coordinator,training.attendance.edit,training_management.group_training_coordinator,crud,
+rule_attendance_edit_company,Attendance assistant company,training.attendance.edit,,crud,"[('company_id', 'in', company_ids)]"
+rule_attendance_edit_owner,Attendance assistant owner,training.attendance.edit,,crud,"[('create_uid', '=', user.id)]"
