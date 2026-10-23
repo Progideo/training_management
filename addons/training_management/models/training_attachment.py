@@ -38,6 +38,9 @@ class IrAttachment(models.Model):
                 )
                 material._require_coordinator()
                 material._serialize()
+                # Native Binary.create uses the environment company by default.
+                # Derive this metadata from the authorized parent in a multi-company batch.
+                vals["company_id"] = material.company_id.id if material else False
                 if (
                     not material
                     or material.frozen_at

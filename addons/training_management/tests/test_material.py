@@ -169,6 +169,27 @@ class TestTrainingMaterial(MaterialCase):
             self.env["ir.attachment"].with_context(
                 default_res_model="training.material", default_res_id=group.id
             ).create({"name": "orphan", "raw": PDF})
+        foreign_course = self.env["training.course"].create(
+            {"name": "Fictional foreign PDF", "company_id": self.other_company.id}
+        )
+        foreign_program = self.program.copy({"course_id": foreign_course.id, "version": "Foreign PDF"})
+        multi_coordinator = self.coordinator.with_context(allowed_company_ids=(self.company | self.other_company).ids)
+        self.coordinator.company_ids = [Command.set((self.company | self.other_company).ids)]
+        foreign_material = (
+            self.env["training.material"]
+            .with_user(multi_coordinator)
+            .with_context(allowed_company_ids=(self.company | self.other_company).ids)
+            .create(
+                {
+                    "name": "Fictional foreign support",
+                    "program_id": foreign_program.id,
+                    "filename": "foreign.pdf",
+                    "data": BinaryBytes(PDF),
+                }
+            )
+        )
+        self.assertEqual(self.attachment(foreign_material).company_id, self.other_company)
+        self.assertFalse(policy._can_read(foreign_material))
         e.action_revoke_access(reason="Fictional revoke")
         self.assertFalse(policy._can_read(group))
 
