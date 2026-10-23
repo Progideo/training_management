@@ -11,7 +11,7 @@ from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
 
 
 class NativeEvaluationCase(EvaluationCase):
-    def native_evaluation(self, scored=True, **survey_values):
+    def native_evaluation(self, scored=True, extra_required=False, **survey_values):
         row, grant = self.assigned_evaluation(scored=scored)
         action = row.evaluation_id.action_new_version()
         evaluation = self.env["training.evaluation"].with_user(self.coordinator).browse(action["res_id"])
@@ -36,6 +36,15 @@ class NativeEvaluationCase(EvaluationCase):
                 }
             )
         )
+        if extra_required:
+            self.env["survey.question"].with_user(self.coordinator).create(
+                {
+                    "survey_id": survey.id,
+                    "title": "Second required observation",
+                    "question_type": "text_box",
+                    "constr_mandatory": True,
+                }
+            )
         if survey_values:
             survey.write(survey_values)
         evaluation.action_publish()
@@ -193,7 +202,11 @@ class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Completed / Awaiting Validation", response.text)
         self.authenticate(self.portal_b.login, self.portal_b.login)
-        self.assertEqual(self.url_open(url).status_code, 200)
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 200)
+        tree = html.fromstring(response.content)
+        self.assertEqual(len(tree.xpath('//textarea[@name="conclusion" or @name="source" or @name="reason"]')), 3)
+        self.assertTrue(tree.xpath('//form[contains(@action, "#evaluation-feedback")]'))
         row.delivery_id.write({"evaluation_instructor_ids": [Command.clear()]})
         self.assertEqual(self.url_open(url).status_code, 404)
         self.assertNotIn(row.name, self.url_open("/my/training-evaluations").text)
@@ -243,3 +256,53 @@ class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):
         self.assertEqual(row.state, "submitted")
         attempt.invalidate_recordset()
         self.assertEqual(attempt.user_input_line_ids.suggested_answer_id, question.suggested_answer_ids[:1])
+
+    def test_incomplete_submission_retains_draft_and_focuses_feedback(self):
+        row, _grant, survey, question = self.native_evaluation(scored=False, extra_required=True)
+        self.authenticate(self.portal.login, self.portal.login)
+        url = "/my/training-evaluations/%s" % row.id
+        response = self.url_open(url)
+        token = html.fromstring(response.content).xpath('//input[@name="csrf_token"]/@value')[0]
+        self.url_open(url, data={"csrf_token": token, "operation": "start", "attempt_number": "1"})
+        draft = "Fictional draft <b>kept as text</b>"
+        response = self.url_open(
+            url,
+            data={
+                "csrf_token": token,
+                "operation": "submit",
+                "attempt_number": "1",
+                "q_%s" % question.id: draft,
+            },
+        )
+        tree = html.fromstring(response.content)
+        self.assertEqual(tree.xpath('//textarea[@name="q_%s"]' % question.id)[0].text, draft)
+        self.assertFalse(tree.xpath("//textarea/b"))
+        self.assertTrue(tree.xpath('//*[@id="evaluation-feedback"][@tabindex="-1"][@role="alert"]'))
+        row.invalidate_recordset()
+        self.assertEqual(row.state, "in_progress")
+        attempt = self.env["survey.user_input"].search([("training_evaluation_assignment_id", "=", row.id)])
+        self.assertFalse(attempt.user_input_line_ids)
+        response = self.url_open(
+            url,
+            data={
+                "csrf_token": token,
+                "operation": "save",
+                "attempt_number": "1",
+                "q_%s" % question.id: draft,
+            },
+        )
+        self.assertTrue(html.fromstring(response.content).xpath('//*[@id="evaluation-feedback"][@role="status"]'))
+        second = survey.question_ids - question
+        response = self.url_open(
+            url,
+            data={
+                "csrf_token": token,
+                "operation": "submit",
+                "attempt_number": "1",
+                "q_%s" % question.id: draft,
+                "q_%s" % second.id: "Completed fictional observation",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        row.invalidate_recordset()
+        self.assertEqual(row.state, "submitted")

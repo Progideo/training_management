@@ -70,6 +70,11 @@ existantes. Le socle reste installable sans Surveys ; versions : socle
 
 ## Recette courte
 
+- Mobile (320 et 390 px) et clavier : atteindre les évaluations, répondre, enregistrer,
+  recharger et remettre. Une remise incomplète conserve la saisie courante sans
+  l’enregistrer comme preuve ; le retour d’erreur ou de réussite reçoit le focus.
+  Vérifier aussi validation/révision et réouverture, sans champ de score pour le qualitatif.
+
 - Publier V1, répondre, remettre puis valider à zéro et au seuil ; distinguer
   non évalué, qualitatif et échec. Réviser puis ouvrir une nouvelle tentative :
   anciens résultats et réponses restent identiques. Publier V2 sans modifier V1.

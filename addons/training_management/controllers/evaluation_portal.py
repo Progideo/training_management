@@ -1,6 +1,6 @@
 """Plain authorized values only; no portal ORM access to evaluation evidence."""
 
-from odoo import http
+from odoo import fields, http
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import pager as portal_pager
@@ -53,6 +53,7 @@ class EvaluationPortal(http.Controller):
         try:
             row = service._assignment(assignment_id)
             error = False
+            operation = None
             if request.httprequest.method == "POST":
                 try:
                     with request.env.cr.savepoint():
@@ -89,11 +90,47 @@ class EvaluationPortal(http.Controller):
                             )
                         else:
                             raise ValidationError(request.env._("Choose an evaluation action."))
-                except (ValidationError, ValueError, KeyError) as exc:
+                except ValidationError as exc:
                     error = str(exc)
+                except (ValueError, KeyError):
+                    error = request.env._("Check the entered values and try again.")
                 row = service._assignment(assignment_id)
             values = service._portal_values(row)
             values["error"] = error
+            values["form_values"] = {}
+            values["message"] = False
+            if error:
+                # Restore only the authorized current form, never another attempt.
+                if (
+                    operation in ("save", "submit")
+                    and values["own"]
+                    and not values["submitted"]
+                    and post.get("attempt_number") == str(values["attempt_number"])
+                ):
+                    for question in values["questions"]:
+                        answers = request.httprequest.form.getlist("q_%s" % question["id"])
+                        for choice in question["choices"]:
+                            choice["selected"] = str(choice["id"]) in answers
+                        question["text"] = (answers[0] if answers else "")[:20000]
+                if (
+                    (operation == "validate" and values["can_evaluate"])
+                    or (operation == "reopen" and values["can_reopen"])
+                ) and post.get("revision") == str(values["revision"]):
+                    values["form_values"] = {
+                        key: post.get(key, "") for key in ("score", "conclusion", "source", "reason", "due_at")
+                    }
+            else:
+                values["message"] = {
+                    "start": request.env._("Evaluation started."),
+                    "save": request.env._("Answers saved."),
+                    "submit": request.env._("Answers submitted for pedagogical validation."),
+                    "validate": request.env._("Evaluation result validated."),
+                    "reopen": request.env._("A new attempt has been authorized."),
+                }.get(operation)
+                if operation in ("save", "submit") and values["submitted"] and values["due"] <= fields.Datetime.now():
+                    values["message"] = request.env._(
+                        "The deadline has passed. Only previously saved answers were submitted."
+                    )
             return TrainingParticipantPortal._private(request.render("training_management.portal_evaluation", values))
         except (AccessError, MissingError):
             raise request.not_found() from None
