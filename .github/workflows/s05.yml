@@ -40,5 +40,5 @@ jobs:
         if: always()
         with:
           name: s05-results
-          path: test-results/s021/
+          path: test-results/s05/
           if-no-files-found: error
