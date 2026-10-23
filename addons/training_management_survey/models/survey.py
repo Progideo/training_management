@@ -86,11 +86,27 @@ class Survey(models.Model):
             ):
                 raise ValidationError(self.env._("Use the published original exam from the same programme."))
             questions = exam.question_ids
-            if not questions or not math.isfinite(exam.time_limit) or exam.time_limit <= 0:
+            if not questions or (
+                (not exam.training_evaluation_id or exam.is_time_limited)
+                and (not math.isfinite(exam.time_limit) or exam.time_limit <= 0)
+            ):
                 raise ValidationError(self.env._("Use a positive duration and at least one question."))
             if not 0 <= exam.scoring_success_min <= 100:
                 raise ValidationError(self.env._("Use a threshold between 0 and 100."))
-            for question in questions:
+            if exam.training_evaluation_id and not exam.training_evaluation_id.scored:
+                if any(
+                    q.question_type not in ("simple_choice", "multiple_choice", "char_box", "text_box")
+                    or q.triggering_answer_ids
+                    or q.save_as_email
+                    or q.save_as_nickname
+                    for q in questions
+                ):
+                    raise ValidationError(self.env._("Use fixed, non-identifying choice or text questions."))
+            for question in (
+                questions
+                if not exam.training_evaluation_id or exam.training_evaluation_id.scored
+                else self.env["survey.question"]
+            ):
                 correct = question.suggested_answer_ids.filtered("is_correct")
                 if (
                     question.question_type not in ("simple_choice", "multiple_choice")
@@ -112,9 +128,11 @@ class Survey(models.Model):
                     "questions_selection": "all",
                     "questions_layout": "one_page",
                     "survey_type": "custom",
-                    "scoring_type": "scoring_with_answers",
+                    "scoring_type": "scoring_with_answers"
+                    if not exam.training_evaluation_id or exam.training_evaluation_id.scored
+                    else "no_scoring",
                     "is_attempts_limited": False,
-                    "is_time_limited": True,
+                    "is_time_limited": True if not exam.training_evaluation_id else exam.is_time_limited,
                     "users_login_required": True,
                     "access_mode": "token",
                     "certification": False,
@@ -129,6 +147,8 @@ class Survey(models.Model):
         self._training_editor()
         if self.training_state != "published":
             raise ValidationError(self.env._("Publish this version first."))
+        if self.training_evaluation_id:
+            return self.training_evaluation_id.action_new_version()
         new = self.copy({"training_origin_id": (self.training_origin_id or self).id, "training_version": False})
         return {"type": "ir.actions.act_window", "res_model": "survey.survey", "res_id": new.id, "view_mode": "form"}
 

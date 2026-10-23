@@ -5,3 +5,4 @@ from . import learning_portal
 from . import attendance_portal
 
 from . import closure_portal
+from . import evaluation_portal

@@ -73,6 +73,8 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S06 — examens blancs, navigation et thèmes | [s06-mock-exams.md](s06-mock-exams.md) |
 | S07 — présences et émargement | [s07-attendance.md](s07-attendance.md) |
 | S08 — attestations, preuves et clôture | [s08-closure-documents.md](s08-closure-documents.md) |
+| S09 — évaluations, retours et qualité (cadrage validé) | [s09-evaluations-quality.md](s09-evaluations-quality.md) |
+| S09.1 — évaluations nominatives et droits | [s091-evaluations.md](s091-evaluations.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et

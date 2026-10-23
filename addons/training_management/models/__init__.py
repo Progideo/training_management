@@ -22,3 +22,4 @@ from . import mail_message
 from . import training_attendance
 
 from . import training_closure
+from . import training_evaluation

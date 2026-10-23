@@ -79,7 +79,7 @@ class ExamService(models.AbstractModel):
     @api.private
     def _attempt(self, attempt_id, *, mutate=False):
         attempt = self.env["survey.user_input"].sudo().browse(attempt_id).exists()
-        if not attempt or not attempt.training_enrollment_id:
+        if not attempt or not attempt.training_enrollment_id or attempt.training_evaluation_assignment_id:
             raise AccessError(self.env._("This private exam is unavailable."))
         self._enrollment(attempt.training_enrollment_id.id, history=not mutate, finish=mutate, lock=mutate)
         if mutate or attempt.state != "done":

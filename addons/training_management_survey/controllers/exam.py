@@ -40,7 +40,11 @@ class NativeSurveyBoundary(Survey):
         try:
             if not attempt:
                 raise request.not_found()
-            attempt = request.env["training.exam.service"]._attempt(attempt.id)
+            attempt = (
+                request.env["training.evaluation.service"]._native_attempt(attempt.id)
+                if attempt.training_evaluation_assignment_id
+                else request.env["training.exam.service"]._attempt(attempt.id)
+            )
             question = attempt.predefined_question_ids.filtered(lambda q: q.id == question_id)
             choice = question.suggested_answer_ids.filtered(lambda c: c.id == suggested_answer_id)
             if not choice or not choice.value_image:
@@ -99,6 +103,7 @@ class ExamPortal(http.Controller):
             ("training_enrollment_id.company_id", "in", user.company_ids.ids),
             ("training_enrollment_id.access_state", "=", "active"),
             ("training_enrollment_id.state", "=", "confirmed"),
+            ("training_evaluation_assignment_id", "=", False),
         ]
         model = request.env["survey.user_input"].sudo()
         pager = portal_pager(url="/my/training-exams", total=model.search_count(domain), page=page, step=40)
