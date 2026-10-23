@@ -129,6 +129,15 @@ class TestNativeEvaluation(NativeEvaluationCase):
         self.assertEqual(row.state, "submitted")
         self.assertFalse(row.result_available)
 
+    def test_archived_questionnaire_refuses_new_attempt_without_partial_state(self):
+        row, _grant, survey, _question = self.native_evaluation()
+        survey.write({"active": False})
+        service = self.env["training.evaluation.service"].with_user(self.portal)
+        with self.assertRaises(ValidationError):
+            service._start(row.id)
+        self.assertFalse(row.started_at)
+        self.assertFalse(self.env["survey.user_input"].search([("training_evaluation_assignment_id", "=", row.id)]))
+
 
 @tagged("post_install", "-at_install")
 class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):

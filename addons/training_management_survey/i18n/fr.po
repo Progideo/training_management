@@ -996,3 +996,9 @@ msgstr "Utilisez le questionnaire de cette version d’évaluation."
 #: model:ir.model,name:training_management_survey.model_training_evaluation
 msgid "Versioned Training Evaluation"
 msgstr "Évaluation de formation versionnée"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/evaluation.py:0
+msgid "This evaluation questionnaire is archived."
+msgstr "Ce questionnaire d’évaluation est archivé."

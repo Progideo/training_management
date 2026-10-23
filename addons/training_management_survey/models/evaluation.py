@@ -113,6 +113,11 @@ class EvaluationService(models.AbstractModel):
 
     @api.private
     def _start(self, assignment_id):
+        with self.env.cr.savepoint():
+            return self._start_checked(assignment_id)
+
+    @api.private
+    def _start_checked(self, assignment_id):
         row = super()._start(assignment_id)
         survey = row.evaluation_id.survey_id
         if not survey:
@@ -130,6 +135,9 @@ class EvaluationService(models.AbstractModel):
         )
         if not current:
             survey.lock_for_update()
+            survey.invalidate_recordset(["active"])
+            if not survey.active:
+                raise ValidationError(self.env._("This evaluation questionnaire is archived."))
             self.env["survey.user_input"].flush_model(["state"])
             active = (
                 self.env["survey.user_input"]
