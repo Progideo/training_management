@@ -6,6 +6,7 @@ from datetime import timedelta
 from uuid import UUID
 
 from markupsafe import Markup
+from psycopg2.errors import SerializationFailure
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
@@ -356,15 +357,22 @@ class LearningService(models.AbstractModel):
             )
         )
         for enrollment in enrollments:
-            with self.env.cr.savepoint():
-                enrollment.delivery_id._serialize()
-                enrollment.invalidate_recordset()
-                if not self._reminder_due(enrollment, now):
-                    continue
-                last = self._last_activity(enrollment)
-                first_due = last + timedelta(days=enrollment.delivery_id.learning_inactivity_days)
-                window = int(
-                    (now - first_due).total_seconds() // (enrollment.delivery_id.learning_reminder_days * 86400)
-                )
-                key = "reminder:%s:%s" % (fields.Datetime.to_string(last), window)
-                self.env["training.learning.notice"]._queue(enrollment, key, enrollment.user_id)
+            try:
+                with self.env.cr.savepoint():
+                    delivery = enrollment.delivery_id.try_lock_for_update()
+                    if not delivery:
+                        continue
+                    delivery._serialize()
+                    enrollment.invalidate_recordset()
+                    if not self._reminder_due(enrollment, now):
+                        continue
+                    last = self._last_activity(enrollment)
+                    first_due = last + timedelta(days=delivery.learning_inactivity_days)
+                    window = int((now - first_due).total_seconds() // (delivery.learning_reminder_days * 86400))
+                    key = "reminder:%s:%s" % (fields.Datetime.to_string(last), window)
+                    self.env["training.learning.notice"]._queue(enrollment, key, enrollment.user_id)
+            except SerializationFailure:
+                # Another transaction committed after this cron's snapshot.
+                # Leave this delivery to the next fresh run; retain unrelated
+                # reminders already queued in this transaction.
+                continue

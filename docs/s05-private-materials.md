@@ -357,8 +357,9 @@ entre réalisations sont refusés. Les préalables bloquent les actions pédagog
 sans restreindre la bibliothèque commune déjà autorisée par S05.
 
 Chaque remise, correction et demande d'aide conserve son auteur, sa date serveur
-et ses versions. Une correction vise la dernière remise ; une ancienne page doit
-être rechargée. Les répétitions d'une même soumission ne créent pas de doublon.
+et ses versions. Les fichiers remis sont conservés octet pour octet, en désactivant
+le post-traitement d’image par l’option native Odoo pour ces originaux. Une correction
+vise la dernière remise ; une ancienne page doit être rechargée. Les répétitions d'une même soumission ne créent pas de doublon.
 Les critères et consignes d'une activité ayant une progression sont conservés.
 Le participant et le tuteur actuellement affecté accèdent aux travaux privés.
 La coordination gère les paramètres, affectations et états de progression ; son
@@ -376,6 +377,8 @@ Une relance d'inactivité exige un intervalle ; elle ne concerne que les activit
 obligatoires disponibles et inachevées. Les activités facultatives, les accès
 suspendus et l'attente de S06 ne provoquent pas de relance. Ni le téléchargement
 ni la simple ouverture d'une page ne constituent une activité pédagogique.
+Une réalisation verrouillée ou modifiée depuis le début du traitement est reprise
+au passage suivant ; elle n’annule pas les relances des autres réalisations.
 
 Les nouvelles preuves privées et leurs fichiers ne sont pas exportables en masse.
 La conservation et le manifeste d'export restent rattachés à S11, sans durée de
@@ -385,8 +388,8 @@ contenu actif dans l'origine du portail.
 
 Mettre à jour les deux modules : socle `20.0.1.6.0`, Ventes `20.0.1.10.6`.
 Le scénario `tests/ci/run_s052.sh` part de #58 avec Website/eLearning, préserve les
-historiques et fichiers, exerce deux transactions concurrentes puis le portail
-français. `test_learning.py` couvre les critères, rôles restreints, fichiers,
+historiques et fichiers, exerce les transactions concurrentes de remise, révocation
+et relance puis le portail français. `test_learning.py` couvre les critères, rôles restreints, fichiers,
 notifications, relances et doubles soumissions.
 
 ### Recette du complément

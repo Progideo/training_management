@@ -6,6 +6,7 @@ on:
       - "tests/probes/s021_history.py"
       - "tests/probes/s052_history.py"
       - "tests/probes/s052_concurrency.py"
+      - "tests/probes/s052_reminder_concurrency.py"
       - "tests/probes/catalogue_upgrade_probe.py"
       - "tests/ci/run_s052.sh"
       - ".github/workflows/s052.yml"

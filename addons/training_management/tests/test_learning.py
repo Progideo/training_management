@@ -1,9 +1,13 @@
 """S05 completion: real identities, native evidence, transport and portal boundaries."""
 
 from datetime import timedelta
+import hashlib
+import json
 from io import BytesIO
 from unittest.mock import patch
 from uuid import uuid4
+
+from PIL import Image
 
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -151,6 +155,17 @@ class TestLearning(LearningCase):
         self.assertFalse(delivery.message_ids.filtered(lambda m: "Fictional private work" in m.body))
         self.assertFalse(enrollment.message_ids.filtered(lambda m: "Fictional private work" in m.body))
 
+    def test_uploaded_image_keeps_original_bytes_and_hash(self):
+        _, activity, enrollment = self.setup_learning()
+        self.env["ir.config_parameter"].set_str("base.image_autoresize_max_px", "1920x1920")
+        output = BytesIO()
+        Image.new("RGB", (2001, 2), color="blue").save(output, format="PNG")
+        payload = output.getvalue()
+        entry = self.post(enrollment, activity_id=activity.id, data=payload, filename="original-work.png")
+        self.assertEqual(self.file(entry).raw.content, payload)
+        self.assertEqual(entry.data.content, payload)
+        self.assertEqual(entry.sha256, hashlib.sha256(payload).hexdigest())
+
     def test_submission_criterion_and_authoritative_evaluation_hook(self):
         _, activity, enrollment = self.setup_learning()
         submitted = self.activity(enrollment.delivery_id, criterion="submission")
@@ -214,6 +229,33 @@ class TestLearning(LearningCase):
         self.assertEqual(answer.parent_id, question)
         self.assertFalse(self.env["mail.mail"].search([("model", "=", question._name)]))
         self.assertFalse(activity.progress_ids)
+
+    def test_internal_author_loses_native_message_and_file_access_on_suspension(self):
+        delivery = self.delivery()
+        enrollment = self.enrollment(delivery, participant_id=self.internal.partner_id.id, user_id=self.internal.id)
+        enrollment.action_validate_prerequisites(reason="Fictional review")
+        enrollment.action_confirm()
+        enrollment.action_authorize(reason="Fictional authorization")
+        enrollment.action_open_access(reason="Fictional opening")
+        entry = self.service(self.internal)._post(
+            enrollment.id,
+            "question",
+            request_key=str(uuid4()),
+            body="Fictional internal author's private work",
+            data=PDF,
+            filename="private.pdf",
+        )
+        message = entry.message_id.with_user(self.internal)
+        attachment = self.file(entry).with_user(self.internal)
+        self.assertIn("Fictional internal author's private work", message.read(["body"])[0]["body"])
+        self.assertTrue(attachment.read(["raw"])[0]["raw"])
+        self.assertEqual(attachment.raw.content, PDF)
+        enrollment.action_suspend_access(reason="Fictional suspension")
+        for record, fields in ((message, ["body"]), (attachment, ["raw"]), (entry.with_user(self.internal), ["kind"])):
+            with self.assertRaises(AccessError):
+                record.read(fields)
+        self.assertFalse(self.env["mail.message"].with_user(self.internal).search([("id", "=", message.id)], limit=1))
+        self.assertFalse(message.sudo()._get_with_access())
 
     def test_cross_enrollment_company_account_and_message_forgery(self):
         _, activity, enrollment = self.setup_learning()
@@ -536,6 +578,55 @@ class TestLearningHttp(LearningCase, HttpCase):
         self.authenticate(self.peer.login, self.peer.login)
         response = self.url_open(f"/mail/attachment/render_text/{attachment.id}")
         self.assertEqual(response.status_code, 404)
+
+    def test_native_message_rpc_rechecks_private_mission(self):
+        delivery, activity, enrollment = self.setup_learning()
+        entry = self.service()._post(
+            enrollment.id,
+            "submission",
+            activity_id=activity.id,
+            request_key=str(uuid4()),
+            body="Fictional private RPC work",
+        )
+        delivery.write({"learning_tutor_id": self.internal.id})
+
+        def rpc(method, args, limit=None):
+            kwargs = {"fields": ["body"]}
+            if method == "search_read":
+                kwargs["limit"] = limit
+            response = self.url_open(
+                "/web/dataset/call_kw/mail.message/" + method,
+                data=json.dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "method": "call",
+                        "params": {
+                            "model": "mail.message",
+                            "method": method,
+                            "args": args,
+                            "kwargs": kwargs,
+                        },
+                    }
+                ),
+                headers={"Content-Type": "application/json"},
+            )
+            return response.json()
+
+        self.authenticate(self.internal.login, self.internal.login)
+        domain = [("id", "=", entry.message_id.id)]
+        for limit in (None, 1):
+            result = rpc("search_read", [domain], limit=limit)
+            self.assertIn("Fictional private RPC work", result["result"][0]["body"])
+        delivery.write({"learning_tutor_id": self.portal_b.id})
+        for limit in (None, 1):
+            self.assertEqual(rpc("search_read", [domain], limit=limit)["result"], [])
+        result = rpc("read", [entry.message_id.ids])
+        self.assertIn("error", result)
+        self.assertNotIn("Fictional private RPC work", json.dumps(result))
+        for user in (self.coordinator, self.peer):
+            self.authenticate(user.login, user.login)
+            result = rpc("search_read", [domain])
+            self.assertNotIn("Fictional private RPC work", json.dumps(result))
 
     def test_csrf_idempotent_upload_and_plain_text_escaping(self):
         _, activity, enrollment = self.setup_learning()

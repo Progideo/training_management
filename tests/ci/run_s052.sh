@@ -47,5 +47,6 @@ TM_UPGRADE_PHASE=verify step catalogue_preserved run_odoo shell --no-http < "$re
 
 S052_PHASE=verify step learning_preserved run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s052_concurrency.py"
+step reminder_concurrency run_odoo shell --no-http < "$repo/tests/probes/s052_reminder_concurrency.py"
 S052_PHASE=french step french_prepare run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
 step french_http run_odoo -u training_management --stop-after-init --test-enable --test-tags=/training_management:TestLearningHttp,/training_management:TestTrainingMaterialHttp
