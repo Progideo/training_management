@@ -5,11 +5,11 @@
 Ce cadrage intègre le préalable technique [S02.1 #50](https://github.com/Progideo/training_management/issues/50).
 Réutiliser le portail Odoo, les fichiers natifs et les habilitations existantes.
 Ajouter seulement le rattachement pédagogique et les contrôles manquants.
-La réalisation commence par #50 ; le développement fonctionnel S05 attend sa fusion.
+Le préalable #50 est fusionné via [la PR #57](https://github.com/Progideo/training_management/pull/57).
 
 ## Références et limites du lot
 
-Base de référence : `main` au commit `5819e986a8388b06cc8c315c992a034df5c8022c`,
+Base de référence du cadrage : `main` au commit `5819e986a8388b06cc8c315c992a034df5c8022c`,
 [PR #56 fusionnée](https://github.com/Progideo/training_management/pull/56).
 Le [PDF de programme](catalogue-categories-pdf.md) est déjà conservé et protégé.
 S05 doit donner accès au fichier applicable après habilitation, sans le dupliquer,
@@ -20,8 +20,7 @@ Le [pilotage #3](https://github.com/Progideo/training_management/issues/3) décr
 la fusion et la livraison documentées dans les PR font référence. Les mentions
 historiques « base seulement » ne décrivent plus le manifest courant : le socle
 dépend déjà de `base, mail, resource, portal, web, base_report_wkhtmltox`.
-#50 reste ouverte. Elle est instruite ici avec S05, mais conserve sa livraison
-technique distincte et sa fusion préalable au développement S05 et P05.
+#50 est clôturée. Sa politique documentaire est la référence technique pour S05 et P05.
 
 L'issue S05 dépasse les seuls supports : elle comprend aussi remises privées,
 progression et tutorat de base. Le premier périmètre proposé ci-dessous est
@@ -281,3 +280,48 @@ reprises S03.1 et #56 et conservation des historiques complètent la sortie #50.
 Ces scénarios sont des critères futurs. La conformité du portail, les refus HTTP,
 les performances et les parcours complets S05 restent à démontrer lors du développement.
 Les résultats d'exécution appartiendront à la PR, sans les recopier dans cette page.
+
+## Premier incrément : espace et supports
+
+Le socle utilise Portal et le champ binaire natif de `training.material`, stocké
+une seule fois dans `ir.attachment`. `training.material.assignment` conserve les
+références ordonnées de chaque réalisation. Les droits ORM restent réservés aux
+coordinateurs de la société ; le portail ne reçoit que des valeurs sélectionnées.
+Le service privé `training.document.policy` est défini dans le socle et étendu par
+Ventes : les contrôles binaires et de transport de #50 restent communs, sans
+ouverture des habilitations commerciales vers la pédagogie. Les PDF privés ne
+sont pas joints à des courriels ; aucune notification de dépôt n'est créée.
+
+Depuis le programme, **Supports PDF privés → Ajouter un PDF privé**. La création
+d'une réalisation reprend les dernières versions communes non retirées. Depuis la
+réalisation, le même onglet permet d'ajouter un PDF de groupe ou une référence
+explicite. **Ajouter les PDF du programme** complète les références sans remplacer
+les anciennes et reste sans effet lors d'une répétition. Une version retirée ne
+réactive pas sa précédente. Une correction utilise **Nouvelle version PDF** ;
+retirer l'ancienne référence reste un choix explicite. Les références, auteurs,
+dates et empreintes sont conservés. Le verrou natif avec barrière d'écriture
+sérialise modification du fichier et première diffusion. Aucune purge automatique. Les exports en masse de ces deux nouveaux modèles sont
+refusés en attendant le dispositif de manifeste et de journalisation S11 ; le
+téléchargement individuel autorisé reste disponible.
+
+La première disponibilité à un inscrit actif gèle le fichier. Une disponibilité
+au formateur affecté d'une réalisation confirmée le gèle également : le formateur
+ne reçoit donc jamais une version encore modifiable. **Mes formations** rassemble
+programme applicable conservé, agenda S04 et supports, sans compte eLearning.
+L'offre autonome n'affiche aucune séance fictive. Les séances affectées S04 donnent
+au formateur les supports de la réalisation ; une réaffectation retire ce droit.
+Chaque nouvelle requête réévalue identité, société et accès effectif S03, y compris
+sur les URL natives avec jeton, téléchargement partiel ou requête conditionnelle.
+Les réponses pédagogiques ont `Cache-Control: private, no-store`.
+
+Les versions de module deviennent `20.0.1.5.0` (socle) et `20.0.1.10.5` (Ventes).
+Mettre à jour les deux modules. Le pont temporaire de défaut Website reprend le
+mécanisme du lot PDF et restaure le schéma natif après chargement des vues.
+Le scénario `tests/ci/run_s05.sh` reprend #57 avec Website/eLearning, compare les
+historiques documentaires/comptables et le PDF, puis exerce deux transactions
+concurrentes. Les tests `test_material.py` complètent la recette ci-dessus.
+Les résultats réellement exécutés restent dans la PR.
+
+Ce premier incrément ne clôt pas #15 : progression, activités, remises/corrections,
+aide privée, tuteurs et relances restent le complément S05 prévu au lancement.
+Ouvrir un PDF ne produit aucune progression, acquisition ou présence.

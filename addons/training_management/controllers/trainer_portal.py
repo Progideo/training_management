@@ -3,6 +3,8 @@ from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.http import request
 from odoo.tools.misc import format_datetime
 
+from .material_portal import TrainingParticipantPortal
+
 
 class TrainingTrainerPortal(http.Controller):
     @http.route(
@@ -88,6 +90,7 @@ class TrainingTrainerPortal(http.Controller):
                     "meeting_url": session.meeting_url,
                     "equipment": session.equipment,
                     "participants": participants,
+                    "materials": TrainingParticipantPortal._material_rows(session.delivery_id) if details else [],
                 }
             )
         return rows

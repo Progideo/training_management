@@ -11,13 +11,16 @@ from odoo.fields import Domain
 
 
 class TrainingDocumentPolicy(models.AbstractModel):
-    _name = "training.document.policy"
+    _inherit = "training.document.policy"
     _description = "Training Document Authorization"
 
     @api.private
     def _document(self, record):
         """Resolve a native file/message to its commercial source, if relevant."""
         record.ensure_one()
+        pedagogical = super()._document(record)
+        if pedagogical:
+            return pedagogical
         target = record.sudo()
         for model, model_field, id_field in (
             ("ir.attachment", "res_model", "res_id"),
@@ -39,6 +42,8 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _restricted(self, document):
+        if document and document._name in ("training.material", "training.program.version"):
+            return super()._restricted(document)
         if not document:
             return False
         document.ensure_one()
@@ -53,7 +58,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
     @api.private
     def _partners(self, document, *, email_only=False):
         """Current named grants; receipts keep their invoice intersection rule."""
-        if not self._restricted(document):
+        if not self._restricted(document) or document._name in ("training.material", "training.program.version"):
             return self.env["res.partner"]
         target = document.sudo()
         partners = (
@@ -66,6 +71,8 @@ class TrainingDocumentPolicy(models.AbstractModel):
     @api.private
     def _can_read(self, record):
         document = self._document(record)
+        if document and document._name in ("training.material", "training.program.version"):
+            return super()._can_read(record)
         if not self._restricted(document):
             return True
         if not self.env.user.share:
@@ -83,6 +90,15 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _check_send(self, document, partners, *, email_to=False, email_cc=False, required=True, allow_internal=False):
+        if document and document._name in ("training.material", "training.program.version"):
+            return super()._check_send(
+                document,
+                partners,
+                email_to=email_to,
+                email_cc=email_cc,
+                required=required,
+                allow_internal=allow_internal,
+            )
         if not self._restricted(document):
             return
         # At transport, native internal notifications keep their existing rights.

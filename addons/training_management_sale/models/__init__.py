@@ -11,7 +11,6 @@ from . import account_move_send
 from . import account_move_send_wizard
 from . import mail_compose_message
 from . import mail_template
-from . import ir_binary
 from . import account_payment
 from . import account_payment_register
 from . import account_partial_reconcile
@@ -19,6 +18,5 @@ from . import payment_transaction
 from . import payment_link_wizard
 from . import account_journal
 from . import mail_message
-from . import mail_mail
 from . import mail_scheduled_message
 from . import training_allocation

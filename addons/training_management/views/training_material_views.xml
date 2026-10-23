@@ -1,0 +1,51 @@
+<odoo>
+    <record id="view_training_material_list" model="ir.ui.view">
+        <field name="name">training.material.list</field><field name="model">training.material</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="version"/><field name="filename"/><field name="frozen_at"/><field name="withdrawn"/></list></field>
+    </record>
+    <record id="view_training_material_form" model="ir.ui.view">
+        <field name="name">training.material.form</field><field name="model">training.material</field>
+        <field name="arch" type="xml">
+            <form duplicate="false" delete="false">
+                <header><button name="action_new_version" type="object" string="New PDF Version"/>
+                    <button name="action_withdraw" type="object" string="Withdraw PDF" invisible="withdrawn"/></header>
+                <sheet>
+                    <div class="alert alert-info" role="status">Private PDFs are available through the authenticated portal only. Distributed versions are preserved.</div>
+                    <group>
+                        <field name="name" readonly="frozen_at or withdrawn"/><field name="version" readonly="frozen_at or withdrawn"/>
+                        <field name="program_id" readonly="id"/><field name="delivery_id" readonly="id"/>
+                        <field name="filename" readonly="frozen_at or withdrawn"/>
+                        <field name="data" filename="filename" readonly="frozen_at or withdrawn"/>
+                        <field name="previous_id"/><field name="withdrawn"/>
+                    </group>
+                    <group string="Preserved Evidence"><field name="create_uid"/><field name="create_date"/><field name="frozen_at"/><field name="frozen_by_id"/><field name="sha256"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_material_assignment_form" model="ir.ui.view">
+        <field name="name">training.material.assignment.form</field><field name="model">training.material.assignment</field>
+        <field name="arch" type="xml"><form delete="false" duplicate="false"><header><button name="action_withdraw" type="object" string="Withdraw Reference" invisible="withdrawn"/></header><sheet><group>
+            <field name="delivery_id" readonly="id"/><field name="material_id" readonly="id" options="{'no_create': True}"/>
+            <field name="sequence"/><field name="withdrawn"/><field name="create_uid"/><field name="create_date"/>
+        </group></sheet></form></field>
+    </record>
+    <record id="view_training_program_materials" model="ir.ui.view">
+        <field name="name">training.program.materials</field><field name="model">training.program.version</field>
+        <field name="inherit_id" ref="view_training_program_form"/>
+        <field name="arch" type="xml"><xpath expr="//notebook" position="inside"><page string="Private PDFs" groups="training_management.group_training_coordinator">
+            <button name="action_add_material" type="object" string="Add Private PDF" class="btn-primary"/>
+            <field name="material_ids" readonly="1"><list create="false" delete="false"><field name="name"/><field name="version"/><field name="filename"/><field name="frozen_at"/><field name="withdrawn"/></list></field>
+        </page></xpath></field>
+    </record>
+    <record id="view_training_delivery_materials" model="ir.ui.view">
+        <field name="name">training.delivery.materials</field><field name="model">training.delivery</field>
+        <field name="inherit_id" ref="view_training_delivery_form"/>
+        <field name="arch" type="xml"><xpath expr="//notebook" position="inside"><page string="Private PDFs" groups="training_management.group_training_coordinator">
+            <button name="action_add_material" type="object" string="Add Group PDF" class="btn-primary"/>
+            <button name="action_add_programme_materials" type="object" string="Add Programme PDFs"/>
+            <button name="action_assign_material" type="object" string="Assign PDF Version"/>
+            <field name="material_assignment_ids" readonly="1"><list create="false" delete="false"><field name="sequence"/><field name="material_id"/><field name="withdrawn"/><field name="create_date"/></list></field>
+        </page></xpath></field>
+    </record>
+</odoo>

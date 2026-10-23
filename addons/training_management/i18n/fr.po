@@ -187,6 +187,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_category__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_material__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -238,6 +240,8 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_category__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_material__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -262,6 +266,8 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_category__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_material__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -308,6 +314,10 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_ir_actions_report__display_name
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_programme_pdf_document__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_category__display_name
+#: model:ir.model.fields,field_description:training_management.field_ir_binary__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_document_policy__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_material__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -383,6 +393,10 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_ir_actions_report__id
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_programme_pdf_document__id
 #: model:ir.model.fields,field_description:training_management.field_training_category__id
+#: model:ir.model.fields,field_description:training_management.field_ir_binary__id
+#: model:ir.model.fields,field_description:training_management.field_training_document_policy__id
+#: model:ir.model.fields,field_description:training_management.field_training_material__id
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__id
 msgid "ID"
 msgstr "ID"
 
@@ -412,6 +426,8 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_category__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_material__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -436,6 +452,8 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_category__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_material__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -451,6 +469,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__name
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__name
 #: model:ir.model.fields,field_description:training_management.field_training_category__name
+#: model:ir.model.fields,field_description:training_management.field_training_material__name
 msgid "Name"
 msgstr "Nom"
 
@@ -1355,6 +1374,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_invitation_send__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_session__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1587,6 +1607,7 @@ msgstr "Préparation"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__program_id
+#: model:ir.model.fields,field_description:training_management.field_training_material__program_id
 msgid "Program"
 msgstr "Programme"
 
@@ -1704,6 +1725,7 @@ msgstr "Responsable"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__revision
+#: model:ir.model.fields,field_description:training_management.field_training_material__revision
 msgid "Revision"
 msgstr "Révision"
 
@@ -2555,6 +2577,7 @@ msgstr "Les convocations sont générées par l’action d’envoi du coordinate
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
 msgid "Join remote session"
 msgstr "Rejoindre la séance à distance"
 
@@ -2705,6 +2728,7 @@ msgstr "Destinataires"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
 msgid "Reference timezone:"
 msgstr "Fuseau de référence :"
 
@@ -3273,6 +3297,7 @@ msgstr ""
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
 msgid "Download Programme PDF"
 msgstr "Télécharger le programme PDF"
 
@@ -3486,3 +3511,337 @@ msgstr "PDF historique à reconstituer"
 #: code:addons/training_management/models/training_program.py:0
 msgid "The programme category is defined by its course."
 msgstr "La catégorie du programme est définie par sa formation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "A delivery with PDF references keeps its programme and company."
+msgstr ""
+"Une réalisation avec des références PDF conserve son programme et sa "
+"société."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "A new PDF version keeps its programme and group."
+msgstr "Une nouvelle version PDF conserve son programme et son groupe."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "A private support cannot be detached, shared or reassigned."
+msgstr "Un support privé ne peut être détaché, partagé ou réaffecté."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_material_one_successor
+msgid "A replacement version already exists."
+msgstr "Une version de remplacement existe déjà."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_materials
+msgid "Add Group PDF"
+msgstr "Ajouter un PDF de groupe"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_materials
+msgid "Add Private PDF"
+msgstr "Ajouter un PDF privé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_materials
+msgid "Add Programme PDFs"
+msgstr "Ajouter les PDF du programme"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
+msgid "Applicable programme"
+msgstr "Programme applicable"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_materials
+msgid "Assign PDF Version"
+msgstr "Affecter une version PDF"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__assignment_ids
+msgid "Assignment"
+msgstr "Affectation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Choose a PDF for this exact programme and group."
+msgstr "Choisissez un PDF pour ce programme et ce groupe précis."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Create an active PDF reference."
+msgstr "Créez une référence PDF active."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_material_assignment
+msgid "Delivery PDF Reference"
+msgstr "Référence PDF de réalisation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "Service de diffusion des fichiers pour les contrôleurs"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__filename
+msgid "Filename"
+msgstr "Nom du fichier"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__frozen_at
+msgid "First Made Available On"
+msgstr "Première mise à disposition le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__frozen_by_id
+msgid "Frozen By"
+msgstr "Conservé par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__delivery_id
+msgid "Group Only"
+msgstr "Groupe uniquement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Keep private support files and their history."
+msgstr "Conservez les fichiers des supports privés et leur historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Keep the assigned version; withdraw it and add its replacement."
+msgstr "Conservez la version affectée ; retirez-la et ajoutez sa remplaçante."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Keep this PDF version; create a new version to correct it."
+msgstr ""
+"Conservez cette version PDF ; créez une nouvelle version pour la corriger."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__material_id
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__material_ids
+msgid "Material"
+msgstr "Support"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__material_assignment_ids
+msgid "Material Assignment"
+msgstr "Affectation de support"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_participant_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My training"
+msgstr "Mes formations"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_material_form
+msgid "New PDF Version"
+msgstr "Nouvelle version PDF"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_materials
+msgid "No private PDF is currently available."
+msgstr "Aucun PDF privé disponible actuellement."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
+msgid "No scheduled session."
+msgstr "Aucune séance planifiée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid ""
+"No training is currently available. Contact your coordinator if needed."
+msgstr ""
+"Aucune formation accessible actuellement. Contactez votre coordinateur si "
+"nécessaire."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Only the training coordinator may manage private PDFs."
+msgstr "Seul le coordinateur de formation peut gérer les PDF privés."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__data
+msgid "PDF File"
+msgstr "Fichier PDF"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "PDF evidence is generated by the server."
+msgstr "Les preuves du PDF sont générées par le serveur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_material_form
+msgid "Preserved Evidence"
+msgstr "Preuves conservées"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__previous_id
+msgid "Previous"
+msgstr "Version précédente"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_materials
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_materials
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_materials
+msgid "Private PDFs"
+msgstr "Supports PDF privés"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_material_form
+msgid ""
+"Private PDFs are available through the authenticated portal only. "
+"Distributed versions are preserved."
+msgstr ""
+"Les PDF privés sont accessibles uniquement sur le portail authentifié. Les "
+"versions diffusées sont conservées."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_material
+msgid "Private Training PDF"
+msgstr "Support PDF privé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Private support files cannot be copied."
+msgstr "Les fichiers des supports privés ne peuvent être copiés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_document_policy.py:0
+msgid ""
+"Private training PDFs are available through the authenticated portal only."
+msgstr ""
+"Les PDF privés sont accessibles uniquement sur le portail authentifié."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training
+msgid "Schedule"
+msgstr "Agenda"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__sequence
+msgid "Sequence"
+msgstr "Ordre"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__sha256
+msgid "Sha256"
+msgstr "Empreinte SHA-256"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "The distributed PDF file is immutable."
+msgstr "Le fichier PDF diffusé est immuable."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "The support and its delivery must use the same programme."
+msgstr "Le support et sa réalisation doivent utiliser le même programme."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "This PDF has been withdrawn."
+msgstr "Ce PDF a été retiré."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_material_assignment_unique_reference
+msgid "This PDF is already assigned to the delivery."
+msgstr "Ce PDF est déjà affecté à la réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_document_policy.py:0
+msgid ""
+"This training document is not accessible with your current permissions."
+msgstr "Ce document de formation est inaccessible avec vos droits actuels."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_document_policy
+msgid "Training Document Authorization"
+msgstr "Autorisation documentaire de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Upload a PDF file."
+msgstr "Déposez un fichier PDF."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Use New PDF Version to preserve the original file."
+msgstr "Utilisez Nouvelle version PDF pour conserver le fichier original."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid "Use the PDF field of a new private support version."
+msgstr "Utilisez le champ PDF d’une nouvelle version de support privé."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__version
+msgid "Version"
+msgstr "Version"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_material_form
+msgid "Withdraw PDF"
+msgstr "Retirer le PDF"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_material_assignment_form
+msgid "Withdraw Reference"
+msgstr "Retirer la référence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Withdraw private PDFs instead of deleting their history."
+msgstr "Retirez les PDF privés au lieu de supprimer leur historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Withdraw this reference instead of deleting its history."
+msgstr "Retirez cette référence au lieu de supprimer son historique."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_material__withdrawn
+#: model:ir.model.fields,field_description:training_management.field_training_material_assignment__withdrawn
+msgid "Withdrawn"
+msgstr "Retiré"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_material.py:0
+msgid "Bulk export of private support records is unavailable. Download an authorized PDF instead."
+msgstr "L’export en masse des supports privés est indisponible. Téléchargez un PDF autorisé."

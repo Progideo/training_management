@@ -94,9 +94,10 @@ class TrainingProgramPdf(models.Model):
     @api.private
     def _reference_pdf(self):
         self.ensure_one()
-        self.check_access("read")
-        attachment = self.pdf_attachment_id
-        if not attachment or not self.pdf_sha256:
+        self.env["training.document.policy"]._check_read(self)
+        authorized = self.sudo()
+        attachment = authorized.pdf_attachment_id
+        if not attachment or not authorized.pdf_sha256:
             raise ValidationError(
                 self.env._("No reference PDF is available. Ask the coordinator to check this programme.")
             )
@@ -109,7 +110,7 @@ class TrainingProgramPdf(models.Model):
             or stored.res_id != self.id
             or stored.public
             or stored.access_token
-            or hashlib.sha256(stored.raw or b"").hexdigest() != self.pdf_sha256
+            or hashlib.sha256(stored.raw or b"").hexdigest() != authorized.pdf_sha256
         ):
             raise ValidationError(
                 self.env._("The reference PDF is missing or altered. It will not be regenerated automatically.")

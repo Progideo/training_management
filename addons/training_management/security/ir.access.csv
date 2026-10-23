@@ -41,3 +41,7 @@ access_invitation_send,Invitation assistant coordinator,training.invitation.send
 access_category_reader,Training category reader,training.category,training_management.group_training_reader,r,
 access_category_coordinator,Training category coordinator,training.category,training_management.group_training_coordinator,crud,
 rule_category_company,Training category allowed companies,training.category,,crud,"[('company_id', 'in', company_ids)]"
+access_material_coordinator,Private PDFs coordinator,training.material,training_management.group_training_coordinator,cru,
+rule_material_company,Private PDFs allowed companies,training.material,,crud,"[('company_id', 'in', company_ids)]"
+access_material_assignment_coordinator,Private PDF references coordinator,training.material.assignment,training_management.group_training_coordinator,cru,
+rule_material_assignment_company,Private PDF references allowed companies,training.material.assignment,,crud,"[('company_id', 'in', company_ids)]"

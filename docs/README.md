@@ -69,7 +69,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S03.1 — corrections de revue | [s03-1-review-fixes.md](s03-1-review-fixes.md), cadrage [s03-1-corrections.md](s03-1-corrections.md) |
 | S04 — besoins, aménagements et séances | [s04-preparation-sessions.md](s04-preparation-sessions.md) |
 | S02.1 — politique documentaire et protections natives | [s02-1-document-policy.md](s02-1-document-policy.md) |
-| S05 — supports privés et espace participant, avec préalable S02.1 #50 (cadrage validé) | [s05-private-materials.md](s05-private-materials.md) |
+| S05 — supports privés et espace participant (premier incrément), complément progression/tutorat cadré | [s05-private-materials.md](s05-private-materials.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
