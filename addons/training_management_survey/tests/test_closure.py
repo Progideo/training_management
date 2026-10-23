@@ -1,3 +1,5 @@
+import json
+
 from odoo.exceptions import ValidationError
 from odoo.tests import tagged
 from odoo.addons.training_management.tests.test_closure import ClosureCase
@@ -18,3 +20,12 @@ class TestMockClosure(ClosureCase, ExamCase):
         with self.assertRaises(ValidationError):
             enrollment.with_user(self.quality).action_certificate_achievement()
         self.assertFalse(dossier.output_ids)
+
+        self.validate(self.proof(dossier, "completion"))
+        enrollment.with_user(self.quality).action_certificate_completion()
+        snapshot = json.loads(self.document(dossier, "completion").snapshot)
+        origin = snapshot["origins"][1]
+        self.assertEqual(origin["threshold"], activity.evaluation_threshold)
+        self.assertEqual(origin["evaluation"]["exam"], activity.training_exam_id.id)
+        self.assertEqual(origin["evaluation"]["attempts"], attempt.ids)
+        self.assertEqual(origin["evaluation"]["score"], service._result(attempt)["percentage"])

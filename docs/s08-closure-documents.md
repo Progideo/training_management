@@ -47,6 +47,10 @@ périmètre contrôlé de chaque dossier. Leur pertinence reste contrôlée huma
 Le PDF QWeb `S08-QWEB-1` conserve bénéficiaire, programme/version, référence,
 dates, auteur d’émission et critères utilisés dans un instantané. Sa référence
 varie avec les critères ; répéter une émission identique rend le même PDF.
+L'instantané conserve score et seuil de réussite ; pour la réalisation, définition
+des activités, révisions de progression, remises/corrections et références des
+tentatives d'évaluation utilisées. À l'émission suivante, une nouvelle remise
+produit une attestation distincte, tout en conservant l'ancienne.
 Une correction S07 ne réécrit jamais un PDF antérieur. Une évolution du modèle
 exige un nouvel identifiant de version. Les dates imprimées sont en UTC.
 
@@ -55,6 +59,8 @@ utilisent le champ binaire natif privé sans pièce jointe autonome ni jeton de 
 La politique documentaire réévalue l’utilisateur réel, même après résolution
 native avec élévation ou jeton. Seul le champ fichier est téléchargeable ; aucun
 instantané privé n’est exposé par la route binaire. Aucun envoi par messagerie.
+Le nom du téléchargement provient uniquement du champ prévu, même pour un
+contact client possédant aussi un rôle qualité sur un autre dossier.
 Les élévations sont limitées aux métadonnées d’autorisation, à l’instantané de
 présence validée et au verrou S03, après contrôle du dossier.
 

@@ -600,9 +600,11 @@ class ClosureEnrollment(models.Model):
                     raise ValidationError(
                         self.env._("Complete every required activity and review its supporting evidence.")
                     )
-                origins += [{"activity": a.id, "criterion": a.criterion} for a in activities]
+                origins += [service._certificate_origin(self, a) for a in activities]
             elif proof.score < proof.threshold:
                 raise ValidationError(self.env._("The dedicated learning assessment threshold has not been reached."))
+            else:
+                origins[0].update(score=proof.score, threshold=proof.threshold)
         snapshot = {
             "kind": kind,
             "reference": f"TM-{dossier.id}-{kind}",
@@ -651,6 +653,54 @@ class ClosureEnrollment(models.Model):
             }
         )
         return doc.with_user(self.env.user).action_download()
+
+
+class ClosureLearningService(models.AbstractModel):
+    _inherit = "training.learning.service"
+
+    @api.private
+    def _certificate_origin(self, enrollment, activity):
+        # Called only after assigned-quality authorization, the common delivery
+        # lock and the completion check. The existing S05 private lookup limits
+        # elevation to this enrollment/activity; no private message is copied.
+        progress = self._progress(enrollment, activity)
+        origin = {
+            "activity": activity.id,
+            "name": activity.name,
+            "criterion": activity.criterion,
+            "dependencies": activity.dependency_ids.ids,
+            "material_assignment": activity.material_assignment_id.id,
+            "progress": progress.id,
+            "revision": progress.revision if progress else 0,
+            "state": progress.state if progress else False,
+            "declared_at": str(progress.declared_at) if progress.declared_at else False,
+            "submission": progress.latest_submission_id.id,
+            "submission_fingerprint": progress.latest_submission_id.fingerprint,
+        }
+        if activity.criterion == "validation":
+            origin["correction"] = (
+                self.env["training.learning.entry"]
+                .sudo()
+                .search(
+                    [
+                        ("enrollment_id", "=", enrollment.id),
+                        ("activity_id", "=", activity.id),
+                        ("kind", "=", "correction"),
+                    ],
+                    order="id desc",
+                    limit=1,
+                )
+                .id
+            )
+        if activity.criterion == "evaluation":
+            origin.update(
+                threshold=activity.evaluation_threshold, evaluation=self._evaluation_snapshot(enrollment, activity)
+            )
+        return origin
+
+    @api.private
+    def _evaluation_snapshot(self, enrollment, activity):
+        return {"score": self._evaluation_result(enrollment, activity)}
 
 
 class ClosureDocumentPolicy(models.AbstractModel):

@@ -4,6 +4,7 @@ import io
 import json
 import zipfile
 from unittest.mock import patch
+from uuid import uuid4
 
 from odoo import Command, fields
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -85,6 +86,74 @@ class ClosureCase(AttendanceCase):
 
 @tagged("post_install", "-at_install")
 class TestClosure(ClosureCase):
+    def test_client_download_cannot_select_private_filename_field(self):
+        dossier = self.dossier()
+        # A client contact can independently hold the quality role on other
+        # dossiers. Field groups alone must not expose this dossier's snapshot.
+        self.other_quality.partner_id.parent_id = self.portal.partner_id
+        dossier.client_contact_ids = [Command.set(self.other_quality.partner_id.ids)]
+        self.validate(self.proof(dossier, client_shared=True))
+        dossier.with_user(self.quality).action_export_client()
+        document = self.document(dossier, "client")
+        binary = self.env["ir.binary"].with_user(self.other_quality)
+        self.assertFalse(document.with_user(self.other_quality).has_access("read"))
+        stream = binary._get_stream_from(
+            document.with_user(self.other_quality).sudo(), "data", filename_field="snapshot"
+        )
+        self.assertEqual(stream.download_name, document.filename)
+        # The same role combination must also protect private certificate
+        # criteria, which are absent from the participant's PDF.
+        enrollment = self.enrollment(
+            self.delivery(), participant_id=self.other_quality.partner_id.id, user_id=self.other_quality.id
+        )
+        enrollment.action_validate_prerequisites(reason="Fictional manual review")
+        enrollment.action_confirm()
+        own_dossier = self.dossier(enrollment)
+        self.validate(self.proof(own_dossier, "assessment", score=75, threshold=70))
+        enrollment.with_user(self.quality).action_certificate_achievement()
+        certificate = self.document(own_dossier, "achievement")
+        self.assertFalse(certificate.with_user(self.other_quality).has_access("read"))
+        stream = binary._get_stream_from(
+            certificate.with_user(self.other_quality).sudo(), "data", filename_field="snapshot"
+        )
+        self.assertEqual(stream.download_name, certificate.filename)
+
+    def test_completion_snapshot_tracks_the_actual_submission(self):
+        enrollment = self.opened()
+        dossier = self.dossier(enrollment)
+        activity = (
+            self.env["training.learning.activity"]
+            .with_user(self.coordinator)
+            .create(
+                {"name": "Required submitted work", "delivery_id": enrollment.delivery_id.id, "criterion": "submission"}
+            )
+        )
+        self.validate(self.proof(dossier, "completion"))
+        service = self.env["training.learning.service"].with_user(self.portal)
+        first = service._post(
+            enrollment.id, "submission", activity_id=activity.id, body="First work", request_key=str(uuid4())
+        )
+        enrollment.with_user(self.quality).action_certificate_completion()
+        original = self.document(dossier, "completion")
+        original_snapshot = original.snapshot
+        progress = service._progress(enrollment, activity)
+        service._post(
+            enrollment.id,
+            "submission",
+            activity_id=activity.id,
+            body="Revised work",
+            request_key=str(uuid4()),
+            revision=progress.revision,
+            parent_id=first.id,
+        )
+        enrollment.with_user(self.quality).action_certificate_completion()
+        revised = self.document(dossier, "completion")
+        self.assertNotEqual(original, revised)
+        self.assertEqual(json.loads(original_snapshot)["origins"][1]["submission"], first.id)
+        self.assertEqual(original.snapshot, original_snapshot)
+        enrollment.with_user(self.quality).action_certificate_completion()
+        self.assertEqual(self.document(dossier, "completion"), revised)
+
     def test_provenance_versions_immutable_policy_and_server_fields(self):
         dossier = self.dossier()
         proof = self.proof(dossier)
@@ -225,6 +294,8 @@ class TestClosure(ClosureCase):
         quality.action_certificate_achievement()
         snapshot = json.loads(self.document(dossier, "achievement").snapshot)
         self.assertEqual(snapshot["origins"][0]["proof"], newer.id)
+        self.assertEqual(snapshot["origins"][0]["score"], 70)
+        self.assertEqual(snapshot["origins"][0]["threshold"], 70)
         self.assertNotEqual(proof.id, newer.id)
         activity = (
             self.env["training.learning.activity"]
@@ -324,12 +395,17 @@ class TestClosure(ClosureCase):
 class TestClosureHttp(ClosureCase, HttpCase):
     def test_native_binary_tokens_and_authenticated_portal(self):
         dossier = self.dossier()
-        dossier.client_contact_ids = [Command.set(self.portal.partner_id.ids)]
+        self.other_quality.partner_id.parent_id = self.portal.partner_id
+        dossier.client_contact_ids = [Command.set((self.portal.partner_id | self.other_quality.partner_id).ids)]
         self.validate(self.proof(dossier, client_shared=True))
         dossier.with_user(self.quality).action_export_client()
         client = self.document(dossier, "client")
         token = limited_field_access_token(client, "data", scope="binary")
         url = f"/web/content/training.document/{client.id}/data?access_token={token}"
+        self.authenticate(self.other_quality.login, self.other_quality.login)
+        response = self.url_open(url + "&download=true&filename_field=snapshot")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(client.filename, response.headers["Content-Disposition"])
         self.authenticate(self.portal.login, self.portal.login)
         self.assertEqual(self.url_open(url).status_code, 200)
         private_token = limited_field_access_token(client, "snapshot", scope="binary")

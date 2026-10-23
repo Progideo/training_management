@@ -205,6 +205,25 @@ class LearningService(models.AbstractModel):
     _inherit = "training.learning.service"
 
     @api.private
+    def _evaluation_snapshot(self, enrollment, activity):
+        snapshot = super()._evaluation_snapshot(enrollment, activity)
+        if activity.training_exam_id:
+            attempts = (
+                self.env["survey.user_input"]
+                .sudo()
+                .search(
+                    [
+                        ("training_enrollment_id", "=", enrollment.id),
+                        ("survey_id", "=", activity.training_exam_id.id),
+                        ("state", "=", "done"),
+                    ],
+                    order="id",
+                )
+            )
+            snapshot.update(exam=activity.training_exam_id.id, attempts=attempts.ids)
+        return snapshot
+
+    @api.private
     def _evaluation_result(self, enrollment, activity):
         exam = activity.training_exam_id
         if not exam:

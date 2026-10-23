@@ -29,6 +29,11 @@ class IrBinary(models.AbstractModel):
         self._check_training_binary_access(record)
         if record._name in ("training.proof", "training.document") and field_name != "data":
             raise AccessError(self.env._("Only the authorized preserved file can be downloaded."))
+        if record._name in ("training.proof", "training.document"):
+            # Native resolution returns sudo records, including for portal
+            # recipients. A field-level group is not dossier authorization:
+            # a client may also be a quality reviewer on unrelated dossiers.
+            filename_field = "filename"
         return super()._get_stream_from(
             record,
             field_name,
