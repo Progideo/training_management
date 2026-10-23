@@ -685,3 +685,20 @@ msgstr "Révision des lots de formation"
 #: model:ir.model,name:training_management_sale.model_training_seat_allocation
 msgid "Training Seat Allocation"
 msgstr "Lot de places de formation"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_document_policy.py:0
+msgid "This training document is not accessible with your current permissions."
+msgstr "Vos autorisations actuelles ne permettent pas d’accéder à ce document de formation."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_document_policy.py:0
+msgid "Send training documents only to currently authorized named contacts."
+msgstr "Envoyez les documents de formation uniquement aux contacts nommément habilités actuellement."
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_document_policy
+msgid "Training Document Authorization"
+msgstr "Habilitation documentaire des formations"

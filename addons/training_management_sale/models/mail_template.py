@@ -1,3 +1,5 @@
+"""The native template API permits forced recipients without a composer; validate them against the same document grant."""
+
 from odoo import models
 from odoo.exceptions import ValidationError
 
@@ -11,15 +13,8 @@ class MailTemplate(models.Model):
         self.ensure_one()
         if self.model in ("sale.order", "account.move", "account.payment"):
             records = self.env[self.model].browse([res_id for res_id in res_ids if res_id])
-            restricted = records.filtered(
-                lambda record: (
-                    record.training_request_kind
-                    if self.model == "sale.order"
-                    else record.training_is_sale_invoice
-                    if self.model == "account.move"
-                    else record._training_receipt_is_restricted()
-                )
-            )
+            policy = self.env["training.document.policy"]
+            restricted = records.filtered(policy._restricted)
             if restricted:
                 if email_values and set(email_values) & {
                     "email_to",
@@ -37,16 +32,13 @@ class MailTemplate(models.Model):
                     ["email_to", "email_cc", "partner_to", "partner_cc"],
                 )
                 for record in restricted:
-                    if self.model == "account.payment":
-                        allowed = record._training_receipt_allowed_partners()
-                    else:
-                        allowed = record.training_portal_partner_ids.filtered("email")
                     values = rendered[record.id]
-                    selected = set(values.get("partner_ids", []) + values.get("partner_cc_ids", []))
-                    if not selected or values.get("email_to") or values.get("email_cc") or selected - set(allowed.ids):
-                        raise ValidationError(
-                            self.env._("Send training documents only to named contacts authorized on the document.")
-                        )
+                    selected = self.env["res.partner"].browse(
+                        values.get("partner_ids", []) + values.get("partner_cc_ids", [])
+                    )
+                    policy._check_send(
+                        record, selected, email_to=values.get("email_to"), email_cc=values.get("email_cc")
+                    )
         return super().send_mail_batch(
             res_ids,
             force_send=force_send,

@@ -1,3 +1,4 @@
+from . import training_document_policy
 from . import crm_lead
 from . import product_template
 from . import product_pricelist
@@ -19,4 +20,5 @@ from . import payment_link_wizard
 from . import account_journal
 from . import mail_message
 from . import mail_mail
+from . import mail_scheduled_message
 from . import training_allocation

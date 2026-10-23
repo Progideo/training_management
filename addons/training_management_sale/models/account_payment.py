@@ -7,15 +7,8 @@ class AccountPayment(models.Model):
 
     def _get_thread_with_access(self, thread_id, *, mode="read", **kwargs):
         thread = super()._get_thread_with_access(thread_id, mode=mode, **kwargs)
-        if (
-            thread
-            and self.env.user.share
-            and thread.sudo()._training_receipt_is_restricted()
-            and (
-                self.env.user._is_public()
-                or self.env.user.partner_id not in thread.sudo()._training_receipt_allowed_partners()
-            )
-        ):
+        # Native token/author paths still need the current document grant.
+        if thread and not self.env["training.document.policy"]._can_read(thread):
             return self.browse()
         return thread
 
@@ -38,7 +31,7 @@ class AccountPayment(models.Model):
         recipients = super()._message_get_default_recipients(with_cc=with_cc, all_tos=all_tos)
         for payment in self.filtered(lambda item: item._training_receipt_is_restricted()):
             recipients[payment.id] = {
-                "partner_ids": payment._training_receipt_allowed_partners().ids,
+                "partner_ids": self.env["training.document.policy"]._partners(payment, email_only=True).ids,
                 "email_to": "",
                 "email_cc": "",
             }
@@ -46,10 +39,7 @@ class AccountPayment(models.Model):
 
     def _notify_get_recipients(self, message, **kwargs):
         recipients = super()._notify_get_recipients(message, **kwargs)
-        if not self._training_receipt_is_restricted():
-            return recipients
-        allowed_ids = set(self._training_receipt_allowed_partners().ids)
-        return [recipient for recipient in recipients if not recipient["share"] or recipient["id"] in allowed_ids]
+        return self.env["training.document.policy"]._filter_notifications(self, recipients)
 
     training_bank_reference = fields.Char(
         copy=False,

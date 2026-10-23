@@ -9,16 +9,7 @@ from odoo.addons.sale.controllers.portal import CustomerPortal, PaymentPortal
 class TrainingPortalDocumentAccess:
     def _document_check_access(self, model_name, document_id, access_token=None):
         document = super()._document_check_access(model_name, document_id, access_token)
-        if not request.env.user.share:
-            return document
-        if model_name == "sale.order" and document.training_request_kind:
-            authorized = document.training_portal_partner_ids
-        elif model_name == "account.move" and document.training_is_sale_invoice:
-            authorized = document.training_portal_partner_ids
-        else:
-            return document
-        if request.env.user._is_public() or request.env.user.partner_id not in authorized:
-            raise AccessError(request.env._("This training document requires an authorized portal contact."))
+        request.env["training.document.policy"]._check_read(document)
         return document
 
 

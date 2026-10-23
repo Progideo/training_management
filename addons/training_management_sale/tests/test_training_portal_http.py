@@ -578,3 +578,34 @@ class TestTrainingPortalHttp(HttpCase):
             mail.send(raise_exception=True)
             self.assertEqual(mail.state, "sent")
             transport.assert_called_once()
+
+    def test_internal_and_foreign_company_tokens_keep_native_permissions(self):
+        internal = new_test_user(self.env, login="policy_http_internal", groups="base.group_user")
+        company_b = self.env["res.company"].create({"name": "Fictional HTTP Company B"})
+        foreign = new_test_user(
+            self.env,
+            login="policy_http_foreign",
+            groups="sales_team.group_sale_salesman",
+            company_id=company_b.id,
+            company_ids=[Command.set(company_b.ids)],
+        )
+        sales = new_test_user(self.env, login="policy_http_sales", groups="sales_team.group_sale_salesman")
+        self.order.user_id = sales
+        file = self.env["ir.attachment"].create(
+            {
+                "name": "fictional-token.txt",
+                "raw": b"Fictional private order bytes",
+                "mimetype": "text/plain",
+                "res_model": "sale.order",
+                "res_id": self.order.id,
+            }
+        )
+        for token in (file.generate_access_token()[0], file._get_raw_access_token()):
+            url = f"/web/content/{file.id}?access_token={token}"
+            for user in (internal, foreign):
+                self.authenticate(user.login, user.login)
+                response = self.url_open(url, allow_redirects=False)
+                self.assertNotEqual(response.status_code, 200)
+                self.assertNotIn("Fictional private order bytes", response.text)
+            self.authenticate(sales.login, sales.login)
+            self.assertEqual(self.url_open(url).content, b"Fictional private order bytes")
