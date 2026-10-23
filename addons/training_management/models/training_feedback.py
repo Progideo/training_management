@@ -408,7 +408,7 @@ class FeedbackService(models.AbstractModel):
 
     @api.private
     def _nominative_state(self, recipient):
-        return self.env._("Not invited")
+        return "not_applicable" if recipient.exclusion_reason else "not_invited"
 
 
 class FeedbackReport(models.AbstractModel):
