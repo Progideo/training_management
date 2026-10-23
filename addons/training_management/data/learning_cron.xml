@@ -1,0 +1,11 @@
+<odoo noupdate="1">
+    <record id="cron_learning_reminders" model="ir.cron">
+        <field name="name">Training: configured inactivity reminders</field>
+        <field name="model_id" ref="model_training_delivery"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_learning_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

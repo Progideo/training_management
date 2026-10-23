@@ -280,9 +280,8 @@ reprises S03.1 et #56 et conservation des historiques complètent la sortie #50.
    depuis #56 avec historiques conservés ; non-régression S02/S03/S04 et PDF du programme.
    Vérifier l'ensemble des modules réellement installés, y compris Website/eLearning s'ils sont présents.
 
-Ces scénarios sont des critères futurs. La conformité du portail, les refus HTTP,
-les performances et les parcours complets S05 restent à démontrer lors du développement.
-Les résultats d'exécution appartiendront à la PR, sans les recopier dans cette page.
+Ces scénarios servent à la recette des incréments. Les résultats réellement exécutés
+restent dans les PR, sans les recopier dans cette page.
 
 ## Premier incrément : espace et supports
 
@@ -330,3 +329,76 @@ Les résultats réellement exécutés restent dans la PR.
 Ce premier incrément ne clôt pas #15 : progression, activités, remises/corrections,
 aide privée, tuteurs et relances restent le complément S05 prévu au lancement.
 Ouvrir un PDF ne produit aucune progression, acquisition ou présence.
+
+
+## Complément : activités et accompagnement privés
+
+Depuis la réalisation, **Activités et accompagnement** permet de définir les
+consignes, préalables et critères, puis d'affecter un tuteur existant. Un tuteur
+individuel sur l'inscription remplace celui de la réalisation. Aucun compte ni
+parcours eLearning supplémentaire n'est nécessaire.
+
+Les activités pédagogiques restent distinctes des tâches de suivi `mail.activity` :
+dans le code Community ciblé, leur destinataire exclut les utilisateurs portail
+et leur achèvement ne porte ni versions de remise ni critères pédagogiques.
+Les échanges réutilisent les corps natifs `mail.message`, les fichiers
+`ir.attachment`, la file `mail.mail` et le portail Odoo. Un dossier privé par
+inscription porte l'habilitation ; le chatter collectif de l'inscription ne reçoit
+pas les travaux. Les contrôles ciblés complètent les protections documentaires
+existantes, sans nouvelle dépendance ni modification du cœur.
+
+Les critères sont explicites : consultation déclarée, remise d'exercice,
+validation du tuteur ou seuil d'évaluation. La remise suffit au deuxième critère ;
+le troisième demande l'acceptation du tuteur sur la dernière version. Ouvrir un
+PDF ne produit aucune progression ni présence. Le seuil attend le résultat de
+référence de S06 ; aucun score parallèle ni examen simulé n'est créé. Une activité
+facultative ne bloque pas une activité obligatoire ; les cycles et dépendances
+entre réalisations sont refusés. Les préalables bloquent les actions pédagogiques,
+sans restreindre la bibliothèque commune déjà autorisée par S05.
+
+Chaque remise, correction et demande d'aide conserve son auteur, sa date serveur
+et ses versions. Une correction vise la dernière remise ; une ancienne page doit
+être rechargée. Les répétitions d'une même soumission ne créent pas de doublon.
+Les critères et consignes d'une activité ayant une progression sont conservés.
+Le participant et le tuteur actuellement affecté accèdent aux travaux privés.
+La coordination gère les paramètres, affectations et états de progression ; son
+rôle seul ne donne pas accès au contenu. Réaffecter un tuteur lui ouvre l'historique
+conservé et retire le droit à l'ancien. La suspension retire l'accès au participant,
+sans effacer le travail ni la mission du tuteur. Un report ne transfère pas les remises.
+
+Les courriels individuels invitent à se connecter, sans contenu pédagogique,
+fichier ni résultat. L'habilitation, le destinataire et le contenu sont revérifiés
+au transport natif, y compris après un échec d'envoi. Le journal de la réalisation
+conserve l'état d'envoi ou le motif d'absence de destinataire. Une demande sans
+tuteur reste conservée et le participant est invité à contacter la coordination.
+Les échéances et relances sont configurées par réalisation : zéro les désactive.
+Une relance d'inactivité exige un intervalle ; elle ne concerne que les activités
+obligatoires disponibles et inachevées. Les activités facultatives, les accès
+suspendus et l'attente de S06 ne provoquent pas de relance. Ni le téléchargement
+ni la simple ouverture d'une page ne constituent une activité pédagogique.
+
+Les nouvelles preuves privées et leurs fichiers ne sont pas exportables en masse.
+La conservation et le manifeste d'export restent rattachés à S11, sans durée de
+purge ajoutée ici. Les téléchargements autorisés sont privés et sans cache ; les
+fichiers remis sont téléchargés en pièce jointe pour éviter l'exécution d'un
+contenu actif dans l'origine du portail.
+
+Mettre à jour les deux modules : socle `20.0.1.6.0`, Ventes `20.0.1.10.6`.
+Le scénario `tests/ci/run_s052.sh` part de #58 avec Website/eLearning, préserve les
+historiques et fichiers, exerce deux transactions concurrentes puis le portail
+français. `test_learning.py` couvre les critères, rôles restreints, fichiers,
+notifications, relances et doubles soumissions.
+
+### Recette du complément
+
+1. Configurer une consultation obligatoire puis un exercice dépendant avec validation
+   du tuteur, une activité facultative et un tuteur portail. Ouvrir l'accès d'un inscrit.
+2. Dans **Mes formations**, ouvrir le PDF : progression inchangée. Déclarer la consultation,
+   remettre l'exercice, puis recommencer la même soumission : une seule version.
+3. Dans **Mes accompagnements**, demander une reprise puis accepter une nouvelle remise.
+   Vérifier les versions, la progression et une demande d'aide avec réponse privée.
+4. Essayer les mêmes liens avec un pair, un autre client, une autre société et un
+   coordinateur non affecté ; réaffecter le tuteur puis suspendre l'accès participant.
+5. Configurer une relance sur données fictives, vérifier son journal et son courriel
+   générique ; terminer l'activité obligatoire et vérifier l'absence de nouvelle relance.
+   Contrôler les parcours français, mobile et clavier.

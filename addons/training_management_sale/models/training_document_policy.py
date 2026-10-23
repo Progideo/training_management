@@ -42,7 +42,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _restricted(self, document):
-        if document and document._name in ("training.material", "training.program.version"):
+        if self._is_pedagogical(document):
             return super()._restricted(document)
         if not document:
             return False
@@ -58,7 +58,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
     @api.private
     def _partners(self, document, *, email_only=False):
         """Current named grants; receipts keep their invoice intersection rule."""
-        if not self._restricted(document) or document._name in ("training.material", "training.program.version"):
+        if not self._restricted(document) or self._is_pedagogical(document):
             return self.env["res.partner"]
         target = document.sudo()
         partners = (
@@ -71,7 +71,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
     @api.private
     def _can_read(self, record):
         document = self._document(record)
-        if document and document._name in ("training.material", "training.program.version"):
+        if self._is_pedagogical(document):
             return super()._can_read(record)
         if not self._restricted(document):
             return True
@@ -90,7 +90,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _check_send(self, document, partners, *, email_to=False, email_cc=False, required=True, allow_internal=False):
-        if document and document._name in ("training.material", "training.program.version"):
+        if self._is_pedagogical(document):
             return super()._check_send(
                 document,
                 partners,

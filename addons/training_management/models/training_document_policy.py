@@ -3,7 +3,7 @@
 from odoo import SUPERUSER_ID, api, models
 from odoo.exceptions import AccessError, ValidationError
 
-PEDAGOGICAL = ("training.material", "training.program.version")
+PEDAGOGICAL = ("training.material", "training.program.version", "training.learning.entry")
 
 
 class TrainingDocumentPolicy(models.AbstractModel):
@@ -17,16 +17,28 @@ class TrainingDocumentPolicy(models.AbstractModel):
         if target._name == "ir.attachment":
             if target.training_program_id:
                 return target.training_program_id
-            if target.res_model != "training.material" or not target.res_id:
+            if target.res_model not in ("training.material", "training.learning.entry") or not target.res_id:
                 return self.env["training.material"]
-            target = self.env["training.material"].sudo().browse(target.res_id).exists()
-        elif target._name == "mail.message" and target.model == "training.material" and target.res_id:
-            target = self.env["training.material"].sudo().browse(target.res_id).exists()
+            target = self.env[target.res_model].sudo().browse(target.res_id).exists()
+            if not target:
+                raise AccessError(self.env._("This private learning record is unavailable."))
+        elif (
+            target._name == "mail.message"
+            and target.model in ("training.material", "training.learning.entry")
+            and target.res_id
+        ):
+            target = self.env[target.model].sudo().browse(target.res_id).exists()
+            if not target:
+                raise AccessError(self.env._("This private learning record is unavailable."))
         return target if target._name in PEDAGOGICAL else self.env["training.material"]
 
     @api.private
-    def _restricted(self, document):
+    def _is_pedagogical(self, document):
         return bool(document) and document._name in PEDAGOGICAL
+
+    @api.private
+    def _restricted(self, document):
+        return self._is_pedagogical(document)
 
     @api.private
     def _delivery_domain(self):
@@ -53,6 +65,8 @@ class TrainingDocumentPolicy(models.AbstractModel):
             return False
         if any(e.delivery_id == delivery and e._effective_state() == "active" for e in self._enrollments()):
             return True
+        if any(e.delivery_id == delivery for e in self.env["training.learning.service"]._tutored_enrollments()):
+            return True
         # Same exact session assignment and lifecycle as the S04 trainer portal.
         return bool(
             self.env["training.session"]
@@ -76,6 +90,10 @@ class TrainingDocumentPolicy(models.AbstractModel):
             return True
         if (self.env.uid != SUPERUSER_ID and not self.env.user.active) or self.env.user._is_public():
             return False
+        if document._name == "training.learning.entry":
+            service = self.env["training.learning.service"]
+            enrollment = document.sudo().enrollment_id
+            return service._is_participant(enrollment) or service._is_tutor(enrollment)
         native = document.with_env(self.env(su=False))
         if document._name == "training.program.version":
             if native.has_access("read"):
@@ -103,7 +121,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _check_send(self, document, partners, *, email_to=False, email_cc=False, required=True, allow_internal=False):
-        if document and document._name == "training.material":
+        if document and document._name in ("training.material", "training.learning.entry"):
             # S05 distributes through the authenticated portal only. Do not send
             # the private file, even on an unrelated envelope or to a follower.
             raise ValidationError(

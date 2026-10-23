@@ -14,3 +14,8 @@ from . import training_material
 from . import training_document_policy
 from . import ir_binary
 from . import mail_mail
+
+from . import training_learning
+from . import training_learning_service
+from . import training_learning_notice
+from . import mail_message

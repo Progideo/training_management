@@ -20,7 +20,7 @@
         <t t-call="portal.portal_layout"><a href="/my/trainings">My training</a><h1 t-out="name"/>
             <h2>Applicable programme</h2><p t-out="programme"/>
             <a t-if="programme_url" t-att-href="programme_url" class="btn btn-outline-primary mb-3">Download Programme PDF</a>
-            <h2>Schedule</h2><p t-if="not sessions">No scheduled session.</p>
+            <h2>Schedule</h2><p t-if="not sessions" class="o_training_empty_schedule">No scheduled session.</p>
             <ul class="list-group mb-3"><li t-foreach="sessions" t-as="session" class="list-group-item">
                 <strong t-out="session['name']"/><p><t t-out="session['start']"/> → <t t-out="session['end']"/> (<t t-out="session['timezone']"/>)</p>
                 <p>Reference timezone: <t t-out="session['reference_timezone']"/></p><p t-out="session['location']"/>

@@ -1,0 +1,81 @@
+<odoo>
+    <template id="portal_learning_home" inherit_id="portal.portal_my_home" name="Learning Tutoring">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/training-tutoring">My tutoring assignments</a></div></xpath>
+    </template>
+    <template id="portal_learning_participant" inherit_id="portal_training" name="Participant Learning">
+        <xpath expr="//t[@t-call='training_management.portal_materials']" position="after">
+            <t t-set="is_tutor" t-value="False"/><t t-call="training_management.portal_learning_content"/>
+        </xpath>
+    </template>
+    <template id="portal_learning_tutoring" name="My Tutoring Assignments">
+        <t t-call="portal.portal_layout"><h1>My tutoring assignments</h1>
+            <p t-if="not enrollments">No current tutoring assignment.</p>
+            <ul class="list-group"><li class="list-group-item" t-foreach="enrollments" t-as="e"><a t-att-href="'/my/training-tutoring/%s' % e['id']"><t t-out="e['participant']"/> — <t t-out="e['name']"/></a></li></ul>
+            <t t-call="portal.pager"/>
+        </t>
+    </template>
+    <template id="portal_learning_tutor" name="Private Tutoring Details">
+        <t t-call="portal.portal_layout"><a href="/my/training-tutoring">My tutoring assignments</a>
+            <h1 t-out="participant"/><p t-out="name"/><t t-call="training_management.portal_learning_content"/>
+        </t>
+    </template>
+    <template id="portal_learning_content" name="Learning and Private Help">
+        <section class="mt-4" aria-label="Learning activities">
+            <h2>Activities and progress</h2>
+            <div t-if="learning['error']" class="alert alert-danger" role="alert" t-out="learning['error']"/>
+            <t t-if="learning['required']"><p><t t-out="learning['complete']"/> / <t t-out="learning['required']"/> required activities completed.</p>
+                <progress t-att-value="learning['complete']" t-att-max="learning['required']" class="w-100" aria-label="Required activities completed"/>
+            </t><p t-else="">No required learning activity is configured.</p>
+            <p>Opening a PDF does not validate learning or attendance.</p>
+            <t t-set="learning_action" t-value="('/my/training-tutoring/%s/learning' if is_tutor else '/my/trainings/%s/learning') % learning['id']"/>
+            <div t-foreach="learning['activities']" t-as="a" class="card p-3 mb-3">
+                <h3 t-out="a['name']"/><p class="text-break" style="white-space: pre-wrap" t-out="a['instructions']"/>
+                <p><span t-out="a['criterion_label']"/> · <span t-if="a['optional']">Optional</span><span t-else="">Required</span></p>
+                <p t-if="a['deadline']">Deadline: <t t-out="a['deadline']"/></p>
+                <p t-if="a['complete']" class="text-success">Completion criterion met.</p>
+                <p t-if="not a['available']">Complete the prerequisite activities first.</p>
+                <a t-if="a['material_url'] and a['available']" t-att-href="a['material_url']">Open the assigned PDF</a>
+                <p t-if="a['criterion'] == 'evaluation'">Evaluation completion awaits an authoritative result from the S06 exams integration.</p>
+                <form t-if="not is_tutor and a['available'] and a['criterion'] == 'declaration' and not a['complete']" t-att-action="learning_action" method="post" class="mt-2">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" value="declaration"/><input type="hidden" name="activity_id" t-att-value="a['id']"/>
+                    <button class="btn btn-primary" type="submit">Declare consultation</button>
+                </form>
+                <p t-if="a['state'] == 'submitted'">Latest work submitted.</p><p t-if="a['state'] == 'changes'">Changes requested: consult the private feedback below.</p><p t-if="a['state'] == 'validated'">Validated by the assigned tutor.</p>
+                <form t-if="a['available'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="mt-3">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" t-att-value="'correction' if is_tutor else 'submission'"/>
+                    <input type="hidden" name="activity_id" t-att-value="a['id']"/><input type="hidden" name="parent_id" t-att-value="a['latest_submission'] or ''"/>
+                    <input type="hidden" name="revision" t-att-value="a['revision']"/><input type="hidden" name="request_key" t-att-value="a['key']"/>
+                    <label class="form-label" t-att-for="'work-%s' % a['id']"><t t-if="is_tutor">Correction or validation</t><t t-else="">Exercise submission</t></label>
+                    <textarea class="form-control" name="body" t-att-id="'work-%s' % a['id']" rows="3"><t t-out="learning['draft'] if learning['draft_activity'] == a['id'] else ''"/></textarea>
+                    <label class="form-label mt-2" t-att-for="'file-%s' % a['id']">Private file (optional)</label><input type="file" name="file" class="form-control" t-att-id="'file-%s' % a['id']"/>
+                    <t t-if="is_tutor"><label class="form-label mt-2" t-att-for="'decision-%s' % a['id']">Review status</label><select required="required" class="form-select" name="decision" t-att-id="'decision-%s' % a['id']"><option value="">Choose a status</option><option value="accepted">Accepted</option><option value="changes">Changes Requested</option></select></t>
+                    <button class="btn btn-primary mt-2" type="submit"><t t-if="is_tutor">Save correction</t><t t-elif="a['latest_submission']">Submit a new version</t><t t-else="">Exercise submission</t></button>
+                </form>
+            </div>
+        </section>
+        <section class="mt-4" aria-label="Private work and help">
+            <h2>Private work and help</h2><p t-if="not learning['has_tutor']" class="alert alert-info" role="status">A tutor has not yet been assigned. Your request will be kept; contact coordination for tutor assignment.</p><p>Only the participant and the currently assigned tutor can read these exchanges.</p>
+            <div t-foreach="learning['entries']" t-as="entry" class="card p-3 mb-2">
+                <p><strong t-out="entry['author']"/> · <span t-out="entry['date']"/> · <span t-out="entry['activity']"/></p>
+                <span t-if="entry['kind'] == 'submission'">Exercise submission</span><span t-if="entry['kind'] == 'correction'">Correction</span><span t-if="entry['kind'] == 'question'">Private help request</span><span t-if="entry['kind'] == 'answer'">Private answer</span>
+                <p t-if="entry['parent']">In reply to the message dated <t t-out="entry['parent_date']"/>.</p>
+                <div class="text-break" t-out="entry['body']"/>
+                <p t-if="entry['decision'] == 'accepted'">Accepted</p><p t-if="entry['decision'] == 'changes'">Changes Requested</p>
+                <a t-if="entry['file_url']" t-att-href="entry['file_url']" t-out="entry['filename']"/>
+                <form t-if="is_tutor and entry['kind'] == 'question'" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="mt-2">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" value="answer"/>
+                    <input type="hidden" name="activity_id" t-att-value="entry['activity_id'] or ''"/><input type="hidden" name="parent_id" t-att-value="entry['id']"/><input type="hidden" name="request_key" t-att-value="entry['key']"/>
+                    <label class="form-label" t-att-for="'reply-%s' % entry['id']">Private answer</label><textarea required="required" name="body" class="form-control" rows="3" t-att-id="'reply-%s' % entry['id']"/>
+                    <label class="form-label" t-att-for="'reply-file-%s' % entry['id']">Private file (optional)</label><input type="file" class="form-control" name="file" t-att-id="'reply-file-%s' % entry['id']"/>
+                    <button class="btn btn-primary mt-2" type="submit">Send private answer</button>
+                </form>
+            </div>
+            <form t-if="not is_tutor" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="card p-3 mt-3">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" value="question"/><input type="hidden" name="request_key" t-att-value="learning['key']"/>
+                <label class="form-label" for="learning-help">Ask for private help</label><textarea required="required" name="body" id="learning-help" class="form-control" rows="3"><t t-out="learning['draft'] if learning['draft_kind'] == 'question' else ''"/></textarea>
+                <label class="form-label" for="learning-help-file">Private file (optional)</label><input type="file" class="form-control" name="file" id="learning-help-file"/>
+                <button class="btn btn-primary mt-2" type="submit">Send private request</button>
+            </form>
+        </section>
+    </template>
+</odoo>
