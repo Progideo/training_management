@@ -68,7 +68,9 @@ présence validée et au verrou S03, après contrôle du dossier.
 
 L’export qualité contient les pièces validées, leurs versions et un index JSON
 avec provenance, auteurs, dates, validation, confidentialité, empreintes et
-manquants. Chaque ZIP est conservé avec auteur, date, périmètre et empreinte.
+manquants, ainsi que les critères figés des attestations et les scores/seuils des
+évaluations dédiées. Ces critères restent exclus de l'index client. Chaque ZIP
+est conservé avec auteur, date, périmètre et empreinte.
 Un dossier incomplet peut être exporté : son index le signale.
 
 L’export client exige des contacts explicitement choisis dans le client du dossier.

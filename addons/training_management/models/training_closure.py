@@ -310,6 +310,8 @@ class ClosureDossier(models.Model):
                     "retention": self.retention_id.id,
                     "filename": name if proof.data else False,
                 }
+                if not client and proof.category == "assessment" and proof.disposition == "file":
+                    item.update(score=proof.score, threshold=proof.threshold)
                 manifest["pieces"].append(item)
                 if proof.data:
                     archive.writestr(name, proof.data.content)
@@ -318,17 +320,18 @@ class ClosureDossier(models.Model):
             for doc in docs:
                 name = f"certificate-{doc.id}.pdf"
                 archive.writestr(name, doc.data.content)
-                manifest["pieces"].append(
-                    {
-                        "id": doc.id,
-                        "kind": doc.kind,
-                        "version": doc.template_version,
-                        "sha256": doc.sha256,
-                        "filename": name,
-                        "issued_at": str(doc.created_at),
-                        "issued_by": doc.actor_id.id,
-                    }
-                )
+                item = {
+                    "id": doc.id,
+                    "kind": doc.kind,
+                    "version": doc.template_version,
+                    "sha256": doc.sha256,
+                    "filename": name,
+                    "issued_at": str(doc.created_at),
+                    "issued_by": doc.actor_id.id,
+                }
+                if not client:
+                    item["criteria"] = json.loads(doc.snapshot)
+                manifest["pieces"].append(item)
             archive.writestr("index.json", json.dumps(manifest, ensure_ascii=False, indent=2))
         output = self.env["training.document"]._append(
             {

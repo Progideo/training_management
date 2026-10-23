@@ -370,6 +370,31 @@ class TestClosure(ClosureCase):
         with self.assertRaises(AccessError):
             self.env["ir.binary"].with_user(self.quality)._get_stream_from(doc, "snapshot")
 
+    def test_quality_archive_preserves_criteria_without_client_disclosure(self):
+        enrollment = self.opened()
+        dossier = self.dossier(enrollment)
+        dossier.write({"client_contact_ids": [Command.set(self.portal.partner_id.ids)], "share_certificates": True})
+        assessment = self.validate(self.proof(dossier, "assessment", score=75, threshold=70))
+        enrollment.with_user(self.quality).action_certificate_achievement()
+        certificate = self.document(dossier, "achievement")
+        quality = dossier.with_user(self.quality)
+        quality.action_export_internal()
+        with zipfile.ZipFile(io.BytesIO(self.document(dossier, "internal").data.content)) as archive:
+            pieces = json.loads(archive.read("index.json"))["pieces"]
+        proof_item = next(p for p in pieces if p.get("category") == "assessment")
+        certificate_item = next(p for p in pieces if p.get("kind") == "achievement")
+        self.assertEqual(proof_item["id"], assessment.id)
+        self.assertEqual((proof_item["score"], proof_item["threshold"]), (75, 70))
+        self.assertEqual(certificate_item["criteria"], json.loads(certificate.snapshot))
+        quality.action_export_client()
+        with zipfile.ZipFile(io.BytesIO(self.document(dossier, "client").data.content)) as archive:
+            pieces = json.loads(archive.read("index.json"))["pieces"]
+        self.assertEqual(len(pieces), 1)
+        self.assertEqual(pieces[0]["id"], certificate.id)
+        self.assertNotIn("criteria", pieces[0])
+        self.assertNotIn("score", pieces[0])
+        self.assertNotIn("threshold", pieces[0])
+
     def test_company_client_and_enrollment_scope(self):
         dossier = self.dossier()
         with self.assertRaises(ValidationError):
