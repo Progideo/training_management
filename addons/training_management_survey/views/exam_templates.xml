@@ -34,10 +34,12 @@
     </template>
     <template id="exam_simple_choice" inherit_id="survey.question_simple_choice" primary="True" name="Private Native Single Choice">
         <xpath expr="//t[@t-call='survey.question_suggested_value_image']" position="attributes"><attribute name="t-call">training_management_survey.exam_choice_image</attribute></xpath>
+        <xpath expr="//span[@t-field='label.value']" position="attributes"><attribute name="t-field">label.value_label</attribute></xpath>
     </template>
     <template id="exam_multiple_choice" inherit_id="survey.question_multiple_choice" primary="True" name="Private Native Multiple Choice">
         <xpath expr="//t[@t-set='answer_class']" position="attributes"><attribute name="t-value">''</attribute></xpath>
         <xpath expr="//t[@t-call='survey.question_suggested_value_image']" position="attributes"><attribute name="t-call">training_management_survey.exam_choice_image</attribute></xpath>
+        <xpath expr="//span[@t-field='label.value']" position="attributes"><attribute name="t-field">label.value_label</attribute></xpath>
     </template>
     <template id="exam_attempt" name="Private Mock Exam">
         <t t-call="survey.layout"><div class="container py-4">
@@ -91,6 +93,7 @@
         <section t-foreach="result['questions']" t-as="q" class="card p-3 my-3">
             <h3 class="h5" t-out="q['title']"/><p>Your answers: <span t-out="', '.join(q['selected']) or '—'"/></p>
             <p>Expected answers: <span t-out="', '.join(q['correct'])"/></p><p><span t-out="q['points']"/> / <span t-out="q['maximum']"/></p>
+            <figure t-foreach="q['images']" t-as="image"><img t-att-src="image['url']" t-att-alt="image['label']" class="img-fluid"/><figcaption t-out="image['label']"/></figure>
             <p t-if="q['explanation']" t-out="q['explanation']"/><a t-if="q['url']" t-att-href="q['url']">Authorized revision resource</a>
         </section>
     </template>

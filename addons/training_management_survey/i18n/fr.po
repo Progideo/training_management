@@ -877,3 +877,18 @@ msgid ""
 "minutes. Time runs continuously after confirmation, including while "
 "disconnected."
 msgstr "minutes. Le temps s’écoule sans interruption après confirmation, même en cas de déconnexion."
+
+#. module: training_management_survey
+#: code:addons/training_management_survey/models/attachment.py:0
+msgid "Private exam files cannot be detached, shared or copied."
+msgstr "Les fichiers d’examen privés ne peuvent pas être détachés, partagés ou copiés."
+
+#. module: training_management_survey
+#: code:addons/training_management_survey/models/report.py:0
+msgid "Mock exams do not issue certificates."
+msgstr "Les examens blancs ne délivrent pas de certificat."
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_report_survey_certification_report_view
+msgid "Native Survey Certification Report Boundary"
+msgstr "Protection du rapport natif de certification des sondages"

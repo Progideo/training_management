@@ -141,8 +141,16 @@ class ExamService(models.AbstractModel):
             result.append(
                 {
                     "title": question.title,
-                    "selected": row["selected"].mapped("value"),
-                    "correct": row["correct"].mapped("value"),
+                    "selected": row["selected"].mapped("value_label"),
+                    "correct": row["correct"].mapped("value_label"),
+                    "images": [
+                        {
+                            "label": choice.value_label,
+                            "url": f"/survey/get_question_image/{attempt.survey_id.access_token}/{attempt.access_token}/{question.id}/{choice.id}",
+                        }
+                        for choice in question.suggested_answer_ids
+                        if choice.value_image
+                    ],
                     "explanation": question.training_explanation,
                     "points": points,
                     "original_points": row["points"],

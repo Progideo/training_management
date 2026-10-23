@@ -50,6 +50,10 @@ la société et l’inscription exacte avant toute lecture privilégiée. Les r�
 brutes et corrigés ne sont pas lisibles directement par les comptes portail, ni
 par recherche, export ou jeton partagé. Les images de propositions ont une route
 contrôlée par la même identité ; les jetons binaires génériques ne suffisent pas.
+Les fichiers rattachés aux examens et questions restent privés et liés à leur
+parent. Ils ne peuvent être partagés, détachés ou copiés par les opérations de
+pièces jointes ; leur contenu devient immuable à publication. Les propositions
+composées d’une image conservent leur libellé natif et leur image dans le corrigé.
 
 Les mutations reprennent le contrôle d’accès et le verrou natif S03. La règle
 EXA05 se limite à reprendre une tentative active ; un index unique natif protège
@@ -81,6 +85,8 @@ standard d’un examen interdit les nouveaux départs et conserve ses historique
 
 Aucun certificat, badge ni courriel de réussite n’est généré. Un examen blanc
 ne constitue ni une certification officielle ni une attestation de formation.
+Le rapport générique de certification refuse aussi les tentatives d’examen blanc,
+y compris depuis le menu d’impression de la coordination.
 Conservation et exports en masse restent rattachés à S11.
 
 ## Recette courte

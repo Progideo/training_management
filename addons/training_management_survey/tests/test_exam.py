@@ -103,6 +103,129 @@ class ExamCase(MaterialCase):
 
 @tagged("post_install", "-at_install")
 class TestMockExam(ExamCase):
+    def test_legacy_public_exam_attachment_cannot_bypass_parent_access(self):
+        exam, q1, q2 = self.exam()
+        attachment = (
+            self.env["ir.attachment"]
+            .with_user(self.coordinator)
+            .create({"name": "Private exam file", "raw": b"PRIVATE EXAM FILE", "res_model": q1._name, "res_id": q1.id})
+        )
+        # Simulate an existing pre-review file. Public create/write now rejects
+        # these flags; the test must still exercise native legacy token paths.
+        attachment.flush_recordset()
+        self.env.cr.execute(
+            "UPDATE ir_attachment SET public = TRUE, access_token = %s WHERE id = %s",
+            ["fictional-legacy-token", attachment.id],
+        )
+        attachment.invalidate_recordset()
+        other_coord = new_test_user(
+            self.env,
+            login="s06_file_other_company",
+            groups="training_management.group_training_coordinator",
+            company_id=self.other_company.id,
+            company_ids=[Command.set(self.other_company.ids)],
+        )
+        for user in (self.portal, self.portal_b, self.reader, other_coord):
+            private_file = attachment.with_user(user)
+            self.assertFalse(private_file.search([("id", "=", attachment.id)]))
+            with self.assertRaises(AccessError):
+                private_file.read(["raw"])
+            with self.assertRaises((AccessError, UserError)):
+                private_file.export_data(["name", "raw"])
+            with self.assertRaises(AccessError):
+                private_file.sudo()._can_return_content(access_token="fictional-legacy-token")
+        self.assertTrue(attachment.read(["raw"]))
+        self.assertEqual(attachment.raw.content, b"PRIVATE EXAM FILE")
+
+    def test_generic_certification_report_rejects_mock_exam_attempts(self):
+        exam, q1, q2, activity, enrollment, service = self.published()
+        attempt = service._start(enrollment.id, activity.id)
+        service._submit(attempt.id)
+        reports = self.env["ir.actions.report"].with_user(self.coordinator)
+        with self.assertRaises(AccessError):
+            reports._render_qweb_html("survey.certification_report", [attempt.id])
+        ordinary = self.env["survey.survey"].with_user(self.coordinator).create({"title": "Ordinary certification"})
+        answer = ordinary._create_answer(partner=self.portal.partner_id)
+        html, _ = reports._render_qweb_html("survey.certification_report", [answer.id])
+        self.assertIn(b"Ordinary certification", html)
+
+    def test_native_exam_attachments_cannot_be_published_or_detached(self):
+        exam, q1, q2 = self.exam(with_image=True)
+        choice = q2.suggested_answer_ids[:1]
+        files = self.env["ir.attachment"].with_user(self.coordinator)
+        attachment = files.create(
+            {
+                "name": "Private question image",
+                "raw": choice.value_image.content,
+                "res_model": q2._name,
+                "res_id": q2.id,
+            }
+        )
+        self.assertTrue(attachment)
+        for values in ({"public": True}, {"access_token": "fictional-token"}, {"res_model": False, "res_id": False}):
+            with self.assertRaises(ValidationError), self.env.cr.savepoint():
+                attachment.write(values)
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            files.create(
+                {
+                    "name": "Private exam image",
+                    "raw": b"private",
+                    "res_model": exam._name,
+                    "res_id": exam.id,
+                    "public": True,
+                }
+            )
+        with self.assertRaises(AccessError):
+            attachment.with_user(self.portal_b).read(["raw"])
+        with self.assertRaises(AccessError):
+            attachment.with_user(self.portal_b).sudo()._to_http_stream()
+        for user in (self.portal, self.reader):
+            with self.assertRaises(AccessError), self.env.cr.savepoint():
+                files.with_user(user).create(
+                    {"name": "Forged exam file", "raw": b"private", "res_model": q2._name, "res_id": q2.id}
+                )
+        with self.assertRaises(ValidationError):
+            attachment.copy({"res_model": False, "res_id": False, "public": True})
+        attachment.write({"raw": b"New draft content"})
+        ordinary = self.env["survey.survey"].with_user(self.coordinator).create({"title": "Ordinary attachment"})
+        ordinary_file = files.create(
+            {
+                "name": "Ordinary file",
+                "raw": b"ordinary",
+                "public": True,
+                "res_model": ordinary._name,
+                "res_id": ordinary.id,
+            }
+        )
+        ordinary_file.write({"raw": b"changed"})
+        self.assertTrue(ordinary_file.copy())
+        ordinary_file.unlink()
+
+    def test_published_images_are_immutable_through_native_attachments(self):
+        exam, q1, q2 = self.exam(with_image=True)
+        choice = q2.suggested_answer_ids[:1]
+        attachment = (
+            self.env["ir.attachment"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Private question image",
+                    "raw": choice.value_image.content,
+                    "res_model": q2._name,
+                    "res_id": q2.id,
+                }
+            )
+        )
+        self.assertTrue(attachment)
+        original = choice.value_image.content
+        exam.action_training_publish()
+        for values in ({"raw": b"changed"}, {"res_id": q1.suggested_answer_ids[:1].id}):
+            with self.assertRaises(ValidationError), self.env.cr.savepoint():
+                attachment.write(values)
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            attachment.unlink()
+        self.assertEqual(choice.value_image.content, original)
+
     def test_native_editor_models_and_publish_validation(self):
         exam, q1, q2 = self.exam(time_limit=0)
         with self.assertRaises(ValidationError):
@@ -415,6 +538,40 @@ class TestMockExam(ExamCase):
 
 @tagged("post_install", "-at_install")
 class TestMockExamHttp(ExamCase, HttpCase):
+    def test_image_only_native_choices_have_a_readable_private_correction(self):
+        exam, q1, q2 = self.exam(with_image=True)
+        choice = q2.suggested_answer_ids[:1]
+        choice.value = False
+        exam.action_training_publish()
+        delivery = self.delivery()
+        activity = (
+            self.env["training.learning.activity"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Image exam",
+                    "delivery_id": delivery.id,
+                    "criterion": "evaluation",
+                    "training_exam_id": exam.id,
+                }
+            )
+        )
+        enrollment = self.opened(delivery)
+        service = self.env["training.exam.service"].with_user(self.portal)
+        attempt = service._start(enrollment.id, activity.id)
+        service._save(attempt.id, q2.id, q2.suggested_answer_ids.filtered("is_correct").ids, False)
+        self.authenticate(self.portal.login, self.portal.login)
+        self.assertEqual(self.url_open(f"/my/training-exams/{attempt.id}").status_code, 200)
+        service._submit(attempt.id)
+        result = self.url_open(f"/my/training-exams/{attempt.id}")
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(choice.value_label, result.text)
+        image_url = f"/survey/get_question_image/{exam.access_token}/{attempt.access_token}/{q2.id}/{choice.id}"
+        self.assertIn(image_url, result.text)
+        self.assertEqual(self.url_open(image_url).content, choice.value_image.content)
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        self.assertEqual(self.url_open(image_url).status_code, 404)
+
     def test_native_token_routes_cannot_bypass_enrollment_and_no_early_correction(self):
         exam, q1, q2, activity, enrollment, service = self.published()
         attempt = service._start(enrollment.id, activity.id)
