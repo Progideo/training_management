@@ -1,0 +1,104 @@
+<odoo>
+    <record id="view_training_retention_list" model="ir.ui.view">
+        <field name="name">training.retention.category.list</field>
+        <field name="model">training.retention.category</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/><field name="company_id"/><field name="duration_days"/><field name="approved_at"/></list>
+        </field>
+    </record>
+    <record id="view_training_retention_form" model="ir.ui.view">
+        <field name="name">training.retention.category.form</field>
+        <field name="model">training.retention.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <header><button name="action_approve" type="object" string="Approve Policy" invisible="approved_at" groups="training_management.group_training_quality"/></header>
+                <sheet><group><field name="name"/><field name="company_id"/><field name="purpose"/><field name="responsible_id"/><field name="duration_days"/><field name="archive_policy"/><field name="deletion_policy"/><field name="approved_by_id"/><field name="approved_at"/></group></sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_proof_list" model="ir.ui.view">
+        <field name="name">training.proof.list</field>
+        <field name="model">training.proof</field>
+        <field name="arch" type="xml">
+            <list><field name="dossier_id"/><field name="category"/><field name="version"/><field name="disposition"/><field name="validated_at"/><field name="client_shared"/></list>
+        </field>
+    </record>
+    <record id="view_training_proof_form" model="ir.ui.view">
+        <field name="name">training.proof.form</field>
+        <field name="model">training.proof</field>
+        <field name="arch" type="xml">
+            <form duplicate="false" delete="false">
+                <header><button name="action_validate" type="object" string="Validate Evidence / Exemption" invisible="validated_at" groups="training_management.group_training_quality"/></header>
+                <sheet>
+                    <group><field name="dossier_id"/><field name="category"/><field name="version"/><field name="previous_id"/><field name="source"/><field name="author"/><field name="produced_at"/><field name="disposition"/><field name="reason" invisible="disposition == 'file'"/><field name="filename" invisible="1"/><field name="data" filename="filename" invisible="disposition != 'file'"/><field name="confidentiality"/><field name="client_shared"/></group>
+                    <group invisible="category != 'assessment'"><field name="score"/><field name="threshold"/></group>
+                    <group><field name="validated_by_id"/><field name="validated_at"/><field name="sha256"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_closure_list" model="ir.ui.view">
+        <field name="name">training.closure.list</field>
+        <field name="model">training.closure</field>
+        <field name="arch" type="xml">
+            <list><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id"/><field name="state"/></list>
+        </field>
+    </record>
+    <record id="view_training_closure_form" model="ir.ui.view">
+        <field name="name">training.closure.form</field>
+        <field name="model">training.closure</field>
+        <field name="arch" type="xml">
+            <form duplicate="false" delete="false">
+                <header>
+                    <button name="action_close" type="object" string="Close Dossier" invisible="state == 'closed'" groups="training_management.group_training_quality"/>
+                    <button name="action_export_internal" type="object" string="Internal Export" groups="training_management.group_training_quality"/>
+                    <button name="action_export_client" type="object" string="Client Export" groups="training_management.group_training_quality"/>
+                    <button name="action_certificate_participation" type="object" string="Participation Certificate" invisible="state == 'closed'" groups="training_management.group_training_quality"/>
+                    <button name="action_certificate_completion" type="object" string="Completion Certificate" invisible="state == 'closed'" groups="training_management.group_training_quality"/>
+                    <button name="action_certificate_achievement" type="object" string="Achievement Certificate" invisible="state == 'closed'" groups="training_management.group_training_quality"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status">A complete dossier does not constitute Qualiopi certification.</div>
+                    <group><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id"/><field name="retention_id"/><field name="customer_id"/><field name="client_contact_ids" widget="many2many_tags"/><field name="share_certificates"/><field name="frozen"/></group>
+                    <group><field name="missing" readonly="1"/><field name="closed_by_id"/><field name="closed_at"/></group>
+                    <notebook>
+                        <page string="Evidence"><field name="evidence_ids" context="{'default_dossier_id': id}" readonly="state == 'closed'"/></page>
+                        <page string="Preserved Documents" groups="training_management.group_training_quality"><field name="output_ids" readonly="1"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_document_list" model="ir.ui.view">
+        <field name="name">training.document.list</field>
+        <field name="model">training.document</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false"><field name="filename"/><field name="kind"/><field name="created_at"/><field name="template_version"/><button name="action_download" type="object" string="Download"/></list>
+        </field>
+    </record>
+    <record id="view_training_enrollment_closure" model="ir.ui.view">
+        <field name="name">training.enrollment.closure</field>
+        <field name="model">training.enrollment</field>
+        <field name="inherit_id" ref="view_training_enrollment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_closure" type="object" string="Closure Dossier" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_training_closure" model="ir.actions.act_window"><field name="name">Closure Dossiers</field><field name="res_model">training.closure</field><field name="view_mode">list,form</field></record>
+    <record id="action_training_retention" model="ir.actions.act_window"><field name="name">Retention Policies</field><field name="res_model">training.retention.category</field><field name="view_mode">list,form</field></record>
+    <menuitem id="menu_training_closure" name="Closure Dossiers" parent="menu_training_root" action="action_training_closure" sequence="75" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
+    <menuitem id="menu_training_retention" name="Retention Policies" parent="menu_training_root" action="action_training_retention" sequence="95" groups="training_management.group_training_quality"/>
+    <template id="portal_documents" name="My Training Documents">
+        <t t-call="portal.portal_layout">
+            <h2>My training documents</h2>
+            <p t-if="not rows">No authorized document is available.</p>
+            <ul><li t-foreach="rows" t-as="row"><a t-att-href="row['url']" t-out="row['name']"/></li></ul>
+        </t>
+    </template>
+    <template id="portal_documents_link" inherit_id="portal.portal_my_home" name="Training Documents Link">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><a href="/my/training-documents" class="btn btn-outline-primary">My training documents</a></xpath>
+    </template>
+</odoo>

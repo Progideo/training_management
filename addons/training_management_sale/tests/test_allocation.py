@@ -289,3 +289,93 @@ class TestAllocationCommerce(EnrollmentCase):
                 enrollment.with_user(user).read(["positioning"])
             with self.assertRaises(AccessError):
                 delivery.with_user(user).action_prepare_invitations()
+
+    def test_closure_b2b_exports_keep_explicit_customers_and_native_sales(self):
+        from odoo.tools.binary import BinaryBytes
+        import io
+        import json
+        import zipfile
+
+        quality = new_test_user(self.env, login="s08_b2b_quality", groups="training_management.group_training_quality")
+        policy = (
+            self.env["training.retention.category"]
+            .with_user(quality)
+            .create(
+                {
+                    "name": "Fictional B2B policy",
+                    "purpose": "Training proof",
+                    "responsible_id": quality.id,
+                    "duration_days": 365,
+                    "archive_policy": "Restricted archive",
+                    "deletion_policy": "Human review",
+                }
+            )
+        )
+        policy.action_approve()
+        original_customer = self.customer
+        clients, dossiers, proofs = [], [], []
+        delivery = self.delivery()
+        for index in range(2):
+            self.customer = self.env["res.partner"].create(
+                {"name": f"Fictional S08 Customer {index}", "is_company": True}
+            )
+            client = new_test_user(self.env, login=f"s08_b2b_client_{index}", groups="base.group_portal")
+            client.partner_id.parent_id = self.customer
+            clients.append(client)
+            order = self.order(count=1)
+            lot = self.lot(delivery, quantity=1, sale_line_id=order.order_line.id, source_reference=f"S08-{index}")
+            lot.action_confirm()
+            person = self.env["res.partner"].create(
+                {"name": f"Fictional S08 Employee {index}", "parent_id": self.customer.id}
+            )
+            enrollment = self.enrollment(
+                delivery, allocation_id=lot.id, free_reason=False, participant_id=person.id, user_id=False
+            )
+            enrollment.action_waive_prerequisites(reason="Fictional approved admission")
+            enrollment.action_confirm()
+            dossier = (
+                self.env["training.closure"]
+                .with_user(self.coordinator)
+                .create(
+                    {
+                        "enrollment_id": enrollment.id,
+                        "quality_id": quality.id,
+                        "retention_id": policy.id,
+                        "client_contact_ids": [Command.set(client.partner_id.ids)],
+                    }
+                )
+            )
+            proof = (
+                self.env["training.proof"]
+                .with_user(quality)
+                .create(
+                    {
+                        "dossier_id": dossier.id,
+                        "category": "need",
+                        "source": f"Fictional scope customer {index}",
+                        "author": f"Fictional author {index}",
+                        "produced_at": fields.Datetime.now(),
+                        "data": BinaryBytes(b"%PDF-1.4\nFictional accepted scope\n%%EOF"),
+                        "client_shared": True,
+                    }
+                )
+            )
+            proof.action_validate()
+            dossiers.append(dossier)
+            proofs.append(proof)
+        self.customer = original_customer
+        dossiers[0].with_user(quality).action_export_client()
+        output = self.env["training.document"].sudo().search([("dossier_id", "=", dossiers[0].id)], limit=1)
+        with zipfile.ZipFile(io.BytesIO(output.data.content)) as archive:
+            index = json.loads(archive.read("index.json"))
+            self.assertEqual([item["id"] for item in index["pieces"]], proofs[0].ids)
+            self.assertNotIn(f"proof-{proofs[1].id}-v1.pdf", archive.namelist())
+        authorization = self.env["training.document.policy"]
+        self.assertTrue(authorization.with_user(clients[0])._can_read(output))
+        self.assertFalse(authorization.with_user(clients[1])._can_read(output))
+        # An employer change does not transfer this old explicit grant.
+        clients[0].partner_id.parent_id = dossiers[1].customer_id
+        self.assertFalse(authorization.with_user(clients[0])._can_read(output))
+        # A dedicated achievement proof is still required in this real B2B path.
+        with self.assertRaises(ValidationError):
+            dossiers[0].with_user(quality).action_certificate_achievement()

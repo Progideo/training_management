@@ -9,3 +9,5 @@ from . import test_material
 
 from . import test_learning
 from . import test_attendance
+
+from . import test_closure

@@ -20,3 +20,5 @@ from . import training_learning_service
 from . import training_learning_notice
 from . import mail_message
 from . import training_attendance
+
+from . import training_closure
