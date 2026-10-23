@@ -86,6 +86,7 @@ class RetentionCategory(models.Model):
                 raise ValidationError(
                     self.env._("Set a positive approved duration and an authorized responsible user.")
                 )
+            # pylint: disable-next=super-method-mismatch  # checked approval bypasses the public immutable write guard
             super(RetentionCategory, policy).write(
                 {"approved_at": fields.Datetime.now(), "approved_by_id": self.env.uid}
             )
@@ -237,6 +238,7 @@ class ClosureDossier(models.Model):
                 raise ValidationError(
                     self.env._("Review missing evidence; approve a reasoned exemption where applicable.")
                 )
+            # pylint: disable-next=super-method-mismatch  # checked closure stores server audit fields
             super(ClosureDossier, dossier).write(
                 {"state": "closed", "closed_at": fields.Datetime.now(), "closed_by_id": self.env.uid}
             )
@@ -461,6 +463,7 @@ class ClosureProof(models.Model):
                 )
             if not (proof.source or "").strip() or not (proof.author or "").strip():
                 raise ValidationError(self.env._("Record evidence provenance and author."))
+            # pylint: disable-next=super-method-mismatch  # checked validation freezes the proof and its audit fields
             super(ClosureProof, proof).write(
                 {
                     "validated_at": fields.Datetime.now(),
@@ -529,7 +532,7 @@ class ClosureDocument(models.Model):
 
 
 class ClosureEnrollment(models.Model):
-    _inherit = "training.enrollment"
+    _inherit = "training.enrollment"  # pylint: disable=consider-merging-classes-inherited  # S08 issuance is independent of S05 progress
 
     closure_ids = fields.One2many("training.closure", "enrollment_id", readonly=True)
 
