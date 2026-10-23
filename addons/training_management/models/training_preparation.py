@@ -9,7 +9,7 @@ from .training_schedule import COORDINATOR
 
 
 class TrainingDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Keep preparation separate from learning.
 
     sponsor_need = fields.Text(string="Sponsor Needs")
     can_prepare = fields.Boolean(compute="_compute_can_prepare")
@@ -136,7 +136,7 @@ class TrainingDelivery(models.Model):
 
 
 class TrainingEnrollment(models.Model):
-    _inherit = "training.enrollment"
+    _inherit = "training.enrollment"  # pylint: disable=consider-merging-classes-inherited  # Keep positioning separate from learning.
 
     participant_objectives = fields.Text(groups=COORDINATOR)
     positioning = fields.Text(groups=COORDINATOR)
