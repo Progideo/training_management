@@ -130,6 +130,8 @@ class TrainingProgramVersion(models.Model):
         prepared = []
         for vals in vals_list:
             vals = dict(vals)
+            if "category_id" in vals:
+                raise ValidationError(self.env._("The programme category is defined by its course."))
             if vals.get("state", "draft") != "draft" or self._audit_fields().intersection(vals):
                 raise ValidationError(self.env._("New programme versions must be drafts without validation metadata."))
             if "company_id" in vals:
@@ -177,6 +179,8 @@ class TrainingProgramVersion(models.Model):
 
     def write(self, vals):
         self.check_access("write")
+        if "category_id" in vals:
+            raise ValidationError(self.env._("The programme category is defined by its course."))
         self._lock_courses(vals.get("course_id"))
         self.lock_for_update()
         self.invalidate_recordset()

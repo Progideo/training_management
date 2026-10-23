@@ -8,7 +8,7 @@ from odoo.exceptions import AccessError, ValidationError
 class TrainingProgramPdf(models.Model):
     _inherit = "training.program.version"
 
-    category_id = fields.Many2one(related="course_id.category_id", string="Category", store=True, index=True)
+    category_id = fields.Many2one(related="course_id.category_id", string="Category")
     pdf_attachment_id = fields.Many2one(
         "ir.attachment", string="Programme PDF", readonly=True, copy=False, ondelete="restrict"
     )
@@ -35,7 +35,7 @@ class TrainingProgramPdf(models.Model):
     def _check_complete(self):
         result = super()._check_complete()
         for program in self:
-            if not program.pdf_legacy and not program.category_id:
+            if not program.pdf_legacy and not program.course_id.category_id:
                 raise ValidationError(
                     self.env._("Choose the course category before validating or publishing its programme.")
                 )

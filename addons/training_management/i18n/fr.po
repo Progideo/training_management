@@ -3480,3 +3480,9 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 msgid "Historical PDF to Reconstruct"
 msgstr "PDF historique à reconstituer"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "The programme category is defined by its course."
+msgstr "La catégorie du programme est définie par sa formation."

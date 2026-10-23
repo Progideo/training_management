@@ -76,11 +76,24 @@ class TestProgrammePdf(CatalogueCase):
         self.course.category_id = False
         program = self.new_program()
         with self.assertRaises(ValidationError):
+            program.write({"category_id": category.id})
+        with self.assertRaises(ValidationError):
+            self.new_program(version="Forged", category_id=category.id)
+        spoofed = (
+            self.env["training.program.version"]
+            .with_user(self.coordinator)
+            .with_context(default_category_id=category.id)
+            .create({**self.values, "version": "Context"})
+        )
+        with self.assertRaises(ValidationError):
+            spoofed.action_validate()
+        with self.assertRaises(ValidationError):
             program.action_validate()
         self.assertEqual(program.state, "draft")
         with Form(self.course) as form:
             form.category_id = category
         program.action_validate()
+        self.assertIn(program, program.search([("category_id", "=", category.id)]))
         category.active = False
         self.assertTrue(program._reference_pdf())
 
