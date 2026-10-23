@@ -112,7 +112,9 @@ elif phase == "verify":
         "SELECT column_default FROM information_schema.columns WHERE table_name='ir_ui_view' AND column_name='visibility'"
     )
     assert env.cr.fetchone()[0] is None
-    assert not env["training.learning.entry"].search([])
+    # S06 adds a separate preserved private-work fixture.
+    if not os.environ.get("S06_PHASE"):
+        assert not env["training.learning.entry"].search([])
     print("S052_FILE_REFERENCE_GRANT_AND_NATIVE_SCHEMA_PRESERVED")
 elif phase == "french":
     from odoo import Command

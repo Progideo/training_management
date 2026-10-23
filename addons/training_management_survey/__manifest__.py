@@ -1,0 +1,23 @@
+# pylint: disable=manifest-required-author,missing-readme
+{
+    "name": "Training Management — Mock Exams",
+    "summary": "Private versioned mock exams using native Odoo Surveys",
+    "version": "20.0.1.0.0",
+    "category": "Services/Training",
+    "author": "Training Management contributors",
+    "website": "https://github.com/Progideo/training_management",
+    "license": "LGPL-3",
+    "depends": ["training_management", "survey"],
+    "data": [
+        "security/groups.xml",
+        "security/ir.access.csv",
+        "views/exam_views.xml",
+        "views/exam_templates.xml",
+        "data/cron.xml",
+    ],
+    "assets": {
+        "web.assets_frontend": [
+            "training_management_survey/static/src/exam.js",
+        ]
+    },
+}
