@@ -31,6 +31,11 @@ class FeedbackNotice(models.Model):
             and self.recipient_id.user_id.partner_id.email == self.email
             and campaign.state == "open"
             and campaign.opens_at <= now <= campaign.due_at
+            and (
+                self.occurrence == "invitation"
+                or campaign.anonymous
+                or self.recipient_id._nominative_state() != "received"
+            )
         )
 
     @api.private

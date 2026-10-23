@@ -179,6 +179,9 @@ class Campaign(models.Model):
                 continue
             if row.feedback_id.state != "published" or not row.recipient_ids or row.due_at <= fields.Datetime.now():
                 raise ValidationError(self.env._("Choose a published version, recipients and a future deadline."))
+            applicable = row.recipient_ids.filtered(lambda x: not x.exclusion_reason)
+            if not applicable or any(not recipient._eligible() for recipient in applicable):
+                raise ValidationError(self.env._("Choose a currently eligible recipient in the campaign population."))
             row._store({"state": "open"})
         return True
 
@@ -315,6 +318,7 @@ class Recipient(models.Model):
             or not user.active
             or user._is_public()
             or campaign.company_id not in user.company_ids
+            or self.role != ("participant" if campaign.purpose in ("immediate", "delayed") else campaign.purpose)
         ):
             return False
         if self.role == "participant":
@@ -341,8 +345,7 @@ class Recipient(models.Model):
             row.campaign_id._lock()
             if row.campaign_id.state == "closed":
                 raise ValidationError(self.env._("Retain the closed campaign population."))
-            expected = "participant" if row.campaign_id.purpose in ("immediate", "delayed") else row.campaign_id.purpose
-            if row.role != expected or not row._eligible():
+            if not row._eligible():
                 raise ValidationError(self.env._("Choose a currently eligible recipient in the campaign population."))
         return records
 
@@ -378,7 +381,7 @@ class FeedbackService(models.AbstractModel):
                 raise AccessError(self.env._("This feedback campaign is unavailable."))
         else:
             recipients = row.recipient_ids.filtered(lambda x: x.user_id == user and x._eligible())
-            if not recipients:
+            if row.state == "draft" or not recipients:
                 raise AccessError(self.env._("This feedback campaign is unavailable."))
         if lock:
             row._lock()

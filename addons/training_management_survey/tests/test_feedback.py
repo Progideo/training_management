@@ -10,7 +10,7 @@ from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
 
 
 class FeedbackCase(EvaluationCase):
-    def campaign(self, anonymous=True, purpose="immediate", recipients=3):
+    def campaign(self, anonymous=True, purpose="immediate", recipients=3, opened=True):
         delivery = self.delivery()
         definition = (
             self.env["training.feedback"]
@@ -84,7 +84,8 @@ class FeedbackCase(EvaluationCase):
                     "enrollment_id": enrollment.id,
                 }
             )
-        campaign.action_open()
+        if opened:
+            campaign.action_open()
         return campaign, users, question
 
     def submit(self, campaign, user, question, choice=0):
@@ -183,7 +184,9 @@ class TestFeedback(FeedbackCase):
         campaign.action_remind()
         campaign.action_remind()
         self.assertEqual(len(campaign.notice_ids), 6)  # includes the respondent
-        notice = campaign.notice_ids.filtered(lambda n: n.recipient_id.user_id == users[0])[:1]
+        notice = campaign.notice_ids.filtered(
+            lambda n: n.recipient_id.user_id == users[0] and n.occurrence.startswith("reminder:")
+        )
         outgoing = notice.mail_id
         self.assertTrue(notice._authorized())
         notice.recipient_id.write({"active": False, "exclusion_reason": "Fictional withdrawal"})
@@ -408,9 +411,82 @@ class TestFeedback(FeedbackCase):
             with self.assertRaises(AccessError):
                 self.env["ir.binary"].with_user(self.coordinator)._check_training_binary_access(record)
 
+    def test_review_invitation_state_with_fresh_restricted_cache(self):
+        campaign, _users, _question = self.campaign(anonymous=False)
+        campaign.action_invite()
+        recipient = campaign.recipient_ids[0]
+        self.env.flush_all()
+        self.env.invalidate_all()
+        values = recipient.with_user(self.coordinator).read(["response_state"])
+        self.assertEqual(values[0]["response_state"], "queued")
+
+    def test_review_secret_rotation_keeps_anonymous_one_use(self):
+        campaign, users, question = self.campaign()
+        self.submit(campaign, users[0], question)
+        params = self.env["ir.config_parameter"].sudo()
+        original = params.get_str("database.secret")
+        try:
+            params.set_str("database.secret", "fictional-rotated-database-secret")
+            self.submit(campaign, users[0], question)
+            self.assertEqual(
+                self.env["survey.user_input"].search_count([("training_feedback_campaign_id", "=", campaign.id)]), 1
+            )
+        finally:
+            params.set_str("database.secret", original)
+
+    def test_review_changed_draft_population_must_be_revalidated(self):
+        campaign, _users, _question = self.campaign(opened=False)
+        newer = (
+            self.env["training.feedback"]
+            .with_user(self.coordinator)
+            .browse(campaign.feedback_id.action_new_version()["res_id"])
+        )
+        newer.write({"purpose": "sponsor"})
+        newer.action_publish()
+        campaign.write({"feedback_id": newer.id})
+        with self.assertRaises(ValidationError):
+            campaign.action_open()
+        other, _users, _question = self.campaign(opened=False)
+        other.write({"delivery_id": self.delivery().id})
+        with self.assertRaises(ValidationError):
+            other.action_open()
+
+    def test_review_long_text_is_not_silently_truncated(self):
+        for anonymous in (True, False):
+            campaign, users, _question = self.campaign(anonymous=anonymous, opened=False)
+            newer = (
+                self.env["training.feedback"]
+                .with_user(self.coordinator)
+                .browse(campaign.feedback_id.action_new_version()["res_id"])
+            )
+            question = newer.survey_id.question_ids[0]
+            question.write({"question_type": "text_box", "suggested_answer_ids": [Command.clear()]})
+            newer.action_publish()
+            campaign.write({"feedback_id": newer.id})
+            campaign.action_open()
+            text = "Fictional free text " * 1200
+            self.env["training.feedback.service"].with_user(users[0])._submit(
+                campaign.id, "participant", {question.id: text}
+            )
+            attempt = self.env["survey.user_input"].search([("training_feedback_campaign_id", "=", campaign.id)])
+            self.assertEqual(attempt.user_input_line_ids.value_text_box, text)
+
+    def test_review_nominative_reminder_rechecks_completion_at_transport(self):
+        campaign, users, question = self.campaign(anonymous=False)
+        campaign.action_remind()
+        notice = campaign.notice_ids.filtered(lambda x: x.recipient_id.user_id == users[0])
+        self.submit(campaign, users[0], question)
+        with self.assertRaises(ValidationError):
+            notice.mail_id.sudo()._prepare_outgoing_list()
+
 
 @tagged("post_install", "-at_install")
 class TestFeedbackHTTP(FeedbackCase, HttpCase):
+    def test_review_draft_campaign_is_not_visible_to_recipient(self):
+        campaign, users, _question = self.campaign(opened=False)
+        self.authenticate(users[0].login, users[0].login)
+        self.assertEqual(self.url_open("/my/training-feedback/%s" % campaign.id).status_code, 404)
+
     def test_anonymous_http_form_csrf_and_native_token_boundary(self):
         campaign, users, question = self.campaign()
         user = users[0]

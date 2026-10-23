@@ -103,7 +103,17 @@ class FeedbackSpent(models.Model):
 
     campaign_id = fields.Many2one("training.feedback.campaign", required=True, ondelete="restrict")
     digests = fields.Json(default=list, required=True)
+    digest_key = fields.Char(required=True, copy=False, default=lambda self: self._default_digest_key())
     _one_use = models.Constraint("UNIQUE(campaign_id)", "One unordered anti-replay pool per campaign.")
+
+    @api.model
+    def _default_digest_key(self):
+        # Freeze the native key, including for existing pools during an upgrade.
+        # Rotating database.secret must not reauthorize already used invitations.
+        secret = self.env["ir.config_parameter"].sudo().get_str("database.secret")
+        if not secret:
+            raise ValidationError(self.env._("The native database secret is unavailable."))
+        return secret
 
     # No ACL: not even a business administrator can inspect this technical ledger.
     @api.model_create_multi
@@ -157,11 +167,7 @@ class FeedbackService(models.AbstractModel):
     _inherit = "training.feedback.service"
 
     @api.private
-    def _spent_digest(self, campaign, recipient):
-        # database.secret is the existing native per-database secret, never exported.
-        secret = self.env["ir.config_parameter"].sudo().get_str("database.secret")
-        if not secret:
-            raise ValidationError(self.env._("The native database secret is unavailable."))
+    def _spent_digest(self, campaign, recipient, secret):
         return hmac.new(
             secret.encode(), f"feedback:{campaign.id}:{recipient.user_id.id}:{recipient.role}".encode(), hashlib.sha256
         ).hexdigest()
@@ -191,13 +197,14 @@ class FeedbackService(models.AbstractModel):
             .with_user(SUPERUSER_ID)
             .with_context(mail_create_nolog=True, mail_create_nosubscribe=True, tracking_disable=True)
         )
-        spent = self.env["training.feedback.spent"].sudo()
+        spent = clean_context(self.env["training.feedback.spent"]).sudo()
         pool = spent.search([("campaign_id", "=", campaign.id)], limit=1)
         attempt = attempts.browse()
         if campaign.anonymous:
             if not submit:
                 raise ValidationError(self.env._("Anonymous answers are submitted together, without a named draft."))
-            digest = self._spent_digest(campaign, recipient)
+            digest_key = pool.digest_key if pool else spent._default_digest_key()
+            digest = self._spent_digest(campaign, recipient, digest_key)
             if pool and digest in pool.digests:
                 return True  # same generic acknowledgment, no response/status/id returned
         else:
@@ -225,7 +232,7 @@ class FeedbackService(models.AbstractModel):
                     raise ValidationError(self.env._("Choose answers from this question."))
                 value = str(values[0]) if question.question_type == "simple_choice" and values else values
             else:
-                value = str(value or "")[:20000]
+                value = str(value or "")
             if submit and (
                 question.validate_question(value)
                 or (question.constr_mandatory and (not value or (isinstance(value, str) and not value.strip())))
@@ -260,7 +267,7 @@ class FeedbackService(models.AbstractModel):
             if pool:
                 pool.write({"digests": sorted([*pool.digests, digest])})
             else:
-                spent.create({"campaign_id": campaign.id, "digests": [digest]})
+                spent.create({"campaign_id": campaign.id, "digests": [digest], "digest_key": digest_key})
         attempt._training_store(
             {
                 "state": "done" if submit else "in_progress",
@@ -302,7 +309,7 @@ class FeedbackService(models.AbstractModel):
         notices = recipient.campaign_id.notice_ids.filtered(lambda x: x.recipient_id == recipient and x.mail_id)
         if not notices:
             return "not_invited"
-        states = notices.mail_id.mapped("state")
+        states = notices.mapped("distribution_state")
         if "sent" in states:
             return "no_response" if fields.Datetime.now() > recipient.campaign_id.due_at else "invited"
         return "queued" if "outgoing" in states else "invitation_error"

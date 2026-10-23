@@ -49,7 +49,9 @@ anonymes et à leurs lignes dans la même transaction, retirent ce rapprochement
 Aucun message, fichier, courriel ou journal applicatif de réponse n’est créé.
 
 Un registre technique séparé, sans droits métier ni dates techniques, conserve
-un ensemble trié d’empreintes anti-double-remise par campagne. Aucune relation
+un ensemble trié d’empreintes anti-double-remise par campagne. Sa clé est figée
+dans ce registre privé pour préserver l’unicité après rotation du secret Odoo.
+La mise à jour reprend la clé courante des registres existants. Aucune relation
 avec les réponses ou ordre individuel de remise n’y figure. Le formulaire utilise
 l’authentification Odoo et revérifie l’invitation et l’éligibilité à chaque remise ;
 aucun lien public transférable n’est délivré. Un verrou de réalisation sérialise
@@ -78,6 +80,11 @@ Les états nominatifs distinguent non invité, en file, erreur d’invitation, i
 en cours, réponse reçue et non-réponse à échéance ; seule une invitation envoyée
 peut produire une non-réponse administrative. Le non-applicable/retrait est motivé.
 Les états anonymes restent indisponibles, indépendamment des relances.
+Une relance nominative en attente est refusée au transport si la réponse est
+entre-temps reçue. L’ouverture revérifie la population après modification du
+brouillon ; les destinataires ne peuvent pas consulter une campagne en brouillon.
+Les textes libres sont conservés intégralement selon les limites natives du
+questionnaire, sans troncature silencieuse.
 
 La synthèse `S092-1` conserve version, population, période, reçus/attendus/applicables,
 valides et favorables par question indicatrice. Taux = favorables / valides ;
@@ -85,7 +92,7 @@ dénominateur nul = non calculable. Une réponse négative compte comme valide.
 Aucune déduction individuelle, aucun indicateur de certification.
 Les politiques et responsables de conservation doivent être approuvés avant
 collecte réelle ; aucun délai juridique ni purge automatique n’est ajouté.
-Socle `20.0.1.10.0`, intégration Survey `20.0.1.2.0` ; le socle reste installable seul.
+Socle `20.0.1.10.0`, intégration Survey `20.0.1.2.1` ; le socle reste installable seul.
 
 ## Recette courte
 
@@ -101,6 +108,11 @@ Socle `20.0.1.10.0`, intégration Survey `20.0.1.2.0` ; le socle reste installab
 - En nominatif, enregistrer, reprendre, remettre ; distinguer brouillon, réponse
   reçue, non-réponse et non-applicable. Tester une seule invitation formateur ou
   commanditaire sans fabriquer des inscriptions participant.
+- Modifier la réalisation ou le public d’un brouillon déjà peuplé : ouverture
+  refusée tant que les invitations ne conviennent plus. Son URL reste inaccessible
+  aux destinataires. Vérifier un texte de plus de 20 000 caractères, une rotation
+  du secret après remise anonyme et une réponse après mise en file d’une relance
+  nominative : texte intact, aucune double remise et aucune relance devenue inutile.
 - Superviseur affecté puis retiré, qualité affectée/non affectée, autre client et
   société étrangère : vérifier listes, liens, synthèses et preuves. Contrôler au
   clavier et en largeur 320/390 px : labels, conservation de saisie après erreur,
