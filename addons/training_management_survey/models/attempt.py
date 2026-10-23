@@ -7,7 +7,7 @@ from odoo.exceptions import AccessError, ValidationError
 
 
 class Attempt(models.Model):
-    _inherit = "survey.user_input"
+    _inherit = "survey.user_input"  # pylint: disable=consider-merging-classes-inherited  # feedback and exam evidence have distinct transitions
 
     training_enrollment_id = fields.Many2one(
         "training.enrollment", ondelete="restrict", readonly=True, index=True, copy=False
@@ -137,7 +137,7 @@ class Attempt(models.Model):
 
 
 class AnswerLine(models.Model):
-    _inherit = "survey.user_input.line"
+    _inherit = "survey.user_input.line"  # pylint: disable=consider-merging-classes-inherited  # feedback and exam evidence have distinct transitions
 
     @api.depends("suggested_answer_id", "user_input_id", "question_id.answer_score")
     def _compute_answer_score(self):

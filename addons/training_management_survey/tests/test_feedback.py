@@ -222,6 +222,10 @@ class TestFeedback(FeedbackCase):
         campaign.delivery_id.write({"evaluation_supervisor_ids": [Command.set(self.supervisor.ids)]})
         service = self.env["training.feedback.service"].with_user(self.supervisor)
         self.assertEqual(service._campaign(campaign.id, staff=True).id, campaign.id)
+        native = campaign.with_user(self.supervisor).read(
+            ["name", "purpose", "feedback_id", "delivery_id", "retention_id", "summary"]
+        )
+        self.assertEqual(native[0]["name"], campaign.name)
         self.assertIn("after closure", service._summary_text(campaign))
         for user in (self.internal, self.portal, users[0]):
             with self.assertRaises(AccessError):

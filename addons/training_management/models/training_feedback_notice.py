@@ -3,7 +3,6 @@
 from markupsafe import Markup
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
 
 
 class FeedbackNotice(models.Model):
@@ -88,26 +87,3 @@ class FeedbackNotice(models.Model):
         )
         journal._store_evidence({"mail_id": mail.id})
         return journal
-
-
-class FeedbackMail(models.Model):
-    _inherit = "mail.mail"
-
-    def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
-        self.ensure_one()
-        if self.model == "training.feedback.notice":
-            notice = self.env["training.feedback.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
-            if not notice or not notice._authorized():
-                raise ValidationError(self.env._("This feedback invitation is no longer authorized."))
-            subject, body = notice._content()
-            if (
-                self.email_to != notice.email
-                or self.email_cc
-                or self.recipient_ids
-                or self.recipient_cc_ids
-                or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
-            ):
-                raise ValidationError(self.env._("Feedback notifications contain only the sign-in link."))
-        return super()._prepare_outgoing_list(mail_server=mail_server, doc_to_followers=doc_to_followers)

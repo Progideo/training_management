@@ -22,6 +22,21 @@ class MailMail(models.Model):
                 or self.body_html != body
             ):
                 raise ValidationError(self.env._("Learning notifications contain only the authorized sign-in link."))
+        if self.model == "training.feedback.notice":
+            notice = self.env["training.feedback.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
+            if not notice or not notice._authorized():
+                raise ValidationError(self.env._("This feedback invitation is no longer authorized."))
+            subject, body = notice._content()
+            if (
+                self.email_to != notice.email
+                or self.email_cc
+                or self.recipient_ids
+                or self.recipient_cc_ids
+                or self.attachment_ids
+                or self.subject != subject
+                or self.body_html != body
+            ):
+                raise ValidationError(self.env._("Feedback notifications contain only the sign-in link."))
         # Called inside native _send's error handling, immediately before build
         # and transport, including queue retries and synchronous sends.
         policy = self.env["training.document.policy"]

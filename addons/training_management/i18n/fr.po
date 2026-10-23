@@ -7158,7 +7158,7 @@ msgstr "Campagne de retours"
 
 #. module: training_management
 #. odoo-python
-#: code:addons/training_management/models/training_feedback_notice.py:0
+#: code:addons/training_management/models/mail_mail.py:0
 msgid "Feedback notifications contain only the sign-in link."
 msgstr ""
 "Les notifications de retours contiennent uniquement le lien de connexion."
@@ -7390,7 +7390,7 @@ msgstr "Cette campagne de retours est indisponible."
 
 #. module: training_management
 #. odoo-python
-#: code:addons/training_management/models/training_feedback_notice.py:0
+#: code:addons/training_management/models/mail_mail.py:0
 msgid "This feedback invitation is no longer authorized."
 msgstr "Cette invitation au retour n’est plus autorisée."
 

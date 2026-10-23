@@ -80,7 +80,7 @@ class Feedback(models.Model):
 
 
 class FeedbackSurvey(models.Model):
-    _inherit = "survey.survey"
+    _inherit = "survey.survey"  # pylint: disable=consider-merging-classes-inherited  # purpose-specific feedback configuration
 
     training_feedback_id = fields.Many2one("training.feedback", ondelete="restrict", copy=False)
 
@@ -109,7 +109,7 @@ class FeedbackSpent(models.Model):
 
 
 class FeedbackInput(models.Model):
-    _inherit = "survey.user_input"
+    _inherit = "survey.user_input"  # pylint: disable=consider-merging-classes-inherited  # feedback and exam evidence have distinct transitions
 
     training_feedback_campaign_id = fields.Many2one(
         "training.feedback.campaign", ondelete="restrict", readonly=True, copy=False
@@ -135,7 +135,7 @@ class FeedbackInput(models.Model):
 
 
 class FeedbackLine(models.Model):
-    _inherit = "survey.user_input.line"
+    _inherit = "survey.user_input.line"  # pylint: disable=consider-merging-classes-inherited  # feedback and exam evidence have distinct transitions
 
     def _export_rows(self, fields, *, _is_toplevel_call=True):
         self.check_access("read")
