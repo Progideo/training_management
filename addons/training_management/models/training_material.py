@@ -109,7 +109,7 @@ class TrainingMaterial(models.Model):
             return result
 
     @api.private
-    def _freeze(self):  # pylint: disable=missing-return  # append server evidence, no return value
+    def _freeze(self):  # pylint: disable=missing-return,super-method-mismatch  # private first-diffusion evidence, no return value
         for material in self.filtered(lambda item: not item.frozen_at):
             material._serialize()
             if not material.frozen_at:
