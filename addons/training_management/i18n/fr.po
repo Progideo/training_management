@@ -195,6 +195,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -5181,3 +5182,13 @@ msgid ""
 msgstr ""
 "Les justificatifs de présence sont enregistrés uniquement par l’action "
 "contrôlée de présence."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid ""
+"The session or confirmation text changed. Reload and confirm the displayed "
+"information."
+msgstr ""
+"La séance ou le texte de confirmation a changé. Rechargez puis confirmez les"
+" informations affichées."

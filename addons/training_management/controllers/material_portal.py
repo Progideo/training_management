@@ -102,7 +102,11 @@ class TrainingPrivateBinary(Binary):
                     policy._check_read(record)
                 except (AccessError, MissingError):
                     raise request.not_found() from None
-                if document._name in ("training.learning.entry", "training.attendance.event"):
+                if document._name in (
+                    "training.learning.entry",
+                    "training.attendance.event",
+                    "training.attendance.edit",
+                ):
                     response.headers["Content-Disposition"] = content_disposition(
                         document.sudo().filename or "download"
                     )

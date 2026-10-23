@@ -6,7 +6,7 @@ from unittest.mock import patch
 from lxml import html
 
 from odoo import Command
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import Form, HttpCase, new_test_user, tagged
 from odoo.tools.binary import BinaryBytes
 from odoo.tools.misc import limited_field_access_token
@@ -36,11 +36,19 @@ class AttendanceCase(MaterialCase):
         return self.env["training.attendance.service"].with_user(user or self.portal)
 
     def declare(self, session, enrollment, start=30, end=120):
-        return self.service()._declare(enrollment.id, session.id, start, end, accepted=True)
+        return self.service()._declare(
+            enrollment.id, session.id, start, end, accepted=True, definition=self.service()._definition(session)
+        )
 
     def review(self, presence, **values):
         return self.service(self.portal_b)._review(
-            presence.session_id.id, presence.enrollment_id.id, 30, 120, revision=presence.revision, **values
+            presence.session_id.id,
+            presence.enrollment_id.id,
+            30,
+            120,
+            revision=presence.revision,
+            **values,
+            definition=self.service()._definition(presence.session_id),
         )
 
     def paper(self, session, enrollment, **values):
@@ -54,6 +62,7 @@ class AttendanceCase(MaterialCase):
             data=PDF,
             filename="signed.pdf",
             **values,
+            definition=self.service()._definition(session),
         )
 
 
@@ -150,6 +159,7 @@ class TestAttendance(AttendanceCase):
                     correction=True,
                     revision=presence.revision,
                     reason="Missing evidence",
+                    definition=self.service()._definition(session),
                 )
             self.service(self.coordinator)._review(
                 session.id,
@@ -161,6 +171,7 @@ class TestAttendance(AttendanceCase):
                 reason="Fictional corrected interval",
                 data=PDF + b" corrected",
                 filename="proof.pdf",
+                definition=self.service()._definition(session),
             )
             self.assertEqual(presence.minutes, 60)
             self.assertEqual(presence.event_ids[-1:].before, review.after)
@@ -170,12 +181,16 @@ class TestAttendance(AttendanceCase):
     def test_absence_without_declaration_and_stale_trainer_submission(self):
         _, session, enrollment = self.scheduled()
         with patch("odoo.fields.Datetime.now", return_value=session.end_at):
-            self.service(self.portal_b)._review(session.id, enrollment.id, 0, 0, absent=True)
+            self.service(self.portal_b)._review(
+                session.id, enrollment.id, 0, 0, absent=True, definition=self.service()._definition(session)
+            )
             presence = self.env["training.attendance"].search([("session_id", "=", session.id)])
             self.assertTrue(presence.absent)
             self.assertEqual(presence.minutes, 0)
             with self.assertRaises(ValidationError):
-                self.service(self.portal_b)._review(session.id, enrollment.id, 0, 120, revision=0)
+                self.service(self.portal_b)._review(
+                    session.id, enrollment.id, 0, 120, revision=0, definition=self.service()._definition(session)
+                )
 
     def test_permissions_cross_session_reassignment_revocation_and_company(self):
         delivery, session, enrollment = self.scheduled()
@@ -189,7 +204,14 @@ class TestAttendance(AttendanceCase):
             presence = self.declare(session, enrollment)
             for user in (self.portal, self.reader, self.internal, self.coordinator):
                 with self.assertRaises(AccessError):
-                    self.service(user)._review(session.id, enrollment.id, 0, 120, revision=presence.revision)
+                    self.service(user)._review(
+                        session.id,
+                        enrollment.id,
+                        0,
+                        120,
+                        revision=presence.revision,
+                        definition=self.service()._definition(session),
+                    )
             enrollment.action_suspend_access(reason="Fictional suspension")
             with self.assertRaises(AccessError):
                 self.declare(session, enrollment)
@@ -209,7 +231,9 @@ class TestAttendance(AttendanceCase):
             service = self.service().with_context(
                 default_actor_id=self.coordinator.id, default_occurred_at="2000-01-01", default_data="stolen"
             )
-            presence = service._declare(enrollment.id, session.id, 30, 120, accepted=True)
+            presence = service._declare(
+                enrollment.id, session.id, 30, 120, accepted=True, definition=service._definition(session)
+            )
             event = presence.event_ids
             self.assertEqual(event.actor_id, self.portal)
             self.assertEqual(event.occurred_at, session.end_at)
@@ -248,11 +272,33 @@ class TestAttendance(AttendanceCase):
         form.record.action_apply()
         self.assertEqual(delivery.session_ids.attendance_after, 30)
 
+    def test_paper_import_rejects_a_rescheduled_session(self):
+        _, session, enrollment = self.scheduled()
+        with Form(
+            self.env["training.attendance.edit"]
+            .with_user(self.coordinator)
+            .with_context(default_session_id=session.id, default_filename="signed.pdf")
+        ) as form:
+            form.enrollment_id = enrollment
+            form.data = BinaryBytes(PDF)
+            form.reason = "Fictional signed paper"
+        session._apply_schedule({"start_hour": 8.5}, reason="Fictional schedule change")
+        with self.assertRaisesRegex(ValidationError, "session or confirmation text changed"):
+            form.record.action_apply()
+        self.assertFalse(self.env["training.attendance"].search([("session_id", "=", session.id)]))
+
     def test_trainer_self_validation_and_current_assignment(self):
         _, session, enrollment = self.scheduled(instructor=self.portal.partner_id)
         presence = self.declare(session, enrollment)
         with self.assertRaises(AccessError):
-            self.service()._review(session.id, enrollment.id, 30, 120, revision=presence.revision)
+            self.service()._review(
+                session.id,
+                enrollment.id,
+                30,
+                120,
+                revision=presence.revision,
+                definition=self.service()._definition(session),
+            )
         _, other_session, _ = self.scheduled()
         self.assertTrue(self.service(self.portal_b)._session(other_session.id))
         other_session._apply_schedule(
@@ -278,9 +324,192 @@ class TestAttendance(AttendanceCase):
         self.assertFalse(policy._can_read(presence.event_ids))
         self.assertTrue(self.env["training.document.policy"].with_user(self.coordinator)._can_read(presence.event_ids))
 
+    def test_draft_evidence_follows_company_rights_and_cannot_become_an_attachment(self):
+        _, session, enrollment = self.scheduled()
+        wizard = (
+            self.env["training.attendance.edit"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "session_id": session.id,
+                    "enrollment_id": enrollment.id,
+                    "reason": "Fictional draft",
+                    "data": BinaryBytes(PDF),
+                    "filename": "draft.pdf",
+                }
+            )
+        )
+        policy = self.env["training.document.policy"].with_user(self.coordinator)
+        self.assertTrue(policy._can_read(wizard))
+        with self.assertRaises(ValidationError):
+            self.env["ir.attachment"].create(
+                {"name": "draft.pdf", "res_model": wizard._name, "res_id": wizard.id, "raw": PDF, "public": True}
+            )
+        self.coordinator.write(
+            {"company_id": self.other_company.id, "company_ids": [Command.set(self.other_company.ids)]}
+        )
+        with self.assertRaises(AccessError):
+            wizard.read(["data"])
+        self.assertFalse(policy._can_read(wizard))
+
+    def test_draft_cannot_link_an_enrollment_from_another_company(self):
+        _, session, _ = self.scheduled()
+        course = self.env["training.course"].create(
+            {"name": "Fictional foreign course", "company_id": self.other_company.id}
+        )
+        course.category_id = self.env["training.category"].create(
+            {"name": "Fictional foreign category", "company_id": self.other_company.id}
+        )
+        program = self.program.copy({"course_id": course.id, "version": "R61-B"})
+        program.action_validate()
+        delivery = self.env["training.delivery"].create(
+            {
+                "name": "Fictional foreign delivery",
+                "company_id": self.other_company.id,
+                "program_id": program.id,
+                "kind": "autonomous",
+                "access_policy": "duration",
+                "access_days": 2,
+            }
+        )
+        enrollment = self.env["training.enrollment"].create(
+            {"delivery_id": delivery.id, "participant_id": self.customer.id, "free_reason": "Fictional invitation"}
+        )
+        with self.assertRaises(UserError):
+            self.env["training.attendance.edit"].with_user(self.coordinator).create(
+                {
+                    "session_id": session.id,
+                    "enrollment_id": enrollment.id,
+                    "reason": "Fictional foreign link",
+                    "data": BinaryBytes(PDF),
+                    "filename": "draft.pdf",
+                }
+            )
+
 
 @tagged("post_install", "-at_install")
 class TestAttendanceHttp(AttendanceCase, HttpCase):
+    def test_confirmation_rejects_a_rescheduled_session(self):
+        _, session, enrollment = self.scheduled()
+        self.authenticate(self.portal.login, self.portal.login)
+        path = f"/my/trainings/{enrollment.id}/attendance"
+        form = html.fromstring(self.url_open(path).content).xpath("//form[@method='post']")[0]
+        payload = {item.get("name"): item.get("value", "") for item in form.xpath(".//input[@type='hidden']")}
+        payload.update(accepted="yes", start="30", end="120")
+        session._apply_schedule({"start_hour": 8.5}, reason="Fictional schedule change")
+        response = self.url_open(path, data=payload)
+        self.env.invalidate_all()
+        self.assertFalse(self.env["training.attendance"].search([("session_id", "=", session.id)]))
+        self.assertIn("session or confirmation text changed", response.text)
+
+    def test_confirmation_rejects_a_changed_session_definition(self):
+        _, session, enrollment = self.scheduled()
+        self.authenticate(self.portal.login, self.portal.login)
+        path = f"/my/trainings/{enrollment.id}/attendance"
+        response = self.url_open(path)
+        form = html.fromstring(response.content).xpath("//form[@method='post']")[0]
+        payload = {item.get("name"): item.get("value", "") for item in form.xpath(".//input[@type='hidden']")}
+        payload.update(accepted="yes", start="30", end="120")
+        session._apply_schedule(
+            {"attendance_wording": "Fictional changed confirmation text"}, reason="Fictional text change"
+        )
+        response = self.url_open(path, data=payload)
+        self.assertEqual(response.status_code, 200)
+        self.env.invalidate_all()
+        self.assertFalse(self.env["training.attendance"].search([("session_id", "=", session.id)]))
+        self.assertIn("alert-danger", response.text)
+        page = html.fromstring(response.content)
+        payload["definition"] = page.xpath("//input[@name='definition']/@value")[0]
+        response = self.url_open(path, data=payload)
+        self.assertEqual(response.status_code, 200)
+        self.env.invalidate_all()
+        presence = self.env["training.attendance"].search([("session_id", "=", session.id)])
+        self.assertEqual(presence.event_ids.wording, "Fictional changed confirmation text")
+
+    def test_signed_paper_absence_remains_selected_for_trainer_review(self):
+        _, session, enrollment = self.scheduled("paper")
+        self.paper(session, enrollment, absent=True)
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        path = f"/my/training-sessions/{session.id}/attendance"
+        response = self.url_open(path)
+        page = html.fromstring(response.content)
+        self.assertTrue(page.xpath("//input[@name='absent' and @checked]"))
+        payload = {item.get("name"): item.get("value", "") for item in page.xpath("//form//input[@type='hidden']")}
+        payload.update(absent="yes", start="0", end="120")
+        self.assertEqual(self.url_open(path, data=payload).status_code, 200)
+        self.env.invalidate_all()
+        presence = self.env["training.attendance"].search([("session_id", "=", session.id)])
+        self.assertTrue(presence.absent)
+        self.assertEqual(presence.minutes, 0)
+
+    def test_draft_evidence_token_never_replaces_current_authorization(self):
+        _, session, enrollment = self.scheduled()
+        wizard = (
+            self.env["training.attendance.edit"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "session_id": session.id,
+                    "enrollment_id": enrollment.id,
+                    "reason": "Fictional signed sheet",
+                    "data": BinaryBytes(PDF),
+                    "filename": "draft.pdf",
+                }
+            )
+        )
+        token = limited_field_access_token(wizard, "data", scope="binary")
+        url = f"/web/content/{wizard._name}/{wizard.id}/data?access_token={token}"
+        self.authenticate(None, None)
+        self.assertEqual(self.url_open(url).status_code, 404)
+        self.authenticate(self.portal.login, self.portal.login)
+        self.assertEqual(self.url_open(url).status_code, 404)
+        self.authenticate(self.coordinator.login, self.coordinator.login)
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, PDF)
+        self.assertIn("no-store", response.headers["Cache-Control"])
+        self.assertTrue(response.headers["Content-Disposition"].startswith("attachment"))
+        peer = new_test_user(
+            self.env, login="r61_peer_coordinator", groups="training_management.group_training_coordinator"
+        )
+        self.authenticate(peer.login, peer.login)
+        self.assertEqual(self.url_open(url).status_code, 404)
+        self.coordinator.write(
+            {"group_ids": [Command.unlink(self.env.ref("training_management.group_training_coordinator").id)]}
+        )
+        self.authenticate(self.coordinator.login, self.coordinator.login)
+        self.assertEqual(self.url_open(url).status_code, 404)
+
+    def test_review_errors_preserve_the_trainers_interval_and_comment(self):
+        _, session, enrollment = self.scheduled()
+        with patch("odoo.fields.Datetime.now", return_value=session.end_at + timedelta(hours=4)):
+            presence = self.declare(session, enrollment)
+            self.authenticate(self.portal_b.login, self.portal_b.login)
+            path = f"/my/training-sessions/{session.id}/attendance"
+            page = html.fromstring(self.url_open(path).content)
+            csrf = page.xpath("//input[@name='csrf_token']/@value")[0]
+            payload = {
+                "csrf_token": csrf,
+                "enrollment_id": enrollment.id,
+                "revision": presence.revision,
+                "definition": page.xpath("//input[@name='definition']/@value")[0],
+                "start": "45",
+                "end": "110",
+            }
+            response = self.url_open(path, data=payload)
+            self.assertIn("alert-danger", response.text)
+            page = html.fromstring(response.content)
+            self.assertEqual(page.xpath("//input[@name='start']/@value"), ["45"])
+            self.assertEqual(page.xpath("//input[@name='end']/@value"), ["110"])
+            payload.update(start="500", end="501", reason="Fictional review <private>")
+            response = self.url_open(path, data=payload)
+            page = html.fromstring(response.content)
+            self.assertEqual(page.xpath("//textarea[@name='reason']/text()"), [payload["reason"]])
+            payload.update(start="45", end="110")
+            self.assertEqual(self.url_open(path, data=payload).status_code, 200)
+            self.env.invalidate_all()
+            self.assertEqual(presence.minutes, 65)
+
     def test_trainer_can_record_an_absence_from_an_empty_native_form(self):
         _, session, enrollment = self.scheduled()
         self.authenticate(self.portal_b.login, self.portal_b.login)
@@ -296,6 +525,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
                 "csrf_token": csrf,
                 "enrollment_id": enrollment.id,
                 "revision": "0",
+                "definition": page.xpath("//input[@name='definition']/@value")[0],
                 "absent": "yes",
                 "start": "0",
                 "end": "120",
@@ -323,8 +553,17 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         response = self.url_open(path, data={"session_id": session.id, "accepted": "yes", "start": 0, "end": 120})
         self.assertEqual(response.status_code, 400)
         csrf = document.xpath("//input[@name='csrf_token']/@value")[0]
+        definition = document.xpath("//input[@name='definition']/@value")[0]
         response = self.url_open(
-            path, data={"csrf_token": csrf, "session_id": session.id, "accepted": "yes", "start": 30, "end": 120}
+            path,
+            data={
+                "csrf_token": csrf,
+                "definition": definition,
+                "session_id": session.id,
+                "accepted": "yes",
+                "start": 30,
+                "end": 120,
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn("Your declaration is recorded", response.text)
@@ -344,6 +583,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
                 "csrf_token": csrf,
                 "enrollment_id": enrollment.id,
                 "revision": presence.revision,
+                "definition": html.fromstring(response.content).xpath("//input[@name='definition']/@value")[0],
                 "start": 30,
                 "end": 120,
             },

@@ -1,5 +1,6 @@
 """PRE01–03: one retained interval, append-only declarations and decisions."""
 
+import hashlib
 import json
 import math
 from datetime import timedelta
@@ -180,6 +181,20 @@ class AttendanceService(models.AbstractModel):
     _description = "Authorized Attendance Operations"
 
     @api.private
+    def _definition(self, session):
+        """Detect a stale displayed session; this digest never grants access."""
+        values = {key: session[key] for key in (*SETTINGS, "name", "start_at", "end_at")}
+        values["id"] = session.id
+        return hashlib.sha256(json.dumps(values, sort_keys=True, default=str).encode()).hexdigest()
+
+    @api.private
+    def _check_definition(self, session, definition):
+        if definition != self._definition(session):
+            raise ValidationError(
+                self.env._("The session or confirmation text changed. Reload and confirm the displayed information.")
+            )
+
+    @api.private
     def _session(self, session_id, *, coordinator=False, lock=False):
         session = self.env["training.session"].sudo().browse(session_id).exists()
         user = self.env.user
@@ -256,7 +271,7 @@ class AttendanceService(models.AbstractModel):
         )
 
     @api.private
-    def _declare(self, enrollment_id, session_id, start, end, accepted=False):
+    def _declare(self, enrollment_id, session_id, start, end, accepted=False, *, definition=None):
         with self.env.cr.savepoint():
             enrollment = self.env["training.learning.service"]._enrollment(enrollment_id, lock=True)
             session = self.env["training.session"].sudo().browse(session_id).exists()
@@ -270,6 +285,7 @@ class AttendanceService(models.AbstractModel):
                 raise AccessError(self.env._("This attendance record is unavailable."))
             if not accepted:
                 raise ValidationError(self.env._("Accept the session confirmation text."))
+            self._check_definition(session, definition)
             first, last = self._interval(session, start, end)
             presence = self._presence(session, enrollment_id)
             previous = presence.event_ids.filtered(lambda e: e.kind == "declaration")
@@ -303,9 +319,11 @@ class AttendanceService(models.AbstractModel):
         reason="",
         data=b"",
         filename="",
+        definition=None,
     ):
         with self.env.cr.savepoint():
             session = self._session(session_id, coordinator=paper or correction, lock=True)
+            self._check_definition(session, definition)
             presence = self._presence(session, enrollment_id)
             if presence.revision != revision:
                 raise ValidationError(self.env._("Attendance changed. Reload before recording your decision."))

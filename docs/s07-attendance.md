@@ -16,10 +16,15 @@ méthode et date réelle de déclaration. Une déclaration tardive reste une ano
 à expliquer au contrôle ; les intervalles futurs ou hors séance sont refusés.
 Un lien collectif ne porte aucun droit de signature. Les accès S03 doivent être
 actifs ; suspension, révocation, expiration ou annulation empêchent une déclaration.
+Un formulaire devenu périmé après modification du planning ou du texte est refusé :
+le participant doit relire et confirmer les informations actualisées. L'empreinte
+du formulaire détecte ce changement ; elle ne donne aucun droit d'accès.
 
 Depuis ses séances affectées, le formateur contrôle les intervalles après la fin
 de séance, valide séparément et peut constater une absence sans déclaration.
 Il ne valide ni sa propre présence ni une déclaration dont il est l'auteur.
+Une absence papier reste cochée au contrôle. En cas d'erreur, l'intervalle et le
+commentaire saisis sont conservés sur le seul formulaire concerné.
 Le coordinateur importe un papier signé depuis la séance en indiquant la personne,
 l'intervalle et la provenance ; ce dépôt attend le contrôle du formateur.
 Un fichier collectif reste réservé aux coordinateurs de la société exploitante :
@@ -51,6 +56,12 @@ revérifient l'utilisateur réel ; pas d'envoi par messagerie. Les portails reç
 des valeurs explicitement sélectionnées, sans droits ORM généraux ni pièces collectives.
 Le verrou et la révision S03 protègent les doubles déclarations et les suspensions
 concurrentes ; la contrainte unique empêche un second compte de présence.
+Les fichiers temporaires de l'assistant suivent la même politique, même avec
+un jeton natif : créateur uniquement et société actuellement autorisée. Les règles
+ORM de société et de propriétaire complètent ses droits de coordinateur ; les
+preuves enregistrées restent accessibles aux coordinateurs autorisés de la société.
+Le contrôle natif de société refuse un lien entre séance et inscription de
+sociétés différentes, y compris dans un brouillon.
 
 Le chargement des nouvelles vues sur une base équipée de Website réutilise le
 pont de migration ciblé S05 : défaut de visibilité natif limité à la transaction,
@@ -71,6 +82,8 @@ les activités S05, sans séance fictive ; les attestations relèvent de S08.
    Corriger avec justificatif ; vérifier les anciens fichiers et le journal inchangés.
 5. Vérifier formulaire mobile, parcours clavier, CSRF, liens directs et jetons,
    refus des pièces collectives aux profils portail/commercial et hors société.
+   Tester aussi un brouillon d'import avec jeton, un autre coordinateur et un
+   retrait d'habilitation ; modifier le texte/planning après affichage, puis confirmer.
 6. Exécuter `tests/ci/run_s07.sh` : S06 vers S07, historiques catalogue/documents/
    apprentissage/Survey, tests du socle et intégrations, installation vierge,
    deuxième mise à jour avec présences et deux transactions concurrentes.

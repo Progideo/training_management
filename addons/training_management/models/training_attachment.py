@@ -27,7 +27,8 @@ class IrAttachment(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         if any(
-            vals.get("res_model", self.env.context.get("default_res_model")) == "training.attendance.event"
+            vals.get("res_model", self.env.context.get("default_res_model"))
+            in ("training.attendance.event", "training.attendance.edit")
             for vals in vals_list
         ):
             raise ValidationError(
@@ -113,8 +114,8 @@ class IrAttachment(models.Model):
         )
 
     def write(self, vals):
-        if vals.get("res_model") == "training.attendance.event" or any(
-            a.res_model == "training.attendance.event" for a in self.sudo()
+        if vals.get("res_model") in ("training.attendance.event", "training.attendance.edit") or any(
+            a.res_model in ("training.attendance.event", "training.attendance.edit") for a in self.sudo()
         ):
             raise ValidationError(
                 self.env._("Attendance evidence is stored only through the controlled attendance action.")

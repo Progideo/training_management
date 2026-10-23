@@ -95,10 +95,23 @@ if os.environ["S07_PHASE"] == "prepare":
     presence = (
         env["training.attendance.service"]
         .with_user(participant)
-        ._declare(enrollment.id, session.id, 30, 120, accepted=True)
+        ._declare(
+            enrollment.id,
+            session.id,
+            30,
+            120,
+            accepted=True,
+            definition=env["training.attendance.service"]._definition(session),
+        )
     )
     env["training.attendance.service"].with_user(trainer)._review(
-        session.id, enrollment.id, 30, 120, revision=presence.revision, reason="Fictional verified late declaration"
+        session.id,
+        enrollment.id,
+        30,
+        120,
+        revision=presence.revision,
+        reason="Fictional verified late declaration",
+        definition=env["training.attendance.service"]._definition(session),
     )
     env["training.attendance.service"].with_user(coordinator)._review(
         session.id,
@@ -110,6 +123,7 @@ if os.environ["S07_PHASE"] == "prepare":
         reason="Fictional signed correction",
         data=b"%PDF-1.4\nFictional attendance evidence\n%%EOF",
         filename="proof.pdf",
+        definition=env["training.attendance.service"]._definition(session),
     )
     remember("s07_presence", presence)
     remember("s07_trainer", trainer)

@@ -13,6 +13,7 @@ session = original.session_id
 participant = enrollment.user_id
 coordinator = env.ref("training_management_test.s052_coordinator")
 context = {"allowed_company_ids": enrollment.company_id.ids}
+definition = env["training.attendance.service"]._definition(session)
 env.cr.commit()  # Release the probe's fixture transaction, never used on real data.
 
 with env.registry.cursor() as first, env.registry.cursor() as second:
@@ -21,23 +22,23 @@ with env.registry.cursor() as first, env.registry.cursor() as second:
     ]
     for service in (one, two):
         assert service.env["training.learning.service"]._enrollment(enrollment.id)
-    result = one._declare(enrollment.id, session.id, 30, 120, accepted=True)
+    result = one._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     try:
-        two._declare(enrollment.id, session.id, 30, 120, accepted=True)
+        two._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     except LockError:
         pass
     else:
         raise AssertionError("Duplicate declaration bypassed the held delivery lock")
     first.commit()
     try:
-        two._declare(enrollment.id, session.id, 30, 120, accepted=True)
+        two._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     except SerializationFailure:
         second.rollback()
     else:
         raise AssertionError("A stale declaration snapshot must retry")
 with env.registry.cursor() as retry:
     service = api.Environment(retry, participant.id, context)["training.attendance.service"]
-    presence = service._declare(enrollment.id, session.id, 30, 120, accepted=True)
+    presence = service._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     assert presence.id == result.id
     assert len(presence.event_ids.filtered(lambda e: e.kind == "declaration")) == 1
     retry.commit()
@@ -48,14 +49,14 @@ with env.registry.cursor() as first, env.registry.cursor() as second:
     assert student.env["training.learning.service"]._enrollment(enrollment.id)
     staff["training.enrollment"].browse(enrollment.id).action_suspend_access(reason="Fictional concurrent suspension")
     try:
-        student._declare(enrollment.id, session.id, 30, 120, accepted=True)
+        student._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     except LockError:
         pass
     else:
         raise AssertionError("Declaration bypassed a concurrent suspension")
     first.commit()
     try:
-        student._declare(enrollment.id, session.id, 30, 120, accepted=True)
+        student._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     except SerializationFailure:
         second.rollback()
     else:
@@ -63,7 +64,7 @@ with env.registry.cursor() as first, env.registry.cursor() as second:
 with env.registry.cursor() as retry:
     service = api.Environment(retry, participant.id, context)["training.attendance.service"]
     try:
-        service._declare(enrollment.id, session.id, 30, 120, accepted=True)
+        service._declare(enrollment.id, session.id, 30, 120, accepted=True, definition=definition)
     except AccessError:
         pass
     else:

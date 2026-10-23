@@ -23,12 +23,15 @@ class AttendancePortal(http.Controller):
                         post.get("start"),
                         post.get("end"),
                         accepted=post.get("accepted") == "yes",
+                        definition=post.get("definition"),
                     )
                     return TrainingParticipantPortal._private(request.redirect(request.httprequest.path))
                 except (ValueError, ValidationError) as exc:
                     error = str(exc) if isinstance(exc, ValidationError) else request.env._("Choose a valid session.")
             sessions = enrollment.delivery_id.session_ids.filtered(lambda s: not s.cancelled)
             rows = self._rows(sessions, enrollment)
+            if error:
+                self._draft(rows, post, trainer=False)
         except (AccessError, MissingError):
             raise request.not_found() from None
         return TrainingParticipantPortal._private(
@@ -59,6 +62,7 @@ class AttendancePortal(http.Controller):
                         post.get("end"),
                         absent=post.get("absent") == "yes",
                         revision=int(post.get("revision", 0)),
+                        definition=post.get("definition"),
                         reason=post.get("reason", ""),
                     )
                     return TrainingParticipantPortal._private(request.redirect(request.httprequest.path))
@@ -68,6 +72,8 @@ class AttendancePortal(http.Controller):
                     )
             enrollments = session.delivery_id.enrollment_ids.filtered(lambda e: e.state == "confirmed")
             rows = [row for enrollment in enrollments for row in self._rows(session, enrollment)]
+            if error:
+                self._draft(rows, post, trainer=True)
         except (AccessError, MissingError):
             raise request.not_found() from None
         return TrainingParticipantPortal._private(
@@ -76,6 +82,15 @@ class AttendancePortal(http.Controller):
                 {"rows": rows, "error": error, "trainer": True, "name": session.name},
             )
         )
+
+    def _draft(self, rows, post, *, trainer):
+        """Keep only visible input on the rejected person's authorized form."""
+        for row in rows:
+            key = "enrollment_id" if trainer else "session_id"
+            if str(row[key]) == post.get(key):
+                row.update(start=post.get("start", ""), end=post.get("end", ""))
+                if trainer:
+                    row.update(absent=post.get("absent") == "yes", reason=post.get("reason", ""))
 
     def _rows(self, sessions, enrollment):
         rows = []
@@ -102,8 +117,11 @@ class AttendancePortal(http.Controller):
                     ),
                     "timezone": tz,
                     "wording": session.attendance_wording,
+                    "definition": request.env["training.attendance.service"]._definition(session),
                     "mode": session.attendance_mode,
                     "revision": presence.revision if presence else 0,
+                    "absent": bool(last.absent),
+                    "reason": "",
                     "minutes": presence.minutes if presence else 0,
                     "state": dict(presence._fields["state"]._description_selection(request.env)).get(
                         presence.state, request.env._("Not Declared")
