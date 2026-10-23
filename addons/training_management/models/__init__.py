@@ -23,3 +23,5 @@ from . import training_attendance
 
 from . import training_closure
 from . import training_evaluation
+from . import training_feedback
+from . import training_feedback_notice

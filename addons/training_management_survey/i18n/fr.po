@@ -85,6 +85,7 @@ msgstr "Choisissez un programme et une version."
 #. odoo-python
 #: code:addons/training_management_survey/models/service.py:0
 #: code:addons/training_management_survey/models/evaluation.py:0
+#: code:addons/training_management_survey/models/feedback.py:0
 msgid "Choose answers from this question."
 msgstr "Choisissez des réponses appartenant à cette question."
 
@@ -173,6 +174,11 @@ msgstr "Critère"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_program_version__display_name
 #: model:ir.model.fields,field_description:training_management_survey.field_training_evaluation__display_name
 #: model:ir.model.fields,field_description:training_management_survey.field_training_evaluation_service__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_service__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_ir_attachment__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_report_survey_certification_report_view__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -235,6 +241,11 @@ msgstr "Routage HTTP"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_program_version__id
 #: model:ir.model.fields,field_description:training_management_survey.field_training_evaluation__id
 #: model:ir.model.fields,field_description:training_management_survey.field_training_evaluation_service__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_service__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__id
+#: model:ir.model.fields,field_description:training_management_survey.field_ir_attachment__id
+#: model:ir.model.fields,field_description:training_management_survey.field_report_survey_certification_report_view__id
 msgid "ID"
 msgstr "ID"
 
@@ -655,6 +666,7 @@ msgstr "La remise termine cette tentative. Ses réponses ne pourront plus être 
 #. module: training_management_survey
 #: model:ir.model,name:training_management_survey.model_survey_survey
 #: model:ir.model.fields,field_description:training_management_survey.field_training_evaluation__survey_id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback__survey_id
 msgid "Survey"
 msgstr "Sondage"
 
@@ -909,6 +921,7 @@ msgstr "Terminez le questionnaire natif avant de valider son résultat."
 #. module: training_management_survey
 #. odoo-python
 #: code:addons/training_management_survey/models/evaluation.py:0
+#: code:addons/training_management_survey/models/feedback.py:0
 msgid "Complete the required answers before submitting."
 msgstr "Complétez les réponses obligatoires avant la remise."
 
@@ -922,6 +935,7 @@ msgstr "Créez une nouvelle version pour ajouter un questionnaire."
 
 #. module: training_management_survey
 #: model_terms:ir.ui.view,arch_db:training_management_survey.view_evaluation_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.view_feedback_survey
 msgid "Questionnaire"
 msgstr "Questionnaire"
 
@@ -1002,3 +1016,252 @@ msgstr "Évaluation de formation versionnée"
 #: code:addons/training_management_survey/models/evaluation.py:0
 msgid "This evaluation questionnaire is archived."
 msgstr "Ce questionnaire d’évaluation est archivé."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Anonymous answers are submitted together, without a named draft."
+msgstr ""
+"Les réponses anonymes sont remises ensemble, sans brouillon nominatif."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid ""
+"Anonymous collection. Individual response tracking is unavailable. Do not "
+"enter names, email addresses or identifying details in free text. Reminders "
+"are collective, even if you have already replied."
+msgstr ""
+"Collecte anonyme. Le suivi individuel des réponses est indisponible. "
+"N’indiquez aucun nom, courriel ou détail identifiant dans le texte libre. "
+"Les relances sont collectives, même si vous avez déjà répondu."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__campaign_id
+msgid "Campaign"
+msgstr "Campagne"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Choose a single-choice indicator and its favorable choices."
+msgstr "Choisissez un indicateur à choix unique et ses réponses favorables."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Choose the questionnaire belonging to this feedback version."
+msgstr "Choisissez le questionnaire de cette version de retours."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Choose the satisfaction indicator question."
+msgstr "Choisissez la question indicatrice de satisfaction."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/controllers/feedback.py:0
+msgid "Choose valid answers."
+msgstr "Choisissez des réponses valides."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Create a new feedback version first."
+msgstr "Créez d’abord une nouvelle version des retours."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__digests
+msgid "Digests"
+msgstr "Empreintes"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_summary
+msgid "Favorable / valid:"
+msgstr "Favorables / valides :"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback__favorable_answer_ids
+msgid "Favorable Choices"
+msgstr "Choix favorables"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_feedback
+msgid "Feedback Questionnaire Version"
+msgstr "Version du questionnaire de retours"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Feedback responses are immutable."
+msgstr "Les réponses aux retours sont immuables."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_link
+msgid "My training feedback"
+msgstr "Mes retours de formation"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_list
+msgid "No authorized feedback campaign."
+msgstr "Aucune campagne de retours autorisée."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_summary
+msgid "Not calculable"
+msgstr "Non calculable"
+
+#. module: training_management_survey
+#: model:ir.model.constraint,message:training_management_survey.constraint_training_feedback_spent_one_use
+msgid "One unordered anti-replay pool per campaign."
+msgstr "Un seul registre anti-double-remise non ordonné par campagne."
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_feedback_spent
+msgid "Private Anonymous Anti-Replay Ledger"
+msgstr "Registre technique privé anti-double-remise anonyme"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Private technical ledger."
+msgstr "Registre technique privé."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Provide at least one answer before submitting."
+msgstr "Renseignez au moins une réponse avant la remise."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "Required answer"
+msgstr "Réponse obligatoire"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Retain collected feedback."
+msgstr "Conservez les retours recueillis."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback__indicator_question_id
+msgid "Satisfaction Indicator"
+msgstr "Indicateur de satisfaction"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "Save and resume later"
+msgstr "Enregistrer et reprendre plus tard"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_feedback_service
+msgid "Scoped Feedback Operations"
+msgstr "Opérations de retours par périmètre"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "Submit feedback"
+msgstr "Remettre le retour"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/controllers/feedback.py:0
+msgid "Thank you. Your feedback has been received."
+msgstr "Merci. Votre retour a été reçu."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "The native database secret is unavailable."
+msgstr "Le secret natif de la base est indisponible."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "This feedback campaign is not open."
+msgstr "Cette campagne de retours n’est pas ouverte."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "This feedback invitation is unavailable."
+msgstr "Cette invitation au retour est indisponible."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "This questionnaire is archived."
+msgstr "Ce questionnaire est archivé."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_feedback_id
+msgid "Training Feedback"
+msgstr "Retours de formation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_feedback_campaign_id
+msgid "Training Feedback Campaign"
+msgstr "Campagne de retours de formation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_user_input__training_feedback_recipient_id
+msgid "Training Feedback Recipient"
+msgstr "Destinataire du retour de formation"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_list
+msgid "Training feedback"
+msgstr "Retours de formation"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Use a distinct feedback questionnaire in its programme."
+msgstr "Utilisez un questionnaire de retours distinct dans son programme."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Use questions from this questionnaire."
+msgstr "Utilisez les questions de ce questionnaire."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_summary
+msgid "Valid responses:"
+msgstr "Réponses valides :"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_summary
+msgid "Version"
+msgstr "Version"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "Your answer"
+msgstr "Votre réponse"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/controllers/feedback.py:0
+msgid "Your draft has been saved."
+msgstr "Votre brouillon a été enregistré."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/controllers/feedback.py:0
+msgid "Your feedback has already been received."
+msgstr "Votre retour a déjà été reçu."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "— Deadline (UTC):"
+msgstr "— Échéance (UTC) :"
+
+#. module: training_management_survey
+#: code:addons/training_management_survey/models/binary.py:0
+msgid "Feedback response files are private."
+msgstr "Les fichiers des réponses aux retours sont privés."

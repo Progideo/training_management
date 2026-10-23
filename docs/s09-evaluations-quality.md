@@ -8,7 +8,8 @@ Les compléments validés de #19/#20 font référence pour les droits et le tabl
 Décision utilisateur du 23 octobre 2026 : restitution anonyme dès trois réponses
 recevables, sans contrôle supplémentaire de réidentification. Cette décision
 prévaut sur les restrictions de restitution proposées précédemment ; elle est reportée dans les issues #19 et #20.
-S09.1 est en développement ; S09.2 à S09.4 restent des incréments distincts.
+S09.1 est livré ([PR #63](https://github.com/Progideo/training_management/pull/63)).
+S09.2 est décrit dans [sa page](s092-feedback.md) ; S09.3 et S09.4 restent distincts.
 
 ## Référence et périmètre
 

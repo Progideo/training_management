@@ -30,6 +30,15 @@ class IrBinary(models.AbstractModel):
 
     def _check_training_binary_access(self, record):
         result = super()._check_training_binary_access(record)
+        # Classification may inspect a public/legacy attachment, but cannot
+        # authorize files attached to protected feedback answers.
+        target = record.sudo()
+        if target._name == "ir.attachment" and target.res_model in ("survey.user_input", "survey.user_input.line"):
+            target = self.env[target.res_model].sudo().browse(target.res_id).exists()
+        if target._name == "survey.user_input.line":
+            target = target.user_input_id
+        if target._name == "survey.user_input" and target.training_feedback_campaign_id:
+            raise AccessError(self.env._("Feedback response files are private."))
         survey = _training_exam(record)
         if survey:
             # Recheck under the original identity even if native token resolution
