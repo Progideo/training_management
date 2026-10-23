@@ -1,0 +1,34 @@
+<odoo>
+    <template id="portal_participant_home" inherit_id="portal.portal_my_home" name="Participant Training">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/trainings">My training</a></div></xpath>
+    </template>
+    <template id="portal_trainings" name="My Training">
+        <t t-call="portal.portal_layout"><h1>My training</h1>
+            <p t-if="not enrollments">No training is currently available. Contact your coordinator if needed.</p>
+            <ul class="list-group"><li t-foreach="enrollments" t-as="enrollment" class="list-group-item">
+                <a t-att-href="'/my/trainings/%s' % enrollment['id']" t-out="enrollment['name']"/><div t-out="enrollment['programme']"/>
+            </li></ul><t t-call="portal.pager"/>
+        </t>
+    </template>
+    <template id="portal_materials" name="Private PDFs">
+        <h2>Private PDFs</h2><p t-if="not materials">No private PDF is currently available.</p>
+        <ul class="list-group"><li t-foreach="materials" t-as="material" class="list-group-item">
+            <a t-att-href="material['url']"><t t-out="material['name']"/> — <t t-out="material['version']"/></a>
+        </li></ul>
+    </template>
+    <template id="portal_training" name="My Training Details">
+        <t t-call="portal.portal_layout"><a href="/my/trainings">My training</a><h1 t-out="name"/>
+            <h2>Applicable programme</h2><p t-out="programme"/>
+            <a t-if="programme_url" t-att-href="programme_url" class="btn btn-outline-primary mb-3">Download Programme PDF</a>
+            <h2>Schedule</h2><p t-if="not sessions">No scheduled session.</p>
+            <ul class="list-group mb-3"><li t-foreach="sessions" t-as="session" class="list-group-item">
+                <strong t-out="session['name']"/><p><t t-out="session['start']"/> → <t t-out="session['end']"/> (<t t-out="session['timezone']"/>)</p>
+                <p>Reference timezone: <t t-out="session['reference_timezone']"/></p><p t-out="session['location']"/>
+                <a t-if="session['meeting_url']" t-att-href="session['meeting_url']" rel="noopener noreferrer">Join remote session</a>
+            </li></ul><t t-call="training_management.portal_materials"/>
+        </t>
+    </template>
+    <template id="portal_trainer_materials" inherit_id="portal_trainer_session" name="Assigned Session PDFs">
+        <xpath expr="//h2" position="before"><t t-set="materials" t-value="session['materials']"/><t t-call="training_management.portal_materials"/></xpath>
+    </template>
+</odoo>

@@ -6,7 +6,7 @@ the PDF preview); ordinary Odoo attachments retain their native behavior.
 """
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 CONFIDENTIAL_MODELS = ("training.adaptation", "training.adaptation.history")
@@ -28,6 +28,31 @@ class IrAttachment(models.Model):
     def create(self, vals_list):
         if any(vals.get("training_program_id") for vals in vals_list):
             raise ValidationError(self.env._("Reference programme PDFs are created only during controlled generation."))
+        vals_list = [dict(vals) for vals in vals_list]
+        for vals in vals_list:
+            source_model = vals.get("res_model") or self.env.context.get("default_res_model")
+            if source_model == "training.material":
+                vals.update(self._add_missing_default_values(vals))
+                material = self.env["training.material"].browse(
+                    vals.get("res_id") or self.env.context.get("default_res_id")
+                )
+                material._require_coordinator()
+                material._serialize()
+                # Native Binary.create uses the environment company by default.
+                # Derive this metadata from the authorized parent in a multi-company batch.
+                vals["company_id"] = material.company_id.id if material else False
+                if (
+                    not material
+                    or material.frozen_at
+                    or material.withdrawn
+                    or vals.get("res_field") != "data"
+                    or vals.get("public")
+                    or vals.get("access_token")
+                    or vals.get("type", "binary") != "binary"
+                    or vals.get("url")
+                    or self.sudo().search_count([("res_model", "=", "training.material"), ("res_id", "=", material.id)])
+                ):
+                    raise ValidationError(self.env._("Use the PDF field of a new private support version."))
         # An untrusted default_* context cannot forge the protected marker.
         return super().create([dict(vals, training_program_id=False) for vals in vals_list])
 
@@ -55,9 +80,45 @@ class IrAttachment(models.Model):
         )
 
     def write(self, vals):
+        protected = self.sudo().filtered(lambda item: item.res_model == "training.material")
+        if protected or vals.get("res_model") == "training.material":
+            if not protected or set(vals) & {
+                "res_model",
+                "res_id",
+                "res_field",
+                "public",
+                "access_token",
+                "type",
+                "url",
+                "company_id",
+            }:
+                raise ValidationError(self.env._("A private support cannot be detached, shared or reassigned."))
+            materials = self.env["training.material"].browse(protected.mapped("res_id"))
+            materials._require_coordinator()
+            materials._serialize()
+            if any(item.frozen_at or item.withdrawn for item in materials):
+                raise ValidationError(self.env._("The distributed PDF file is immutable."))
         if any(self.sudo().mapped("training_program_id")) or vals.get("training_program_id"):
             raise ValidationError(self.env._("A reference programme PDF cannot be changed or shared by token."))
         return super().write(vals)
+
+    def _export_rows(self, fields, *, _is_toplevel_call=True):
+        if any(item.res_model == "training.material" for item in self.sudo()):
+            self.check_access("read")
+            raise UserError(
+                self.env._("Bulk export of private support records is unavailable. Download an authorized PDF instead.")
+            )
+        return super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
+
+    def copy_data(self, default=None):
+        if any(item.res_model == "training.material" for item in self.sudo()):
+            raise ValidationError(self.env._("Private support files cannot be copied."))
+        return super().copy_data(default)
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_material(self):
+        if any(item.res_model == "training.material" for item in self.sudo()):
+            raise ValidationError(self.env._("Keep private support files and their history."))
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_programme_pdf(self):
@@ -88,9 +149,15 @@ class IrAttachment(models.Model):
     def _can_return_content(self, field_name=None, access_token=None):
         self._check_programme_pdf_access()
         self._check_adaptation_access()
+        policy = self.env["training.document.policy"]
+        document = policy._document(self)
+        if document and document._name in ("training.material", "training.program.version"):
+            policy._check_read(self)
+            return True
         return super()._can_return_content(field_name, access_token)
 
     def _to_http_stream(self):
         self._check_programme_pdf_access()
         self._check_adaptation_access()
+        self.env["training.document.policy"]._check_read(self)
         return super()._to_http_stream()

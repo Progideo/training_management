@@ -10,3 +10,7 @@ from . import training_preparation
 from . import training_invitation
 from . import training_attachment
 from . import training_program_pdf
+from . import training_material
+from . import training_document_policy
+from . import ir_binary
+from . import mail_mail
