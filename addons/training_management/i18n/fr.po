@@ -6869,3 +6869,8 @@ msgstr "Historique des résultats validés"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Attempt"
 msgstr "Tentative"
+
+#. module: training_management
+#: code:addons/training_management/models/training_evaluation.py:0
+msgid "Reload the current evaluation attempt before answering."
+msgstr "Rechargez la tentative d’évaluation courante avant de répondre."

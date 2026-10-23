@@ -74,7 +74,7 @@ class SurveyEvaluation(models.Model):
 
 
 class EvaluationAttempt(models.Model):
-    _inherit = "survey.user_input"
+    _inherit = "survey.user_input"  # pylint: disable=consider-merging-classes-inherited  # S09 submission is distinct from S06 scoring
 
     training_evaluation_assignment_id = fields.Many2one(
         "training.evaluation.assignment", ondelete="restrict", copy=False, readonly=True
@@ -118,7 +118,7 @@ class EvaluationService(models.AbstractModel):
 
     @api.private
     def _start_checked(self, assignment_id):
-        row = super()._start(assignment_id)
+        row = super()._start(assignment_id)  # pylint: disable=super-method-mismatch  # savepoint wrapper keeps start atomic
         survey = row.evaluation_id.survey_id
         if not survey:
             return row
@@ -238,10 +238,10 @@ class EvaluationService(models.AbstractModel):
         return super()._validate(assignment_id, **values)
 
     @api.private
-    def _portal_answers(self, assignment_id, post, *, submit=False):
-        row = self._assignment(assignment_id, participant=True)
+    def _portal_answers(self, assignment_id, post, *, attempt_number, submit=False):
+        row = self._participant_attempt(assignment_id, attempt_number)
         if not row.evaluation_id.survey_id:
-            return super()._portal_answers(assignment_id, post, submit=submit)
+            return super()._portal_answers(assignment_id, post, attempt_number=attempt_number, submit=submit)
         answers = {}
         for key, value in post.items():
             if key.startswith("q_") and key[2:].isdigit():
@@ -274,7 +274,12 @@ class EvaluationService(models.AbstractModel):
         )
         if attempt and values["own"]:
             attempt = self._native_attempt(attempt.id)
-            values.update(submitted=attempt.state == "done", state=self._state_label(row), revision=row.revision)
+            values.update(
+                submitted=attempt.state == "done",
+                state=self._state_label(row),
+                revision=row.revision,
+                due=attempt.deadline,
+            )
         if not attempt:
             return values
         if values["own"] and attempt.state != "done":

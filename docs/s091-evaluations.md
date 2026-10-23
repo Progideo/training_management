@@ -38,15 +38,21 @@ l’historique ; une nouvelle tentative redevient non évaluée jusqu’à valid
 Les questions/réponses en ligne utilisent exclusivement les modèles Survey.
 QCU/QCM à barème exact pour les évaluations notées ; choix et texte pour le
 qualitatif. Échéance serveur et éventuelle durée d’épreuve restent distinctes.
+Le formulaire est lié à sa tentative : une page ancienne ne peut pas remettre
+une tentative rouverte. Pour une épreuve chronométrée commencée, le portail affiche
+l’échéance effective de la tentative.
 La passation S09 ne donne ni accès au circuit d’examen blanc S06 ni certificat natif
 Survey. Les versions S06 et les sondages ordinaires conservent leurs parcours.
 
 Le superviseur lit uniquement les affectations et résultats de ses réalisations,
 sans accès ORM aux réponses, décisions détaillées ou preuves S08. Le formateur
 utilise le portail et sa mission courante. Les validations exigent une habilitation
-courante ; la retirer bloque immédiatement l’action. Les contrôles portent aussi
+courante et une mission formateur courante, même en cumul de rôles ; retirer
+l’une ou l’autre bloque immédiatement l’action. Les contrôles portent aussi
 sur recherches, listes, exports, routes et anciens liens. Un compte client seul
-n’obtient aucun accès aux résultats. Les élévations du service sont privées,
+n’obtient aucun accès aux résultats. Les réponses S09 restent exclues des lectures et exports natifs Survey, y compris
+pour le coordinateur ; l’évaluateur habilité passe par la projection contrôlée.
+Les élévations du service sont privées,
 après vérification de l’identité et de la société exploitante.
 
 Le PDF `S091-QWEB-1` conserve critères, finalité, version, tentative, décision,

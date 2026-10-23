@@ -11,7 +11,7 @@ from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
 
 
 class NativeEvaluationCase(EvaluationCase):
-    def native_evaluation(self, scored=True):
+    def native_evaluation(self, scored=True, **survey_values):
         row, grant = self.assigned_evaluation(scored=scored)
         action = row.evaluation_id.action_new_version()
         evaluation = self.env["training.evaluation"].with_user(self.coordinator).browse(action["res_id"])
@@ -36,6 +36,8 @@ class NativeEvaluationCase(EvaluationCase):
                 }
             )
         )
+        if survey_values:
+            survey.write(survey_values)
         evaluation.action_publish()
         assignment = (
             self.env["training.evaluation.assignment"]
@@ -79,6 +81,25 @@ class TestNativeEvaluation(NativeEvaluationCase):
         grant.write({"active": False})
         with self.assertRaises(AccessError):
             self.decision(row, score=90)
+
+    def test_coordinator_cannot_bypass_evaluator_scope_through_native_answers(self):
+        row, _grant, _survey, question = self.native_evaluation()
+        service = self.env["training.evaluation.service"].with_user(self.portal)
+        service._start(row.id)
+        service._save_answers(row.id, {question.id: question.suggested_answer_ids[:1].ids}, submit=True)
+        attempt = self.env["survey.user_input"].search([("training_evaluation_assignment_id", "=", row.id)])
+        with self.assertRaises(AccessError):
+            attempt.with_user(self.coordinator).read(["scoring_percentage"])
+        with self.assertRaises(AccessError):
+            attempt.user_input_line_ids.with_user(self.coordinator).read(["suggested_answer_id"])
+        self.assertFalse(attempt.with_user(self.coordinator).search([("id", "=", attempt.id)]))
+        self.assertFalse(
+            attempt.user_input_line_ids.with_user(self.coordinator).search([("user_input_id", "=", attempt.id)])
+        )
+        # Authorized evaluators use the scoped projection, not native Survey ACLs.
+        self.assertTrue(
+            self.env["training.evaluation.service"].with_user(self.portal_b)._portal_values(row)["review_answers"]
+        )
 
     def test_qualitative_text_and_new_attempt_preserve_native_answers(self):
         row, _grant, _survey, question = self.native_evaluation(scored=False)
@@ -129,6 +150,14 @@ class TestNativeEvaluation(NativeEvaluationCase):
         self.assertEqual(row.state, "submitted")
         self.assertFalse(row.result_available)
 
+    def test_portal_displays_effective_timed_deadline(self):
+        row, _grant, _survey, _question = self.native_evaluation(is_time_limited=True, time_limit=5)
+        service = self.env["training.evaluation.service"].with_user(self.portal)
+        service._start(row.id)
+        attempt = self.env["survey.user_input"].search([("training_evaluation_assignment_id", "=", row.id)])
+        self.assertLess(attempt.deadline, row.due_at)
+        self.assertEqual(service._portal_values(row)["due"], attempt.deadline)
+
     def test_archived_questionnaire_refuses_new_attempt_without_partial_state(self):
         row, _grant, survey, _question = self.native_evaluation()
         survey.write({"active": False})
@@ -148,7 +177,7 @@ class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):
         response = self.url_open(url)
         self.assertEqual(response.status_code, 200)
         token = html.fromstring(response.content).xpath('//input[@name="csrf_token"]/@value')[0]
-        response = self.url_open(url, data={"csrf_token": token, "operation": "start"})
+        response = self.url_open(url, data={"csrf_token": token, "operation": "start", "attempt_number": "1"})
         self.assertEqual(response.status_code, 200)
         self.assertIn("Fictional pedagogical question", response.text)
         token = html.fromstring(response.content).xpath('//input[@name="csrf_token"]/@value')[0]
@@ -157,6 +186,7 @@ class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):
             data={
                 "csrf_token": token,
                 "operation": "submit",
+                "attempt_number": "1",
                 "q_%s" % question.id: str(question.suggested_answer_ids[:1].id),
             },
         )
@@ -167,3 +197,49 @@ class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):
         row.delivery_id.write({"evaluation_instructor_ids": [Command.clear()]})
         self.assertEqual(self.url_open(url).status_code, 404)
         self.assertNotIn(row.name, self.url_open("/my/training-evaluations").text)
+
+    def test_old_http_form_cannot_submit_reopened_attempt(self):
+        row, _grant, _survey, question = self.native_evaluation()
+        self.authenticate(self.portal.login, self.portal.login)
+        url = "/my/training-evaluations/%s" % row.id
+        response = self.url_open(url)
+        token = html.fromstring(response.content).xpath('//input[@name="csrf_token"]/@value')[0]
+        response = self.url_open(url, data={"csrf_token": token, "operation": "start", "attempt_number": "1"})
+        service = self.env["training.evaluation.service"].with_user(self.portal)
+        service._save_answers(row.id, {question.id: question.suggested_answer_ids[:1].ids}, submit=True)
+        self.env["training.evaluation.service"].with_user(self.coordinator)._reopen(
+            row.id, revision=row.revision, reason="Fictional retry", due_at=fields.Datetime.now() + timedelta(days=2)
+        )
+        service._start(row.id)
+        self.env.flush_all()
+        # A second browser tab still holds the first attempt's form.
+        response = self.url_open(
+            url,
+            data={
+                "csrf_token": token,
+                "operation": "submit",
+                "attempt_number": "1",
+                "q_%s" % question.id: str(question.suggested_answer_ids[:1].id),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        row.invalidate_recordset()
+        self.assertEqual(row.state, "in_progress")
+        attempt = self.env["survey.user_input"].search(
+            [("training_evaluation_assignment_id", "=", row.id), ("training_evaluation_number", "=", 2)]
+        )
+        self.assertFalse(attempt.user_input_line_ids)
+        response = self.url_open(
+            url,
+            data={
+                "csrf_token": token,
+                "operation": "submit",
+                "attempt_number": "2",
+                "q_%s" % question.id: str(question.suggested_answer_ids[:1].id),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        row.invalidate_recordset()
+        self.assertEqual(row.state, "submitted")
+        attempt.invalidate_recordset()
+        self.assertEqual(attempt.user_input_line_ids.suggested_answer_id, question.suggested_answer_ids[:1])

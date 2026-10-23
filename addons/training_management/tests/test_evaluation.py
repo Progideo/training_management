@@ -141,6 +141,25 @@ class TestEvaluation(EvaluationCase):
         with self.assertRaises(AccessError):
             grant2.with_user(self.coordinator).write({"active": False})
 
+    def test_supervision_does_not_preserve_withdrawn_teaching_mission(self):
+        row, _grant = self.assigned_evaluation()
+        row.delivery_id.write({"evaluation_instructor_ids": [Command.set(self.supervisor.partner_id.ids)]})
+        self.env["training.evaluation.authorization"].with_user(self.quality).create(
+            {
+                "delivery_id": row.delivery_id.id,
+                "user_id": self.supervisor.id,
+                "purpose": row.purpose,
+                "valid_until": fields.Datetime.now() + timedelta(days=1),
+                "reason": "Fictional explicit teaching and supervision roles",
+            }
+        )
+        self.decision(row, user=self.supervisor)
+        row.delivery_id.write({"evaluation_instructor_ids": [Command.clear()]})
+        # The supervisor retains scoped reading, but no teaching mission.
+        self.env["training.evaluation.service"].with_user(self.supervisor)._assignment(row.id)
+        with self.assertRaises(AccessError):
+            self.decision(row, user=self.supervisor)
+
     def test_participant_states_deadline_and_stale_decision(self):
         row, _grant = self.assigned_evaluation()
         service = self.env["training.evaluation.service"].with_user(self.portal)
@@ -158,6 +177,21 @@ class TestEvaluation(EvaluationCase):
             )
         with self.assertRaises(AccessError):
             self.env["training.evaluation.service"].with_user(self.portal_b)._start(row.id)
+
+    def test_observed_portal_form_is_bound_to_its_attempt(self):
+        row, _grant = self.assigned_evaluation()
+        service = self.env["training.evaluation.service"].with_user(self.portal)
+        service._start(row.id)
+        service._portal_answers(row.id, {}, attempt_number=1, submit=True)
+        self.env["training.evaluation.service"].with_user(self.coordinator)._reopen(
+            row.id, revision=row.revision, reason="Fictional retry", due_at=fields.Datetime.now() + timedelta(days=2)
+        )
+        service._start(row.id)
+        with self.assertRaises(ValidationError):
+            service._portal_answers(row.id, {}, attempt_number=1, submit=True)
+        self.assertEqual(row.state, "in_progress")
+        service._portal_answers(row.id, {}, attempt_number=2, submit=True)
+        self.assertEqual(row.state, "submitted")
 
     def test_dedicated_evaluation_supplies_s08_without_rewriting_proof(self):
         row, _grant = self.assigned_evaluation()

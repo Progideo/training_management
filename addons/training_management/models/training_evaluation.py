@@ -14,7 +14,10 @@ PURPOSES = [("positioning", "Positioning"), ("acquired", "Learning Outcomes")]
 
 
 def clean_context(record):
-    return record.with_context({k: v for k, v in record.env.context.items() if not k.startswith("default_")})
+    # Replace rather than merge: caller defaults must not forge evidence fields.
+    return record.with_context(  # pylint: disable=context-overridden
+        {k: v for k, v in record.env.context.items() if not k.startswith("default_")}
+    )
 
 
 class EvaluationDelivery(models.Model):
@@ -154,9 +157,9 @@ class Evaluation(models.Model):
         self.lock_for_update()
         for evaluation in self.filtered(lambda e: e.state == "draft"):
             evaluation._publish_questionnaire()
-            super(Evaluation, evaluation).write(
+            super(Evaluation, evaluation).write(  # pylint: disable=super-method-mismatch  # checked publication factory
                 {"state": "published", "published_at": fields.Datetime.now(), "published_by_id": self.env.uid}
-            )  # pylint: disable=super-method-mismatch
+            )
         return True
 
     @api.private
@@ -272,7 +275,7 @@ class EvaluationAssignment(models.Model):
 
     @api.private
     def _store(self, vals):
-        return super().write(vals)
+        return super().write(vals)  # pylint: disable=super-method-mismatch  # checked private transition
 
     def action_record(self):
         self.ensure_one()
@@ -382,6 +385,11 @@ class EvaluationService(models.AbstractModel):
             return True
         if user.has_group(QUALITY) and delivery.evaluation_quality_id == user:
             return True
+        return self._teaching_mission(delivery)
+
+    @api.private
+    def _teaching_mission(self, delivery):
+        user = self.env.user
         return user.partner_id in delivery.evaluation_instructor_ids or bool(
             self.env["training.session"]
             .sudo()
@@ -425,7 +433,7 @@ class EvaluationService(models.AbstractModel):
                     limit=1,
                 )
             )
-            if not grant or not self._staff(row.delivery_id) or row.enrollment_id.user_id == user:
+            if not grant or not self._teaching_mission(row.delivery_id) or row.enrollment_id.user_id == user:
                 raise AccessError(
                     self.env._("A current teaching assignment and evaluation authorization are required.")
                 )
@@ -591,7 +599,15 @@ class EvaluationPortalService(models.AbstractModel):
         }
 
     @api.private
-    def _portal_answers(self, assignment_id, post, *, submit=False):
+    def _participant_attempt(self, assignment_id, attempt_number):
+        row = self._assignment(assignment_id, participant=True, lock=True)
+        if row.attempt_number != attempt_number:
+            raise ValidationError(self.env._("Reload the current evaluation attempt before answering."))
+        return row
+
+    @api.private
+    def _portal_answers(self, assignment_id, post, *, attempt_number, submit=False):
+        self._participant_attempt(assignment_id, attempt_number)
         if submit:
             return self._submit(assignment_id)
         return self._assignment(assignment_id, participant=True)

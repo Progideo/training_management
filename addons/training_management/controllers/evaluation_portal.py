@@ -58,6 +58,7 @@ class EvaluationPortal(http.Controller):
                     with request.env.cr.savepoint():
                         operation = post.get("operation")
                         if operation == "start":
+                            service._participant_attempt(row.id, int(post["attempt_number"]))
                             service._start(row.id)
                         elif operation == "validate":
                             service._validate(
@@ -83,6 +84,7 @@ class EvaluationPortal(http.Controller):
                                     for key in request.httprequest.form
                                     if key.startswith("q_")
                                 },
+                                attempt_number=int(post["attempt_number"]),
                                 submit=operation == "submit",
                             )
                         else:
