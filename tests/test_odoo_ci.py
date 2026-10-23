@@ -73,7 +73,7 @@ class ScenarioContracts(unittest.TestCase):
 
     def test_all_original_operations_keep_arguments_phases_and_probes(self):
         containers, volumes, databases = set(), set(), set()
-        self.assertEqual(sum(map(len, SCENARIOS.values())), 22)
+        self.assertEqual(sum(map(len, SCENARIOS.values())), 21)
         for scenario, expected in SCENARIOS.items():
             with self.subTest(scenario=scenario):
                 result, events, directory = self.run_scenario(scenario)
@@ -95,9 +95,7 @@ class ScenarioContracts(unittest.TestCase):
                     self.assertEqual(call["stdin_sha256"], hashlib.sha256(data).hexdigest())
                     mount = next(x for x in args if x.endswith(":/mnt/extra-addons:ro"))
                     self.assertEqual("s02-baseline/addons:" in mount, step["baseline"])
-                    self.assertEqual(
-                        "s04-bridge/addons:" in mount, step["step"] in ("s03-view-bootstrap", "s04-schema-bridge")
-                    )
+                    self.assertEqual("s04-bridge/addons:" in mount, step["step"] == "s03-view-bootstrap")
                     self.assertIn("--no-http", args)
                     self.assertIn("--max-cron-threads=0", args)
                     self.assertIn("--workers=0", args)
@@ -150,7 +148,7 @@ class FinalGate(unittest.TestCase):
                     (folder / (step["step"] + ".log")).write_text("Synthetic orchestration evidence\n")
 
     def test_complete_success(self):
-        self.assertEqual(sum(gate.validate(self.needs, self.results).values()), 22)
+        self.assertEqual(sum(gate.validate(self.needs, self.results).values()), 21)
 
     def test_every_non_success_job_result_is_rejected(self):
         for job in self.needs:
@@ -212,9 +210,6 @@ class WorkflowContract(unittest.TestCase):
                 baseline="TM_ADDONS_DIR=" in line,
             )
         current = {step["step"]: step for steps in SCENARIOS.values() for step in steps}
-        bridge = current.pop("s04-schema-bridge")
-        self.assertEqual(bridge["args"], ["-u", "training_management,training_management_sale", "--stop-after-init"])
-        self.assertEqual(bridge["database"], "tm_s03_test_upgrade_ci")
         self.assertEqual(len(original), 21)
         self.assertEqual(current, original)
 

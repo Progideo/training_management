@@ -31,7 +31,7 @@ Les données sont fictives ; aucun accès OVH ou secret de déploiement n’est 
 | --- | --- | ---: |
 | `incremental` | Installation/test du socle ; préparation de l’historique catalogue ; mise à jour/test du socle ; comparaison de l’historique ; installation/test Ventes sur ce socle ; concurrence des références bancaires | 6 |
 | `fresh` | Installation/test Ventes sur base vierge ; concurrence S03 réelle | 2 |
-| `history` | Installation S02 avec Website/eLearning depuis `a0c95fa` ; préparation historique S02 ; préchargement XML et passage par S04 figé ; mise à jour/tests actuels ; comparaison S02 ; préparation historique S03 ; seconde mise à jour ; comparaison S03 | 9 |
+| `history` | Installation S02 avec Website/eLearning depuis `a0c95fa` ; préparation historique S02 ; préchargement XML avec le registre S04 figé ; mise à jour/tests actuels ; comparaison S02 ; préparation historique S03 ; seconde mise à jour ; comparaison S03 | 8 |
 | `website` | Installation Website/eLearning/socle courant ; préparation catalogue ; installation/tests Ventes ; mise à jour/tests Ventes ; comparaison catalogue | 5 |
 
 L’installation progressive socle → Ventes reste dans un seul scénario : la séparer
@@ -40,12 +40,13 @@ arguments Odoo, tags, sondes, phases et références historiques sont conservés
 Les profils restreints, cas multi-sociétés et intégrations continuent à être
 exécutés par les mêmes suites Odoo ; aucun test d’addon n’est modifié.
 
-Le contrat [coverage.json](../tests/ci/coverage.json) conserve les 21 appels du
-workflow de référence `80ad50c` et ajoute le passage S04 pour la fixture Website
-historique. Les tests vérifient ces 22 étapes, en conservant la comparaison des
-21 commandes originales et des invocations effectives du script, y compris
-le contenu des sondes transmis sur l’entrée standard. Un changement intentionnel
-de couverture devra actualiser ce contrat et sa justification.
+Le contrat [coverage.json](../tests/ci/coverage.json) recense les 21 appels du
+workflow de référence `80ad50c`. Les tests les comparent aux invocations effectives
+du script, y compris le contenu des sondes transmis sur l'entrée standard.
+Le préparateur historique utilise le registre S04 figé et initialise les
+emplacements des vues nouvelles avant leur chargement définitif ; aucune étape
+ni suite de tests n'est retirée. Un changement intentionnel de couverture doit
+actualiser ce contrat et sa justification.
 
 ## Exécution et diagnostic
 
@@ -72,7 +73,7 @@ ne sont pas masqués par `tee`.
 
 - succès des jobs d’orchestration et de la matrice ; échec, annulation, exclusion
   ou résultat manquant sont refusés ;
-- présence des quatre artefacts et des 22 étapes dans l’ordre attendu ;
+- présence des quatre artefacts et des 21 étapes dans l’ordre attendu ;
 - codes retour nuls, durées valides et journaux présents.
 
 Le job final utilise `needs` et `always()` pour ne pas devenir un succès implicite

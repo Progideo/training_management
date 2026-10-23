@@ -74,7 +74,9 @@ le fichier conservé pour une version figée ; le rendu HTML reste limité aux b
 
 Architecture retenue : petit référentiel `training.category` dans
 `training_management` (nom traduisible, société, actif), relation unique depuis
-`training.course`. Ce référentiel représente le domaine pédagogique absent du
+`training.course`. Le programme lit cette catégorie par relation, sans seconde
+valeur stockée ni affectation directe possible par API. Ce référentiel représente
+le domaine pédagogique absent du
 socle ; il ne recopie ni produits ni cours eLearning. Aucun second référentiel de
 catégories pédagogiques dans un futur site : exposer cette même source, sans
 synchronisation bidirectionnelle.
@@ -166,9 +168,10 @@ le justifier après contrôle des droits métier ; aucun `sudo()` global sur le 
 Ces critères sont des tests prévus. Les preuves des vérifications natives et,
 ultérieurement, les résultats de recette restent dans la PR du lot.
 
-Pour l'ancienne fixture S02 avec Website, le préparateur de vues historique
-utilise le registre S04 figé, puis une mise à jour native S04 précède celle du
-lot actuel. Charger d'abord le code actuel sur cet ancien schéma échouerait sur
-la nouvelle colonne des pièces jointes. Les 21 contrôles historiques sont
-conservés et le passage intermédiaire est ajouté au contrôle final de CI.
-La mise à jour depuis S04 reste vérifiée directement, sans ce préparateur.
+Pour l'ancienne fixture S02 avec Website, le préparateur historique utilise le
+registre S04 figé et crée par l'ORM les emplacements des nouvelles vues du lot.
+Leur contenu définitif est chargé par la mise à jour native, après initialisation
+des nouveaux modèles. Cela préserve le défaut Website de visibilité sans patch
+ni modification SQL et évite de charger le code actuel sur un ancien schéma.
+Les 21 étapes historiques sont conservées. La mise à jour depuis S04 sans Website
+reste vérifiée directement, sans ce préparateur.

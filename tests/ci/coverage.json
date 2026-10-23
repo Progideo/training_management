@@ -145,18 +145,6 @@
         "baseline": false
       },
       {
-        "step": "s04-schema-bridge",
-        "database": "tm_s03_test_upgrade_ci",
-        "args": [
-          "-u",
-          "training_management,training_management_sale",
-          "--stop-after-init"
-        ],
-        "probe": null,
-        "phase": {},
-        "baseline": false
-      },
-      {
         "step": "s03-upgrade-tests",
         "database": "tm_s03_test_upgrade_ci",
         "args": [
