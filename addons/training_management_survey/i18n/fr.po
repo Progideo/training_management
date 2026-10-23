@@ -1265,3 +1265,9 @@ msgstr "— Échéance (UTC) :"
 #: code:addons/training_management_survey/models/binary.py:0
 msgid "Feedback response files are private."
 msgstr "Les fichiers des réponses aux retours sont privés."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/feedback.py:0
+msgid "Provide choices for every choice question before publishing."
+msgstr "Renseignez les choix de chaque question à choix avant la publication."

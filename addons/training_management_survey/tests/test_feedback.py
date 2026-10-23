@@ -339,6 +339,9 @@ class TestFeedback(FeedbackCase):
         q.write({"question_type": "char_box", "save_as_email": True})
         with self.assertRaises(ValidationError):
             definition.action_publish()
+        q.write({"question_type": "simple_choice", "save_as_email": False, "suggested_answer_ids": [Command.clear()]})
+        with self.assertRaises(ValidationError):
+            definition.action_publish()
         from unittest.mock import patch
 
         with patch("odoo.fields.Datetime.now", return_value=campaign.due_at + timedelta(seconds=1)):

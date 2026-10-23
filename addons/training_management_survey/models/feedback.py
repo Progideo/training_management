@@ -51,6 +51,11 @@ class Feedback(models.Model):
         survey = self.survey_id
         if not survey or survey.training_feedback_id != self or survey.training_program_id != self.program_id:
             raise ValidationError(self.env._("Choose the questionnaire belonging to this feedback version."))
+        if any(
+            q.question_type in ("simple_choice", "multiple_choice") and not q.suggested_answer_ids
+            for q in survey.question_ids
+        ):
+            raise ValidationError(self.env._("Provide choices for every choice question before publishing."))
         if self.indicator_question_id:
             question = self.indicator_question_id
             if (
