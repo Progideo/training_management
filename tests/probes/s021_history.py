@@ -74,6 +74,81 @@ if phase == "prepare":
             "auto_delete": False,
         }
     )
+    accounts = {}
+    for name, kind, reconcile in (
+        ("income", "income", False),
+        ("receivable", "asset_receivable", True),
+        ("bank", "asset_cash", False),
+        ("outstanding", "asset_current", True),
+    ):
+        accounts[name] = env["account.account"].create(
+            {
+                "name": "Fictional S02.1 " + name,
+                "code": "H021" + name,
+                "account_type": kind,
+                "reconcile": reconcile,
+                "company_ids": [Command.set(env.company.ids)],
+            }
+        )
+    buyer.property_account_receivable_id = accounts["receivable"]
+    sales_journal = env["account.journal"].create(
+        {
+            "name": "Fictional S02.1 Sales",
+            "type": "sale",
+            "code": "H21",
+            "default_account_id": accounts["income"].id,
+        }
+    )
+    bank = env["account.journal"].create(
+        {
+            "name": "Fictional S02.1 Bank",
+            "type": "bank",
+            "code": "H2B",
+            "default_account_id": accounts["bank"].id,
+        }
+    )
+    bank.inbound_payment_method_line_ids.filtered(lambda line: line.code == "manual").payment_account_id = accounts[
+        "outstanding"
+    ]
+    product = env["product.product"].create({"name": "Fictional historical service", "type": "service"})
+    sale_line = env["sale.order.line"].create(
+        {
+            "order_id": order.id,
+            "product_id": product.id,
+            "price_unit": 100,
+            "product_uom_qty": 1,
+        }
+    )
+    invoice = env["account.move"].create(
+        {
+            "move_type": "out_invoice",
+            "partner_id": buyer.id,
+            "journal_id": sales_journal.id,
+            "training_portal_partner_ids": [Command.set(contact.ids)],
+            "invoice_line_ids": [
+                Command.create(
+                    {
+                        "name": "Fictional historical service",
+                        "quantity": 1,
+                        "price_unit": 100,
+                        "account_id": accounts["income"].id,
+                        "tax_ids": [Command.clear()],
+                        "sale_line_ids": [Command.set(sale_line.ids)],
+                    }
+                )
+            ],
+        }
+    )
+    invoice.action_post()
+    env["account.payment.register"].with_context(active_model="account.move", active_ids=invoice.ids).create(
+        {
+            "journal_id": bank.id,
+            "training_bank_reference": "HISTORICAL-S021",
+            "training_bank_verified": True,
+        }
+    ).action_create_payments()
+    payment = env["account.payment"].search([("training_bank_reference", "=", "HISTORICAL-S021")])
+    assert len(payment) == 1 and payment.reconciled_invoice_ids == invoice
     specs = {
         "sale.order": [
             order.ids,
@@ -104,6 +179,31 @@ if phase == "prepare":
         ],
         "training.delivery": [delivery.ids, ["name", "program_id", "state", "access_policy", "access_days"]],
         "mail.mail": [queued.ids, ["model", "res_id", "state", "recipient_ids", "subject", "body_html"]],
+        "account.move": [
+            invoice.ids,
+            [
+                "name",
+                "state",
+                "amount_total",
+                "amount_residual",
+                "payment_state",
+                "training_portal_partner_ids",
+                "training_is_sale_invoice",
+                "line_ids",
+            ],
+        ],
+        "account.payment": [
+            payment.ids,
+            [
+                "state",
+                "amount",
+                "move_id",
+                "reconciled_invoice_ids",
+                "training_bank_reference",
+                "training_bank_verified_by_id",
+                "training_bank_verified_at",
+            ],
+        ],
     }
     params.set_str(
         key,

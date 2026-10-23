@@ -107,7 +107,7 @@ class TestTrainingDocumentPolicy(TransactionCase):
     def test_current_grant_does_not_replace_native_internal_rights(self):
         self.assertTrue(self.policy.with_user(self.allowed)._can_read(self.order))
         self.assertFalse(self.policy.with_user(self.denied)._can_read(self.order))
-        self.assertTrue(self.policy.with_user(self.internal)._can_read(self.order))
+        self.assertFalse(self.policy.with_user(self.internal)._can_read(self.order))
         with self.assertRaises(AccessError):
             self.order.with_user(self.internal).read(["name"])
         self.assertTrue(self.order.with_user(self.allowed).read(["name"]))
@@ -377,3 +377,132 @@ class TestTrainingDocumentPolicy(TransactionCase):
         self.assertIn(self.allowed.partner_id, recipients)
         self.assertNotIn(self.denied.partner_id, recipients)
         self.assertNotIn(self.sales.partner_id, recipients)
+
+    def test_internal_binary_token_cannot_replace_native_document_rights(self):
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": "fictional-internal-token.txt",
+                "raw": b"Fictional private data",
+                "res_model": "sale.order",
+                "res_id": self.order.id,
+            }
+        )
+        token = attachment.generate_access_token()[0]
+        foreign_company = self.env["res.company"].create({"name": "Fictional Token Company B"})
+        foreign_sales = new_test_user(
+            self.env,
+            login="policy_foreign_sales",
+            groups="sales_team.group_sale_salesman",
+            company_id=foreign_company.id,
+            company_ids=[Command.set(foreign_company.ids)],
+        )
+        for user in (self.internal, foreign_sales):
+            with self.subTest(user=user.login), self.assertRaises(AccessError):
+                self.env["ir.binary"].with_user(user)._find_record(
+                    res_id=attachment.id, access_token=token, field="raw"
+                )
+        self.assertTrue(
+            self.env["ir.binary"]
+            .with_user(self.sales)
+            ._find_record(res_id=attachment.id, access_token=token, field="raw")
+        )
+
+    def test_ordinary_mail_cannot_send_a_foreign_protected_attachment(self):
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": "fictional-private-quotation.txt",
+                "raw": b"Fictional private quote",
+                "res_model": "sale.order",
+                "res_id": self.order.id,
+            }
+        )
+        native = self.env["sale.order"].with_user(self.sales).create({"partner_id": self.buyer.id})
+        mail = self.env["mail.mail"].create(
+            {
+                "model": "sale.order",
+                "res_id": native.id,
+                "subject": "Fictional ordinary mail",
+                "body_html": "Fictional body",
+                "email_from": "sender@example.invalid",
+                "recipient_ids": [Command.set(self.denied.partner_id.ids)],
+                "attachment_ids": [Command.set(attachment.ids)],
+            }
+        )
+        with self.assertRaisesRegex(ValidationError, "currently authorized named contacts"):
+            mail.sudo()._prepare_outgoing_list()
+        mail.recipient_ids = [Command.set(self.allowed.partner_id.ids)]
+        self.assertTrue(mail.sudo()._prepare_outgoing_list())
+        self.order.training_portal_partner_ids = [Command.clear()]
+        with self.assertRaisesRegex(ValidationError, "currently authorized named contacts"):
+            mail.sudo()._prepare_outgoing_list()
+
+    def test_scheduled_delivery_keeps_selected_recipients_only(self):
+        self.order.message_subscribe(partner_ids=self.internal.partner_id.ids)
+        composer = (
+            self.env["mail.compose.message"]
+            .with_user(self.sales)
+            .with_context(
+                default_model="sale.order", default_res_ids=self.order.ids, default_composition_mode="comment"
+            )
+            .create(
+                {
+                    "scheduled_date": "2099-01-01 12:00:00",
+                    "subject": "Fictional deferred selected contacts",
+                    "body": "Fictional scheduled private body",
+                }
+            )
+        )
+        composer.partner_ids = [Command.set(self.allowed.partner_id.ids)]
+        scheduled = composer._action_schedule_message()
+        scheduled.with_context(mail_notify_force_send=False).post_message()
+        message = self.order.message_ids.filtered(lambda m: m.subject == "Fictional deferred selected contacts")
+        self.assertEqual(len(message), 1)
+        recipients = message.notification_ids.res_partner_id
+        self.assertIn(self.allowed.partner_id, recipients)
+        self.assertNotIn(self.internal.partner_id, recipients)
+
+    def test_scheduled_revocation_does_not_notify_the_old_recipient(self):
+        composer = (
+            self.env["mail.compose.message"]
+            .with_user(self.sales)
+            .with_context(
+                default_model="sale.order", default_res_ids=self.order.ids, default_composition_mode="comment"
+            )
+            .create(
+                {
+                    "scheduled_date": "2099-01-01 12:00:00",
+                    "subject": "Fictional revoked schedule",
+                    "body": "Fictional content after revoke",
+                }
+            )
+        )
+        composer.partner_ids = [Command.set(self.allowed.partner_id.ids)]
+        scheduled = composer._action_schedule_message()
+        self.order.training_portal_partner_ids = [Command.clear()]
+        scheduled.with_context(mail_notify_force_send=False).post_message()
+        message = self.order.message_ids.filtered(lambda m: m.subject == "Fictional revoked schedule")
+        self.assertEqual(len(message), 1)
+        self.assertNotIn(self.allowed.partner_id, message.notification_ids.res_partner_id)
+        with self.assertRaises(AccessError):
+            message.with_user(self.allowed).read(["body"])
+
+    def test_non_training_schedule_keeps_native_followers(self):
+        native = self.env["sale.order"].with_user(self.sales).create({"partner_id": self.buyer.id})
+        native.message_subscribe(partner_ids=self.internal.partner_id.ids)
+        composer = (
+            self.env["mail.compose.message"]
+            .with_user(self.sales)
+            .with_context(default_model="sale.order", default_res_ids=native.ids, default_composition_mode="comment")
+            .create(
+                {
+                    "scheduled_date": "2099-01-01 12:00:00",
+                    "subject": "Fictional native schedule",
+                    "body": "Fictional ordinary message",
+                }
+            )
+        )
+        composer.partner_ids = [Command.set(self.allowed.partner_id.ids)]
+        composer._action_schedule_message().with_context(mail_notify_force_send=False).post_message()
+        message = native.message_ids.filtered(lambda m: m.subject == "Fictional native schedule")
+        self.assertEqual(len(message), 1)
+        self.assertIn(self.internal.partner_id, message.notification_ids.res_partner_id)

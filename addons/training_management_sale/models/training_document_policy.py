@@ -65,18 +65,21 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _can_read(self, record):
-        # This is an additional veto, not an alternative to native permissions.
-        if not self.env.user.share:
-            return True
         document = self._document(record)
-        return not self._restricted(document) or (
-            not self.env.user._is_public() and self.env.user.partner_id in self._partners(document)
-        )
+        if not self._restricted(document):
+            return True
+        if not self.env.user.share:
+            # Native token resolution may have sudoed the record already. An
+            # employee's token must not replace native ACLs/company/field rules.
+            return record.with_env(self.env(su=False)).has_access("read") and document.with_env(
+                self.env(su=False)
+            ).has_access("read")
+        return not self.env.user._is_public() and self.env.user.partner_id in self._partners(document)
 
     @api.private
     def _check_read(self, record):
         if not self._can_read(record):
-            raise AccessError(self.env._("This training document requires a currently authorized portal contact."))
+            raise AccessError(self.env._("This training document is not accessible with your current permissions."))
 
     @api.private
     def _check_send(self, document, partners, *, email_to=False, email_cc=False, required=True, allow_internal=False):
