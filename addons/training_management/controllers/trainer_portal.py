@@ -30,9 +30,11 @@ class TrainingTrainerPortal(http.Controller):
             url_args={"filterby": filterby},
         )
         records = sessions.search(domain, limit=40, offset=pager["offset"])
-        return request.render(
-            "training_management.portal_trainer_sessions",
-            {"sessions": self._session_rows(records), "pager": pager, "filterby": filterby},
+        return TrainingParticipantPortal._private(
+            request.render(
+                "training_management.portal_trainer_sessions",
+                {"sessions": self._session_rows(records), "pager": pager, "filterby": filterby},
+            )
         )
 
     @http.route("/my/training-sessions/<int:session_id>", type="http", auth="user", website=True, methods=["GET"])
@@ -42,8 +44,10 @@ class TrainingTrainerPortal(http.Controller):
         )
         if not records:
             raise request.not_found()
-        return request.render(
-            "training_management.portal_trainer_session", {"session": self._session_rows(records, details=True)[0]}
+        return TrainingParticipantPortal._private(
+            request.render(
+                "training_management.portal_trainer_session", {"session": self._session_rows(records, details=True)[0]}
+            )
         )
 
     def _session_domain(self):

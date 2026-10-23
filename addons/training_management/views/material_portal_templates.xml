@@ -29,6 +29,6 @@
         </t>
     </template>
     <template id="portal_trainer_materials" inherit_id="portal_trainer_session" name="Assigned Session PDFs">
-        <xpath expr="//h2" position="before"><t t-call="training_management.portal_materials"><t t-set="materials" t-value="session['materials']"/></t></xpath>
+        <xpath expr="//h2" position="before"><t t-set="materials" t-value="session['materials']"/><t t-call="training_management.portal_materials"/></xpath>
     </template>
 </odoo>

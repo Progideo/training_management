@@ -3602,8 +3602,8 @@ msgstr "Nom du fichier"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__frozen_at
-msgid "First Made Available On"
-msgstr "Première mise à disposition le"
+msgid "Version Frozen On"
+msgstr "Version figée le"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__frozen_by_id

@@ -6,7 +6,7 @@ the PDF preview); ordinary Odoo attachments retain their native behavior.
 """
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 
 CONFIDENTIAL_MODELS = ("training.adaptation", "training.adaptation.history")
@@ -101,6 +101,14 @@ class IrAttachment(models.Model):
         if any(self.sudo().mapped("training_program_id")) or vals.get("training_program_id"):
             raise ValidationError(self.env._("A reference programme PDF cannot be changed or shared by token."))
         return super().write(vals)
+
+    def _export_rows(self, fields, *, _is_toplevel_call=True):
+        if any(item.res_model == "training.material" for item in self.sudo()):
+            self.check_access("read")
+            raise UserError(
+                self.env._("Bulk export of private support records is unavailable. Download an authorized PDF instead.")
+            )
+        return super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
 
     def copy_data(self, default=None):
         if any(item.res_model == "training.material" for item in self.sudo()):

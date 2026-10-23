@@ -25,7 +25,7 @@ class TrainingMaterial(models.Model):
     data = fields.Binary(required=True, attachment=True, copy=False, string="PDF File")
     filename = fields.Char(required=True)
     sha256 = fields.Char(readonly=True, copy=False)
-    frozen_at = fields.Datetime(readonly=True, copy=False, string="First Made Available On")
+    frozen_at = fields.Datetime(readonly=True, copy=False, string="Version Frozen On")
     frozen_by_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
     withdrawn = fields.Boolean(readonly=True, copy=False)
     assignment_ids = fields.One2many("training.material.assignment", "material_id", readonly=True, copy=False)
@@ -144,7 +144,11 @@ class TrainingMaterial(models.Model):
             },
         }
 
-    def export_data(self, fields_to_export):  # pylint: disable=method-required-super  # no uncontrolled bulk export before the retention/export increment
+    def export_data(self, fields_to_export):
+        self.check_access("read")
+        return super().export_data(fields_to_export)
+
+    def _export_rows(self, fields, *, _is_toplevel_call=True):  # pylint: disable=method-required-super  # native recursion must enforce the same export restriction
         self.check_access("read")
         raise UserError(
             self.env._("Bulk export of private support records is unavailable. Download an authorized PDF instead.")
@@ -212,8 +216,10 @@ class TrainingMaterialAssignment(models.Model):
 
     @api.private
     def _freeze_if_available(self):
+        # Freeze at publication, including a scheduled opening: time alone can
+        # activate S03 access later, without another write or a cron execution.
         for assignment in self.filtered(lambda item: not item.withdrawn):
-            if any(e._effective_state() == "active" for e in assignment.delivery_id.enrollment_ids) or (
+            if any(e._effective_state() in ("active", "scheduled") for e in assignment.delivery_id.enrollment_ids) or (
                 assignment.delivery_id.state in ("confirmed", "ongoing")
                 and any(not s.cancelled for s in assignment.delivery_id.session_ids)
             ):
@@ -229,7 +235,7 @@ class TrainingMaterialAssignment(models.Model):
         self.mapped("delivery_id")._require_coordinator()
         return super().write({"withdrawn": True})  # pylint: disable=super-method-mismatch  # checked withdrawal preserves the record
 
-    def export_data(self, fields_to_export):  # pylint: disable=method-required-super  # same preservation rule as the private file
+    def _export_rows(self, fields, *, _is_toplevel_call=True):  # pylint: disable=method-required-super  # includes nested native exports from deliveries
         self.check_access("read")
         raise UserError(
             self.env._("Bulk export of private support records is unavailable. Download an authorized PDF instead.")
@@ -326,7 +332,7 @@ class TrainingEnrollment(models.Model):
 
     def _store(self, values, reason=False):
         result = super()._store(values, reason)
-        if self._effective_state() == "active":
+        if self._effective_state() in ("active", "scheduled"):
             self.delivery_id.material_assignment_ids._freeze_if_available()
         return result
 

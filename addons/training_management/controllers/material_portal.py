@@ -1,4 +1,5 @@
 from odoo import http
+from odoo.addons.mail.controllers.attachment import AttachmentController
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.web.controllers.binary import Binary
 from odoo.exceptions import AccessError, MissingError
@@ -153,3 +154,26 @@ class TrainingPrivateBinary(Binary):
             nocache=nocache,
         )
         return self._private_training_response(response, xmlid, model, id and int(id), field, access_token)
+
+
+class TrainingPrivateAttachment(AttachmentController):
+    def _make_zip(self, name, attachments):
+        # Native ZIP already calls ir.binary for every file; keep those checks.
+        response = super()._make_zip(name, attachments)
+        policy = request.env["training.document.policy"]
+        if any(policy._restricted(policy._document(attachment)) for attachment in attachments):
+            return TrainingParticipantPortal._private(response)
+        return response
+
+    def _get_pdf_first_page_response(self, attachment):
+        # Native ownership tokens bypass the parent's ACL and extract bytes
+        # directly, without ir.binary. Recheck the current grant before extraction.
+        policy = request.env["training.document.policy"]
+        document = policy._document(attachment)
+        if document and document._name in ("training.material", "training.program.version"):
+            try:
+                policy._check_read(attachment)
+            except (AccessError, MissingError):
+                raise request.not_found() from None
+            return TrainingParticipantPortal._private(super()._get_pdf_first_page_response(attachment))
+        return super()._get_pdf_first_page_response(attachment)

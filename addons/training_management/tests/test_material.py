@@ -1,6 +1,8 @@
 """S05 first increment: real restricted identities, native binaries, stable versions."""
 
 from datetime import timedelta
+from io import BytesIO
+from zipfile import ZipFile
 from unittest.mock import patch
 
 from odoo import Command, fields
@@ -36,6 +38,25 @@ class MaterialCase(EnrollmentCase):
         e.action_authorize(reason="Fictional authorization")
         e.action_open_access(reason="Fictional opening")
         return e
+
+    def scheduled_session(self, delivery):
+        return (
+            self.env["training.session"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Fictional mixed session",
+                    "delivery_id": delivery.id,
+                    "instructor_id": self.portal_b.partner_id.id,
+                    "mode": "remote",
+                    "meeting_url": "https://example.invalid/room",
+                    "start_date": "2027-01-04",
+                    "end_date": "2027-01-04",
+                    "start_hour": 9,
+                    "end_hour": 12,
+                }
+            )
+        )
 
     def attachment(self, material):
         return (
@@ -86,6 +107,43 @@ class TestTrainingMaterial(MaterialCase):
             material.copy()
         with self.assertRaises(AccessError):
             old_reference.unlink()
+
+    def test_scheduled_opening_publishes_a_stable_version_without_cron(self):
+        start = fields.Datetime.now() + timedelta(days=1)
+        material = self.material()
+        delivery = self.delivery(access_policy="fixed", access_start=start, access_end=start + timedelta(days=5))
+        enrollment = self.opened(delivery)
+        policy = self.env["training.document.policy"].with_user(self.portal)
+        self.assertEqual(enrollment._effective_state(), "scheduled")
+        self.assertFalse(policy._can_read(material))
+        # Publication fixes the selected version even if access starts tomorrow.
+        self.assertTrue(material.frozen_at)
+        with self.assertRaises(ValidationError):
+            material.write({"data": BinaryBytes(PDF + b"changed after publication")})
+        later = self.material(delivery_id=delivery.id)
+        self.assertTrue(later.frozen_at)
+        with patch("odoo.fields.Datetime.now", return_value=start):
+            self.assertEqual(enrollment._effective_state(), "active")
+            self.assertTrue(policy._can_read(material))
+            self.assertTrue(policy._can_read(later))
+
+    def test_relational_and_attachment_exports_cannot_bypass_private_pdf_export_policy(self):
+        material = self.material()
+        delivery = self.delivery()
+        for record, paths in (
+            (self.program, ["title", "material_ids/name", "material_ids/data"]),
+            (delivery, ["name", "material_assignment_ids/material_id/data"]),
+            (self.attachment(material), ["name", "raw"]),
+        ):
+            with self.assertRaises(UserError):
+                record.with_user(self.coordinator).export_data(paths)
+        self.assertTrue(self.program.with_user(self.coordinator).export_data(["title"]))
+        ordinary = (
+            self.env["ir.attachment"]
+            .with_user(self.coordinator)
+            .create({"name": "ordinary.txt", "raw": b"Fictional ordinary"})
+        )
+        self.assertTrue(ordinary.export_data(["name"]))
 
     def test_current_enrollment_is_the_only_participant_grant(self):
         material = self.material()
@@ -196,23 +254,7 @@ class TestTrainingMaterial(MaterialCase):
     def test_trainer_assignment_and_native_company_boundaries(self):
         material = self.material()
         delivery = self.delivery(kind="session", start_at="2027-01-01", end_at="2027-02-01", timezone="UTC")
-        session = (
-            self.env["training.session"]
-            .with_user(self.coordinator)
-            .create(
-                {
-                    "name": "Fictional mixed session",
-                    "delivery_id": delivery.id,
-                    "instructor_id": self.portal_b.partner_id.id,
-                    "mode": "remote",
-                    "meeting_url": "https://example.invalid/room",
-                    "start_date": "2027-01-04",
-                    "end_date": "2027-01-04",
-                    "start_hour": 9,
-                    "end_hour": 12,
-                }
-            )
-        )
+        session = self.scheduled_session(delivery)
         delivery.action_confirm()
         self.assertTrue(material.frozen_at)
         policy = self.env["training.document.policy"].with_user(self.portal_b)
@@ -257,6 +299,88 @@ class TestTrainingMaterial(MaterialCase):
 
 @tagged("post_install", "-at_install")
 class TestTrainingMaterialHttp(MaterialCase, HttpCase):
+    def test_participant_schedule_and_trainer_download_follow_their_own_grants(self):
+        material = self.material()
+        delivery = self.delivery(kind="session", start_at="2027-01-01", end_at="2027-02-01", timezone="UTC")
+        session = self.scheduled_session(delivery)
+        delivery.action_confirm()
+        enrollment = self.opened(delivery)
+        enrollment.instructor_summary = "PRIVATE INSTRUCTOR ONLY"
+        self.assertTrue(material.frozen_at)
+        self.assertEqual(delivery.material_assignment_ids.material_id, material)
+        file_url = f"/web/content/{self.attachment(material).id}"
+        participant_url = f"/my/trainings/{enrollment.id}"
+        trainer_url = f"/my/training-sessions/{session.id}"
+        self.authenticate(self.portal.login, self.portal.login)
+        response = self.url_open(participant_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(session.name, response.text)
+        self.assertIn(session.meeting_url, response.text)
+        self.assertNotIn(enrollment.instructor_summary, response.text)
+        self.assertEqual(self.url_open(trainer_url).status_code, 404)
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        response = self.url_open(trainer_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("no-store", response.headers["Cache-Control"])
+        self.assertIn(material.name, response.text)
+        self.assertEqual(self.url_open(file_url).status_code, 200)
+        self.assertEqual(self.url_open(participant_url).status_code, 404)
+        session._apply_schedule({"instructor_id": self.customer.id}, reason="Fictional reassignment")
+        self.assertEqual(self.url_open(trainer_url).status_code, 404)
+        self.assertEqual(self.url_open(file_url).status_code, 404)
+        self.authenticate(self.portal.login, self.portal.login)
+        self.assertEqual(self.url_open(file_url).status_code, 200)
+
+    def test_native_zip_rechecks_access_and_disables_private_caching(self):
+        material = self.material()
+        enrollment = self.opened()
+        attachment = self.attachment(material)
+        self.authenticate(self.portal.login, self.portal.login)
+        response = self.url_open(
+            "/mail/attachment/zip",
+            data={"file_ids": str(attachment.id), "zip_name": "training.zip", "csrf_token": self.csrf_token()},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("no-store", response.headers["Cache-Control"])
+        with ZipFile(BytesIO(response.content)) as archive:
+            self.assertEqual(archive.read(archive.namelist()[0]), PDF)
+        enrollment.action_suspend_access(reason="Fictional suspension")
+        response = self.url_open(
+            "/mail/attachment/zip",
+            data={"file_ids": str(attachment.id), "zip_name": "training.zip", "csrf_token": self.csrf_token()},
+        )
+        self.assertIn(response.status_code, (403, 404))
+        self.assertNotIn(PDF, response.content)
+
+    def test_native_pdf_preview_ownership_token_never_replaces_current_access(self):
+        material = self.material(data=BinaryBytes(self.program.pdf_attachment_id.raw.content))
+        enrollment = self.opened()
+        attachments = self.attachment(material) | self.program.pdf_attachment_id
+        urls = [f"/mail/attachment/pdf_first_page/{a.id}?access_token={a._get_ownership_token()}" for a in attachments]
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        for url in urls:
+            self.assertEqual(self.url_open(url).status_code, 404, url)
+        self.authenticate(self.portal.login, self.portal.login)
+        for url in urls:
+            response = self.url_open(url)
+            self.assertEqual(response.status_code, 200, url)
+            self.assertIn("no-store", response.headers["Cache-Control"])
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        for url in urls:
+            self.assertEqual(self.url_open(url).status_code, 404, url)
+        self.authenticate(self.portal.login, self.portal.login)
+        enrollment.action_suspend_access(reason="Fictional suspension")
+        for url in urls:
+            self.assertEqual(self.url_open(url).status_code, 404, url)
+        self.authenticate(None, None)
+        for url in urls:
+            self.assertEqual(self.url_open(url).status_code, 404, url)
+        ordinary = self.env["ir.attachment"].create(
+            {"name": "ordinary.pdf", "raw": self.program.pdf_attachment_id.raw.content}
+        )
+        ordinary_url = f"/mail/attachment/pdf_first_page/{ordinary.id}?access_token={ordinary._get_ownership_token()}"
+        self.assertEqual(self.url_open(ordinary_url).status_code, 200)
+
     def test_portal_and_all_native_file_routes_recheck_the_current_grant(self):
         material = self.material()
         enrollment = self.opened()

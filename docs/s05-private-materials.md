@@ -145,8 +145,11 @@ références des réalisations déjà préparées : le coordinateur choisit son 
 sur les fiches concernées. Aucun assistant ni nouvelle approbation requis.
 Une réalisation autonome utilise les mêmes liens et ses inscriptions individuelles.
 
-Avant diffusion, le coordinateur peut corriger le fichier. Dès sa mise à disposition
-d'un premier inscrit, conserver la version diffusée : fichier, auteur, date serveur,
+Avant diffusion, le coordinateur peut corriger le fichier. L'ouverture d'un accès,
+y compris programmé, fixe les versions affectées : elles seront disponibles à la
+date prévue sans dépendre d'un cron. Le gel intervient dès cette publication ;
+la période S03 continue seule de déterminer quand le participant peut les lire.
+Conserver la version publiée : fichier, auteur, date serveur,
 empreinte, liens et date d'affectation. Remplacer crée une nouvelle version liée à
 la précédente, sans écraser les octets ni les remises. Ce gel des supports est une
 **décision S05**, distincte du gel contractuel déjà validé du programme.
@@ -300,12 +303,14 @@ les anciennes et reste sans effet lors d'une répétition. Une version retirée 
 réactive pas sa précédente. Une correction utilise **Nouvelle version PDF** ;
 retirer l'ancienne référence reste un choix explicite. Les références, auteurs,
 dates et empreintes sont conservés. Le verrou natif avec barrière d'écriture
-sérialise modification du fichier et première diffusion. Aucune purge automatique. Les exports en masse de ces deux nouveaux modèles sont
-refusés en attendant le dispositif de manifeste et de journalisation S11 ; le
-téléchargement individuel autorisé reste disponible.
+sérialise modification du fichier et première diffusion. L'aperçu PDF natif revérifie
+le droit courant même avec un jeton de propriété, et interdit la mise en cache.
+Les exports en masse des supports et références, y compris depuis une fiche liée
+ou les pièces jointes, sont refusés en attendant le manifeste et la journalisation
+S11. Les téléchargements autorisés restent disponibles, sans mise en cache.
 
-La première disponibilité à un inscrit actif gèle le fichier. Une disponibilité
-au formateur affecté d'une réalisation confirmée le gèle également : le formateur
+L'ouverture d'accès d'un inscrit, active ou programmée, gèle les versions affectées.
+La disponibilité au formateur affecté d'une réalisation confirmée le gèle également : le formateur
 ne reçoit donc jamais une version encore modifiable. **Mes formations** rassemble
 programme applicable conservé, agenda S04 et supports, sans compte eLearning.
 L'offre autonome n'affiche aucune séance fictive. Les séances affectées S04 donnent
