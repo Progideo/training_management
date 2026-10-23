@@ -40,12 +40,12 @@ class TrainingMaterial(models.Model):
             raise AccessError(self.env._("Only the training coordinator may manage private PDFs."))
 
     @api.private
-    def _serialize(self):
+    def _serialize(self):  # pylint: disable=missing-return  # internal write fence, no return value
         self.sorted("id").lock_for_update()
         self.invalidate_recordset()
         # A write fence also rejects stale REPEATABLE READ snapshots.
         for material in self:
-            super(TrainingMaterial, material).write({"revision": material.revision + 1})
+            super(TrainingMaterial, material).write({"revision": material.revision + 1})  # pylint: disable=super-method-mismatch  # private fence bypasses immutable public write
 
     @api.private
     def _fingerprint(self):
@@ -88,7 +88,7 @@ class TrainingMaterial(models.Model):
         with self.env.cr.savepoint():
             records = super().create(prepared)
             for material in records:
-                super(TrainingMaterial, material).write({"sha256": material._fingerprint()})
+                super(TrainingMaterial, material).write({"sha256": material._fingerprint()})  # pylint: disable=super-method-mismatch  # server-derived evidence after file validation
                 if material.delivery_id:
                     self.env["training.material.assignment"].create(
                         {"material_id": material.id, "delivery_id": material.delivery_id.id}
@@ -109,7 +109,7 @@ class TrainingMaterial(models.Model):
             return result
 
     @api.private
-    def _freeze(self):
+    def _freeze(self):  # pylint: disable=missing-return  # append server evidence, no return value
         for material in self.filtered(lambda item: not item.frozen_at):
             material._serialize()
             if not material.frozen_at:
@@ -124,7 +124,7 @@ class TrainingMaterial(models.Model):
     def action_withdraw(self):
         self._require_coordinator()
         self._serialize()
-        return super().write({"withdrawn": True})
+        return super().write({"withdrawn": True})  # pylint: disable=super-method-mismatch  # checked withdrawal preserves the record
 
     def action_new_version(self):
         self.ensure_one()
@@ -227,7 +227,7 @@ class TrainingMaterialAssignment(models.Model):
 
     def action_withdraw(self):
         self.mapped("delivery_id")._require_coordinator()
-        return super().write({"withdrawn": True})
+        return super().write({"withdrawn": True})  # pylint: disable=super-method-mismatch  # checked withdrawal preserves the record
 
     def export_data(self, fields_to_export):  # pylint: disable=method-required-super  # same preservation rule as the private file
         self.check_access("read")
