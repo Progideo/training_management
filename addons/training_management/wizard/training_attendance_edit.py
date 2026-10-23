@@ -33,6 +33,13 @@ class AttendanceEdit(models.TransientModel):
             )
             self.revision = presence.revision
             self.end_minutes = (self.session_id.end_at - self.session_id.start_at).total_seconds() / 60
+            decisions = presence.event_ids.filtered(lambda e: e.kind in ("validation", "correction"))
+            latest = (decisions or presence.event_ids).sorted("id")[-1:]
+            self.absent = bool(latest.absent)
+            self.start_minutes = 0
+            if latest and latest.start_at:
+                self.start_minutes = (latest.start_at - self.session_id.start_at).total_seconds() / 60
+                self.end_minutes = (latest.end_at - self.session_id.start_at).total_seconds() / 60
 
     def action_apply(self):
         self.ensure_one()

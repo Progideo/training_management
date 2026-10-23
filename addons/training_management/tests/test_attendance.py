@@ -8,6 +8,7 @@ from lxml import html
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import Form, HttpCase, new_test_user, tagged
+from odoo.tools.binary import BinaryBytes
 from odoo.tools.misc import limited_field_access_token
 
 from .test_material import MaterialCase, PDF
@@ -75,6 +76,27 @@ class TestAttendance(AttendanceCase):
             self.paper(session, enrollment, revision=presence.revision)
             self.assertEqual(presence.minutes, 90)
             self.assertEqual(len(presence.event_ids), 3)
+
+            wizard = (
+                self.env["training.attendance.edit"]
+                .with_user(self.coordinator)
+                .create(
+                    {
+                        "session_id": session.id,
+                        "enrollment_id": enrollment.id,
+                        "operation": "correction",
+                        "reason": "Fictional correction through native assistant",
+                        "data": BinaryBytes(PDF),
+                        "filename": "check.pdf",
+                    }
+                )
+            )
+            wizard._onchange_presence()
+            self.assertEqual(wizard.start_minutes, 30)
+            self.assertEqual(wizard.end_minutes, 120)
+            wizard.start_minutes = 90
+            wizard.action_apply()
+            self.assertEqual(presence.minutes, 30)
             self.assertEqual(original, presence.event_ids[:1])
             with self.assertRaises(ValidationError):
                 self.declare(session, enrollment, 0, 120)
