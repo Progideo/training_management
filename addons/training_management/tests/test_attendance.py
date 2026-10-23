@@ -77,24 +77,20 @@ class TestAttendance(AttendanceCase):
             self.assertEqual(presence.minutes, 90)
             self.assertEqual(len(presence.event_ids), 3)
 
-            wizard = (
+            with Form(
                 self.env["training.attendance.edit"]
                 .with_user(self.coordinator)
-                .create(
-                    {
-                        "session_id": session.id,
-                        "enrollment_id": enrollment.id,
-                        "operation": "correction",
-                        "reason": "Fictional correction through native assistant",
-                        "data": BinaryBytes(PDF),
-                        "filename": "check.pdf",
-                    }
-                )
-            )
-            wizard._onchange_presence()
-            self.assertEqual(wizard.start_minutes, 30)
-            self.assertEqual(wizard.end_minutes, 120)
-            wizard.start_minutes = 90
+                .with_context(default_session_id=session.id, default_filename="check.pdf")
+            ) as form:
+                form.enrollment_id = enrollment
+                form.operation = "correction"
+                form.reason = "Fictional correction through native assistant"
+                form.data = BinaryBytes(PDF)
+                self.assertEqual(form.start_minutes, 30)
+                self.assertEqual(form.end_minutes, 120)
+                form.start_minutes = 90
+            wizard = form.record
+            self.assertEqual(wizard.revision, presence.revision)
             wizard.action_apply()
             self.assertEqual(presence.minutes, 30)
             self.assertEqual(original, presence.event_ids[:1])
