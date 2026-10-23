@@ -19,6 +19,7 @@ def remember(name, record):
 
 
 def snapshot():
+    env.flush_all()  # Capture persisted stored-related fields, not pending ORM recomputations.
     dossier = env.ref("training_management_test.s08_dossier")
     result = {}
     for table, column, value in (
