@@ -5,8 +5,9 @@ Référence : [#17](https://github.com/Progideo/training_management/issues/17), 
 ## Parcours
 
 Le coordinateur configure la collecte papier, électronique ou mixte dans la séance
-existante. La fenêtre électronique va du début à la fin de séance, avec une marge
-configurable avant/après. Le texte de confirmation est configurable. Les anciennes
+existante. La fenêtre électronique va du début de séance à 30 minutes après sa fin par
+défaut, pour laisser confirmer un intervalle entièrement écoulé. Les marges
+avant/après sont configurables. Le texte de confirmation est configurable. Les anciennes
 séances ne reçoivent aucune présence inventée à la mise à jour.
 
 Depuis « Mes formations », le participant authentifié déclare son propre intervalle

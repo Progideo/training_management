@@ -111,6 +111,12 @@ class TestAttendance(AttendanceCase):
             self.review(presence, reason="Fictional manual check of late declaration")
             self.assertEqual(presence.state, "validated")
             self.assertTrue(presence.event_ids[:1].anomaly)
+        _, second, second_enrollment = self.scheduled()
+        self.assertEqual(second.attendance_after, 30)
+        with patch("odoo.fields.Datetime.now", return_value=second.end_at + timedelta(minutes=30)):
+            timely = self.declare(second, second_enrollment)
+            self.assertEqual(timely.state, "pending")
+            self.assertFalse(timely.event_ids.anomaly)
 
     def test_interval_bounds_elapsed_time_nonfinite_and_acceptance(self):
         _, session, enrollment = self.scheduled()
@@ -351,3 +357,4 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, PDF)
         self.assertIn("no-store", response.headers["Cache-Control"])
+        self.assertTrue(response.headers["Content-Disposition"].startswith("attachment"))

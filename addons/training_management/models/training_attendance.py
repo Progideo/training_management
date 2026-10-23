@@ -18,7 +18,7 @@ class AttendanceSession(models.Model):
 
     attendance_mode = fields.Selection(MODES, required=True, default="electronic")
     attendance_before = fields.Integer(string="Declaration Opens Before Session (Minutes)", default=0)
-    attendance_after = fields.Integer(string="Declaration Closes After Session (Minutes)", default=0)
+    attendance_after = fields.Integer(string="Declaration Closes After Session (Minutes)", default=30)
     attendance_wording = fields.Text(
         required=True,
         default=lambda self: self.env._("I confirm that I attended the interval indicated for this session."),
