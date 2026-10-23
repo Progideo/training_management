@@ -127,6 +127,34 @@ class TestEvaluation(EvaluationCase):
         with self.assertRaises(AccessError):
             self.env["training.evaluation.service"].with_user(self.supervisor)._assignment(row.id)
 
+    def test_supervisor_native_list_and_form_read_validated_results(self):
+        row, _grant = self.assigned_evaluation()
+        qualitative, _grant2 = self.assigned_evaluation(scored=False)
+        self.decision(row, score=75)
+        self.decision(qualitative)
+        self.env.invalidate_all()
+        model = self.env["training.evaluation.assignment"].with_user(self.supervisor)
+        fields = {name: {} for name in ("name", "purpose", "state", "result_available", "score", "threshold")}
+        records = model.web_search_read([("id", "in", (row | qualitative).ids)], specification=fields)["records"]
+        indexed = {record["id"]: record for record in records}
+        self.assertTrue(indexed[row.id]["result_available"])
+        self.assertEqual(indexed[row.id]["score"], 75)
+        self.assertEqual(indexed[qualitative.id]["state"], "validated")
+        self.assertFalse(indexed[qualitative.id]["result_available"])
+        model.browse(row.id).web_read(
+            {
+                **fields,
+                "evaluation_id": {"fields": {"display_name": {}}},
+                "enrollment_id": {"fields": {"display_name": {}}},
+                "opens_at": {},
+                "due_at": {},
+                "attempt_number": {},
+                "revision": {},
+            }
+        )
+        with self.assertRaises(AccessError):
+            self.env["training.evaluation.result"].with_user(self.supervisor).search([])
+
     def test_authorization_and_teaching_mission_both_required(self):
         row, grant = self.assigned_evaluation()
         with self.assertRaises(AccessError):

@@ -34,6 +34,8 @@ Décisions : `training.evaluation.result`. Habilitations :
 terminée/à valider et validée. Une référence de tentative précédente reste dans
 l’historique ; une nouvelle tentative redevient non évaluée jusqu’à validation.
 `result_available` distingue un score absent ou non applicable d’un zéro validé.
+Les vues natives masquent les chiffres sans résultat chiffré ; la fiche précise
+« non évalué » ou « qualitatif, score non applicable ».
 
 Les questions/réponses en ligne utilisent exclusivement les modèles Survey.
 QCU/QCM à barème exact pour les évaluations notées ; choix et texte pour le

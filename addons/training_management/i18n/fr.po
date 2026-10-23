@@ -6842,6 +6842,7 @@ msgstr "— Version :"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
+#: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_assignment_form
 msgid "Qualitative result (score not applicable)."
 msgstr "Résultat qualitatif (score non applicable)."
 
@@ -6852,6 +6853,7 @@ msgstr "— Résultat qualitatif (score non applicable)"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
+#: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_assignment_form
 msgid "Not evaluated."
 msgstr "Non évalué."
 

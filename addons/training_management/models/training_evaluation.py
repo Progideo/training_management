@@ -247,7 +247,8 @@ class EvaluationAssignment(models.Model):
                 if row.opens_at > fields.Datetime.now()
                 else "not_started"
             )
-            row.result_available = bool(ref and row.evaluation_id.scored)
+            # Assigned readers may see the score without reading definitions or decisions.
+            row.result_available = bool(ref and row.sudo().evaluation_id.scored)
             row.score = ref.score if row.result_available else 0
 
     @api.model_create_multi
