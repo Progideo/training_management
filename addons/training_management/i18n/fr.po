@@ -4253,7 +4253,7 @@ msgstr "Les preuves sont produites par l’action pédagogique autorisée."
 
 #. module: training_management
 #. odoo-python
-#: code:addons/training_management/models/training_learning_notice.py:0
+#: code:addons/training_management/models/mail_mail.py:0
 msgid "Learning notifications contain only the authorized sign-in link."
 msgstr ""
 "Les notifications pédagogiques contiennent uniquement le lien de connexion "
@@ -4534,7 +4534,7 @@ msgstr "Cette notification pédagogique est déjà journalisée."
 
 #. module: training_management
 #. odoo-python
-#: code:addons/training_management/models/training_learning_notice.py:0
+#: code:addons/training_management/models/mail_mail.py:0
 msgid "This learning notification no longer has an authorized recipient."
 msgstr "Cette notification pédagogique n’a plus de destinataire habilité."
 

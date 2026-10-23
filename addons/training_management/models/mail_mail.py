@@ -1,4 +1,5 @@
 from odoo import models
+from odoo.exceptions import ValidationError
 
 
 class MailMail(models.Model):
@@ -6,6 +7,21 @@ class MailMail(models.Model):
 
     def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
         self.ensure_one()
+        if self.model == "training.learning.notice":
+            notice = self.env["training.learning.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
+            if not notice or not notice._authorized():
+                raise ValidationError(self.env._("This learning notification no longer has an authorized recipient."))
+            subject, body = notice._content()
+            if (
+                self.email_to != notice.recipient_email
+                or self.email_cc
+                or self.recipient_ids
+                or self.recipient_cc_ids
+                or self.attachment_ids
+                or self.subject != subject
+                or self.body_html != body
+            ):
+                raise ValidationError(self.env._("Learning notifications contain only the authorized sign-in link."))
         # Called inside native _send's error handling, immediately before build
         # and transport, including queue retries and synchronous sends.
         policy = self.env["training.document.policy"]

@@ -5,7 +5,6 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
 
 
 class LearningNotice(models.Model):
@@ -121,48 +120,21 @@ class LearningNotice(models.Model):
             return record
         subject, body = record._content()
         clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
-        mail = (
-            self.env["mail.mail"]
-            .sudo()
-            .with_context(clean)
-            .create(  # pylint: disable=context-overridden  # discard caller defaults before creating a strictly whitelisted message
-                {
-                    "subject": subject,
-                    "body_html": body,
-                    "email_to": record.recipient_email,
-                    "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                    "email_cc": False,
-                    "recipient_ids": [],
-                    "recipient_cc_ids": [],
-                    "attachment_ids": [],
-                    "model": self._name,
-                    "res_id": record.id,
-                    "auto_delete": False,
-                }
-            )
+        mail_model = self.env["mail.mail"].sudo().with_context(clean)  # pylint: disable=context-overridden  # discard caller defaults before whitelisted mail
+        mail = mail_model.create(
+            {
+                "subject": subject,
+                "body_html": body,
+                "email_to": record.recipient_email,
+                "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+                "email_cc": False,
+                "recipient_ids": [],
+                "recipient_cc_ids": [],
+                "attachment_ids": [],
+                "model": self._name,
+                "res_id": record.id,
+                "auto_delete": False,
+            }
         )
         record._store_evidence({"mail_id": mail.id})
         return record
-
-
-class MailMail(models.Model):
-    _inherit = "mail.mail"
-
-    def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
-        self.ensure_one()
-        if self.model == "training.learning.notice":
-            notice = self.env["training.learning.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
-            if not notice or not notice._authorized():
-                raise ValidationError(self.env._("This learning notification no longer has an authorized recipient."))
-            subject, body = notice._content()
-            if (
-                self.email_to != notice.recipient_email
-                or self.email_cc
-                or self.recipient_ids
-                or self.recipient_cc_ids
-                or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
-            ):
-                raise ValidationError(self.env._("Learning notifications contain only the authorized sign-in link."))
-        return super()._prepare_outgoing_list(mail_server=mail_server, doc_to_followers=doc_to_followers)

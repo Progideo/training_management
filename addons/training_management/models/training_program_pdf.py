@@ -6,7 +6,7 @@ from odoo.exceptions import AccessError, ValidationError
 
 
 class TrainingProgramPdf(models.Model):
-    _inherit = "training.program.version"
+    _inherit = "training.program.version"  # pylint: disable=consider-merging-classes-inherited  # catalogue PDF generation is independent of private S05 support versions
 
     category_id = fields.Many2one(related="course_id.category_id", string="Category")
     pdf_attachment_id = fields.Many2one(

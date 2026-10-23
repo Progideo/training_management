@@ -241,7 +241,7 @@ class TrainingDelivery(models.Model):
     _inherit = "training.delivery"
 
     learning_activity_ids = fields.One2many("training.learning.activity", "delivery_id", groups=COORDINATOR)
-    learning_tutor_id = fields.Many2one("res.users", ondelete="restrict", string="Learning Tutor", groups=COORDINATOR)
+    learning_tutor_id = fields.Many2one("res.users", ondelete="restrict", groups=COORDINATOR)
     learning_due_days = fields.Integer(string="Learning Deadline After Access Opens (Days)", groups=COORDINATOR)
     learning_inactivity_days = fields.Integer(string="Inactivity Before Reminder (Days)", groups=COORDINATOR)
     learning_reminder_days = fields.Integer(string="Reminder Interval (Days)", groups=COORDINATOR)
