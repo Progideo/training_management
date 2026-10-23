@@ -5,7 +5,7 @@ import json
 import os
 from datetime import timedelta
 
-from odoo import fields
+from odoo import Command, fields
 
 if env.cr.dbname != "tm_s01_test_s021_s052":
     raise RuntimeError("Disposable S09.1 fixture database only")
@@ -34,7 +34,12 @@ if os.environ["S091_PHASE"] == "prepare":
     dossier = env.ref("training_management_test.s08_dossier")
     coordinator = env.ref("training_management_test.s052_coordinator")
     delivery = dossier.delivery_id.with_user(coordinator)
-    delivery.write({"evaluation_quality_id": dossier.quality_id.id})
+    delivery.write(
+        {
+            "evaluation_quality_id": dossier.quality_id.id,
+            "evaluation_instructor_ids": [Command.link(coordinator.partner_id.id)],
+        }
+    )
     evaluation = (
         env["training.evaluation"]
         .with_user(coordinator)
