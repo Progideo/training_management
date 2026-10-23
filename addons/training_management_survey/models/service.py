@@ -11,8 +11,8 @@ class ExamService(models.AbstractModel):
     _description = "Private Native Survey Exam Operations"
 
     @api.private
-    def _enrollment(self, enrollment_id, *, history=False, lock=False):
-        if not history:
+    def _enrollment(self, enrollment_id, *, history=False, finish=False, lock=False):
+        if not history and not finish:
             return self.env["training.learning.service"]._enrollment(enrollment_id, lock=lock)
         enrollment = self.env["training.enrollment"].sudo().browse(enrollment_id).exists()
         user = self.env.user
@@ -26,6 +26,12 @@ class ExamService(models.AbstractModel):
             and enrollment.access_state == "active"
         ):
             raise AccessError(self.env._("This private exam is unavailable."))
+        if finish and enrollment._effective_state() not in ("active", "expired"):
+            raise AccessError(self.env._("This private exam is unavailable."))
+        if lock:
+            enrollment.delivery_id._serialize()
+            enrollment.invalidate_recordset()
+            return self._enrollment(enrollment_id, history=history, finish=finish)
         return enrollment
 
     @api.private
@@ -75,7 +81,7 @@ class ExamService(models.AbstractModel):
         attempt = self.env["survey.user_input"].sudo().browse(attempt_id).exists()
         if not attempt or not attempt.training_enrollment_id:
             raise AccessError(self.env._("This private exam is unavailable."))
-        self._enrollment(attempt.training_enrollment_id.id, history=not mutate, lock=mutate)
+        self._enrollment(attempt.training_enrollment_id.id, history=not mutate, finish=mutate, lock=mutate)
         if mutate or attempt.state != "done":
             attempt.lock_for_update()
             attempt.invalidate_recordset()

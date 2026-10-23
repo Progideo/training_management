@@ -22,7 +22,7 @@ Aucun fichier du cœur ni module standard n’est copié ou modifié.
 | Chronométrage | Début et échéance natifs ; durée figée par publication. Composant `survey.SurveyTimer` conservé. Contrôle serveur strict, sans la tolérance de dix secondes du contrôleur générique. |
 | Expiration | Les réponses reçues sont figées à échéance, à la requête suivante ou par tâche native `ir.cron` chaque minute. L’échéance logique reste exacte même si la tâche s’exécute plus tard. |
 | Répétitions | Questionnaire noté sans Certification, tentatives illimitées, y compris après 100 %. Le lien de nouvelle tentative reste accessible après tout résultat. |
-| Navigation | Portail/QWeb Odoo avec widgets QCU/QCM natifs ; palette, marquage à revoir, effacement, récapitulatif et confirmation finale. |
+| Navigation | Cadre de passation Sondages, portail/QWeb Odoo et widgets QCU/QCM natifs ; palette, marquage à revoir, effacement, récapitulatif et confirmation finale. |
 | P08 | Thème principal ou section native, points et score par thème, explications et liens PDF autorisés après remise. Une section vide reste non évaluée. |
 | Versions | Une version publiée devient immuable ; l’action de nouvelle version utilise la copie native. Les tentatives anciennes gardent leurs questions et barèmes. |
 | Révision | Assistant natif : motif et nouveaux points par question. Révisions ajoutées, jamais écrasées ; résultat initial conservé. |
@@ -60,6 +60,11 @@ L’écran distingue sauvegarde en cours, reçue et échouée. Une coupure ne pe
 pas de récupérer les changements que le serveur n’a pas reçus ; la remise
 manuelle attend la fin des sauvegardes. À expiration, seules les réponses déjà
 reçues avant l’échéance comptent. Un rechargement reprend la même tentative.
+
+Une tentative commencée avec des droits valides peut être terminée jusqu’à son
+échéance si les droits de formation expirent entre-temps. Cette expiration
+interdit tout nouveau départ. Suspension et révocation bloquent immédiatement
+la lecture et les mutations, y compris pour une tentative déjà commencée.
 
 Une réussite ne bloque jamais une nouvelle tentative si les droits restent
 actifs. Chaque tentative a sa propre durée complète et son propre résultat.

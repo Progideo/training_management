@@ -374,6 +374,32 @@ class TestMockExam(ExamCase):
             service._start(enrollment.id, activity.id)
         self.assertEqual(service._attempt(attempt.id), attempt)
 
+    def test_access_expiry_allows_finishing_only_the_authorized_active_attempt(self):
+        exam, q1, q2, activity, enrollment, service = self.published()
+        start = enrollment.access_end - timedelta(minutes=10)
+        with patch("odoo.fields.Datetime.now", return_value=start):
+            attempt = service._start(enrollment.id, activity.id)
+        with patch("odoo.fields.Datetime.now", return_value=enrollment.access_end + timedelta(minutes=1)):
+            self.assertEqual(enrollment._effective_state(), "expired")
+            self.assertTrue(service._save(attempt.id, q1.id, q1.suggested_answer_ids[:1].ids, False)["saved"])
+            with self.assertRaises(AccessError):
+                service._start(enrollment.id, activity.id)
+            service._submit(attempt.id)
+            self.assertEqual(service._result(attempt)["percentage"], 75)
+            self.assertEqual(attempt.deadline, start + timedelta(minutes=60))
+            enrollment.action_suspend_access(reason="Fictional suspension after expiry")
+            with self.assertRaises(AccessError):
+                service._attempt(attempt.id)
+            with self.assertRaises(AccessError):
+                service._submit(attempt.id)
+        exam2, q3, q4, activity2, enrollment2, service2 = self.published()
+        with patch("odoo.fields.Datetime.now", return_value=enrollment2.access_end - timedelta(minutes=10)):
+            second = service2._start(enrollment2.id, activity2.id)
+        with patch("odoo.fields.Datetime.now", return_value=enrollment2.access_end + timedelta(minutes=1)):
+            enrollment2.action_revoke_access(reason="Fictional revocation after expiry")
+            with self.assertRaises(AccessError):
+                service2._save(second.id, q3.id, q3.suggested_answer_ids[:1].ids, False)
+
     def test_unrelated_native_survey_is_unaffected(self):
         survey = self.env["survey.survey"].create({"title": "Ordinary survey"})
         question = self.env["survey.question"].create(
