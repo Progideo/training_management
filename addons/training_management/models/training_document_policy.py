@@ -3,7 +3,7 @@
 from odoo import SUPERUSER_ID, api, models
 from odoo.exceptions import AccessError, ValidationError
 
-PEDAGOGICAL = ("training.material", "training.program.version", "training.learning.entry")
+PEDAGOGICAL = ("training.material", "training.program.version", "training.learning.entry", "training.attendance.event")
 
 
 class TrainingDocumentPolicy(models.AbstractModel):
@@ -17,7 +17,10 @@ class TrainingDocumentPolicy(models.AbstractModel):
         if target._name == "ir.attachment":
             if target.training_program_id:
                 return target.training_program_id
-            if target.res_model not in ("training.material", "training.learning.entry") or not target.res_id:
+            if (
+                target.res_model not in ("training.material", "training.learning.entry", "training.attendance.event")
+                or not target.res_id
+            ):
                 return self.env["training.material"]
             target = self.env[target.res_model].sudo().browse(target.res_id).exists()
             if not target:
@@ -95,6 +98,8 @@ class TrainingDocumentPolicy(models.AbstractModel):
             enrollment = document.sudo().enrollment_id
             return service._is_participant(enrollment) or service._is_tutor(enrollment)
         native = document.with_env(self.env(su=False))
+        if document._name == "training.attendance.event":
+            return native.has_access("read")
         if document._name == "training.program.version":
             if native.has_access("read"):
                 return True
@@ -121,7 +126,7 @@ class TrainingDocumentPolicy(models.AbstractModel):
 
     @api.private
     def _check_send(self, document, partners, *, email_to=False, email_cc=False, required=True, allow_internal=False):
-        if document and document._name in ("training.material", "training.learning.entry"):
+        if document and document._name in ("training.material", "training.learning.entry", "training.attendance.event"):
             # S05 distributes through the authenticated portal only. Do not send
             # the private file, even on an unrelated envelope or to a follower.
             raise ValidationError(

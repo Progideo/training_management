@@ -193,6 +193,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -250,6 +252,9 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -280,6 +285,9 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -337,6 +345,11 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_learning_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_evidence__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -423,6 +436,11 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_service__id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_evidence__id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -458,6 +476,9 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -488,6 +509,9 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -782,6 +806,7 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__delivery_state
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__state
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__state
 msgid "State"
 msgstr "État"
 
@@ -908,6 +933,7 @@ msgstr "Valider"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__prerequisites__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__validated
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__validated
 msgid "Validated"
 msgstr "Validé"
 
@@ -996,6 +1022,7 @@ msgstr "Créer le brouillon"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_invitation_send_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_attendance_edit
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -1111,12 +1138,14 @@ msgstr ""
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__actor_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__actor_id
 msgid "Actor"
 msgstr "Auteur"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__after
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__after
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__after
 msgid "After"
 msgstr "Après"
 
@@ -1195,6 +1224,7 @@ msgstr "Offre autonome"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__before
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__before
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__before
 msgid "Before"
 msgstr "Avant"
 
@@ -1415,6 +1445,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_activity__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1433,6 +1464,7 @@ msgstr "Accès effectif"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_session__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__end_at
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__end_at
 msgid "End At"
 msgstr "Fin"
 
@@ -1444,6 +1476,8 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -1526,6 +1560,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__kind
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__kind
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -1558,6 +1593,7 @@ msgstr "Places occupées"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__occurred_at
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__occurred_at
 msgid "Occurred At"
 msgstr "Date de l’opération"
 
@@ -1612,6 +1648,7 @@ msgstr "Seuil d’ouverture"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__operation_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__operation
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__operation
 msgid "Operation"
 msgstr "Opération"
 
@@ -1675,6 +1712,8 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__reason
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__reason
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__reason
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__reason
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__reason
 msgid "Reason"
 msgstr "Motif"
 
@@ -1772,6 +1811,8 @@ msgstr "Responsable"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__revision
 #: model:ir.model.fields,field_description:training_management.field_training_material__revision
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__revision
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__revision
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__revision
 msgid "Revision"
 msgstr "Révision"
 
@@ -1835,6 +1876,7 @@ msgstr "Démarrer"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery_dates__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_session__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__start_at
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__start_at
 msgid "Start At"
 msgstr "Début"
 
@@ -2545,6 +2587,7 @@ msgstr "Équipements"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__event
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__event_ids
 msgid "Event"
 msgstr "Événement"
 
@@ -2895,6 +2938,8 @@ msgstr "Envoyer les convocations / modifications"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__session_ids
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__session_id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__session_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__session_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__session_id
 msgid "Session"
 msgstr "Séance"
 
@@ -3663,6 +3708,8 @@ msgstr "Service de diffusion des fichiers pour les contrôleurs"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__filename
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__filename
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__filename
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__filename
 msgid "Filename"
 msgstr "Nom du fichier"
 
@@ -3733,6 +3780,7 @@ msgstr "Aucun PDF privé disponible actuellement."
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
 msgid "No scheduled session."
 msgstr "Aucune séance planifiée."
 
@@ -4668,3 +4716,468 @@ msgstr "Notification"
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__entry
 msgid "Private Learning Update"
 msgstr "Mise à jour pédagogique privée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "A trainer cannot validate their own attendance."
+msgstr "Un formateur ne peut pas valider sa propre présence."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__absent
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__absent
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__absent
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Absent"
+msgstr "Absent"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Accept the session confirmation text."
+msgstr "Acceptez le texte de confirmation de la séance."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "An existing validation requires a coordinator correction."
+msgstr "Une présence déjà validée doit être corrigée par le coordinateur."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__anomaly
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__anomaly
+msgid "Anomaly"
+msgstr "Anomalie"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__start_minutes
+msgid "Arrival (Minutes After Scheduled Start)"
+msgstr "Arrivée (minutes après le début prévu)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Arrival (minutes after start)"
+msgstr "Arrivée (minutes après le début)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__attendance_id
+#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_ids
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
+msgid "Attendance"
+msgstr "Présences"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_edit_attendance
+msgid "Attendance Collection"
+msgstr "Collecte des présences"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_attendance_event
+msgid "Attendance Declaration and Review History"
+msgstr "Historique des déclarations et contrôles de présence"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_mode
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__attendance_mode
+msgid "Attendance Mode"
+msgstr "Mode de collecte"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_wording
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__attendance_wording
+msgid "Attendance Wording"
+msgstr "Texte de confirmation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Attendance changed. Reload before recording your decision."
+msgstr "La présence a changé. Rechargez avant d’enregistrer votre décision."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Attendance evidence cannot be copied."
+msgstr "Les preuves de présence ne peuvent pas être copiées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Attendance evidence cannot be rewritten."
+msgstr "Les preuves de présence ne peuvent pas être réécrites."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Attendance is collected on signed paper for this session."
+msgstr "Les présences de cette séance sont recueillies sur papier signé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Attendance requires an active, non-cancelled scheduled session."
+msgstr "La présence exige une séance planifiée active et non annulée."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_attendance_service
+msgid "Authorized Attendance Operations"
+msgstr "Opérations autorisées de présence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
+msgid "Choose a valid participant."
+msgstr "Choisissez un participant valide."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
+msgid "Choose a valid session."
+msgstr "Choisissez une séance valide."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Choose paper or mixed collection for signed paper."
+msgstr ""
+"Choisissez une collecte papier ou mixte pour importer un papier signé."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Confirm my attendance"
+msgstr "Confirmer ma présence"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_event__kind__correction
+msgid "Coordinator Correction"
+msgstr "Correction du coordinateur"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__operation__correction
+msgid "Correct Validated Attendance"
+msgstr "Corriger une présence validée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__data
+msgid "Data"
+msgstr "Fichier"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_after
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__attendance_after
+msgid "Declaration Closes After Session (Minutes)"
+msgstr "Fermeture après la fin de séance (minutes)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_before
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__attendance_before
+msgid "Declaration Opens Before Session (Minutes)"
+msgstr "Ouverture avant le début de séance (minutes)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Declaration and review history"
+msgstr "Historique des déclarations et contrôles"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__end_minutes
+msgid "Departure (Minutes After Scheduled Start)"
+msgstr "Départ (minutes après le début prévu)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Departure (minutes after start)"
+msgstr "Départ (minutes après le début)"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__attendance_mode__electronic
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__attendance_mode__electronic
+msgid "Electronic"
+msgstr "Électronique"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Enter a valid attended interval in minutes."
+msgstr "Saisissez un intervalle de présence valide en minutes."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid ""
+"Enter arrival and departure as minutes after the scheduled start. Example: "
+"30 to 120 means 90 minutes attended."
+msgstr ""
+"Indiquez l’arrivée et le départ en minutes après le début prévu. Exemple : "
+"de 30 à 120 correspond à 90 minutes de présence."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Explain how the out-of-window anomaly was checked."
+msgstr "Expliquez le contrôle de la déclaration hors fenêtre."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+#: code:addons/training_management/wizard/training_attendance_edit.py:0
+msgid "I confirm that I attended the interval indicated for this session."
+msgstr ""
+"Je confirme avoir assisté à cette séance pendant l’intervalle indiqué."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
+msgid "Import Paper / Correct"
+msgstr "Importer un papier / Corriger"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__operation__paper
+msgid "Import Signed Paper"
+msgstr "Importer un papier signé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Keep attendance evidence and its history."
+msgstr "Conservez les preuves de présence et leur historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid ""
+"Keep the schedule and declaration settings once attendance is recorded."
+msgstr ""
+"Conservez le planning et les paramètres de déclaration après "
+"l’enregistrement d’une présence."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__late_minutes
+msgid "Late Minutes"
+msgstr "Retard (minutes)"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__attendance_mode__mixed
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__attendance_mode__mixed
+msgid "Mixed"
+msgstr "Mixte"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_attendance_link
+msgid "My attendance"
+msgstr "Mes présences"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
+msgid "Not Declared"
+msgstr "Non déclarée"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_attendance_one_presence
+msgid "One attendance record per participant and session."
+msgstr "Une seule présence par participant et séance."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_attendance_edit.py:0
+msgid "Only a training coordinator may import or correct attendance."
+msgstr ""
+"Seul un coordinateur de formation peut importer ou corriger les présences."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Only the assigned session trainer may validate attendance."
+msgstr "Seul le formateur affecté à la séance peut valider les présences."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_session__attendance_mode__paper
+#: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__attendance_mode__paper
+msgid "Paper"
+msgstr "Papier"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_event__kind__declaration
+msgid "Participant Declaration"
+msgstr "Déclaration du participant"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__pending
+msgid "Pending Review"
+msgstr "À contrôler"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__data
+msgid "Private Evidence"
+msgstr "Justificatif privé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Provide a reason and a named evidence file."
+msgstr "Indiquez un motif et un fichier justificatif nommé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_attendance_edit
+msgid "Record Paper / Correct Attendance"
+msgstr "Importer un papier / Corriger une présence"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_attendance_edit
+msgid "Record Paper or Correct Attendance"
+msgstr "Importer un papier ou corriger une présence"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_attendance_link
+msgid "Review attendance"
+msgstr "Contrôler les présences"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Review attendance after the session ends."
+msgstr "Contrôlez les présences après la fin de séance."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Review comment (required for an anomaly)"
+msgstr "Commentaire de contrôle (obligatoire pour une anomalie)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_attendance_edit
+msgid "Save Evidence"
+msgstr "Enregistrer le justificatif"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_attendance_evidence
+msgid "Server-authored Attendance Evidence"
+msgstr "Preuve de présence produite par le serveur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+#: model:ir.model,name:training_management.model_training_attendance
+msgid "Session Attendance"
+msgstr "Présences de la séance"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_event__kind__paper
+msgid "Signed Paper"
+msgstr "Papier signé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_attendance_edit
+msgid ""
+"Signed paper remains pending until a distinct trainer validates it. "
+"Corrections preserve every previous declaration and evidence file."
+msgstr ""
+"Le papier signé reste à contrôler par un formateur distinct. Les corrections"
+" conservent toutes les déclarations et pièces antérieures."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid ""
+"The attended interval must be elapsed and within the scheduled session."
+msgstr ""
+"L’intervalle de présence doit être écoulé et compris dans la séance prévue."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "The evidence file must not exceed 10 MB."
+msgstr "Le justificatif ne doit pas dépasser 10 Mo."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "The trainer must first validate the attendance."
+msgstr "Le formateur doit d’abord valider la présence."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "This attendance record is unavailable."
+msgstr "Cette présence n’est pas accessible."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_event__kind__validation
+msgid "Trainer Validation"
+msgstr "Validation du formateur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Trainer validation must be separate from the source declaration."
+msgstr ""
+"Le contrôle du formateur doit être distinct de la déclaration d’origine."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Use non-negative declaration windows and a confirmation text."
+msgstr "Utilisez des marges positives ou nulles et un texte de confirmation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Use the attendance declaration or review action."
+msgstr "Utilisez l’action de déclaration ou de contrôle de présence."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Validate attendance"
+msgstr "Valider la présence"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__minutes
+msgid "Validated Minutes"
+msgstr "Durée validée (minutes)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__wording
+msgid "Wording"
+msgstr "Texte accepté"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Your declaration is recorded. Ask the coordinator for a correction."
+msgstr ""
+"Votre déclaration est enregistrée. Demandez une correction au coordinateur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid ""
+"Your declaration is recorded. Contact the coordinator for a correction."
+msgstr ""
+"Votre déclaration est enregistrée. Contactez le coordinateur pour une "
+"correction."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "session_id"
+msgstr "Séance"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "validated minutes"
+msgstr "minutes validées"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "— Outside declaration window"
+msgstr "— Hors fenêtre de déclaration"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attachment.py:0
+msgid ""
+"Attendance evidence is stored only through the controlled attendance action."
+msgstr ""
+"Les justificatifs de présence sont enregistrés uniquement par l’action "
+"contrôlée de présence."
