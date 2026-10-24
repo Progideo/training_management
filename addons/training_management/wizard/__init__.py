@@ -5,3 +5,6 @@ from . import training_session_edit
 from . import training_attendance_edit
 from . import training_evaluation_record
 from . import training_feedback_export
+
+from . import training_quality_operation
+from . import training_quality_export

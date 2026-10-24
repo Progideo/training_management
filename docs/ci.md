@@ -25,6 +25,7 @@ parallèles du socle et les deux variantes du catalogue sont conservées.
 | S06 / S07 | Examens blancs, présences et isolation |
 | S08 | Attestations, preuves, historiques et concurrence |
 | S09.1 / S09.2 | Évaluations, retours, droits, anonymat et concurrence |
+| S09.3 | Réclamations confidentielles, efficacité, reprise S09.2 et concurrence |
 
 Les dix anciens workflows spécialisés sont intégrés comme tâches du workflow
 commun ; l’automatisation du Project reste indépendante. Les déclencheurs couvrent
@@ -36,6 +37,7 @@ le code fusionné avant regroupement. Les tests comparent chaque ancienne tâche
 à sa nouvelle définition (commandes, variables, services, matrices, délais et
 artefacts) et vérifient que les scripts sont inchangés. Il recense aussi les
 139 phases spécialisées attendues, en comptant les deux variantes du catalogue.
+L’extension S09.3 ajoute 20 phases et un artefact sans remplacer ces contrats.
 Les quatre scénarios du socle conservent leur contrat historique de 21 étapes.
 
 ## Style et règles Odoo
@@ -106,7 +108,7 @@ ne sont pas masqués par `tee`.
 - succès de toutes les tâches, dont les deux matrices ; échec, annulation, exclusion
   ou résultat manquant sont refusés ;
 - présence des quatre artefacts du socle et des 21 étapes dans l’ordre attendu ;
-- présence des onze artefacts spécialisés et de chaque journal de phase non vide ;
+- présence des douze artefacts spécialisés et de chaque journal de phase non vide ;
 - codes retour nuls, durées valides et journaux non vides, y compris pour le socle.
 
 Le job final utilise `needs` et `always()` pour ne pas devenir un succès implicite

@@ -13,3 +13,5 @@ from . import test_attendance
 from . import test_closure
 from . import test_evaluation
 from . import test_feedback
+
+from . import test_quality

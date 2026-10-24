@@ -1,0 +1,41 @@
+<odoo>
+    <record id="report_quality_summary" model="ir.actions.report">
+        <field name="name">Approved Quality Summary</field>
+        <field name="model">training.quality.export</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">training_management.quality_summary</field>
+        <field name="paperformat_id" ref="paperformat_programme_pdf"/>
+        <field name="group_ids" eval="[(4, ref('group_training_quality'))]"/>
+    </record>
+    <template id="quality_summary">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+            </head>
+            <body style="font-family: DejaVu Sans, sans-serif;">
+                <h1>Approved Quality Summary</h1>
+                <p style="white-space: pre-wrap; overflow-wrap: anywhere" t-out="summary"/>
+                <p>S093-QWEB-1 — Internal evidence; no certification claim.</p>
+            </body>
+        </html>
+    </template>
+    <record id="view_quality_export" model="ir.ui.view">
+        <field name="name">training.quality.export</field>
+        <field name="model">training.quality.export</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="complaint_id"/>
+                    <field name="improvement_id"/>
+                    <field name="dossier_id"/>
+                    <field name="summary"/>
+                </group>
+                <p>Approve only the minimum necessary summary. Do not include unrelated third-party details. S08 validation remains a separate decision.</p>
+                <footer>
+                    <button name="action_export" type="object" string="Create Private S08 Evidence" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -104,3 +104,24 @@ access_s092_campaign_quality,S092 scoped campaign,training.feedback.campaign,tra
 access_s092_export_coordinator,S092 export,training.feedback.export,training_management.group_training_coordinator,crud,
 access_s092_export_quality,S092 export quality,training.feedback.export,training_management.group_training_quality,crud,
 rule_s092_export_owner,S092 export owner,training.feedback.export,,crud,"[('create_uid', '=', user.id)]"
+access_s093_complaint_coordinator,S093 assigned complaint,training.complaint,training_management.group_training_coordinator,cru,"['|', ('quality_id', '=', user.id), ('member_ids', 'in', [user.id])]"
+access_s093_complaint_quality,S093 assigned complaint,training.complaint,training_management.group_training_quality,cru,"['|', ('quality_id', '=', user.id), ('member_ids', 'in', [user.id])]"
+rule_s093_company_complaint,S093 company complaint,training.complaint,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_s093_improvement_coordinator,S093 assigned improvement,training.improvement,training_management.group_training_coordinator,cru,"['|', '|', ('quality_id', '=', user.id), ('member_ids', 'in', [user.id]), ('complaint_id.quality_id', '=', user.id)]"
+access_s093_improvement_quality,S093 assigned improvement,training.improvement,training_management.group_training_quality,cru,"['|', '|', ('quality_id', '=', user.id), ('member_ids', 'in', [user.id]), ('complaint_id.quality_id', '=', user.id)]"
+rule_s093_company_improvement,S093 company improvement,training.improvement,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_s093_quality_event_coordinator,S093 assigned quality.event,training.quality.event,training_management.group_training_coordinator,r,"['|', ('complaint_id', 'access', 'read'), ('improvement_id', 'access', 'read')]"
+access_s093_quality_event_quality,S093 assigned quality.event,training.quality.event,training_management.group_training_quality,r,"['|', ('complaint_id', 'access', 'read'), ('improvement_id', 'access', 'read')]"
+rule_s093_company_quality_event,S093 company quality.event,training.quality.event,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_s093_quality_file_coordinator,S093 assigned quality.file,training.quality.file,training_management.group_training_coordinator,cr,"['|', ('complaint_id', 'access', 'read'), ('improvement_id', 'access', 'read')]"
+access_s093_quality_file_quality,S093 assigned quality.file,training.quality.file,training_management.group_training_quality,cr,"['|', ('complaint_id', 'access', 'read'), ('improvement_id', 'access', 'read')]"
+rule_s093_company_quality_file,S093 company quality.file,training.quality.file,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_s093_action_origin,S093 complaint grant follows withdrawal,training.improvement,,crud,"['|', ('complaint_id', '=', False), ('complaint_id', 'access', 'read')]"
+access_s093_quality_operation_quality,S093 owner wizard,training.quality.operation,training_management.group_training_quality,crud,
+access_s093_quality_operation_coordinator,S093 owner wizard,training.quality.operation,training_management.group_training_coordinator,crud,
+rule_s093_owner_quality_operation,S093 own wizard,training.quality.operation,,crud,"[('create_uid', '=', user.id)]"
+access_s093_quality_export_quality,S093 owner wizard,training.quality.export,training_management.group_training_quality,crud,
+access_s093_quality_export_coordinator,S093 owner wizard,training.quality.export,training_management.group_training_coordinator,crud,
+rule_s093_owner_quality_export,S093 own wizard,training.quality.export,,crud,"[('create_uid', '=', user.id)]"
+access_s093_training_delivery_quality,S093 assigned scope,training.delivery,training_management.group_training_quality,r,"['|', ('complaint_quality_id', '=', user.id), ('complaint_ids', 'any', [('id', 'access', 'read')])]"
+access_s093_training_enrollment_quality,S093 assigned scope,training.enrollment,training_management.group_training_quality,r,"[('complaint_ids', 'any', [('id', 'access', 'read')])]"

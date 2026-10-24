@@ -1,0 +1,290 @@
+<odoo>
+    <record id="view_complaint_list" model="ir.ui.view">
+        <field name="name">training.complaint.list</field>
+        <field name="model">training.complaint</field>
+        <field name="arch" type="xml">
+            <list delete="false" decoration-danger="overdue">
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="responsible_id"/>
+                <field name="due_date"/>
+                <field name="overdue"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_complaint_search" model="ir.ui.view">
+        <field name="name">training.complaint.search</field>
+        <field name="model">training.complaint</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="responsible_id"/>
+                <filter name="overdue" string="Overdue" domain="[('overdue','=',True)]"/>
+                <filter name="my_responsibility" string="My Responsibility" domain="[('responsible_id','=',uid)]"/>
+                <filter name="state" string="Status" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_complaint_form" model="ir.ui.view">
+        <field name="name">training.complaint.form</field>
+        <field name="model">training.complaint</field>
+        <field name="arch" type="xml">
+            <form delete="false">
+                <header>
+                    <button name="action_start" type="object" string="Start Treatment" invisible="state != 'received'"/>
+                    <button name="action_resolve" type="object" string="Resolve with Reply" invisible="state != 'processing'"/>
+                    <button name="action_close" type="object" string="Close Complaint" invisible="state != 'resolved'"/>
+                    <button name="action_new_improvement" type="object" string="New Improvement"/>
+                    <button name="action_decision" type="object" string="Reopen / Withdraw Access"/>
+                    <button name="action_export_proof" type="object" string="Approved Summary for S08"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="id"/>
+                        <field name="company_id" readonly="id" groups="base.group_multi_company"/>
+                        <field name="delivery_id" readonly="id" options="{'no_open': True}"/>
+                        <field name="quality_id"/>
+                        <field name="responsible_id"/>
+                        <field name="member_ids" widget="many2many_tags"/>
+                        <field name="retention_id" readonly="id" options="{'no_create': True}"/>
+                        <field name="confidentiality" readonly="id"/>
+                        <field name="due_date"/>
+                        <field name="overdue"/>
+                        <field name="frozen" readonly="not id"/>
+                    </group>
+                    <group>
+                        <field name="enrollment_id" readonly="id" options="{'no_open': True}"/>
+                        <field name="complainant_id" readonly="id"/>
+                        <field name="channel" readonly="id"/>
+                        <field name="portal_visible" readonly="id"/>
+                        <field name="portal_revoked"/>
+                        <field name="received_at"/>
+                        <field name="description" readonly="id"/>
+                        <field name="treatment"/>
+                        <field name="reply"/>
+                        <field name="resolution_reason"/>
+                        <field name="resolved_at"/>
+                        <field name="closed_at"/>
+                    </group>
+                    <notebook>
+                        <page string="Private Files">
+                            <field name="file_ids">
+                                <list delete="false">
+                                    <field name="name" readonly="id"/>
+                                    <field name="source" readonly="id"/>
+                                    <field name="produced_at" readonly="id"/>
+                                    <field name="sha256"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="name" readonly="id"/>
+                                        <field name="source" readonly="id"/>
+                                        <field name="produced_at" readonly="id"/>
+                                        <field name="previous_id" readonly="id"/>
+                                        <field name="data" filename="name" readonly="id"/>
+                                        <field name="sha256" readonly="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Improvement Actions">
+                            <field name="improvement_ids" readonly="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="responsible_id"/>
+                                    <field name="due_date"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Private History">
+                            <field name="event_ids">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="occurred_at"/>
+                                    <field name="author_id"/>
+                                    <field name="operation"/>
+                                    <field name="reason"/>
+                                </list>
+                                <form create="false" edit="false" delete="false">
+                                    <group>
+                                        <field name="occurred_at"/>
+                                        <field name="author_id"/>
+                                        <field name="operation"/>
+                                        <field name="reason"/>
+                                        <field name="details"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_complaint" model="ir.actions.act_window">
+        <field name="name">Complaints</field>
+        <field name="res_model">training.complaint</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_complaint" name="Complaints" parent="menu_training_root" action="action_complaint" sequence="81" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
+    <record id="view_improvement_list" model="ir.ui.view">
+        <field name="name">training.improvement.list</field>
+        <field name="model">training.improvement</field>
+        <field name="arch" type="xml">
+            <list delete="false" decoration-danger="overdue">
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="responsible_id"/>
+                <field name="due_date"/>
+                <field name="overdue"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_improvement_search" model="ir.ui.view">
+        <field name="name">training.improvement.search</field>
+        <field name="model">training.improvement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="responsible_id"/>
+                <filter name="overdue" string="Overdue" domain="[('overdue','=',True)]"/>
+                <filter name="my_responsibility" string="My Responsibility" domain="[('responsible_id','=',uid)]"/>
+                <filter name="state" string="Status" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_improvement_form" model="ir.ui.view">
+        <field name="name">training.improvement.form</field>
+        <field name="model">training.improvement</field>
+        <field name="arch" type="xml">
+            <form delete="false">
+                <header>
+                    <button name="action_plan" type="object" string="Plan Action" invisible="state != 'decision'"/>
+                    <button name="action_implement" type="object" string="Record Implementation" invisible="state != 'planned'"/>
+                    <button name="action_check_effectiveness" type="object" string="Check Effectiveness" invisible="state != 'done'"/>
+                    <button name="action_decision" type="object" string="Effectiveness Decision / Replan" invisible="state not in ('checking','ineffective')"/>
+                    <button name="action_export_proof" type="object" string="Approved Summary for S08"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="id"/>
+                        <field name="company_id" readonly="id" groups="base.group_multi_company"/>
+                        <field name="delivery_id" readonly="id" options="{'no_open': True}"/>
+                        <field name="quality_id"/>
+                        <field name="responsible_id"/>
+                        <field name="member_ids" widget="many2many_tags"/>
+                        <field name="retention_id" readonly="id" options="{'no_create': True}"/>
+                        <field name="confidentiality" readonly="id"/>
+                        <field name="due_date"/>
+                        <field name="overdue"/>
+                        <field name="frozen" readonly="not id"/>
+                    </group>
+                    <group>
+                        <field name="origin" readonly="id"/>
+                        <field name="origin_reference" readonly="id"/>
+                        <field name="complaint_id" readonly="id"/>
+                        <field name="campaign_id" readonly="id"/>
+                        <field name="decision"/>
+                        <field name="implementation"/>
+                        <field name="output_reference"/>
+                        <field name="effectiveness_criterion"/>
+                        <field name="verification_plan"/>
+                        <field name="implemented_at"/>
+                        <field name="verification"/>
+                        <field name="follow_up"/>
+                        <field name="verifier_id"/>
+                        <field name="verified_at"/>
+                    </group>
+                    <notebook>
+                        <page string="Private Files">
+                            <field name="file_ids">
+                                <list delete="false">
+                                    <field name="name" readonly="id"/>
+                                    <field name="source" readonly="id"/>
+                                    <field name="produced_at" readonly="id"/>
+                                    <field name="sha256"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="name" readonly="id"/>
+                                        <field name="source" readonly="id"/>
+                                        <field name="produced_at" readonly="id"/>
+                                        <field name="previous_id" readonly="id"/>
+                                        <field name="data" filename="name" readonly="id"/>
+                                        <field name="sha256" readonly="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Private History">
+                            <field name="event_ids">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="occurred_at"/>
+                                    <field name="author_id"/>
+                                    <field name="operation"/>
+                                    <field name="reason"/>
+                                </list>
+                                <form create="false" edit="false" delete="false">
+                                    <group>
+                                        <field name="occurred_at"/>
+                                        <field name="author_id"/>
+                                        <field name="operation"/>
+                                        <field name="reason"/>
+                                        <field name="details"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_improvement" model="ir.actions.act_window">
+        <field name="name">Improvement Actions</field>
+        <field name="res_model">training.improvement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_improvement" name="Improvement Actions" parent="menu_training_root" action="action_improvement" sequence="82" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
+    <record id="view_quality_operation" model="ir.ui.view">
+        <field name="name">training.quality.operation</field>
+        <field name="model">training.quality.operation</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="complaint_id"/>
+                    <field name="improvement_id"/>
+                    <field name="operation"/>
+                    <field name="reason"/>
+                    <field name="result" invisible="operation != 'verify'"/>
+                    <field name="verification" invisible="operation != 'verify'"/>
+                    <field name="follow_up" invisible="operation != 'verify'"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply Decision" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_delivery_quality_intake" model="ir.ui.view">
+        <field name="name">training.delivery.complaint.intake</field>
+        <field name="model">training.delivery</field>
+        <field name="inherit_id" ref="view_training_delivery_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Confidential Complaint Intake" groups="training_management.group_training_coordinator">
+                    <field name="complaint_quality_id"/>
+                    <field name="complaint_retention_id" options="{'no_create': True}"/>
+                    <field name="complaint_response_days"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

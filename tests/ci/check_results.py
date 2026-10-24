@@ -7,7 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 COVERAGE = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]
-SPECIALIZED = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())["jobs"]
+WORKFLOW_COVERAGE = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
+SPECIALIZED = {**WORKFLOW_COVERAGE["jobs"], **WORKFLOW_COVERAGE["extensions"]}
 REQUIRED_JOBS = {"orchestration", "scenarios", *SPECIALIZED}
 
 
