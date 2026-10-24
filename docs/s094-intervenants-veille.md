@@ -46,6 +46,9 @@ Les liens vers une action d’amélioration et une version de programme sont
 facultatifs selon l’impact réel et soumis aux droits de lecture. Modifier le
 contenu d’un dossier revu le remet en brouillon et conserve la décision précédente.
 
+La mise à jour avec Website réutilise le mécanisme de compatibilité S08 pour
+le chargement des vues, puis restaure le schéma natif (contrainte et défaut SQL).
+
 ## Contrat S10
 
 `training.provider.service._states(offset, limit)` renvoie `total` et les lignes

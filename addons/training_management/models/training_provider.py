@@ -507,7 +507,7 @@ class ProviderService(models.AbstractModel):
 
 
 class ProviderSession(models.Model):
-    _inherit = "training.session"
+    _inherit = "training.session"  # pylint: disable=consider-merging-classes-inherited  # Keep QUA03 warning projections separate from scheduling and attendance.
 
     instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
 
@@ -526,7 +526,7 @@ class ProviderSession(models.Model):
 
 
 class ProviderDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Keep QUA03 warning projections separate from evaluation authorization rules.
 
     instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
 

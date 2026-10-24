@@ -46,6 +46,10 @@ def snapshot(columns):
         result["evidence_bytes"] = {
             str(r.id): hashlib.sha256(r.data.content).hexdigest() for r in env["training.provider.evidence"].search([])
         }
+    env.cr.execute("""SELECT a.attnotnull, pg_get_expr(d.adbin, d.adrelid)
+        FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum
+        WHERE a.attrelid='ir_ui_view'::regclass AND a.attname='visibility'""")
+    result["native_view_schema"] = env.cr.fetchone()
     return result
 
 

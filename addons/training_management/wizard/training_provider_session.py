@@ -6,7 +6,7 @@ from ..models.training_evaluation import COORDINATOR
 
 
 class ProviderSessionEdit(models.TransientModel):
-    _inherit = "training.session.edit"
+    _inherit = "training.session.edit"  # pylint: disable=consider-merging-classes-inherited  # Keep QUA03 warnings separate from scheduling and attendance inputs.
 
     instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
 
