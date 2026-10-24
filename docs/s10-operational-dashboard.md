@@ -68,7 +68,8 @@ Les anciens modèles ne reçoivent pas de version historique inventée : leur co
 conservé fait référence. Aucune notification rétroactive n’est créée à la mise à jour.
 
 La consultation utilise listes/formulaires natifs, QWeb et Bootstrap, avec libellés,
-états textuels et filtres accessibles au clavier. **Contrôles d’accessibilité PDF**
+états textuels et filtres accessibles au clavier. Une période incohérente conserve
+les filtres et affiche une erreur explicite, sans calculer de faux totaux. **Contrôles d’accessibilité PDF**
 permet au référent qualité déjà habilité à la source de consigner ses vérifications
 humaines : ordre de lecture, alternatives, contraste, texte/navigation et pédagogie.
 Le contrôle conserve l’empreinte du fichier, l’auteur, la date et les écarts ; une

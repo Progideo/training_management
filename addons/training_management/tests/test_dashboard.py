@@ -113,7 +113,9 @@ class TestDashboard(EvaluationCase):
         self.assertTrue(row["attendance_incomplete"])
         self.assertEqual(self.dashboard()._dashboard(delivery.id, issue="attendance")["population"], 1)
         line = self.env["training.dashboard.line"].with_user(self.coordinator)
-        self.assertEqual(line.search([("attendance_incomplete", "=", True)]).ids, enrollment.ids)
+        self.assertEqual(
+            line.search([("delivery_id", "=", delivery.id), ("attendance_incomplete", "=", True)]).ids, enrollment.ids
+        )
         asynchronous = self.enrollment(self.delivery())
         self.assertFalse(self.dashboard()._participant(asynchronous.id)["attendance_incomplete"])
 
@@ -303,6 +305,8 @@ class TestDashboard(EvaluationCase):
         form.notes = "Fictional human check: correction needed"
         review = form.save()
         self.assertEqual(review.action_record_review()["res_id"], review.id)
+        self.assertIn(material.display_name, review.name)
+        self.assertEqual(reviews.fields_get(["notes"])["notes"]["string"], "Findings and Corrections")
         self.assertFalse(review.passed)
         self.assertEqual(review.source_sha256, material.sha256)
         self.assertEqual(review.reviewer_id, self.quality)
@@ -330,6 +334,12 @@ class TestDashboard(EvaluationCase):
         labels = dict(line.fields_get(["state"])["state"]["selection"])
         self.assertNotEqual(labels["confirmed"], "Confirmed")
         self.assertIn("83,33", service._ratio("Fictif", 10, 12, 20, "S10-1")["rate_text"])
+        self.assertEqual(
+            self.env["training.pdf.accessibility.review"]
+            .with_context(lang="fr_FR")
+            .fields_get(["notes"])["notes"]["string"],
+            "Constats et corrections",
+        )
 
     def test_private_learning_entries_absent_and_no_sends_on_read(self):
         assignment, _grant = self.assigned_evaluation()
@@ -353,3 +363,28 @@ class TestDashboardHttp(EvaluationCase, HttpCase):
         self.assertIn("dashboard_state", response.text)
         assignment.delivery_id.write({"evaluation_instructor_ids": [Command.clear()]})
         self.assertEqual(self.url_open(url).status_code, 404)
+
+    def test_invalid_period_is_explained_without_disclosing_an_unauthorized_delivery(self):
+        assignment, _grant = self.assigned_evaluation()
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        url = "/my/training-dashboard/%s?start=2027-02-01&end=2027-01-01" % assignment.delivery_id.id
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 400)
+        from lxml import html
+
+        document = html.fromstring(response.content)
+        language = document.get("lang", "en-US").replace("-", "_")
+        message = (
+            self.env["training.dashboard.service"]
+            .with_context(lang=language)
+            .env._("The end of the period must follow its start.")
+        )
+        self.assertIn(message, document.xpath("string(//p[@role='alert'])"))
+        self.assertIn('role="alert"', response.text)
+        self.assertIn('value="2027-02-01"', response.text)
+        self.assertNotIn(assignment.enrollment_id.participant_id.name, response.text)
+        self.assertIn("no-store", response.headers.get("Cache-Control", ""))
+        assignment.delivery_id.write({"evaluation_instructor_ids": [Command.clear()]})
+        denied = self.url_open(url)
+        self.assertEqual(denied.status_code, 404)
+        self.assertNotIn(assignment.delivery_id.name, denied.text)

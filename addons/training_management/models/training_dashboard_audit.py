@@ -55,6 +55,8 @@ class PdfAccessibilityReview(models.Model):
     _order = "reviewed_at desc, id desc"
     _check_company_auto = True
 
+    name = fields.Char(compute="_compute_name", string="PDF Review")
+
     program_id = fields.Many2one(
         "training.program.version", string="Programme PDF", ondelete="restrict", check_company=True
     )
@@ -71,8 +73,19 @@ class PdfAccessibilityReview(models.Model):
     selectable_text = fields.Boolean(string="Selectable Text and Navigation Checked")
     pedagogical_review = fields.Boolean(string="Pedagogical Accessibility Checked")
     source_sha256 = fields.Char(required=True, readonly=True)
-    notes = fields.Text(required=True)
+    notes = fields.Text(string="Findings and Corrections", required=True)
     passed = fields.Boolean(compute="_compute_passed", string="Human Checks Passed")
+
+    @api.depends("program_id", "material_id", "document_id")
+    @api.depends_context("lang")
+    def _compute_name(self):
+        for row in self:
+            source = row.program_id or row.material_id or row.document_id
+            row.name = (
+                self.env._("PDF review — %(pdf_name)s", pdf_name=source.display_name)
+                if source
+                else self.env._("New PDF review")
+            )
 
     @api.depends("logical_reading_order", "text_alternatives", "contrast", "selectable_text", "pedagogical_review")
     def _compute_passed(self):
