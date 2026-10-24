@@ -3,7 +3,8 @@ from odoo.exceptions import ValidationError
 
 
 class MailMail(models.Model):
-    _inherit = "mail.mail"
+    # Keep per-workflow transport policies in their own inherited classes.
+    _inherit = "mail.mail"  # pylint: disable=consider-merging-classes-inherited
 
     def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
         self.ensure_one()

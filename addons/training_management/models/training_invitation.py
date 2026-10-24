@@ -151,7 +151,8 @@ class TrainingInvitation(models.Model):
 
 
 class MailMail(models.Model):
-    _inherit = "mail.mail"
+    # Keep S04 transport validation separate from subsequent notification policies.
+    _inherit = "mail.mail"  # pylint: disable=consider-merging-classes-inherited
 
     def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
         self.ensure_one()

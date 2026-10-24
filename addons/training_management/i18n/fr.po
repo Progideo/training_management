@@ -3276,6 +3276,7 @@ msgstr "Envoyer les convocations / modifications"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__session_id
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__session_id
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__session_id
+#: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard
 msgid "Session"
 msgstr "Séance"
 
@@ -7335,6 +7336,7 @@ msgstr "Erreur"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.feedback_document
+#: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard
 msgid "Favorable / valid:"
 msgstr "Favorables / valides :"
 

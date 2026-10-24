@@ -148,7 +148,8 @@ class TrainingNotification(models.Model):
 
 
 class NotificationEnrollment(models.Model):
-    _inherit = "training.enrollment"
+    # Keep lifecycle hooks separate from learning access policies.
+    _inherit = "training.enrollment"  # pylint: disable=consider-merging-classes-inherited
 
     @api.model_create_multi
     def create(self, vals_list):
