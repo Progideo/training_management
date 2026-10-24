@@ -216,7 +216,21 @@ def migration(entry, results):
             "TM_CI_ID": database.name,
             "TM_RESULTS_DIR": str(folder),
         }
-        for prefix in ("CI", "CATPDF", "S021", "S04", "S05", "S052", "S06", "S07", "S08", "S091", "S092", "S093"):
+        for prefix in (
+            "CI",
+            "CATPDF",
+            "S021",
+            "S04",
+            "S05",
+            "S052",
+            "S06",
+            "S07",
+            "S08",
+            "S091",
+            "S092",
+            "S093",
+            "S094",
+        ):
             env[f"TM_{prefix}_NETWORK"] = database.name
             env[f"TM_{prefix}_DB_HOST"] = "postgres"
         checked(["bash", str(ROOT / entry["script"]), *entry["args"]], folder / "runner.log", env=env)

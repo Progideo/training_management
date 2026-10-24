@@ -29,3 +29,5 @@ from . import training_feedback_notice
 from . import training_quality
 from . import training_quality_access
 from . import training_quality_service
+
+from . import training_provider

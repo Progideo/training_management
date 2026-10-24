@@ -64,13 +64,18 @@ def normalize_migration(text):
 
 class Coverage(unittest.TestCase):
     def test_every_migration_operation_and_probe_is_preserved(self):
-        for path in sorted({entry["script"] for entry in PLAN["migrations"]}):
+        historical = set(inventory.source_files(ROOT, PLAN["source_commit"], "tests/ci"))
+        current_scripts = {entry["script"] for entry in PLAN["migrations"]}
+        self.assertLessEqual(
+            {p for p in historical if p.startswith("tests/ci/run") and p.endswith(".sh")}, current_scripts
+        )
+        for path in sorted(current_scripts & historical):
             with self.subTest(path=path):
                 self.assertEqual((ROOT / path).read_text(), normalize_migration(original(path)))
         for name in inventory.source_files(ROOT, PLAN["source_commit"], "tests/probes"):
             path = ROOT / name
             self.assertEqual(path.read_text(), original(name))
-        self.assertEqual(len(PLAN["migrations"]), 16)
+        self.assertEqual(len(PLAN["migrations"]), 17)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
         base = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]

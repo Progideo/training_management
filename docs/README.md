@@ -77,6 +77,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S09.1 — évaluations nominatives et droits | [s091-evaluations.md](s091-evaluations.md) |
 | S09.2 — campagnes et retours | [s092-feedback.md](s092-feedback.md) |
 | S09.3 — réclamations et amélioration continue | [s093-quality.md](s093-quality.md) |
+| S09.4 — intervenants, sous-traitance et veille | [s094-intervenants-veille.md](s094-intervenants-veille.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et

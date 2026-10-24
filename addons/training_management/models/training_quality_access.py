@@ -5,7 +5,11 @@ import logging
 from odoo import api, models
 from odoo.exceptions import AccessError, ValidationError
 
-from .training_quality import QUALITY_MODELS
+from .training_quality import QUALITY_MODELS as S093_MODELS
+from .training_provider import PROVIDER_MODELS
+
+QUALITY_MODELS = S093_MODELS + PROVIDER_MODELS
+PRIVATE_FILE_MODELS = ("training.quality.file", "training.provider.evidence")
 
 _logger = logging.getLogger(__name__)
 
@@ -89,7 +93,7 @@ class QualityBinary(models.AbstractModel):
 
     def _find_record(self, xmlid=None, res_model="ir.attachment", res_id=None, access_token=None, field=None):
         record = super()._find_record(xmlid, res_model, res_id, access_token, field)
-        if record._name in QUALITY_MODELS and (record._name != "training.quality.file" or field != "data"):
+        if record._name in QUALITY_MODELS and (record._name not in PRIVATE_FILE_MODELS or field != "data"):
             raise AccessError(self.env._("Only the authorized quality file may be downloaded."))
         return record
 
@@ -104,7 +108,7 @@ class QualityBinary(models.AbstractModel):
     ):
         if record._name in QUALITY_MODELS:
             self.env["training.document.policy"]._check_read(record)
-            if record._name != "training.quality.file" or field_name != "data":
+            if record._name not in PRIVATE_FILE_MODELS or field_name != "data":
                 raise AccessError(self.env._("Only the authorized quality file may be downloaded."))
             filename_field = "name"
         return super()._get_stream_from(record, field_name, filename, filename_field, mimetype, default_mimetype)
