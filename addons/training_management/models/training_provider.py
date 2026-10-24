@@ -184,6 +184,23 @@ class ProviderDossier(models.Model):
                 if linked:
                     linked.with_env(self.env(su=False)).check_access("read")
 
+    def action_add_evidence(self):
+        self.ensure_one()
+        self.check_access("write")
+        if self.frozen or self.state == "closed":
+            raise ValidationError(self.env._("This dossier is archived or on legal hold."))
+        # A native standalone form avoids the Odoo 20 nested-list cache failure
+        # when a new evidence record refers to another row in that same list.
+        # Creation still checks the dossier again, including grants and holds.
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Add Evidence"),
+            "res_model": "training.provider.evidence",
+            "views": [(self.env.ref("training_management.view_provider_evidence_form").id, "form")],
+            "target": "new",
+            "context": {**clean_context(self).env.context, "default_dossier_id": self.id},
+        }
+
     def action_review(self):
         for row in self.sorted("id"):
             row._authorize(quality=True)
@@ -424,7 +441,20 @@ class ProviderEvent(models.Model):
     company_id = fields.Many2one(related="dossier_id.company_id", store=True)
     actor_id = fields.Many2one("res.users", required=True, readonly=True, ondelete="restrict")
     occurred_at = fields.Datetime(required=True, readonly=True)
-    operation = fields.Char(required=True, readonly=True)
+    operation = fields.Selection(
+        [
+            ("created", "Created"),
+            ("updated", "Updated"),
+            ("reviewed", "Reviewed"),
+            ("archived", "Archived"),
+            ("evidence", "Evidence Added"),
+            ("obligation", "Obligation Added"),
+            ("obligation_updated", "Obligation Updated"),
+            ("controlled", "Control Recorded"),
+        ],
+        required=True,
+        readonly=True,
+    )
     details = fields.Text(required=True, readonly=True)
 
     @api.private
@@ -509,7 +539,9 @@ class ProviderService(models.AbstractModel):
 class ProviderSession(models.Model):
     _inherit = "training.session"  # pylint: disable=consider-merging-classes-inherited  # Keep QUA03 warning projections separate from scheduling and attendance.
 
-    instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
+    instructor_warning = fields.Char(
+        string="Instructor Evidence", compute="_compute_provider_warning", groups=COORDINATOR
+    )
 
     @api.depends("instructor_id", "company_id", "start_date", "end_date")
     def _compute_provider_warning(self):
@@ -528,7 +560,9 @@ class ProviderSession(models.Model):
 class ProviderDelivery(models.Model):
     _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Keep QUA03 warning projections separate from evaluation authorization rules.
 
-    instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
+    instructor_warning = fields.Char(
+        string="Instructor Evidence", compute="_compute_provider_warning", groups=COORDINATOR
+    )
 
     @api.depends("evaluation_instructor_ids", "company_id", "start_at", "end_at")
     def _compute_provider_warning(self):

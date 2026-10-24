@@ -134,6 +134,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_category_form
 #: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__closed
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__archived
 msgid "Archived"
 msgstr "Archivé"
 
@@ -8843,6 +8844,9 @@ msgstr "Action d’amélioration"
 #. odoo-python
 #: code:addons/training_management/models/training_provider.py:0
 #: code:addons/training_management/wizard/training_provider_session.py:0
+#: model:ir.model.fields,field_description:training_management.field_training_session__instructor_warning
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__instructor_warning
+#: model:ir.model.fields,field_description:training_management.field_training_session_edit__instructor_warning
 msgid "Instructor Evidence"
 msgstr "Justificatifs de l’intervenant"
 
@@ -9010,6 +9014,7 @@ msgstr "Analyser le dossier"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__active
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__reviewed
 msgid "Reviewed"
 msgstr "Revu"
 
@@ -9082,3 +9087,40 @@ msgstr "Veille"
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__source
 msgid "Watch Source"
 msgstr "Source de veille"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__created
+msgid "Created"
+msgstr "Création"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__updated
+msgid "Updated"
+msgstr "Modification"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__evidence
+msgid "Evidence Added"
+msgstr "Justificatif ajouté"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__obligation
+msgid "Obligation Added"
+msgstr "Obligation ajoutée"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__obligation_updated
+msgid "Obligation Updated"
+msgstr "Obligation modifiée"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_event__operation__controlled
+msgid "Control Recorded"
+msgstr "Contrôle consigné"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
+msgid "Add Evidence"
+msgstr "Ajouter un justificatif"

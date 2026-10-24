@@ -51,8 +51,9 @@
                     </group>
                     <notebook>
                         <page string="Evidence">
+                            <button name="action_add_evidence" type="object" string="Add Evidence" class="btn-secondary mb-2" invisible="not id or state == 'closed' or frozen" />
                             <field name="evidence_ids" readonly="not id or state == 'closed' or frozen" context="{'default_dossier_id': id}">
-                                <list delete="false">
+                                <list create="false" delete="false">
                                     <field name="name" />
                                     <field name="competence" />
                                     <field name="produced_on" />
@@ -94,7 +95,7 @@
             <form delete="false" duplicate="false">
                 <sheet>
                     <group>
-                        <field name="dossier_id" readonly="id" options="{'no_open': True, 'no_create': True}" />
+                        <field name="dossier_id" readonly="1" force_save="1" options="{'no_open': True, 'no_create': True}" />
                         <field name="name" readonly="id" />
                         <field name="competence" readonly="id" />
                         <field name="source" readonly="id" />
