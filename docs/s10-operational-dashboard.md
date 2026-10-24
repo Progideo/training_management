@@ -24,7 +24,8 @@ Les retours formateur/commanditaire restent au niveau de la réalisation.
 La présence attendue vient du planning et de l’état confirmé au début de séance,
 retrouvé dans l’historique S03. Une déclaration, un dépôt papier et une validation
 restent distincts. La dernière validation/correction fait autorité. Sans séance,
-l’asynchrone est non applicable ; un planning daté manquant reste une donnée manquante.
+l’asynchrone est non applicable ; un planning daté manquant reste une donnée manquante
+et apparaît dans le filtre des émargements à contrôler.
 Les justificatifs et leurs corrections ne sont liés que si leur lecture est autorisée.
 
 Une évaluation sans résultat ne vaut pas zéro. Les acquis sont groupés par définition

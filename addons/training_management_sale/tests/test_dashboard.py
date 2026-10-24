@@ -64,3 +64,28 @@ class TestDashboardSale(EvaluationCase):
         self.assertFalse(notice._authorized())
         with self.assertRaises(ValidationError):
             notice.mail_id._prepare_outgoing_list()
+
+    def test_sales_reader_can_consult_request_distribution_without_mail_access(self):
+        delivery = self.delivery()
+        self.env.ref("sales_team.group_sale_salesman").write({"user_ids": [Command.link(self.coordinator.id)]})
+        lead = (
+            self.env["crm.lead"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Fictional S10 distribution audit",
+                    "training_request_kind": "individual",
+                    "training_program_id": self.program.id,
+                    "email_from": "fictional-audit@example.invalid",
+                    "company_id": self.company.id,
+                }
+            )
+        )
+        notice = self.env["training.request.notice"].sudo().search([("lead_id", "=", lead.id)])
+        self.assertTrue(notice.mail_id)
+        notice.mail_id.write({"state": "exception", "failure_reason": "Fictional distribution failure"})
+        service = self.env["training.dashboard.service"].with_user(self.coordinator)
+        journal = service._dashboard(delivery.id)["notifications"]
+        rows = [row for row in journal if row["source"] == "training.request.notice"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["failure"], "Fictional distribution failure")

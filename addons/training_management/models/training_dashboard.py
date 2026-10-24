@@ -337,7 +337,8 @@ class DashboardService(models.AbstractModel):
             "feedback": feedback,
             "evaluations": evaluations,
             "exams": self._exams(enrollment),
-            "attendance_incomplete": any(r["applicable"] and not r["validated"] for r in attendance),
+            "attendance_incomplete": (delivery.kind != "autonomous" and not delivery.session_ids)
+            or any(r["applicable"] and not r["validated"] for r in attendance),
             "feedback_pending": any(
                 not r["anonymous"] and r["code"] not in ("received", "not_applicable") for r in feedback
             ),
@@ -589,7 +590,9 @@ class DashboardService(models.AbstractModel):
                     for r in row[key]
                     if (not start or r["due"][:10] >= str(start)) and (not end or r["due"][:10] <= str(end))
                 ]
-            row["attendance_incomplete"] = any(r["applicable"] and not r["validated"] for r in row["attendance"])
+            row["attendance_incomplete"] = row["attendance_missing"] or any(
+                r["applicable"] and not r["validated"] for r in row["attendance"]
+            )
             row["feedback_pending"] = any(
                 not r["anonymous"] and r["code"] not in ("received", "not_applicable") for r in row["feedback"]
             )

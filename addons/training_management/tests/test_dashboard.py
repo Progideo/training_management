@@ -105,6 +105,18 @@ class TestDashboard(EvaluationCase):
         self.assertFalse(row["attendance"])
         self.assertIsNone(self.dashboard()._dashboard(asynchronous.delivery_id.id)["metrics"][-1]["rate"])
 
+    def test_missing_schedule_is_in_incomplete_attendance_filter(self):
+        delivery = self.delivery(kind="session", start_at="2027-01-01", end_at="2027-02-01", timezone="UTC")
+        enrollment = self.enrollment(delivery)
+        row = self.dashboard()._participant(enrollment.id)
+        self.assertTrue(row["attendance_missing"])
+        self.assertTrue(row["attendance_incomplete"])
+        self.assertEqual(self.dashboard()._dashboard(delivery.id, issue="attendance")["population"], 1)
+        line = self.env["training.dashboard.line"].with_user(self.coordinator)
+        self.assertEqual(line.search([("attendance_incomplete", "=", True)]).ids, enrollment.ids)
+        asynchronous = self.enrollment(self.delivery())
+        self.assertFalse(self.dashboard()._participant(asynchronous.id)["attendance_incomplete"])
+
     def test_anonymous_rows_never_read_individual_response_state(self):
         assignment, _grant = self.assigned_evaluation()
         # Anonymous population projection must not call the nominative state hook.
