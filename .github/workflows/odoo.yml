@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 35
     strategy:
       fail-fast: false
-      max-parallel: 6
+      max-parallel: 8
       matrix:
         include:
           - configuration: core
@@ -49,8 +49,12 @@ jobs:
           - configuration: full
             label: Socle + Ventes + Surveys
           - configuration: website_sale
-            label: Website/eLearning + Ventes · français
+            label: Website/eLearning + Ventes · anglais
           - configuration: website_full
+            label: Website/eLearning + Ventes + Surveys · anglais
+          - configuration: website_sale_fr
+            label: Website/eLearning + Ventes · français
+          - configuration: website_full_fr
             label: Website/eLearning + Ventes + Surveys · français
     env:
       TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}

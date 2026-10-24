@@ -34,21 +34,42 @@
       "website": false
     },
     "website_sale": {
+      "label": "Website/eLearning + Ventes · anglais",
+      "addons": [
+        "training_management",
+        "training_management_sale"
+      ],
+      "website": true,
+      "language": "en_US"
+    },
+    "website_full": {
+      "label": "Website/eLearning + Ventes + Surveys · anglais",
+      "addons": [
+        "training_management",
+        "training_management_sale",
+        "training_management_survey"
+      ],
+      "website": true,
+      "language": "en_US"
+    },
+    "website_sale_fr": {
       "label": "Website/eLearning + Ventes · français",
       "addons": [
         "training_management",
         "training_management_sale"
       ],
-      "website": true
+      "website": true,
+      "language": "fr_FR"
     },
-    "website_full": {
+    "website_full_fr": {
       "label": "Website/eLearning + Ventes + Surveys · français",
       "addons": [
         "training_management",
         "training_management_sale",
         "training_management_survey"
       ],
-      "website": true
+      "website": true,
+      "language": "fr_FR"
     }
   },
   "migrations": [

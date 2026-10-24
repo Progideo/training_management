@@ -151,7 +151,7 @@ def suite(configuration, results):
     with Database(configuration, folder) as database:
         bootstrap = "website,website_slides" if config["website"] else "base"
         checked(database.odoo("-i", bootstrap, "--without-demo", "--stop-after-init"), folder / "bootstrap.log")
-        if config["website"]:
+        if config.get("language") == "fr_FR":
             with (ROOT / "tests/ci/suite_french.py").open() as probe:
                 checked(database.odoo("shell", "--no-http"), folder / "french.log", stdin=probe)
         # Module selectors discover all current and future test classes. No class lists or increment tags.

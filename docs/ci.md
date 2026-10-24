@@ -20,18 +20,19 @@ La seule matrice porte sur les configurations :
 | Ventes | Socle et Ventes | Base |
 | Surveys | Socle et Surveys | Base |
 | Ventes + Surveys | Les trois addons | Base |
-| Website + Ventes | Socle et Ventes | Website/eLearning en français |
-| Website + Ventes + Surveys | Les trois addons | Website/eLearning en français |
+| Website + Ventes | Socle et Ventes | Website/eLearning en anglais puis variante française |
+| Website + Ventes + Surveys | Les trois addons | Website/eLearning en anglais puis variante française |
 
 Chaque configuration exécute toute sa suite une fois, sur une base vierge. Les
 profils restreints, cas multi-sociétés, HTTP, PDF et régressions natives Surveys
-restent dans leurs tests existants. Les variantes Website préparent le français
+restent dans leurs tests existants. Les variantes françaises Website préparent le français
 avant l’installation des addons : les anciennes répétitions de deux classes HTTP
 après préparation de la langue sont ainsi incluses dans la suite entière.
 
 Le manifeste [suite.json](../tests/ci/suite.json) définit les configurations et les
 preuves attendues. [run_suite.py](../tests/ci/run_suite.py) utilise l’image Odoo
-Community `20.0-20261015` épinglée par digest et PostgreSQL 18.6. Le job de qualité
+Community `20.0-20261015` épinglée par digest et PostgreSQL 18.6. Les variantes Website en anglais restent présentes ; le français est une configuration
+supplémentaire de la même suite, sans retirer leur couverture. Le job de qualité
 exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
 ## Migrations, conservation et concurrence
@@ -66,7 +67,7 @@ Aucun accès OVH, secret ou jeu de données réel n’est utilisé.
 
 ## Verdict et diagnostic
 
-Neuf contrôles sont visibles : qualité, six configurations, migrations et verdict.
+Onze contrôles sont visibles : qualité, huit configurations, migrations et verdict.
 Les artefacts comprennent un dossier par configuration et un artefact de migration
 avec les journaux de chacun des 16 parcours. Ils sont publiés même après échec.
 
@@ -82,10 +83,10 @@ Le verdict utilise `needs` et `always()`, sans `continue-on-error`.
 1. Installer `tests/ci/requirements.txt`, puis lancer
    `python3 -m unittest discover -s tests -v`, `pre-commit run --all-files`,
    la vérification syntaxique Bash des scripts et `actionlint`.
-2. Dans la PR, vérifier une seule CI, la matrice des six configurations et le
+2. Dans la PR, vérifier une seule CI, la matrice des huit configurations et le
    contrôle commun de migration. Aucun contrôle ne doit porter le nom d’un lot
    fonctionnel. La suite ne doit pas être relancée depuis les scripts historiques.
-3. Examiner les sept artefacts : résultats Odoo non vides, préparation française
+3. Examiner les neuf artefacts : résultats Odoo non vides, préparation française
    des deux variantes Website, sondes historiques et concurrence conservées.
 4. Vérifier **Validation CI Odoo** et sa synthèse. Les tests locaux injectent aussi
    des pannes et des preuves manquantes ; ils ne remplacent pas les exécutions

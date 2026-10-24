@@ -32,7 +32,7 @@ def validate(needs, results):
         if json.loads((folder / "success.json").read_text()) != expected:
             raise ValueError(f"{name}: configuration evidence mismatch")
         read_log(folder / "bootstrap.log")
-        if config["website"]:
+        if config.get("language") == "fr_FR":
             if "CUMULATIVE_FRENCH_WEBSITE_READY" not in read_log(folder / "french.log"):
                 raise ValueError(f"{name}: missing French Website evidence")
         assert_tests_ran(read_log(folder / "tests.log", allow_tracebacks=True), config["addons"])

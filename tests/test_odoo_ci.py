@@ -119,7 +119,7 @@ class Coverage(unittest.TestCase):
         self.assertEqual(jobs["validation"]["if"], "${{ always() }}")
         self.assertEqual(jobs["validation"]["name"], "Validation CI Odoo")
         self.assertEqual(workflow["permissions"], {"contents": "read"})
-        self.assertEqual(len(matrix["matrix"]["include"]), 6)
+        self.assertEqual(len(matrix["matrix"]["include"]), 8)
 
 
 class Orchestration(unittest.TestCase):
@@ -157,7 +157,8 @@ class Orchestration(unittest.TestCase):
                 self.assertIn("--test-tags=" + ",".join("/" + addon for addon in config["addons"]), tests[0]["args"])
                 self.assertNotIn("--no-http", tests[0]["args"])
                 self.assertEqual(
-                    any("CUMULATIVE_FRENCH_WEBSITE_READY" in event["stdin"] for event in runs), config["website"]
+                    any("CUMULATIVE_FRENCH_WEBSITE_READY" in event["stdin"] for event in runs),
+                    config.get("language") == "fr_FR",
                 )
                 self.assertTrue((folder / f"suite-{name}" / "success.json").exists())
                 self.assertTrue(any(event["args"][:2] == ["network", "rm"] for event in events))
@@ -203,7 +204,8 @@ class FinalGate(unittest.TestCase):
             folder.mkdir()
             (folder / "success.json").write_text(json.dumps({"configuration": name, "addons": config["addons"]}))
             (folder / "bootstrap.log").write_text("Synthetic install evidence")
-            (folder / "french.log").write_text("CUMULATIVE_FRENCH_WEBSITE_READY")
+            if config.get("language") == "fr_FR":
+                (folder / "french.log").write_text("CUMULATIVE_FRENCH_WEBSITE_READY")
             (folder / "tests.log").write_text(
                 "0 failed, 0 error(s) of 12 tests\n"
                 + "\n".join(f"odoo.tests.stats: {addon}: 12 tests" for addon in config["addons"])
