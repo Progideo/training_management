@@ -200,7 +200,11 @@ class TestEvaluationHTTP(NativeEvaluationCase, HttpCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Completed / Awaiting Validation", response.text)
+        tree = html.fromstring(response.content)
+        expected = (
+            "Terminée / À valider" if tree.get("lang", "en").startswith("fr") else "Completed / Awaiting Validation"
+        )
+        self.assertIn(expected, tree.text_content())
         self.authenticate(self.portal_b.login, self.portal_b.login)
         response = self.url_open(url)
         self.assertEqual(response.status_code, 200)

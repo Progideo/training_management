@@ -489,6 +489,11 @@ class TestFeedback(FeedbackCase):
 
 @tagged("post_install", "-at_install")
 class TestFeedbackHTTP(FeedbackCase, HttpCase):
+    def assert_portal_message(self, response, english, french):
+        tree = html.fromstring(response.content)
+        expected = french if tree.get("lang", "en").startswith("fr") else english
+        self.assertIn(expected, " ".join(tree.text_content().split()))
+
     def test_review_draft_campaign_is_not_visible_to_recipient(self):
         campaign, users, _question = self.campaign(opened=False)
         self.authenticate(users[0].login, users[0].login)
@@ -501,19 +506,29 @@ class TestFeedbackHTTP(FeedbackCase, HttpCase):
         url = "/my/training-feedback/%s" % campaign.id
         response = self.url_open(url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Anonymous collection", response.text)
+        self.assert_portal_message(
+            response,
+            "Anonymous collection. Individual response tracking is unavailable.",
+            "Collecte anonyme. Le suivi individuel des réponses est indisponible.",
+        )
         self.assertIn("no-store", response.headers["Cache-Control"])
         tree = html.fromstring(response.content)
         token = tree.xpath('//input[@name="csrf_token"]/@value')[0]
         self.assertFalse(tree.xpath('//button[@value="save"]'))
         self.assertEqual(self.url_open(url, data={"q_%s" % question.id: "1"}).status_code, 400)
         response = self.url_open(url, data={"csrf_token": token})
-        self.assertIn("Complete the required answers", response.text)
+        self.assert_portal_message(
+            response,
+            "Complete the required answers before submitting.",
+            "Complétez les réponses obligatoires avant la remise.",
+        )
         self.assertTrue(html.fromstring(response.content).xpath('//*[@id="feedback-message"][@tabindex="-1"]'))
         response = self.url_open(
             url, data={"csrf_token": token, "q_%s" % question.id: str(question.suggested_answer_ids[0].id)}
         )
-        self.assertIn("Thank you", response.text)
+        self.assert_portal_message(
+            response, "Thank you. Your feedback has been received.", "Merci. Votre retour a été reçu."
+        )
         attempt = self.env["survey.user_input"].search([("training_feedback_campaign_id", "=", campaign.id)])
         survey = campaign.feedback_id.survey_id
         for path in (
@@ -522,7 +537,7 @@ class TestFeedbackHTTP(FeedbackCase, HttpCase):
         ):
             self.assertEqual(self.url_open(path).status_code, 404)
         # Reload never reveals whether this invitation has submitted a response.
-        self.assertIn("Submit feedback", self.url_open(url).text)
+        self.assert_portal_message(self.url_open(url), "Submit feedback", "Remettre le retour")
         self.authenticate(self.portal.login, self.portal.login)
         self.assertEqual(self.url_open(url).status_code, 404)
 
@@ -540,7 +555,7 @@ class TestFeedbackHTTP(FeedbackCase, HttpCase):
                 "q_%s" % question.id: str(question.suggested_answer_ids[1].id),
             },
         )
-        self.assertIn("draft has been saved", response.text)
+        self.assert_portal_message(response, "Your draft has been saved.", "Votre brouillon a été enregistré.")
         response = self.url_open(url)
         self.assertTrue(
             html.fromstring(response.content).xpath(
@@ -550,10 +565,12 @@ class TestFeedbackHTTP(FeedbackCase, HttpCase):
         self.assertEqual(self.url_open(url + "/summary").status_code, 404)
         campaign.delivery_id.write({"evaluation_supervisor_ids": [Command.set(self.supervisor.ids)]})
         self.authenticate(self.supervisor.login, self.supervisor.login)
-        self.assertIn("after closure", self.url_open(url + "/summary").text)
+        self.assert_portal_message(
+            self.url_open(url + "/summary"), "Summary available after closure", "Synthèse disponible après clôture"
+        )
         campaign.action_close()
         response = self.url_open(url + "/summary")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Received: 0", response.text)
+        self.assert_portal_message(response, "Received: 0", "Reçues : 0")
         campaign.delivery_id.write({"evaluation_supervisor_ids": [Command.clear()]})
         self.assertEqual(self.url_open(url + "/summary").status_code, 404)
