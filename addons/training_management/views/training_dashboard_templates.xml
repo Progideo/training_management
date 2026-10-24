@@ -25,15 +25,16 @@
     <template id="portal_dashboard_deliveries" name="Operational Training Dashboards"><t t-call="portal.portal_layout"><div class="container py-3"><h1>Operational training dashboard</h1><p t-if="not deliveries">No assigned delivery available.</p><ul><li t-foreach="deliveries" t-as="d"><a t-att-href="'/my/training-dashboard/%s' % d['id']" t-out="d['name']"/></li></ul></div></t></template>
     <template id="portal_dashboard" name="Operational Training Dashboard"><t t-call="portal.portal_layout"><div class="container py-3 text-break">
         <a href="/my/training-dashboard">Assigned deliveries</a><h1 t-out="name"/><p><t t-out="program"/> · <t t-out="company"/></p>
-        <p>Situation extracted at (UTC): <t t-out="extracted_at"/>. Formula version: S10-1. Population after filters: <strong t-out="population"/> enrollments.</p>
+        <p t-if="not filter_error">Situation extracted at (UTC): <t t-out="extracted_at"/>. Formula version: S10-1. Population after filters: <strong t-out="population"/> enrollments.</p>
         <p>The period filters session start dates and evaluation/questionnaire deadlines. Enrollment status is current; no historical situation is reconstructed.</p>
+        <p t-if="filter_error" role="alert" class="alert alert-danger" t-out="filter_error"/>
         <form method="get" class="row g-3 mb-4">
             <div class="col-sm-4"><label for="dashboard_state" class="form-label">Enrollment status</label><select id="dashboard_state" name="state" class="form-select"><option value="all" t-att-selected="state == 'all'">All, including abandoned and cancelled</option><option t-foreach="states" t-as="s" t-att-value="s[0]" t-att-selected="s[0] == state" t-out="s[1]"/></select></div>
             <div class="col-sm-4"><label for="dashboard_session" class="form-label">Scheduled Session</label><select id="dashboard_session" name="session_id" class="form-select"><option value="0">All authorized sessions</option><option t-foreach="sessions" t-as="s" t-att-value="s['id']" t-att-selected="session_id == s['id']" t-out="s['name']"/></select></div>
             <div class="col-sm-4"><label for="dashboard_issue" class="form-label">Follow-up</label><select id="dashboard_issue" name="issue" class="form-select"><option value="all" t-att-selected="issue == 'all'">All</option><option t-foreach="issues" t-as="i" t-att-value="i[0]" t-att-selected="i[0] == issue" t-out="i[1]"/></select></div>
             <div class="col-sm-4"><label for="dashboard_from" class="form-label">From</label><input id="dashboard_from" type="date" name="start" t-att-value="start" class="form-control"/></div><div class="col-sm-4"><label for="dashboard_to" class="form-label">To</label><input id="dashboard_to" type="date" name="end" t-att-value="end" class="form-control"/></div><div class="col-sm-4 d-flex align-items-end"><button type="submit" class="btn btn-primary">Apply filters</button></div>
         </form>
-        <h2>Verifiable indicators</h2><ul><li t-foreach="metrics" t-as="m"><strong t-out="m['name']"/>: <t t-out="m['numerator']"/> / <t t-out="m['denominator']"/>
+        <t t-if="not filter_error"><h2>Verifiable indicators</h2><ul><li t-foreach="metrics" t-as="m"><strong t-out="m['name']"/>: <t t-out="m['numerator']"/> / <t t-out="m['denominator']"/>
             <span t-if="m['rate'] is not None"> = <t t-out="m['rate_text']"/> %</span><span t-else=""> — Not calculable</span> · coverage <t t-out="m['coverage_numerator']"/> / <t t-out="m['coverage_denominator']"/> · <t t-out="m['formula']"/> · <t t-out="m['version']"/>
         </li></ul>
         <h3>Cohort and capacity</h3><ul><li t-foreach="cohort_metrics" t-as="m"><t t-out="m['name']"/>:
@@ -49,5 +50,5 @@
         <t t-if="commercial"><h2>Commercial indicators by currency</h2><ul><li t-foreach="commercial" t-as="c"><t t-out="c['label']"/><ul><li t-foreach="c['details']" t-as="detail"><a t-att-href="detail['url']" t-out="detail['name']"/></li></ul></li></ul></t>
         <p>Forecast margin: <t t-out="margin"/></p>
         <t t-if="notifications"><h2>Notification distribution journal</h2><p>Existing native mail queue; individual messages, no collective addresses. Private learning exchanges are excluded.</p><ul><li t-foreach="notifications" t-as="n"><t t-out="n['date']"/> · <t t-out="n['kind']"/> · <t t-out="n['recipient']"/> · <t t-out="n['template']"/> · <t t-out="n['state']"/><span t-if="n['failure']"> — <t t-out="n['failure']"/></span></li></ul></t>
-    </div></t></template>
+    </t></div></t></template>
 </odoo>
