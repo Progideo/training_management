@@ -90,7 +90,7 @@ class Database:
         failures = []
         commands = [
             ["docker", "rm", "-f", self.name + "_odoo"],
-            ["docker", "rm", "-f", self.name + "_pg"],
+            ["docker", "rm", "-f", "-v", self.name + "_pg"],
             ["docker", "volume", "rm", self.name + "_data"],
             ["docker", "network", "rm", self.name],
         ]
@@ -163,14 +163,17 @@ def suite(configuration, results):
             ),
             folder / "tests.log",
         )
-        assert_tests_ran(text)
+        assert_tests_ran(text, addons)
     (folder / "success.json").write_text(json.dumps({"configuration": configuration, "addons": addons}))
 
 
-def assert_tests_ran(text):
+def assert_tests_ran(text, addons):
     matches = re.findall(r"0 failed, 0 error\(s\) of ([0-9]+) tests", text)
     if not matches or not any(int(count) > 0 for count in matches):
         raise ValueError("No successful, nonempty Odoo test result")
+    for addon in addons:
+        if not re.search(r"odoo.tests.stats: " + re.escape(addon) + r": [1-9][0-9]* tests", text):
+            raise ValueError(f"No executed tests for selected addon: {addon}")
 
 
 def migration(entry, results):

@@ -30,7 +30,11 @@ if args[0]=='inspect': print('healthy');sys.exit(0)
 if args[:2]==['volume','inspect']:sys.exit(1)
 if os.environ.get('CI_FAIL_PATTERN') and any(os.environ['CI_FAIL_PATTERN'] in a for a in args):sys.exit(42)
 print('Synthetic Docker orchestration evidence (no Odoo executed)')
-if '--test-enable' in args: print('0 failed, 0 error(s) of 12 tests')
+if '--test-enable' in args:
+ print('0 failed, 0 error(s) of 12 tests')
+ for arg in args:
+  if arg.startswith('--test-tags='):
+   for addon in arg.split('=',1)[1].split(','): print('odoo.tests.stats: '+addon.lstrip('/')+': 12 tests')
 if 'CUMULATIVE_FRENCH_WEBSITE_READY' in data: print('CUMULATIVE_FRENCH_WEBSITE_READY')
 """
 
@@ -200,7 +204,10 @@ class FinalGate(unittest.TestCase):
             (folder / "success.json").write_text(json.dumps({"configuration": name, "addons": config["addons"]}))
             (folder / "bootstrap.log").write_text("Synthetic install evidence")
             (folder / "french.log").write_text("CUMULATIVE_FRENCH_WEBSITE_READY")
-            (folder / "tests.log").write_text("0 failed, 0 error(s) of 12 tests")
+            (folder / "tests.log").write_text(
+                "0 failed, 0 error(s) of 12 tests\n"
+                + "\n".join(f"odoo.tests.stats: {addon}: 12 tests" for addon in config["addons"])
+            )
         for entry in PLAN["migrations"]:
             folder = self.results / "migrations-results" / entry["id"]
             folder.mkdir(parents=True)
@@ -237,6 +244,12 @@ class FinalGate(unittest.TestCase):
             path.write_text(text)
             with self.assertRaises(ValueError):
                 gate.validate(self.needs, self.results)
+
+    def test_missing_selected_addon_cannot_hide_behind_other_tests(self):
+        path = self.results / "suite-full-results/tests.log"
+        path.write_text(path.read_text().replace("odoo.tests.stats: training_management_survey: 12 tests", ""))
+        with self.assertRaises(ValueError):
+            gate.validate(self.needs, self.results)
 
     def test_failure_produces_failed_summary_and_exit_status(self):
         summary = self.results / "summary.md"

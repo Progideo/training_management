@@ -31,7 +31,7 @@ def validate(needs, results):
         if config["website"]:
             if "CUMULATIVE_FRENCH_WEBSITE_READY" not in read_log(folder / "french.log"):
                 raise ValueError(f"{name}: missing French Website evidence")
-        assert_tests_ran(read_log(folder / "tests.log"))
+        assert_tests_ran(read_log(folder / "tests.log"), config["addons"])
     for entry in PLAN["migrations"]:
         folder = results / "migrations-results" / entry["id"]
         expected = {"migration": entry["id"], "steps": entry["steps"]}
