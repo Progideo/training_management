@@ -39,10 +39,10 @@ exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
 ## Migrations, conservation et concurrence
 
-Un contrôle commun conserve les 16 parcours historiques : installation progressive,
+Un contrôle commun conserve les 18 parcours de migration : installation progressive,
 installation Ventes, reprises S02/S03, Website, catalogue avec/sans Website,
 protection documentaire, préparation, supports, activités, examens, présences,
-attestations, évaluations, retours et qualité S09.3.
+attestations, évaluations, retours, qualité S09.3, intervenants S09.4 et mise à jour S10.
 
 Les scripts historiques exécutent toujours les installations, mises à jour,
 préparations d’historiques, comparaisons, mises à jour répétées et sondes de

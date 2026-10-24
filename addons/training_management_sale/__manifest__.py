@@ -2,7 +2,7 @@
 {
     "name": "Training Management - Sales",
     "summary": "Qualify training requests and price programme quotations in MAD or EUR",
-    "version": "20.0.1.10.6",
+    "version": "20.0.1.11.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",

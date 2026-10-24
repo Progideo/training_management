@@ -17,12 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Answered"
 msgstr "Répondu"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Answered: %s / %s. Marked for review: %s."
@@ -179,6 +181,7 @@ msgstr "Critère"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__display_name
 #: model:ir.model.fields,field_description:training_management_survey.field_ir_attachment__display_name
 #: model:ir.model.fields,field_description:training_management_survey.field_report_survey_certification_report_view__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_dashboard_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -246,6 +249,7 @@ msgstr "Routage HTTP"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__id
 #: model:ir.model.fields,field_description:training_management_survey.field_ir_attachment__id
 #: model:ir.model.fields,field_description:training_management_survey.field_report_survey_certification_report_view__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_dashboard_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -314,6 +318,7 @@ msgid "Marked for Review"
 msgstr "Questions à revoir"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Marked for review"
@@ -415,6 +420,7 @@ msgid "Not evaluated"
 msgstr "Non évalué"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid ""
@@ -423,6 +429,7 @@ msgid ""
 msgstr "Non sauvegardé. Vérifiez votre connexion. Rechargez pour retrouver uniquement les réponses déjà reçues par le serveur."
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Not saved. Reload to recover answers already received by the server."
@@ -515,6 +522,7 @@ msgid "Question"
 msgstr "Question"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Question %s"
@@ -617,12 +625,14 @@ msgid "Revision PDF"
 msgstr "PDF de révision"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Saved on the server."
 msgstr "Sauvegardé sur le serveur."
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Saving…"
@@ -640,6 +650,7 @@ msgid "Start this mock exam from your training space."
 msgstr "Commencez cet examen blanc depuis votre espace de formation."
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid ""
@@ -648,6 +659,7 @@ msgid ""
 msgstr "Remise bloquée : certaines réponses ne sont pas sauvegardées. Rechargez et vérifiez vos réponses sauvegardées."
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Submission not confirmed. Check your connection and retry."
@@ -723,6 +735,7 @@ msgid "Threshold reached"
 msgstr "Seuil atteint"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid ""
@@ -820,6 +833,7 @@ msgid "Training: close expired mock exams"
 msgstr "Formations : clôturer les examens blancs expirés"
 
 #. module: training_management_survey
+#. odoo-python
 #. odoo-javascript
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Unanswered"
@@ -897,11 +911,13 @@ msgid ""
 msgstr "minutes. Le temps s’écoule sans interruption après confirmation, même en cas de déconnexion."
 
 #. module: training_management_survey
+#. odoo-python
 #: code:addons/training_management_survey/models/attachment.py:0
 msgid "Private exam files cannot be detached, shared or copied."
 msgstr "Les fichiers d’examen privés ne peuvent pas être détachés, partagés ou copiés."
 
 #. module: training_management_survey
+#. odoo-python
 #: code:addons/training_management_survey/models/report.py:0
 msgid "Mock exams do not issue certificates."
 msgstr "Les examens blancs ne délivrent pas de certificat."
@@ -1262,6 +1278,7 @@ msgid "— Deadline (UTC):"
 msgstr "— Échéance (UTC) :"
 
 #. module: training_management_survey
+#. odoo-python
 #: code:addons/training_management_survey/models/binary.py:0
 msgid "Feedback response files are private."
 msgstr "Les fichiers des réponses aux retours sont privés."
@@ -1271,3 +1288,60 @@ msgstr "Les fichiers des réponses aux retours sont privés."
 #: code:addons/training_management_survey/models/feedback.py:0
 msgid "Provide choices for every choice question before publishing."
 msgstr "Renseignez les choix de chaque question à choix avant la publication."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/dashboard.py:0
+msgid ""
+"%(name)s · version %(version)s · %(count)s attempts · first %(first).2f / "
+"last %(last).2f / best %(best).2f %% (mock exam)"
+msgstr ""
+"%(name)s · version %(version)s · %(count)s tentatives · premier %(first).2f "
+"/ dernier %(last).2f / meilleur %(best).2f %% (examen blanc)"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_feedback_spent__digest_key
+msgid "Digest Key"
+msgstr "Clé d’empreinte"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_dashboard_service
+msgid "Scoped Training Dashboard Projection"
+msgstr "Projection du tableau de suivi selon les droits"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid "Use fixed, non-identifying choice or text questions."
+msgstr ""
+"Utilisez des questions à choix ou textuelles fixes et non identifiantes."
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/dashboard.py:0
+msgid ""
+"%(name)s · version %(version)s · %(count)s attempts · first %(first)s / last"
+" %(last)s / best %(best)s %% (mock exam)"
+msgstr ""
+"%(name)s · version %(version)s · %(count)s tentatives · premier %(first)s / "
+"dernier %(last)s / meilleur %(best)s %% (examen blanc)"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/dashboard.py:0
+msgid ""
+"%(name)s · version %(version)s · %(ongoing)s unfinished attempts; no "
+"completed score"
+msgstr ""
+"%(name)s · version %(version)s · %(ongoing)s tentatives non terminées ; "
+"aucun score final"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/dashboard.py:0
+msgid " · %(ongoing)s unfinished attempts"
+msgstr " · %(ongoing)s tentatives non terminées"

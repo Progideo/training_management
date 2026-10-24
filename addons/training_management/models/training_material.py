@@ -338,7 +338,7 @@ class TrainingEnrollment(models.Model):
 
 
 class TrainingSession(models.Model):
-    _inherit = "training.session"
+    _inherit = "training.session"  # pylint: disable=consider-merging-classes-inherited  # Keep material grants separate from attendance collection.
 
     def _create_scheduled(self, vals_list, reason=None, conflict_reason=None):
         records = super()._create_scheduled(vals_list, reason=reason, conflict_reason=conflict_reason)

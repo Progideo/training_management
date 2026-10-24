@@ -393,6 +393,19 @@
         "provider_preserved",
         "concurrency"
       ]
+    },
+    {
+      "id": "s10",
+      "script": "tests/ci/run_s10.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "second_update",
+        "repeated_history_preserved"
+      ]
     }
   ],
   "relocated_steps": {

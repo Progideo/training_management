@@ -31,3 +31,9 @@ from . import training_quality_access
 from . import training_quality_service
 
 from . import training_provider
+
+from . import training_dashboard
+
+from . import training_notification
+
+from . import training_dashboard_audit
