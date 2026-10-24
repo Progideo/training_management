@@ -63,9 +63,18 @@ class EvaluationAuthorization(models.Model):
     active = fields.Boolean(default=True)
     reason = fields.Text(required=True)
 
+    issued_by_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
+    issued_at = fields.Datetime(readonly=True, copy=False)
+    revoked_by_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
+    revoked_at = fields.Datetime(readonly=True, copy=False)
+
     @api.private
     def _authorize_delivery(self, delivery):
-        if not self.env.user.has_group(QUALITY) or delivery.sudo().evaluation_quality_id != self.env.user:
+        if (
+            not self.env.user.active
+            or not self.env.user.has_group(QUALITY)
+            or delivery.sudo().evaluation_quality_id != self.env.user
+        ):
             raise AccessError(self.env._("Only the assigned quality reviewer may authorize evaluators."))
         if delivery.sudo().company_id not in self.env.user.company_ids:
             raise AccessError(self.env._("This delivery is unavailable."))
@@ -73,16 +82,31 @@ class EvaluationAuthorization(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        prepared = []
         for vals in vals_list:
+            if set(vals) & {"issued_by_id", "issued_at", "revoked_by_id", "revoked_at"}:
+                raise AccessError(self.env._("Authorization audit fields are server controlled."))
             self._authorize_delivery(self.env["training.delivery"].browse(vals.get("delivery_id")))
-        return super(EvaluationAuthorization, clean_context(self)).create(vals_list)
+            now = fields.Datetime.now()
+            decision = dict(vals, issued_by_id=self.env.uid, issued_at=now)
+            if vals.get("active") is False:
+                decision.update(revoked_by_id=self.env.uid, revoked_at=now)
+            prepared.append(decision)
+        return super(EvaluationAuthorization, clean_context(self)).create(prepared)
 
     def write(self, vals):
         for row in self:
             self._authorize_delivery(row.delivery_id)
         if set(vals) - {"active"}:
             raise ValidationError(self.env._("Retain authorization decisions; revoke and create a new authorization."))
-        return super().write(vals)
+        if vals.get("active") and any(not row.active for row in self):
+            raise ValidationError(self.env._("A withdrawn authorization cannot be reactivated; create a new decision."))
+        for row in self:
+            prepared = dict(vals)
+            if vals.get("active") is False and not row.revoked_at:
+                prepared.update(revoked_by_id=self.env.uid, revoked_at=fields.Datetime.now())
+            super(EvaluationAuthorization, row).write(prepared)
+        return True
 
     @api.constrains("user_id", "valid_from", "valid_until", "reason")
     def _check_definition(self):

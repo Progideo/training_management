@@ -34,7 +34,7 @@
       "website": false
     },
     "website_sale": {
-      "label": "Website/eLearning + Ventes · anglais",
+      "label": "Website/eLearning + Ventes \u00b7 anglais",
       "addons": [
         "training_management",
         "training_management_sale"
@@ -43,7 +43,7 @@
       "language": "en_US"
     },
     "website_full": {
-      "label": "Website/eLearning + Ventes + Surveys · anglais",
+      "label": "Website/eLearning + Ventes + Surveys \u00b7 anglais",
       "addons": [
         "training_management",
         "training_management_sale",
@@ -53,7 +53,7 @@
       "language": "en_US"
     },
     "website_sale_fr": {
-      "label": "Website/eLearning + Ventes · français",
+      "label": "Website/eLearning + Ventes \u00b7 fran\u00e7ais",
       "addons": [
         "training_management",
         "training_management_sale"
@@ -62,7 +62,7 @@
       "language": "fr_FR"
     },
     "website_full_fr": {
-      "label": "Website/eLearning + Ventes + Surveys · français",
+      "label": "Website/eLearning + Ventes + Surveys \u00b7 fran\u00e7ais",
       "addons": [
         "training_management",
         "training_management_sale",
@@ -376,6 +376,21 @@
         "quality_prepare",
         "second_update",
         "quality_preserved",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s094",
+      "script": "tests/ci/run_s094.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "provider_prepare",
+        "second_update",
+        "provider_preserved",
         "concurrency"
       ]
     }

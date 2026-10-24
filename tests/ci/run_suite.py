@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -216,7 +217,21 @@ def migration(entry, results):
             "TM_CI_ID": database.name,
             "TM_RESULTS_DIR": str(folder),
         }
-        for prefix in ("CI", "CATPDF", "S021", "S04", "S05", "S052", "S06", "S07", "S08", "S091", "S092", "S093"):
+        for prefix in (
+            "CI",
+            "CATPDF",
+            "S021",
+            "S04",
+            "S05",
+            "S052",
+            "S06",
+            "S07",
+            "S08",
+            "S091",
+            "S092",
+            "S093",
+            "S094",
+        ):
             env[f"TM_{prefix}_NETWORK"] = database.name
             env[f"TM_{prefix}_DB_HOST"] = "postgres"
         checked(["bash", str(ROOT / entry["script"]), *entry["args"]], folder / "runner.log", env=env)
@@ -252,6 +267,8 @@ if __name__ == "__main__":
     if len(sys.argv) != 2 or sys.argv[1] not in {*PLAN["configurations"], "migrations"}:
         raise SystemExit("Usage: run_suite.py <configuration|migrations>")
     if sys.argv[1] == "migrations":
+        if not shutil.which("rg"):
+            raise SystemExit("ripgrep (rg) is required to verify migration logs before starting Docker")
         migrations(results)
     else:
         suite(sys.argv[1], results)

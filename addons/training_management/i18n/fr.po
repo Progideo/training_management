@@ -133,6 +133,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_category_form
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__closed
 msgid "Archived"
 msgstr "Archivé"
 
@@ -215,6 +216,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -295,6 +300,10 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -348,6 +357,10 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -439,6 +452,12 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_ir_access__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_provider_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -450,6 +469,7 @@ msgstr "Nom affiché"
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__draft
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -564,6 +584,12 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_service__id
+#: model:ir.model.fields,field_description:training_management.field_ir_access__id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -622,6 +648,10 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -675,6 +705,10 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -992,6 +1026,8 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__state
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__state
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__state
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__state
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__state
 msgid "State"
 msgstr "État"
 
@@ -1332,6 +1368,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_operation__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__actor_id
+#: model:ir.model.fields,field_description:training_management.field_training_document__actor_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__actor_id
 msgid "Actor"
 msgstr "Auteur"
 
@@ -1771,6 +1809,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__kind
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__kind
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__kind
+#: model:ir.model.fields,field_description:training_management.field_training_document__kind
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -1805,6 +1845,7 @@ msgstr "Places occupées"
 #: model:ir.model.fields,field_description:training_management.field_training_operation__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__occurred_at
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__occurred_at
 msgid "Occurred At"
 msgstr "Date de l’opération"
 
@@ -1862,6 +1903,7 @@ msgstr "Seuil d’ouverture"
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__operation_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__operation
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__operation
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__operation
 msgid "Operation"
 msgstr "Opération"
 
@@ -1887,6 +1929,7 @@ msgstr "Participant"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__prerequisites__pending
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__pending
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_obligation__state__pending
 msgid "Pending"
 msgstr "À vérifier"
 
@@ -2031,6 +2074,7 @@ msgstr "Réservée"
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__responsible_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__responsible_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__responsible_id
 msgid "Responsible"
 msgstr "Responsable"
 
@@ -2042,6 +2086,7 @@ msgstr "Responsable"
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__revision
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__revision
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__revision
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__revision
 msgid "Revision"
 msgstr "Révision"
 
@@ -2778,6 +2823,7 @@ msgstr "Créez entre 1 et 100 séances avec un intervalle positif."
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__decision
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation__decision
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__decision
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__decision
 msgid "Decision"
 msgstr "Décision"
 
@@ -2822,6 +2868,7 @@ msgstr "Équipements"
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__event_ids
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__event
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__event_ids
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__event_ids
 msgid "Event"
 msgstr "Événement"
 
@@ -2877,6 +2924,7 @@ msgstr "Consigne pour le formateur affecté"
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__instructor_id
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__instructor_id
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__role__instructor
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__kind__instructor
 msgid "Instructor"
 msgstr "Formateur"
 
@@ -3955,6 +4003,7 @@ msgstr "Service de diffusion des fichiers pour les contrôleurs"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__filename
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__filename
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__filename
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__name
 msgid "Filename"
 msgstr "Nom du fichier"
 
@@ -5124,6 +5173,7 @@ msgstr "Corriger une présence validée"
 #: model:ir.model.fields,field_description:training_management.field_training_proof__data
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__data
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__data
 msgid "Data"
 msgstr "Fichier"
 
@@ -5599,6 +5649,8 @@ msgstr "Attestations"
 #. odoo-python
 #: code:addons/training_management/models/training_closure.py:0
 #: code:addons/training_management/models/training_feedback.py:0
+#: code:addons/training_management/models/training_provider.py:0
+#: code:addons/training_management/models/training_quality.py:0
 msgid "Choose an approved retention policy."
 msgstr "Choisissez une politique de conservation approuvée."
 
@@ -5720,6 +5772,9 @@ msgstr "Traitement de la pièce"
 #: model:ir.model.fields,field_description:training_management.field_training_document__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__dossier_id
 msgid "Dossier"
 msgstr "Dossier"
 
@@ -5766,6 +5821,9 @@ msgstr "Liste des inscrits"
 #: model:ir.model.fields,field_description:training_management.field_training_closure__evidence_ids
 #: model:ir.model.fields.selection,name:training_management.selection__training_proof__disposition__file
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__evidence_ids
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__evidence_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
 msgid "Evidence"
 msgstr "Preuves"
 
@@ -5905,6 +5963,7 @@ msgstr "Le seuil de l'évaluation dédiée des acquis a été atteint et validé
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__frozen
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__frozen
 #: model:ir.model.fields,field_description:training_management.field_training_closure__frozen
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__frozen
 msgid "Legal Hold"
 msgstr "Gel de conservation"
 
@@ -6042,6 +6101,7 @@ msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__retention_id
 msgid "Retention"
 msgstr "Conservation"
 
@@ -6107,6 +6167,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_proof__source
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__source
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__source
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__source
 msgid "Source"
 msgstr "Source"
 
@@ -6918,6 +6979,7 @@ msgstr "Utilisez les actions de publication et de version."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__valid_from
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__valid_from
 msgid "Valid From"
 msgstr "Valide à partir du"
 
@@ -7661,6 +7723,7 @@ msgstr "Synthèse approuvée pour S08"
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__quality_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__quality_id
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__quality_id
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__quality_id
 msgid "Assigned Quality Reviewer"
 msgstr "Référent qualité affecté"
 
@@ -7791,6 +7854,7 @@ msgstr "Créer une preuve S08 privée"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__details
+#: model:ir.model.fields,field_description:training_management.field_training_provider_event__details
 msgid "Details"
 msgstr "Détails"
 
@@ -7829,6 +7893,7 @@ msgstr "Renseignez le sujet et l’origine de l’action."
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__due_date
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__due_date
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__due_date
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__due_date
 msgid "Due Date"
 msgstr "Échéance"
 
@@ -7875,6 +7940,7 @@ msgstr "Motivez le retrait d’accès du participant."
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__member_ids
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__member_ids
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__member_ids
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__member_ids
 msgid "Explicitly Authorized Staff"
 msgstr "Personnes explicitement habilitées"
 
@@ -8164,6 +8230,7 @@ msgstr "Fichiers privés"
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
 msgid "Private History"
 msgstr "Historique privé"
 
@@ -8395,6 +8462,7 @@ msgstr "Commencez le traitement d’une réclamation reçue."
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__name
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__name
 #: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__name
 msgid "Subject"
 msgstr "Sujet"
 
@@ -8577,3 +8645,440 @@ msgstr "Réclamation %s"
 #: code:addons/training_management/models/training_quality_access.py:0
 msgid "This private quality record is unavailable."
 msgstr "Cet enregistrement qualité privé est inaccessible."
+
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_evaluation.py:0
+msgid ""
+"A withdrawn authorization cannot be reactivated; create a new decision."
+msgstr ""
+"Une habilitation retirée ne peut pas être réactivée ; créez une nouvelle "
+"décision."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_provider_evidence_one_replacement
+msgid "An evidence version may have only one replacement."
+msgstr "Une version de justificatif ne peut avoir qu’un seul remplacement."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__analysis
+msgid "Analysis"
+msgstr "Analyse"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid ""
+"Analyze the dated source, record a decision and either its impact or a "
+"reasoned absence of impact."
+msgstr ""
+"Analysez la source datée, consignez une décision et soit son impact, soit "
+"une absence d’impact motivée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
+msgid "Analyzed Watch"
+msgstr "Veille analysée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
+msgid "Archive"
+msgstr "Archiver"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Archive dossiers and retain their evidence and history."
+msgstr ""
+"Archivez les dossiers et conservez leurs justificatifs et leur historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Assign an active quality reviewer."
+msgstr "Désignez un référent qualité actif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Assign responsibility to authorized dossier staff."
+msgstr "Confiez la responsabilité à un membre autorisé du dossier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_evaluation.py:0
+msgid "Authorization audit fields are server controlled."
+msgstr ""
+"Les champs de traçabilité de l’habilitation sont contrôlés par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Authorized training staff are required."
+msgstr "Un membre autorisé de l’équipe formation est requis."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__checked_at
+msgid "Checked At"
+msgstr "Contrôlé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__checked_by_id
+msgid "Checked By"
+msgstr "Contrôlé par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__checksum
+msgid "Checksum"
+msgstr "Empreinte SHA-256"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__competence
+msgid "Competence / Evidence Scope"
+msgstr "Compétence / périmètre du justificatif"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__competencies
+msgid "Competencies and Scope"
+msgstr "Compétences et périmètre"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_obligation__state__conform
+msgid "Conform"
+msgstr "Conforme"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__name
+msgid "Contractual Obligation"
+msgstr "Obligation contractuelle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
+msgid "Contractual Obligations"
+msgstr "Obligations contractuelles"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Contractual obligations belong to a subcontracting dossier."
+msgstr ""
+"Les obligations contractuelles relèvent d’un dossier de sous-traitance."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__control
+msgid "Control Findings"
+msgstr "Constat de contrôle"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Describe the competencies and their scope."
+msgstr ""
+"Décrivez les compétences, leur périmètre et ajoutez leurs justificatifs."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid ""
+"Dossier access requires active authorized staff in the operating company."
+msgstr ""
+"L’accès au dossier nécessite un membre actif et autorisé de la société "
+"exploitante."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Dossier workflow and audit fields are server controlled."
+msgstr ""
+"Le workflow et les champs de traçabilité du dossier sont contrôlés par le "
+"serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Evidence audit fields are server controlled."
+msgstr ""
+"Les champs de traçabilité du justificatif sont contrôlés par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Evidence is immutable; add a replacement version."
+msgstr "Le justificatif est immuable ; ajoutez une version de remplacement."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "History is appended by authorized dossier operations."
+msgstr ""
+"L’historique est alimenté par les opérations autorisées sur le dossier."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_provider_evidence
+msgid "Immutable Private Provider Evidence"
+msgstr "Justificatif intervenant privé immuable"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_provider_event
+msgid "Immutable Private Provider History"
+msgstr "Historique intervenant privé immuable"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__impact
+msgid "Impact / Actions"
+msgstr "Impact / actions"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__program_id
+msgid "Impacted Programme Version"
+msgstr "Version de programme concernée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__improvement_id
+msgid "Improvement Action"
+msgstr "Action d’amélioration"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+#: code:addons/training_management/wizard/training_provider_session.py:0
+msgid "Instructor Evidence"
+msgstr "Justificatifs de l’intervenant"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid ""
+"Instructor evidence is missing or outside its validity period. Ask the "
+"quality reviewer before assignment. Scheduling remains available."
+msgstr ""
+"Les justificatifs de l’intervenant sont absents ou hors de leur période de "
+"validité. Consultez le référent qualité avant l’affectation. La "
+"planification reste possible."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_provider_dossier
+#: model:ir.ui.menu,name:training_management.menu_provider_dossier
+msgid "Instructors, Subcontracting and Watch"
+msgstr "Intervenants, sous-traitance et veille"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__partner_id
+msgid "Intervening Partner"
+msgstr "Contact intervenant"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__issued_at
+msgid "Issued At"
+msgstr "Décision prise le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__issued_by_id
+msgid "Issued By"
+msgstr "Décision prise par"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Keep evidence in the same dossier."
+msgstr "Conservez le justificatif dans le même dossier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Keep the obligation identity and use the control actions."
+msgstr ""
+"Conservez l’identité de l’obligation et utilisez les actions de contrôle."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_obligation__state__nonconform
+msgid "Nonconform"
+msgstr "Non conforme"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__obligation_ids
+msgid "Obligation"
+msgstr "Obligation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_provider_dossier
+msgid "Private Instructor, Subcontracting or Watch Dossier"
+msgstr "Dossier privé intervenant, sous-traitance ou veille"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Private history is immutable."
+msgstr "L’historique privé est immuable."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__produced_on
+msgid "Produced On"
+msgstr "Produit le"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Provide evidence, its source, scope and a valid period."
+msgstr ""
+"Fournissez un justificatif, sa source, son périmètre et une période valide."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_provider_service
+msgid "Provider Quality Projections"
+msgstr "Projections qualité des intervenants"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__no_impact_reason
+msgid "Reasoned Absence of Impact"
+msgstr "Absence d’impact motivée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_obligation_form
+msgid "Record Conformity"
+msgstr "Constater la conformité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_obligation_form
+msgid "Record Nonconformity"
+msgstr "Constater la non-conformité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Record control findings and supporting evidence."
+msgstr "Renseignez un constat de contrôle et son justificatif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Record the contractual obligations before review."
+msgstr "Renseignez les obligations contractuelles avant la revue."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Replace the latest evidence in the same dossier."
+msgstr "Remplacez le dernier justificatif de la chaîne dans le même dossier."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__previous_id
+msgid "Replaced Evidence"
+msgstr "Justificatif remplacé"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__replacement_ids
+msgid "Replacement"
+msgstr "Remplacement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Retain contractual obligations and controls."
+msgstr "Conservez les obligations contractuelles et les contrôles."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Retain controlled obligations; add a follow-up obligation."
+msgstr ""
+"Conservez les obligations contrôlées ; ajoutez une obligation de suivi."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Retain dossier identity and use the workflow actions."
+msgstr "Conservez l’identité du dossier et utilisez les actions du workflow."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Retain every evidence version."
+msgstr "Conservez chaque version du justificatif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Retain private dossier history."
+msgstr "Conservez l’historique privé du dossier."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
+msgid "Review Dossier"
+msgstr "Analyser le dossier"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__active
+msgid "Reviewed"
+msgstr "Revu"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__revoked_at
+msgid "Revoked At"
+msgstr "Retirée le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__revoked_by_id
+msgid "Revoked By"
+msgstr "Retirée par"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Select the intervening partner."
+msgstr "Sélectionnez le contact intervenant."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__observed_on
+msgid "Source Date"
+msgstr "Date de la source"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__kind__subcontract
+msgid "Subcontracting"
+msgstr "Sous-traitance"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_provider_obligation
+msgid "Subcontractor Contractual Obligation"
+msgstr "Obligation contractuelle du sous-traitant"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "The assigned quality reviewer is required."
+msgstr "Le référent qualité désigné est requis."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "This dossier is archived or on legal hold."
+msgstr "Ce dossier est archivé ou sous gel conservatoire."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "This dossier is on legal hold."
+msgstr "Ce dossier est sous gel conservatoire."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_provider.py:0
+msgid "Use the obligation control actions."
+msgstr "Utilisez les actions de contrôle de l’obligation."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__valid_until
+msgid "Valid Until (If Applicable)"
+msgstr "Valide jusqu’au (si applicable)"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__kind__watch
+msgid "Watch"
+msgstr "Veille"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__source
+msgid "Watch Source"
+msgstr "Source de veille"

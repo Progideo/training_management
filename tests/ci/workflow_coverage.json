@@ -263,6 +263,22 @@
         "concurrency",
         "core_without_survey"
       ]
+    },
+    "providers": {
+      "script": "tests/ci/run_s094.sh",
+      "artifacts": [
+        "s094-results"
+      ],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "provider_prepare",
+        "second_update",
+        "provider_preserved",
+        "concurrency"
+      ]
     }
   }
 }

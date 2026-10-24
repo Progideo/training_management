@@ -1,0 +1,186 @@
+<odoo>
+    <record id="view_provider_dossier_list" model="ir.ui.view">
+        <field name="name">training.provider.dossier.list</field>
+        <field name="model">training.provider.dossier</field>
+        <field name="arch" type="xml">
+            <list delete="false">
+                <field name="name" />
+                <field name="kind" />
+                <field name="partner_id" />
+                <field name="quality_id" />
+                <field name="company_id" groups="base.group_multi_company" />
+                <field name="state" />
+                <field name="frozen" />
+            </list>
+        </field>
+    </record>
+    <record id="view_provider_dossier_form" model="ir.ui.view">
+        <field name="name">training.provider.dossier.form</field>
+        <field name="model">training.provider.dossier</field>
+        <field name="arch" type="xml">
+            <form delete="false" duplicate="false">
+                <header>
+                    <button name="action_review" type="object" string="Review Dossier" invisible="state != 'draft' or frozen or not can_review" />
+                    <button name="action_archive" type="object" string="Archive" invisible="state == 'closed' or frozen or not can_review" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <field name="can_review" invisible="1" />
+                    <group>
+                        <field name="name" readonly="state == 'closed' or frozen" />
+                        <field name="kind" readonly="id" />
+                        <field name="company_id" readonly="id" groups="base.group_multi_company" />
+                        <field name="partner_id" invisible="kind == 'watch'" required="kind != 'watch'" readonly="id" />
+                        <field name="quality_id" readonly="id and not can_review" />
+                        <field name="member_ids" widget="many2many_tags" readonly="id and not can_review" />
+                        <field name="retention_id" readonly="state == 'closed' or frozen" />
+                        <field name="frozen" readonly="not can_review" />
+                    </group>
+                    <group invisible="kind != 'instructor'">
+                        <field name="competencies" readonly="state == 'closed' or frozen" />
+                    </group>
+                    <group string="Analyzed Watch" invisible="kind != 'watch'">
+                        <field name="source" readonly="state == 'closed' or frozen" />
+                        <field name="observed_on" readonly="state == 'closed' or frozen" />
+                        <field name="analysis" readonly="state == 'closed' or frozen" />
+                        <field name="decision" readonly="state == 'closed' or frozen" />
+                        <field name="impact" readonly="state == 'closed' or frozen" />
+                        <field name="no_impact_reason" readonly="state == 'closed' or frozen" />
+                        <field name="program_id" readonly="state == 'closed' or frozen" options="{'no_create': True}" />
+                        <field name="improvement_id" readonly="state == 'closed' or frozen" options="{'no_create': True}" />
+                    </group>
+                    <notebook>
+                        <page string="Evidence">
+                            <field name="evidence_ids" readonly="not id or state == 'closed' or frozen" context="{'default_dossier_id': id}">
+                                <list delete="false">
+                                    <field name="name" />
+                                    <field name="competence" />
+                                    <field name="produced_on" />
+                                    <field name="valid_from" />
+                                    <field name="valid_until" />
+                                    <field name="previous_id" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Contractual Obligations" invisible="kind != 'subcontract'">
+                            <field name="obligation_ids" readonly="not id or state == 'closed' or frozen" context="{'default_dossier_id': id}">
+                                <list delete="false">
+                                    <field name="name" />
+                                    <field name="responsible_id" />
+                                    <field name="due_date" />
+                                    <field name="state" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Private History">
+                            <field name="event_ids" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="occurred_at" />
+                                    <field name="actor_id" />
+                                    <field name="operation" />
+                                    <field name="details" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_provider_evidence_form" model="ir.ui.view">
+        <field name="name">training.provider.evidence.form</field>
+        <field name="model">training.provider.evidence</field>
+        <field name="arch" type="xml">
+            <form delete="false" duplicate="false">
+                <sheet>
+                    <group>
+                        <field name="dossier_id" readonly="id" options="{'no_open': True, 'no_create': True}" />
+                        <field name="name" readonly="id" />
+                        <field name="competence" readonly="id" />
+                        <field name="source" readonly="id" />
+                        <field name="produced_on" readonly="id" />
+                        <field name="valid_from" readonly="id" />
+                        <field name="valid_until" readonly="id" />
+                        <field name="previous_id" readonly="id" options="{'no_create': True}" domain="[('dossier_id', '=', dossier_id)]" />
+                        <field name="data" filename="name" readonly="id" />
+                        <field name="checksum" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_provider_obligation_form" model="ir.ui.view">
+        <field name="name">training.provider.obligation.form</field>
+        <field name="model">training.provider.obligation</field>
+        <field name="arch" type="xml">
+            <form delete="false" duplicate="false">
+                <header>
+                    <button name="action_conform" type="object" string="Record Conformity" invisible="state != 'pending'" />
+                    <button name="action_nonconform" type="object" string="Record Nonconformity" invisible="state != 'pending'" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="dossier_id" readonly="id" options="{'no_create': True, 'no_open': True}" />
+                        <field name="name" readonly="state != 'pending'" />
+                        <field name="responsible_id" readonly="state != 'pending'" />
+                        <field name="due_date" readonly="state != 'pending'" />
+                        <field name="evidence_id" readonly="state != 'pending'" domain="[('dossier_id', '=', dossier_id)]" options="{'no_create': True}" />
+                        <field name="control" readonly="state != 'pending'" />
+                        <field name="checked_at" />
+                        <field name="checked_by_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_provider_session_warning" model="ir.ui.view">
+        <field name="name">training.session.provider.warning</field>
+        <field name="model">training.session</field>
+        <field name="inherit_id" ref="view_training_session_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='instructor_id']" position="after">
+                <field name="instructor_warning" readonly="1" invisible="not instructor_warning" groups="training_management.group_training_coordinator" />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_provider_delivery_warning" model="ir.ui.view">
+        <field name="name">training.delivery.provider.warning</field>
+        <field name="model">training.delivery</field>
+        <field name="inherit_id" ref="view_delivery_evaluation" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='evaluation_instructor_ids']" position="after">
+                <field name="instructor_warning" readonly="1" invisible="not instructor_warning" groups="training_management.group_training_coordinator" />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_provider_authorization_audit" model="ir.ui.view">
+        <field name="name">training.evaluation.authorization.audit</field>
+        <field name="model">training.evaluation.authorization</field>
+        <field name="inherit_id" ref="view_evaluation_authorization_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="issued_by_id" />
+                <field name="issued_at" />
+                <field name="revoked_by_id" />
+                <field name="revoked_at" />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_provider_session_edit_warning" model="ir.ui.view">
+        <field name="name">training.session.edit.provider.warning</field>
+        <field name="model">training.session.edit</field>
+        <field name="inherit_id" ref="view_training_session_edit_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='instructor_id']" position="after">
+                <field name="instructor_warning" readonly="1" invisible="not instructor_warning" groups="training_management.group_training_coordinator" />
+            </xpath>
+        </field>
+    </record>
+    <record id="action_provider_dossier" model="ir.actions.act_window">
+        <field name="name">Instructors, Subcontracting and Watch</field>
+        <field name="res_model">training.provider.dossier</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_provider_dossier" name="Instructors, Subcontracting and Watch" parent="menu_training_root" action="action_provider_dossier" sequence="68" groups="training_management.group_training_coordinator,training_management.group_training_quality" />
+</odoo>

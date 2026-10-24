@@ -15,3 +15,5 @@ from . import test_evaluation
 from . import test_feedback
 
 from . import test_quality
+
+from . import test_provider
