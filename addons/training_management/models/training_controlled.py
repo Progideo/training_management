@@ -44,7 +44,9 @@ class TrainingOperation(models.Model):
             )
         if kind == "date":
             return format_date(self.env, fields.Date.to_date(value))
-        return dict(description.get("selection", [])).get(value, value)
+        if kind == "selection":
+            return dict(description.get("selection", [])).get(value, value)
+        return value
 
     @api.depends("before", "after", "model_name")
     @api.depends_context("lang", "tz", "uid")
@@ -64,9 +66,12 @@ class TrainingOperation(models.Model):
                     continue
                 description = descriptions.get(key, {})
                 label = description.get("string", key)
-                if description.get("type") == "many2one":
+                if description.get("type") in {"many2one", "many2many", "one2many"}:
                     # Never expose raw relation ids or follow a possibly
                     # reassigned historical link: use the labels captured then.
+                    # Older x2many snapshots contain command arrays, not scalar
+                    # selection values. Keep them intact and show the field label
+                    # when no display labels were captured at the time.
                     names = captured.get(key)
                     if names:
                         lines.append(f"{label}: {names.get('before') or '—'} → {names.get('after') or '—'}")

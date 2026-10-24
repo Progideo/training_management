@@ -16,6 +16,61 @@ from .test_material import PDF
 
 @tagged("post_install", "-at_install")
 class TestProvider(EvaluationCase):
+    def test_native_delivery_save_reads_history_after_role_assignment(self):
+        dossier = self.provider()
+        self.evidence(
+            dossier,
+            valid_from=fields.Date.today() - timedelta(days=2),
+            valid_until=fields.Date.today() - timedelta(days=1),
+        )
+        delivery = self.delivery()
+        result = delivery.web_save(
+            {
+                "evaluation_instructor_ids": [Command.set(self.portal_b.partner_id.ids)],
+                "evaluation_supervisor_ids": [Command.set(self.supervisor.ids)],
+            },
+            {"instructor_warning": {}, "operation_ids": {"fields": {"changes": {}}}},
+        )
+        self.assertTrue(result[0]["instructor_warning"])
+        changes = "\n".join(row["changes"] for row in result[0]["operation_ids"])
+        for name in ("evaluation_instructor_ids", "evaluation_supervisor_ids"):
+            self.assertIn(delivery.fields_get([name])[name]["string"], changes)
+        # Old immutable JSON commands are displayed without following historical
+        # relations or exposing technical command arrays in the native history.
+        self.assertNotIn("[[6", changes)
+        self.assertEqual(delivery.evaluation_instructor_ids, self.portal_b.partner_id)
+
+    def test_native_evidence_action_replaces_without_parent_commands(self):
+        dossier = self.provider()
+        first = self.evidence(dossier)
+        action = dossier.with_context(default_dossier_id=999, default_state="closed").action_add_evidence()
+        self.assertEqual(action["res_model"], "training.provider.evidence")
+        self.assertEqual(action["target"], "new")
+        self.assertEqual(action["context"]["default_dossier_id"], dossier.id)
+        self.assertNotIn("default_state", action["context"])
+        model = self.env[action["res_model"]].with_user(self.quality).with_context(**action["context"])
+        with Form(model) as form:
+            self.assertEqual(form.dossier_id, dossier)
+            form.name = "renewed.pdf"
+            form.competence = "Renewed fictional competence"
+            form.source = "Fictional renewal"
+            form.previous_id = first
+            form.data = BinaryBytes(PDF)
+        replacement = form.record
+        self.assertEqual(replacement.previous_id, first)
+        self.assertEqual(len(dossier.evidence_ids), 2)
+        self.assertEqual(first.data.content, PDF)
+        for user in (self.other_quality, self.portal, self.supervisor):
+            with self.assertRaises(AccessError):
+                dossier.with_user(user).action_add_evidence()
+        dossier.write({"frozen": True})
+        with self.assertRaises(ValidationError):
+            dossier.action_add_evidence()
+        dossier.write({"frozen": False})
+        dossier.action_archive()
+        with self.assertRaises(ValidationError):
+            dossier.action_add_evidence()
+
     def provider(self, kind="instructor", **values):
         return (
             self.env["training.provider.dossier"]
@@ -283,6 +338,16 @@ class TestProvider(EvaluationCase):
         arch = model.get_view(view_type="form")["arch"]
         self.assertIn("Analyser le dossier", arch)
         self.assertIn("Veille analysée", arch)
+        self.assertIn("Ajouter un justificatif", arch)
+        self.assertEqual(row.action_add_evidence()["name"], "Ajouter un justificatif")
+        descriptions = self.env["training.provider.event"].with_context(lang="fr_FR").fields_get(["operation"])
+        labels = dict(descriptions["operation"]["selection"])
+        self.assertEqual(labels["created"], "Création")
+        self.assertEqual(labels["evidence"], "Justificatif ajouté")
+        self.assertEqual(labels["controlled"], "Contrôle consigné")
+        for model_name in ("training.session", "training.delivery", "training.session.edit"):
+            description = self.env[model_name].with_context(lang="fr_FR").fields_get(["instructor_warning"])
+            self.assertEqual(description["instructor_warning"]["string"], "Justificatifs de l’intervenant")
 
     def test_native_dossier_form_saves_evidence_and_obligations(self):
         row = self.provider("subcontract")

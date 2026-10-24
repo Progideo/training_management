@@ -65,7 +65,8 @@ aux réponses pédagogiques privées n’est ajouté.
 Utiliser des profils restreints et des données fictives, dans une base de recette.
 
 1. Comme coordonnateur, créer un dossier intervenant lié à un contact et choisir
-   le référent et la politique approuvée. Enregistrer, puis joindre une pièce avec
+   le référent et la politique approuvée. Enregistrer, puis utiliser « Ajouter un
+   justificatif » (formulaire natif) pour joindre une pièce avec
    compétence/source et une validité expirée. Comme référent, revoir le dossier.
 2. Dans l’assistant de séance, choisir cet intervenant : l’alerte apparaît et
    l’enregistrement reste possible. Vérifier aussi une série couvrant l’expiration
