@@ -39,6 +39,14 @@ class IrAttachment(models.Model):
                 )
                 records = self.env[model].sudo()._search(parent, active_test=False)
             domain &= ~(Domain("res_model", "=", model) & Domain("res_id", "any!", records))
+            if model in ("survey.user_input", "survey.user_input.line"):
+                field = (
+                    "training_feedback_campaign_id"
+                    if model == "survey.user_input"
+                    else "user_input_id.training_feedback_campaign_id"
+                )
+                feedback = self.env[model].sudo()._search(Domain(field, "!=", False))
+                domain &= ~(Domain("res_model", "=", model) & Domain("res_id", "any!", feedback))
         return domain
 
     @api.model_create_multi

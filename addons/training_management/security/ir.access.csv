@@ -91,3 +91,16 @@ access_s091_evaluation_record_coordinator,S091 evaluation_record coordinator,tra
 access_s091_evaluation_record_quality,S091 evaluation_record quality,training.evaluation.record,training_management.group_training_quality,crud,""
 rule_s091_record_owner,S091 owner,training.evaluation.record,,crud,"[('create_uid', '=', user.id)]"
 access_s091_delivery_quality,S091 delivery quality,training.delivery,training_management.group_training_quality,r,"[('evaluation_quality_id', '=', user.id)]"
+access_s092_feedback,S092 coordination,training.feedback,training_management.group_training_coordinator,cru,""
+rule_s092_feedback,S092 company,training.feedback,,crud,"[('company_id', 'in', company_ids)]"
+access_s092_feedback_campaign,S092 coordination,training.feedback.campaign,training_management.group_training_coordinator,cru,""
+rule_s092_feedback_campaign,S092 company,training.feedback.campaign,,crud,"[('company_id', 'in', company_ids)]"
+access_s092_feedback_recipient,S092 coordination,training.feedback.recipient,training_management.group_training_coordinator,cru,""
+rule_s092_feedback_recipient,S092 company,training.feedback.recipient,,crud,"[('company_id', 'in', company_ids)]"
+access_s092_feedback_notice,S092 coordination,training.feedback.notice,training_management.group_training_coordinator,r,""
+rule_s092_feedback_notice,S092 company,training.feedback.notice,,crud,"[('company_id', 'in', company_ids)]"
+access_s092_campaign_supervisor,S092 scoped campaign,training.feedback.campaign,training_management.group_training_supervisor,r,"[('delivery_id.evaluation_supervisor_ids', 'in', [user.id])]"
+access_s092_campaign_quality,S092 scoped campaign,training.feedback.campaign,training_management.group_training_quality,r,"[('delivery_id.evaluation_quality_id', 'in', [user.id])]"
+access_s092_export_coordinator,S092 export,training.feedback.export,training_management.group_training_coordinator,crud,
+access_s092_export_quality,S092 export quality,training.feedback.export,training_management.group_training_quality,crud,
+rule_s092_export_owner,S092 export owner,training.feedback.export,,crud,"[('create_uid', '=', user.id)]"

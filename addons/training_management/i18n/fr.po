@@ -109,6 +109,7 @@ msgstr "Méthode de l’action"
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__active
 #: model:ir.model.fields,field_description:training_management.field_training_category__active
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__active
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__active
 msgid "Active"
 msgstr "Actif"
 
@@ -205,6 +206,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -274,6 +279,11 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -316,6 +326,11 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -390,6 +405,13 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_feedback_document__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -397,6 +419,8 @@ msgstr "Nom affiché"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__draft
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__draft
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -494,6 +518,13 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_service__id
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_feedback_document__id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -541,6 +572,11 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -583,6 +619,11 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -604,6 +645,8 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__name
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__name
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__participant_name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__name
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__name
 msgid "Name"
 msgstr "Nom"
 
@@ -624,6 +667,7 @@ msgstr "Nouvelle version de programme"
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_form
 msgid "New Version"
 msgstr "Nouvelle version"
 
@@ -744,6 +788,7 @@ msgstr "Publier le programme"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__published
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__state__published
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__published
 msgid "Published"
 msgstr "Publié"
 
@@ -890,6 +935,8 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__state
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__state
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__state
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__state
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__state
 msgid "State"
 msgstr "État"
 
@@ -897,6 +944,7 @@ msgstr "État"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__distribution_state
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__distribution_state
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__distribution_state
 msgid "Status"
 msgstr "État"
 
@@ -1110,6 +1158,7 @@ msgstr "Créer le brouillon"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_session_edit_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_attendance_edit
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_record_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_export
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -1408,6 +1457,7 @@ msgstr "Clôturer"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__closed
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__closed
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__closed
 msgid "Closed"
 msgstr "Clôturée"
 
@@ -1538,6 +1588,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1572,6 +1623,7 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -1762,6 +1814,7 @@ msgstr "L’historique des opérations est immuable."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__participant_id
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_participant_id
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__role__participant
 msgid "Participant"
 msgstr "Participant"
 
@@ -1786,6 +1839,7 @@ msgstr "Préparation"
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_material__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__program_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__program_id
 msgid "Program"
 msgstr "Programme"
 
@@ -2150,6 +2204,7 @@ msgstr "Utilisez le circuit de la réalisation pour modifier son état."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__user_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__user_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__user_id
 msgid "User"
 msgstr "Compte utilisateur"
 
@@ -2747,6 +2802,7 @@ msgstr "Consigne pour le formateur affecté"
 #: model:ir.model.fields,field_description:training_management.field_training_session__instructor_id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__instructor_id
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__instructor_id
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__role__instructor
 msgid "Instructor"
 msgstr "Formateur"
 
@@ -2801,6 +2857,7 @@ msgstr "Lieu"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__mail_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__mail_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__mail_id
 msgid "Mail"
 msgstr "Courriel"
 
@@ -3932,6 +3989,8 @@ msgstr "Preuves conservées"
 #: model:ir.model.fields,field_description:training_management.field_training_material__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__previous_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__previous_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__previous_id
 msgid "Previous"
 msgstr "Version précédente"
 
@@ -4046,6 +4105,8 @@ msgstr "Utilisez le champ PDF d’une nouvelle version de support privé."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__version
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__version
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__version
+#: model_terms:ir.ui.view,arch_db:training_management.feedback_document
 msgid "Version"
 msgstr "Version"
 
@@ -4584,6 +4645,9 @@ msgstr "Progression"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__recipient_ids
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__recipient_id
+#: model:ir.model.fields,field_description:training_management.field_training_document__recipient_ids
 msgid "Recipient"
 msgstr "Destinataire"
 
@@ -4594,6 +4658,7 @@ msgstr "Adresse du destinataire"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_language
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__recipient_language
 msgid "Recipient Language"
 msgstr "Langue du destinataire"
 
@@ -5452,6 +5517,7 @@ msgstr "Attestations"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_closure.py:0
+#: code:addons/training_management/models/training_feedback.py:0
 msgid "Choose an approved retention policy."
 msgstr "Choisissez une politique de conservation approuvée."
 
@@ -5474,6 +5540,7 @@ msgstr "Clôturer le dossier"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_closure__closed_at
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__closed_at
 msgid "Closed At"
 msgstr "Clôturé le"
 
@@ -5566,6 +5633,7 @@ msgstr "Traitement de la pièce"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_document__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__dossier_id
 msgid "Dossier"
 msgstr "Dossier"
 
@@ -5646,6 +5714,7 @@ msgstr "Les destinataires doivent appartenir au client de ce dossier."
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__feedback
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__feedback_id
 msgid "Feedback"
 msgstr "Retours"
 
@@ -5680,6 +5749,7 @@ msgstr "Export interne"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_proof__category__invitation
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
 msgid "Invitations"
 msgstr "Convocations"
 
@@ -5811,6 +5881,7 @@ msgstr "Seul le responsable qualité affecté à ce dossier peut l’approuver."
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_closure__state__open
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__open
 msgid "Open"
 msgstr "Ouvert"
 
@@ -5854,6 +5925,8 @@ msgstr "Produit le"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__purpose
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__purpose
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__purpose
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__purpose
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__purpose
 msgid "Purpose"
 msgstr "Finalité"
 
@@ -5875,6 +5948,7 @@ msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_closure__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__retention_id
 msgid "Retention"
 msgstr "Conservation"
 
@@ -6239,12 +6313,15 @@ msgstr "Conclusion"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_assignment_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_export
 msgid "Create S08 Evidence"
 msgstr "Créer la preuve S08"
 
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__criteria
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__criteria
 msgid "Criteria"
 msgstr "Critères"
 
@@ -6275,6 +6352,7 @@ msgstr "Formateurs de la réalisation"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__due_at
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__due_at
 msgid "Due At"
 msgstr "Échéance"
 
@@ -6366,6 +6444,7 @@ msgstr "Décision d’évaluation immuable"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__in_progress
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__in_progress
 msgid "In Progress"
 msgstr "En cours"
 
@@ -6454,6 +6533,7 @@ msgstr "Seules les évaluations validées peuvent fournir une preuve."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__opens_at
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__opens_at
 msgid "Opens At"
 msgstr "Ouverture"
 
@@ -6480,6 +6560,7 @@ msgstr "Publier l’évaluation"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
+#: code:addons/training_management/models/training_feedback.py:0
 msgid "Publish the source first."
 msgstr "Publiez d’abord la source."
 
@@ -6919,3 +7000,503 @@ msgstr "Une nouvelle tentative a été autorisée."
 #: code:addons/training_management/controllers/evaluation_portal.py:0
 msgid "The deadline has passed. Only previously saved answers were submitted."
 msgstr "L’échéance est dépassée. Seules les réponses déjà enregistrées ont été remises."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_feedback_recipient
+msgid "Administrative Feedback Invitation"
+msgstr "Invitation administrative au retour"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__anonymous
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__anonymous
+msgid "Anonymous"
+msgstr "Anonyme"
+
+#. module: training_management
+#. odoo-python
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__anonymous
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Anonymous collection; individual response tracking unavailable"
+msgstr "Collecte anonyme ; suivi individuel des réponses indisponible"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid ""
+"Anonymous collection; individual response tracking unavailable. Summary "
+"after closure, minimum 3 responses."
+msgstr ""
+"Collecte anonyme ; suivi individuel des réponses indisponible. Synthèse "
+"après clôture, à partir de 3 réponses."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_feedback_export
+msgid "Attach Feedback Summary to S08"
+msgstr "Joindre la synthèse des retours à S08"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_export__campaign_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__campaign_id
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__campaign_id
+msgid "Campaign"
+msgstr "Campagne"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_feedback_export.py:0
+msgid "Choose a closed campaign and an open dossier in the same delivery."
+msgstr ""
+"Choisissez une campagne clôturée et un dossier ouvert de la même "
+"réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Choose a currently eligible recipient in the campaign population."
+msgstr ""
+"Choisissez un destinataire actuellement éligible dans la population de la "
+"campagne."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Choose a published version, recipients and a future deadline."
+msgstr ""
+"Choisissez une version publiée, des destinataires et une échéance future."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Close and Freeze Summary"
+msgstr "Clôturer et figer la synthèse"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Close the campaign before exporting its summary."
+msgstr "Clôturez la campagne avant d’exporter sa synthèse."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Close this collection first."
+msgstr "Clôturez d’abord cette collecte."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback__purpose__delayed
+msgid "Delayed Satisfaction"
+msgstr "Satisfaction différée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Describe the completion criteria."
+msgstr "Décrivez les critères de complétion."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__exclusion_reason
+msgid "Exclusion Reason"
+msgstr "Motif d’exclusion"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Explain the population change."
+msgstr "Expliquez la modification de population."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__failure
+msgid "Failure"
+msgstr "Erreur"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.feedback_document
+msgid "Favorable / valid:"
+msgstr "Favorables / valides :"
+
+#. module: training_management
+#: model:ir.actions.report,name:training_management.report_feedback
+msgid "Feedback Campaign Summary"
+msgstr "Synthèse de campagne de retours"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_feedback_campaign
+#: model:ir.ui.menu,name:training_management.menu_feedback_campaign
+msgid "Feedback Campaigns"
+msgstr "Campagnes de retours"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_feedback_notice
+msgid "Feedback Invitation Journal"
+msgstr "Journal des invitations aux retours"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_feedback_export.py:0
+msgid "Feedback PDF generation failed."
+msgstr "La génération du PDF des retours a échoué."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_feedback
+msgid "Feedback Questionnaire Version"
+msgstr "Version du questionnaire de retours"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_feedback
+#: model:ir.ui.menu,name:training_management.menu_feedback
+msgid "Feedback Versions"
+msgstr "Versions des retours"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_feedback_export.py:0
+msgid "Feedback campaign"
+msgstr "Campagne de retours"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_mail.py:0
+msgid "Feedback notifications contain only the sign-in link."
+msgstr ""
+"Les notifications de retours contiennent uniquement le lien de connexion."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_report_training_management_feedback_document
+msgid "Frozen Feedback Campaign Summary"
+msgstr "Synthèse figée de campagne de retours"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback__purpose__immediate
+msgid "Immediate Satisfaction"
+msgstr "Satisfaction immédiate"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_feedback_campaign__population
+msgid "Inclusion criteria retained with the campaign."
+msgstr "Critères d’inclusion conservés avec la campagne."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Install the native Surveys integration to collect feedback."
+msgstr "Installez l’intégration native Sondages pour recueillir les retours."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback__purpose__instructor
+msgid "Instructor Feedback"
+msgstr "Retour formateur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Insufficient responses (minimum 3)"
+msgstr "Effectif insuffisant (minimum 3 réponses)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Invite"
+msgstr "Inviter"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Keep opened campaign settings and closed snapshots unchanged."
+msgstr ""
+"Conservez les paramètres des campagnes ouvertes et les synthèses clôturées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "New Collection"
+msgstr "Nouvelle collecte"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback_notice.py:0
+msgid "No authorized recipient with an email address."
+msgstr "Aucun destinataire autorisé avec une adresse de courriel."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Not invited"
+msgstr "Non invité"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__notice_ids
+msgid "Notice"
+msgstr "Notification"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__occurrence
+msgid "Occurrence"
+msgstr "Occurrence"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Open Campaign"
+msgstr "Ouvrir la campagne"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback_notice.py:0
+msgid "Open feedback space"
+msgstr "Ouvrir l’espace des retours"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Open summary"
+msgstr "Ouvrir la synthèse"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__population
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Population"
+msgstr "Population"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_form
+msgid "Publish Feedback"
+msgstr "Publier le questionnaire de retours"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Published feedback is immutable; create a new version."
+msgstr ""
+"Un questionnaire de retours publié est immuable ; créez une nouvelle "
+"version."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_feedback_recipient__exclusion_reason
+msgid "Reason for withdrawal or non-applicability."
+msgstr "Motif de retrait ou de non-applicabilité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid ""
+"Received: %(received)s; expected: %(expected)s; applicable: %(applicable)s; "
+"formula: %(formula)s"
+msgstr ""
+"Reçues : %(received)s ; attendues : %(expected)s ; applicables : "
+"%(applicable)s ; formule : %(formula)s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Remind Eligible Recipients"
+msgstr "Relancer les destinataires éligibles"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__reminder_days
+msgid "Reminder Days"
+msgstr "Intervalle de relance (jours)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__response_state
+msgid "Response State"
+msgstr "État de la réponse"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Retain opened feedback campaigns."
+msgstr "Conservez les campagnes de retours ouvertes."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Retain published feedback versions."
+msgstr "Conservez les versions publiées des retours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Retain recipient identity; withdraw with a reason."
+msgstr "Conservez l’identité du destinataire ; retirez-le avec un motif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Retain the closed campaign population."
+msgstr "Conservez la population de la campagne clôturée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__role
+msgid "Role"
+msgstr "Rôle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.feedback_document
+msgid "S092-QWEB-1"
+msgstr "S092-QWEB-1"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_feedback_service
+msgid "Scoped Feedback Operations"
+msgstr "Opérations de retours par périmètre"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback_notice.py:0
+msgid ""
+"Sign in to your training feedback space. If you have already replied, please"
+" ignore this reminder."
+msgstr ""
+"Connectez-vous à votre espace des retours de formation. Si vous avez déjà "
+"répondu, ignorez cette relance."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__snapshot
+#: model:ir.model.fields,field_description:training_management.field_training_document__snapshot
+msgid "Snapshot"
+msgstr "Instantané"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__role__sponsor
+msgid "Sponsor"
+msgstr "Commanditaire"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback__purpose__sponsor
+msgid "Sponsor Feedback"
+msgstr "Retour commanditaire"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__summary
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Summary"
+msgstr "Synthèse"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Summary available after closure"
+msgstr "Synthèse disponible après clôture"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "This feedback campaign is not open."
+msgstr "Cette campagne de retours n’est pas ouverte."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "This feedback campaign is unavailable."
+msgstr "Cette campagne de retours est indisponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_mail.py:0
+msgid "This feedback invitation is no longer authorized."
+msgstr "Cette invitation au retour n’est plus autorisée."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_feedback_notice_one_notice
+msgid "This invitation is already journaled."
+msgstr "Cette invitation figure déjà dans le journal."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_feedback_recipient_one_role
+msgid "This recipient role is already invited."
+msgstr "Ce destinataire est déjà invité pour ce rôle."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_feedback_campaign
+msgid "Training Feedback Campaign"
+msgstr "Campagne de retours de formation"
+
+#. module: training_management
+#: model:ir.actions.server,name:training_management.cron_feedback_reminders_ir_actions_server
+msgid "Training Feedback Reminders"
+msgstr "Relances des retours de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Use the campaign actions."
+msgstr "Utilisez les actions de la campagne."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Use the delivery programme, a valid period and nonnegative reminders."
+msgstr ""
+"Utilisez le programme de la réalisation, une période valide et un intervalle"
+" de relance positif ou nul."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Use the feedback publication actions."
+msgstr "Utilisez les actions de publication des retours."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.feedback_document
+msgid "Valid responses:"
+msgstr "Réponses valides :"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback.py:0
+msgid "Withdraw recipients instead of deleting invitations."
+msgstr "Retirez les destinataires au lieu de supprimer les invitations."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_feedback_notice.py:0
+msgid "Your training feedback"
+msgstr "Vos retours de formation"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_feedback_campaign__reminder_days
+msgid "Zero disables scheduled collective reminders."
+msgstr "Zéro désactive les relances collectives automatiques."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__not_invited
+msgid "Not Invited"
+msgstr "Non invité"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__queued
+msgid "Invitation Queued"
+msgstr "Invitation en file"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__invitation_error
+msgid "Invitation Error"
+msgstr "Erreur d’invitation"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__invited
+msgid "Invited"
+msgstr "Invité"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__received
+msgid "Response Received"
+msgstr "Réponse reçue"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__no_response
+msgid "No Response at Deadline"
+msgstr "Sans réponse à l’échéance"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__not_applicable
+msgid "Not Applicable / Withdrawn"
+msgstr "Non applicable / retiré"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
+msgid "Open Summary"
+msgstr "Ouvrir la synthèse"
+
+#. module: training_management
+#: model:ir.cron,cron_name:training_management.cron_feedback_reminders
+msgid "Training Feedback Invitations and Reminders"
+msgstr "Invitations et relances des retours de formation"

@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_feedback_survey" model="ir.ui.view"><field name="name">training.feedback.survey</field><field name="model">training.feedback</field><field name="inherit_id" ref="training_management.view_feedback_form"/><field name="arch" type="xml">
+    <xpath expr="//header" position="inside"><button name="action_questionnaire" type="object" string="Questionnaire"/></xpath>
+    <xpath expr="//field[@name='criteria']" position="after"><field name="survey_id" readonly="1" options="{'no_open': True}"/><field name="indicator_question_id" readonly="state == 'published'" domain="[('survey_id','=',survey_id),('question_type','=','simple_choice')]" options="{'no_create': True}"/><field name="favorable_answer_ids" readonly="state == 'published'" widget="many2many_tags" domain="[('question_id','=',indicator_question_id)]" options="{'no_create': True}"/></xpath>
+    </field></record>
+    <template id="portal_feedback_link" inherit_id="portal.portal_my_home" name="Training Feedback"><xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><a href="/my/training-feedback" class="btn btn-outline-primary">My training feedback</a></xpath></template>
+    <template id="portal_feedback_list" name="Training Feedback"><t t-call="portal.portal_layout"><h1>Training feedback</h1><p t-if="not rows">No authorized feedback campaign.</p><ul><li t-foreach="rows" t-as="row"><a t-att-href="'/my/training-feedback/%s' % row['id']" t-out="row['name']"/> — <span t-out="row['due']"/></li></ul><t t-call="portal.pager"/></t></template>
+    <template id="portal_feedback" name="Feedback Questionnaire"><t t-call="portal.portal_layout">
+        <a href="/my/training-feedback">My training feedback</a><h1 t-out="name"/>
+        <p>Version <t t-out="version"/> — <t t-out="purpose"/> — Deadline (UTC): <t t-out="due"/></p><p t-out="criteria"/>
+        <p t-if="anonymous">Anonymous collection. Individual response tracking is unavailable. Do not enter names, email addresses or identifying details in free text. Reminders are collective, even if you have already replied.</p>
+        <div t-if="message or error" id="feedback-message" tabindex="-1" autofocus="autofocus" t-att-role="'alert' if error else 'status'" t-att-class="'alert alert-danger' if error else 'alert alert-success'" t-out="error or message"/>
+        <form t-if="available and not completed" method="post" t-att-action="'/my/training-feedback/%s#feedback-message' % campaign_id">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <fieldset t-foreach="questions" t-as="q" class="border p-3 mb-3"><legend t-out="q['title']"/><p t-if="q['required']">Required answer</p>
+            <t t-if="q['type'] in ('simple_choice', 'multiple_choice')"><label t-foreach="q['choices']" t-as="choice" class="d-block py-2"><input t-att-type="'radio' if q['type'] == 'simple_choice' else 'checkbox'" t-att-name="'q_%s' % q['id']" t-att-value="choice['id']" t-att-checked="str(choice['id']) in form_values.get('q_%s' % q['id'], [])"/> <span t-out="choice['label']"/></label></t>
+            <label t-else="" class="d-block">Your answer<textarea class="form-control" t-att-name="'q_%s' % q['id']" t-out="form_values.get('q_%s' % q['id'], [''])[0]"/></label></fieldset>
+            <button class="btn btn-primary mb-3" name="operation" value="submit" type="submit">Submit feedback</button> <button t-if="not anonymous" class="btn btn-secondary mb-3" name="operation" value="save" type="submit">Save and resume later</button>
+        </form><p t-if="not available">This feedback campaign is not open.</p>
+    </t></template>
+    <template id="portal_feedback_summary" name="Feedback Summary"><t t-call="portal.portal_layout"><div class="text-break"><h1 t-out="name"/><p t-out="summary"/>
+        <t t-if="snapshot"><p>Version <t t-out="snapshot['version']"/> — <t t-out="snapshot['opens_at']"/> — <t t-out="snapshot['due_at']"/></p><p t-out="snapshot['population']"/>
+        <p t-if="'valid' in snapshot">Favorable / valid: <t t-out="snapshot['favorable']"/> / <t t-out="snapshot['valid']"/> — <span t-if="snapshot['rate'] is not None"><t t-out="round(snapshot['rate'], 2)"/> %</span><span t-else="">Not calculable</span></p>
+        <section t-foreach="snapshot['questions']" t-as="q"><h2 t-out="q['title']"/><p>Valid responses: <t t-out="q['valid']"/></p><ul><li t-foreach="q['choices']" t-as="choice"><span t-out="choice['label']"/> : <t t-out="choice['count']"/></li></ul></section></t>
+        <section t-foreach="named_details" t-as="detail"><h2 t-out="detail['name']"/><p t-foreach="detail['answers']" t-as="answer"><strong t-out="answer['question']"/> : <span style="white-space: pre-wrap" t-out="answer['value']"/></p></section>
+    </div></t></template>
+</odoo>
