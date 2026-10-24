@@ -14,6 +14,7 @@ quality = retained.quality_id
 actor = env.ref("training_management_test.s052_coordinator")
 participant = env.ref("training_management_test.s092_user_0")
 enrollment = env["training.enrollment"].search([("user_id", "=", participant.id)], limit=1)
+enrollment.with_user(actor).action_authorize(reason="Fictional complaint intake eligibility")
 enrollment.delivery_id.with_user(actor).write(
     {
         "complaint_quality_id": quality.id,

@@ -38,7 +38,8 @@ activer le dépôt, la coordination configure dans la réalisation le référent
 une politique de conservation approuvée et son délai cible de réponse. Aucun
 délai légal n’est présumé. L’expiration des supports et la clôture de l’inscription
 ne suppriment pas ce recours ; une suspension ou un retrait explicite d’accès
-le bloque. Le portail reçoit un texte et affiche uniquement sa propre
+le bloque. Le portail exige une inscription confirmée ou clôturée avec autorisation
+commerciale courante. Il reçoit un texte et affiche uniquement sa propre
 réclamation et la réponse après résolution. Il n’expose ni notes internes,
 ni personnes habilitées, ni fichiers internes. Le dépôt de fichiers reste réservé
 aux personnes habilitées dans le dossier interne. Les doubles envois du même
