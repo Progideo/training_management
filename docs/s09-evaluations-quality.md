@@ -9,7 +9,7 @@ Décision utilisateur du 23 octobre 2026 : restitution anonyme dès trois répon
 recevables, sans contrôle supplémentaire de réidentification. Cette décision
 prévaut sur les restrictions de restitution proposées précédemment ; elle est reportée dans les issues #19 et #20.
 S09.1 est livré ([PR #63](https://github.com/Progideo/training_management/pull/63)).
-S09.2 est décrit dans [sa page](s092-feedback.md) ; S09.3 et S09.4 restent distincts.
+S09.2 est décrit dans [sa page](s092-feedback.md), S09.3 dans [sa page](s093-quality.md). S09.4 reste distinct.
 
 ## Référence et périmètre
 

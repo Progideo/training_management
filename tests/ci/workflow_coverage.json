@@ -234,5 +234,35 @@
         "core_without_survey"
       ]
     }
+  },
+  "extensions": {
+    "quality": {
+      "script": "tests/ci/run_s093.sh",
+      "artifacts": [
+        "s093-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "closure_prepare",
+        "evaluation_prepare",
+        "evaluation_baseline",
+        "feedback_prepare",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "fresh",
+        "quality_prepare",
+        "second_update",
+        "quality_preserved",
+        "concurrency",
+        "core_without_survey"
+      ]
+    }
   }
 }

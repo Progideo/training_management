@@ -266,7 +266,7 @@ class TrainingProgram(models.Model):
 
 
 class TrainingDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Private materials and evaluations have separate lifecycles.
 
     material_assignment_ids = fields.One2many(
         "training.material.assignment", "delivery_id", copy=False, groups=COORDINATOR

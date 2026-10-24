@@ -1,0 +1,67 @@
+<odoo>
+    <template id="portal_complaint_link" inherit_id="portal.portal_my_home" name="Own Complaints">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <a href="/my/training-complaints" class="btn btn-outline-primary">My confidential complaints</a>
+        </xpath>
+    </template>
+    <template id="portal_complaints" name="Own Complaints">
+        <t t-call="portal.portal_layout">
+            <h1>My confidential complaints</h1>
+            <a href="/my/training-complaints/new" class="btn btn-primary">New complaint</a>
+            <p t-if="not rows">No accessible complaint.</p>
+            <ul>
+                <li t-foreach="rows" t-as="row">
+                    <a t-att-href="'/my/training-complaints/%s' % row['id']" t-out="row['name']"/>
+                </li>
+            </ul>
+            <t t-call="portal.pager"/>
+        </t>
+    </template>
+    <template id="portal_complaint_new" name="Submit Confidential Complaint">
+        <t t-call="portal.portal_layout">
+            <h1>Submit a confidential complaint</h1>
+            <p>Only authorized staff will process your complaint. Avoid information about other people that is not necessary for treatment.</p>
+            <div t-if="error" role="alert" tabindex="-1" autofocus="autofocus" class="alert alert-danger" t-out="error"/>
+            <form method="post" action="/my/training-complaints/new">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="submission_key" t-att-value="key"/>
+                <div class="mb-3">
+                    <label for="complaint-enrollment">Training</label>
+                    <select id="complaint-enrollment" class="form-select" name="enrollment_id" required="required">
+                        <option value="">Select your training</option>
+                        <option t-foreach="enrollments" t-as="e" t-att-value="e['id']" t-att-selected="str(e['id']) == str(form_values.get('enrollment_id',''))" t-out="e['name']"/>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="complaint-subject">Subject</label>
+                    <input id="complaint-subject" class="form-control" name="subject" required="required" t-att-value="form_values.get('subject','')"/>
+                </div>
+                <div class="mb-3">
+                    <label for="complaint-description">Your complaint</label>
+                    <textarea id="complaint-description" class="form-control" name="description" required="required" rows="6" t-out="form_values.get('description','')"/>
+                </div>
+                <button class="btn btn-primary" type="submit">Submit complaint</button>
+            </form>
+        </t>
+    </template>
+    <template id="portal_complaint" name="Own Confidential Complaint">
+        <t t-call="portal.portal_layout">
+            <a href="/my/training-complaints">My confidential complaints</a>
+            <h1 class="text-break" t-out="name"/>
+            <p>
+                <span>Received:</span>
+                <span t-out="received_at"/>
+            </p>
+            <p t-if="state == 'received'">Received</p>
+            <p t-elif="state == 'processing'">In treatment</p>
+            <p t-elif="state == 'resolved'">Resolved with reply</p>
+            <p t-else="">Closed</p>
+            <h2>Your complaint</h2>
+            <p class="text-break" style="white-space: pre-wrap" t-out="description"/>
+            <t t-if="reply">
+                <h2>Reply</h2>
+                <p class="text-break" style="white-space: pre-wrap" t-out="reply"/>
+            </t>
+        </t>
+    </template>
+</odoo>

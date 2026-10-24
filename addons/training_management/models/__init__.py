@@ -25,3 +25,7 @@ from . import training_closure
 from . import training_evaluation
 from . import training_feedback
 from . import training_feedback_notice
+
+from . import training_quality
+from . import training_quality_access
+from . import training_quality_service

@@ -169,6 +169,11 @@ msgstr ""
 "Les tarifs commerciaux seront gérés par les produits et devis standards "
 "Odoo."
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_document__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__company_id
@@ -240,6 +245,12 @@ msgstr "Consignes de contact conservées dans cette version du programme."
 msgid "Content"
 msgstr "Contenu"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_closure__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_document__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_proof__create_uid
@@ -287,6 +298,12 @@ msgstr "Contenu"
 msgid "Created by"
 msgstr "Créé par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_closure__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_document__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_proof__create_date
@@ -349,6 +366,16 @@ msgstr ""
 msgid "Delivery Mode"
 msgstr "Modalité"
 
+#: model:ir.model.fields,field_description:training_management.field_mail_activity__display_name
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_quality_summary__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_service__display_name
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_certificate_document__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_closure__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_document__display_name
@@ -417,6 +444,8 @@ msgstr "Nom affiché"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__state__draft
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__draft
@@ -462,6 +491,16 @@ msgstr "Prolonger l’échéance"
 msgid "Formations"
 msgstr "Formations"
 
+#: model:ir.model.fields,field_description:training_management.field_mail_activity__id
+#: model:ir.model.fields,field_description:training_management.field_report_training_management_quality_summary__id
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__id
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_service__id
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_certificate_document__id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__id
 #: model:ir.model.fields,field_description:training_management.field_training_document__id
@@ -533,6 +572,12 @@ msgstr "ID"
 msgid "Labels"
 msgstr "Libellés"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_closure__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_document__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_proof__write_uid
@@ -580,6 +625,12 @@ msgstr "Libellés"
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_closure__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_document__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_proof__write_date
@@ -807,6 +858,8 @@ msgstr "Publié par"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_controlled.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_export
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_operation
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
 msgid "Reason for the Action"
 msgstr "Motif de l’action"
@@ -921,6 +974,8 @@ msgstr "Formation standard"
 msgid "Standard training catalogue and controlled programme versions"
 msgstr "Catalogue de formations standards et versions de programme contrôlées"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__state
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__state
 #: model:ir.model.fields,field_description:training_management.field_training_closure__state
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__state
@@ -1453,6 +1508,8 @@ msgstr "Sélectionnez un lot disponible pour cette réalisation."
 msgid "Close"
 msgstr "Clôturer"
 
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__state__closed
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
 #: model:ir.model.fields.selection,name:training_management.selection__training_closure__state__closed
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__closed
@@ -1567,6 +1624,9 @@ msgstr "Réalisée"
 msgid "Deliveries"
 msgstr "Réalisations"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__delivery_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__delivery_id
@@ -1611,6 +1671,7 @@ msgstr "Accès effectif"
 msgid "End At"
 msgstr "Fin"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__enrollment_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__enrollment_ids
@@ -1738,6 +1799,7 @@ msgid "Occupied Seats"
 msgstr "Places occupées"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_operation__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__occurred_at
@@ -1793,6 +1855,8 @@ msgid "Opening Threshold"
 msgstr "Seuil d’ouverture"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__operation
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__operation
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__operation_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__operation
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__operation
@@ -1854,6 +1918,8 @@ msgstr "Proposer ou réserver une place"
 msgid "Quantity"
 msgstr "Nombre de places"
 
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__reason
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__reason
 #: model:ir.model.fields,field_description:training_management.field_training_proof__reason
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__reason
@@ -1957,6 +2023,9 @@ msgstr "Réserver / prolonger / transférer"
 msgid "Reserved"
 msgstr "Réservée"
 
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__responsible_id
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__responsible_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__responsible_id
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__responsible_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__responsible_id
@@ -2704,6 +2773,7 @@ msgid "Create between 1 and 100 sessions with a positive interval."
 msgstr "Créez entre 1 et 100 séances avec un intervalle positif."
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__decision
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation__decision
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__decision
 msgid "Decision"
@@ -2746,6 +2816,8 @@ msgid "Equipment"
 msgstr "Équipements"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__event_ids
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__event_ids
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__event
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__event_ids
 msgid "Event"
@@ -3873,6 +3945,7 @@ msgstr "Référence PDF de réalisation"
 msgid "File streaming helper model for controllers"
 msgstr "Service de diffusion des fichiers pour les contrôleurs"
 
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__name
 #: model:ir.model.fields,field_description:training_management.field_training_document__filename
 #: model:ir.model.fields,field_description:training_management.field_training_proof__filename
 #. module: training_management
@@ -3984,6 +4057,7 @@ msgstr "Les preuves du PDF sont générées par le serveur."
 msgid "Preserved Evidence"
 msgstr "Preuves conservées"
 
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__previous_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__previous_id
@@ -4040,6 +4114,7 @@ msgstr "Agenda"
 msgid "Sequence"
 msgstr "Ordre"
 
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_document__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_proof__sha256
 #. module: training_management
@@ -5042,6 +5117,7 @@ msgstr "Correction du coordinateur"
 msgid "Correct Validated Attendance"
 msgstr "Corriger une présence validée"
 
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__data
 #: model:ir.model.fields,field_description:training_management.field_training_document__data
 #: model:ir.model.fields,field_description:training_management.field_training_proof__data
 #. module: training_management
@@ -5178,6 +5254,7 @@ msgid "Only the assigned session trainer may validate attendance."
 msgstr "Seul le formateur affecté à la séance peut valider les présences."
 
 #. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__channel__paper
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__attendance_mode__paper
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__attendance_mode__paper
 msgid "Paper"
@@ -5396,6 +5473,7 @@ msgstr "Un dossier complet ne constitue pas une certification Qualiopi."
 
 #. module: training_management
 #. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
 #: code:addons/training_management/models/training_closure.py:0
 msgid ""
 "A non-applicable piece or exemption requires a reason and no empty "
@@ -5478,6 +5556,7 @@ msgid "Attestation de"
 msgstr "Attestation de"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__author_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__author
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__author_id
 msgid "Author"
@@ -5539,6 +5618,7 @@ msgid "Close Dossier"
 msgstr "Clôturer le dossier"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__closed_at
 #: model:ir.model.fields,field_description:training_management.field_training_closure__closed_at
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__closed_at
 msgid "Closed At"
@@ -5584,6 +5664,9 @@ msgid "Completion Certificate"
 msgstr "Attestation de réalisation"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__confidentiality
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__confidentiality
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__confidentiality
 #: model:ir.model.fields,field_description:training_management.field_training_proof__confidentiality
 msgid "Confidentiality"
 msgstr "Confidentialité"
@@ -5631,6 +5714,7 @@ msgid "Disposition"
 msgstr "Traitement de la pièce"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_document__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__dossier_id
@@ -5815,6 +5899,9 @@ msgid "Le seuil de l'évaluation dédiée des acquis a été atteint et validé.
 msgstr "Le seuil de l'évaluation dédiée des acquis a été atteint et validé."
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__frozen
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__frozen
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__frozen
 #: model:ir.model.fields,field_description:training_management.field_training_closure__frozen
 msgid "Legal Hold"
 msgstr "Gel de conservation"
@@ -5916,6 +6003,7 @@ msgid "Preserved Documents"
 msgstr "Documents conservés"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__produced_at
 #: model:ir.model.fields,field_description:training_management.field_training_proof__produced_at
 msgid "Produced At"
 msgstr "Produit le"
@@ -5947,6 +6035,9 @@ msgid "Requests are reviewed manually; no automatic purge."
 msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__retention_id
 msgid "Retention"
@@ -6010,6 +6101,7 @@ msgstr ""
 "Partager les attestations émises avec les destinataires clients habilités"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__source
 #: model:ir.model.fields,field_description:training_management.field_training_proof__source
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__source
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__source
@@ -6196,6 +6288,7 @@ msgstr ". Échéance (UTC) :"
 
 #. module: training_management
 #. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid ""
 "A current teaching assignment and evaluation authorization are required."
@@ -6602,6 +6695,7 @@ msgstr "Réouverture"
 
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__result
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__result_ids
 msgid "Result"
 msgstr "Résultat"
@@ -7034,6 +7128,7 @@ msgid "Attach Feedback Summary to S08"
 msgstr "Joindre la synthèse des retours à S08"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__campaign_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_export__campaign_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__campaign_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__campaign_id
@@ -7092,6 +7187,7 @@ msgid "Describe the completion criteria."
 msgstr "Décrivez les critères de complétion."
 
 #. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__channel__email
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__email
 msgid "Email"
 msgstr "Courriel"
@@ -7365,6 +7461,7 @@ msgid "Sponsor Feedback"
 msgstr "Retour commanditaire"
 
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__summary
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__summary
 #: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
 msgid "Summary"
@@ -7500,3 +7597,968 @@ msgstr "Ouvrir la synthèse"
 #: model:ir.cron,cron_name:training_management.cron_feedback_reminders
 msgid "Training Feedback Invitations and Reminders"
 msgstr "Invitations et relances des retours de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "A corrected file must retain its dossier."
+msgstr "Un fichier corrigé doit conserver son dossier."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__resolution_reason
+msgid "Action or Justification"
+msgstr "Action ou justification"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Action staff must also be authorized for the source complaint."
+msgstr ""
+"Les personnes affectées à l’action doivent aussi être habilitées pour la "
+"réclamation source."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "An ineffective action needs a documented follow-up."
+msgstr "Une action inefficace nécessite une suite documentée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_operation
+msgid "Apply Decision"
+msgstr "Appliquer la décision"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_export
+msgid ""
+"Approve only the minimum necessary summary. Do not include unrelated third-"
+"party details. S08 validation remains a separate decision."
+msgstr ""
+"Approuvez uniquement la synthèse minimale nécessaire. Excluez les "
+"informations sur des tiers sans lien avec le traitement. La validation S08 "
+"reste une décision distincte."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_quality_export
+msgid "Approved Private Quality Summary for S08"
+msgstr "Synthèse qualité privée approuvée pour S08"
+
+#. module: training_management
+#: model:ir.actions.report,name:training_management.report_quality_summary
+#: model_terms:ir.ui.view,arch_db:training_management.quality_summary
+msgid "Approved Quality Summary"
+msgstr "Synthèse qualité approuvée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Approved Summary for S08"
+msgstr "Synthèse approuvée pour S08"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__quality_id
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__quality_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__quality_id
+msgid "Assigned Quality Reviewer"
+msgstr "Référent qualité affecté"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__channel__portal
+msgid "Authenticated Portal"
+msgstr "Portail authentifié"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Authorize only active quality or coordination staff in this company."
+msgstr ""
+"Habilitez uniquement des personnes actives de la qualité ou de la "
+"coordination dans cette société."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__channel
+msgid "Channel"
+msgstr "Canal"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Check Effectiveness"
+msgstr "Vérifier l’efficacité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/quality_portal.py:0
+msgid "Check your enrollment selection."
+msgstr "Vérifiez l’inscription sélectionnée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_quality_operation.py:0
+msgid "Choose a decision applicable to this dossier."
+msgstr "Choisissez une décision applicable à ce dossier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Choose an active quality reviewer and a positive response target."
+msgstr "Choisissez un référent qualité actif et un délai de réponse positif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_quality_export.py:0
+msgid "Choose an open S08 dossier in the same delivery."
+msgstr "Choisissez un dossier S08 ouvert de la même réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+#: code:addons/training_management/wizard/training_quality_operation.py:0
+msgid "Choose exactly one quality dossier."
+msgstr "Choisissez exactement un dossier qualité."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+msgid "Close Complaint"
+msgstr "Clôturer la réclamation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__complainant_id
+msgid "Complainant"
+msgstr "Auteur de la réclamation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__complaint_ids
+#: model:ir.model.fields,field_description:training_management.field_training_enrollment__complaint_ids
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__complaint_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__complaint_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__complaint_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__complaint_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__complaint_id
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__origin__complaint
+msgid "Complaint"
+msgstr "Réclamation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__complaint_quality_id
+msgid "Complaint Intake Reviewer"
+msgstr "Référent des réclamations"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__complaint_response_days
+msgid "Complaint Response Target (Days)"
+msgstr "Délai cible de réponse (jours)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__complaint_retention_id
+msgid "Complaint Retention Policy"
+msgstr "Politique de conservation des réclamations"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_service.py:0
+msgid "Complaint intake is not configured; contact the training organizer."
+msgstr ""
+"Le dépôt des réclamations n’est pas configuré ; contactez l’organisateur de "
+"la formation."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_complaint
+#: model:ir.ui.menu,name:training_management.menu_complaint
+msgid "Complaints"
+msgstr "Réclamations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_quality_intake
+msgid "Confidential Complaint Intake"
+msgstr "Réception des réclamations confidentielles"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_complaint
+msgid "Confidential Training Complaint"
+msgstr "Réclamation confidentielle de formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__output_reference
+msgid "Corrected Support / Output Reference"
+msgstr "Référence du support corrigé ou du résultat"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_export
+msgid "Create Private S08 Evidence"
+msgstr "Créer une preuve S08 privée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__details
+msgid "Details"
+msgstr "Détails"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Do not attach shared chatter to a private quality dossier."
+msgstr "Ne rattachez pas de discussion partagée à un dossier qualité privé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Do not distribute private quality content through email."
+msgstr "Ne diffusez pas le contenu qualité privé par courriel."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Document the decision, effectiveness criterion and verification plan."
+msgstr ""
+"Renseignez la décision, le critère d’efficacité et le plan de vérification."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Document the implementation and corrected output."
+msgstr "Renseignez la réalisation et le résultat corrigé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Document the subject and origin of the action."
+msgstr "Renseignez le sujet et l’origine de l’action."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__due_date
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__due_date
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__due_date
+msgid "Due Date"
+msgstr "Échéance"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__effective
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_operation__result__effective
+msgid "Effective"
+msgstr "Efficace"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__effectiveness_criterion
+msgid "Effectiveness Criterion"
+msgstr "Critère d’efficacité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Effectiveness Decision / Replan"
+msgstr "Décision d’efficacité / replanification"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__checking
+msgid "Effectiveness to Verify"
+msgstr "Efficacité à vérifier"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Enter a subject and the original complaint."
+msgstr "Saisissez un sujet et la réclamation d’origine."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_service.py:0
+msgid "Enter a subject and your complaint."
+msgstr "Saisissez un sujet et votre réclamation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Explain the participant access withdrawal."
+msgstr "Motivez le retrait d’accès du participant."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__member_ids
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__member_ids
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__member_ids
+msgid "Explicitly Authorized Staff"
+msgstr "Personnes explicitement habilitées"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_quality_export__summary
+msgid ""
+"Explicitly approve the minimum necessary summary; exclude third-party "
+"details."
+msgstr ""
+"Approuvez explicitement la synthèse minimale nécessaire ; excluez les "
+"informations sur des tiers."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__origin__feedback
+msgid "Feedback Campaign"
+msgstr "Campagne de retours"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__file_ids
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__file_ids
+msgid "File"
+msgstr "Fichier"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_quality_export.py:0
+msgid ""
+"Finish the treatment or effectiveness decision before creating its summary."
+msgstr ""
+"Terminez le traitement ou la décision d’efficacité avant de créer sa "
+"synthèse."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__follow_up
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__follow_up
+msgid "Follow Up"
+msgstr "Suite à donner"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_quality_file
+msgid "Immutable Private Quality File"
+msgstr "Fichier qualité privé non modifiable"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_quality_event
+msgid "Immutable Private Quality History"
+msgstr "Historique qualité privé non modifiable"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__implementation
+msgid "Implementation"
+msgstr "Réalisation"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__done
+msgid "Implemented"
+msgstr "Réalisée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__implemented_at
+msgid "Implemented At"
+msgstr "Réalisée le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__improvement_ids
+#: model:ir.model.fields,field_description:training_management.field_training_quality_event__improvement_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_export__improvement_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_file__improvement_id
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__improvement_id
+msgid "Improvement"
+msgstr "Amélioration"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_improvement
+#: model:ir.ui.menu,name:training_management.menu_improvement
+msgid "Improvement Actions"
+msgstr "Actions d’amélioration"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__state__processing
+msgid "In Treatment"
+msgstr "En traitement"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "In treatment"
+msgstr "En traitement"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__confidentiality__internal
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__confidentiality__internal
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_record__confidentiality__internal
+msgid "Internal / Assigned Staff"
+msgstr "Interne / personnes habilitées"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep immutable quality history."
+msgstr "Conservez l’historique qualité sans le modifier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep original quality files; add a corrected version."
+msgstr ""
+"Conservez les fichiers qualité d’origine ; ajoutez une version corrigée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep original quality identities and use workflow actions."
+msgstr ""
+"Conservez l’identité d’origine du dossier qualité et utilisez les actions du"
+" parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep quality dossiers and their history; no automatic purge."
+msgstr ""
+"Conservez les dossiers qualité et leur historique ; aucune purge "
+"automatique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Keep quality files in their controlled private dossier."
+msgstr "Conservez les fichiers qualité dans leur dossier privé contrôlé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep the delivery operating company."
+msgstr "Conservez la société exploitante de la réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep the same company and delivery as the feedback campaign."
+msgstr "Conservez la société et la réalisation de la campagne de retours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Keep the same operating company and delivery as the complaint."
+msgstr "Conservez la société exploitante et la réalisation de la réclamation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Link the explicit complaint or campaign for the selected origin."
+msgstr ""
+"Rattachez la réclamation ou la campagne correspondant à l’origine choisie."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_search
+msgid "My Responsibility"
+msgstr "Sous ma responsabilité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_link
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaints
+msgid "My confidential complaints"
+msgstr "Mes réclamations confidentielles"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+msgid "New Improvement"
+msgstr "Nouvelle amélioration"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaints
+msgid "New complaint"
+msgstr "Nouvelle réclamation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaints
+msgid "No accessible complaint."
+msgstr "Aucune réclamation accessible."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__ineffective
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_operation__result__ineffective
+msgid "Not Effective"
+msgstr "Inefficace"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid ""
+"Only authorized staff will process your complaint. Avoid information about "
+"other people that is not necessary for treatment."
+msgstr ""
+"Seules les personnes habilitées traiteront votre réclamation. Évitez les "
+"informations sur d’autres personnes qui ne sont pas nécessaires au "
+"traitement."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Only explicitly authorized staff may register quality dossiers."
+msgstr ""
+"Seules les personnes explicitement habilitées peuvent enregistrer des "
+"dossiers qualité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Only the authorized quality file may be downloaded."
+msgstr "Seul le fichier qualité autorisé peut être téléchargé."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__origin
+msgid "Origin"
+msgstr "Origine"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__origin_reference
+msgid "Origin Reference"
+msgstr "Référence d’origine"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__description
+msgid "Original Complaint"
+msgstr "Réclamation d’origine"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__channel__other
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__origin__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__overdue
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__overdue
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__overdue
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_search
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_search
+msgid "Overdue"
+msgstr "En retard"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Participant sharing requires the corresponding enrollment."
+msgstr ""
+"Le partage avec le participant nécessite l’inscription correspondante."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__channel__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Plan Action"
+msgstr "Planifier l’action"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__planned
+msgid "Planned"
+msgstr "Planifiée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__portal_revoked
+msgid "Portal Revoked"
+msgstr "Accès portail retiré"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_complaint__frozen
+#: model:ir.model.fields,help:training_management.field_training_improvement__frozen
+#: model:ir.model.fields,help:training_management.field_training_quality_record__frozen
+msgid "Prevents content and workflow changes; no automatic purge."
+msgstr ""
+"Empêche les changements de contenu et de parcours ; aucune purge "
+"automatique."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Private Files"
+msgstr "Fichiers privés"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Private History"
+msgstr "Historique privé"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_quality_service
+msgid "Private Participant Complaint Projection"
+msgstr "Consultation privée des réclamations du participant"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_quality_record
+msgid "Private Quality Dossier Rules"
+msgstr "Règles des dossiers qualité privés"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Provide a nonempty file and a valid production date."
+msgstr "Fournissez un fichier non vide et une date de production valide."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_quality_operation
+msgid "Quality Dossier Decision"
+msgstr "Décision du dossier qualité"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_report_training_management_quality_summary
+msgid "Quality Summary Report Access"
+msgstr "Accès au rapport de synthèse qualité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Quality file audit fields are server controlled."
+msgstr ""
+"Les champs de traçabilité des fichiers qualité sont contrôlés par le "
+"serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Quality history is created only by controlled operations."
+msgstr ""
+"L’historique qualité est créé uniquement par les opérations contrôlées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Quality identities, workflow and audit fields are server controlled."
+msgstr ""
+"Les identités, le parcours et les champs de traçabilité qualité sont "
+"contrôlés par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_quality_export.py:0
+msgid "Quality summary PDF generation failed."
+msgstr "La génération du PDF de synthèse qualité a échoué."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__state__received
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "Received"
+msgstr "Reçue"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__received_at
+msgid "Received At"
+msgstr "Reçue le"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "Received:"
+msgstr "Reçue le :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_improvement_form
+msgid "Record Implementation"
+msgstr "Enregistrer la réalisation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Record an effectiveness decision and its verification evidence."
+msgstr ""
+"Renseignez une décision d’efficacité et les éléments de sa vérification."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Record quality treatment in the private dossier history."
+msgstr "Consignez le traitement qualité dans l’historique privé du dossier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_service.py:0
+msgid "Reload the complaint form before submitting."
+msgstr "Rechargez le formulaire de réclamation avant l’envoi."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+msgid "Reopen / Withdraw Access"
+msgstr "Rouvrir / retirer l’accès"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_operation__operation__reopen
+msgid "Reopen Complaint"
+msgstr "Rouvrir la réclamation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Reopen the dossier with a reason before changing its treatment."
+msgstr "Rouvrez le dossier avec un motif avant de modifier son traitement."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Reopen the quality dossier before adding evidence."
+msgstr "Rouvrez le dossier qualité avant d’ajouter une preuve."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Reopening a resolved complaint requires a reason."
+msgstr "La réouverture d’une réclamation résolue nécessite un motif."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_operation__operation__replan
+msgid "Replan Action"
+msgstr "Replanifier l’action"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid ""
+"Replan an ineffective action with a reason; keep its earlier verification."
+msgstr ""
+"Replanifiez une action inefficace avec un motif ; conservez sa vérification "
+"antérieure."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "Reply"
+msgstr "Réponse"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__reply
+msgid "Reply Communicable to Complainant"
+msgstr "Réponse communicable à l’auteur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Resolve the complaint with a reply before closure."
+msgstr "Résolvez la réclamation avec une réponse avant sa clôture."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+msgid "Resolve with Reply"
+msgstr "Résoudre avec réponse"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__resolved_at
+msgid "Resolved At"
+msgstr "Résolue le"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__state__resolved
+msgid "Resolved with Reply"
+msgstr "Résolue avec réponse"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "Resolved with reply"
+msgstr "Résolue avec réponse"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Retain quality files and their provenance."
+msgstr "Conservez les fichiers qualité et leur provenance."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__origin__review
+msgid "Review"
+msgstr "Revue"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.quality_summary
+msgid "S093-QWEB-1 — Internal evidence; no certification claim."
+msgstr "S093-QWEB-1 — Preuve interne ; aucune certification revendiquée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_quality_export.py:0
+msgid "Select one quality source and approve its minimal summary."
+msgstr "Choisissez une source qualité et approuvez sa synthèse minimale."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Select your training"
+msgstr "Sélectionnez votre formation"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_complaint__confidentiality__sensitive
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__confidentiality__sensitive
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_record__confidentiality__sensitive
+msgid "Sensitive / Assigned Staff"
+msgstr "Sensible / personnes habilitées"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__portal_visible
+msgid "Share Own Complaint and Reply with Participant"
+msgstr "Partager sa réclamation et sa réponse avec le participant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
+msgid "Start Treatment"
+msgstr "Commencer le traitement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Start treatment from a received complaint."
+msgstr "Commencez le traitement d’une réclamation reçue."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__name
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__name
+#: model:ir.model.fields,field_description:training_management.field_training_quality_record__name
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Subject"
+msgstr "Sujet"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__submission_key
+msgid "Submission Key"
+msgstr "Clé de dépôt"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Submit a confidential complaint"
+msgstr "Déposer une réclamation confidentielle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Submit complaint"
+msgstr "Envoyer la réclamation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "The assigned quality reviewer must release the legal hold."
+msgstr "Le référent qualité affecté doit lever le gel de conservation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "The complaint must match the participant and delivery."
+msgstr "La réclamation doit correspondre au participant et à la réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "The quality reviewer explicitly assigned to this dossier is required."
+msgstr "Le référent qualité explicitement affecté à ce dossier est requis."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "The responsible user must be explicitly authorized for the dossier."
+msgstr "Le responsable doit être explicitement habilité pour ce dossier."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_service.py:0
+msgid "This complaint is unavailable."
+msgstr "Cette réclamation est indisponible."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_complaint_unique_submission
+msgid "This complaint was already received."
+msgstr "Cette réclamation a déjà été reçue."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_service.py:0
+msgid "This enrollment is unavailable."
+msgstr "Cette inscription est indisponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "This operating company is not authorized."
+msgstr "Cette société exploitante n’est pas autorisée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "This quality dossier is on legal hold."
+msgstr "Ce dossier qualité fait l’objet d’un gel de conservation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__decision
+msgid "To Decide"
+msgstr "À décider"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Training"
+msgstr "Formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_improvement
+msgid "Training Improvement and Effectiveness"
+msgstr "Amélioration et efficacité de la formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_complaint__treatment
+msgid "Treatment"
+msgstr "Traitement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid ""
+"Treatment or a justified action and a reply are required before resolution."
+msgstr ""
+"Un traitement ou une action justifiée et une réponse sont requis avant la "
+"résolution."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Use a boolean overdue filter."
+msgstr "Utilisez un filtre de retard booléen."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Use immutable private quality files, not native attachments."
+msgstr ""
+"Utilisez les fichiers qualité privés non modifiables plutôt que les pièces "
+"jointes natives."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/wizard/training_quality_export.py:0
+msgid "Use the controlled quality summary export action."
+msgstr "Utilisez l’action contrôlée d’export de la synthèse qualité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "Use the private quality deadline list; no shared activity content."
+msgstr ""
+"Utilisez la liste privée des échéances qualité ; aucun contenu d’activité "
+"partagé."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__verification
+#: model:ir.model.fields,field_description:training_management.field_training_quality_operation__verification
+msgid "Verification"
+msgstr "Vérification"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__verification_plan
+msgid "Verification Plan"
+msgstr "Plan de vérification"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__verified_at
+msgid "Verified At"
+msgstr "Vérifiée le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_improvement__verifier_id
+msgid "Verifier"
+msgstr "Vérificateur"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_operation__operation__verify
+msgid "Verify Effectiveness"
+msgstr "Vérifier l’efficacité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Verify effectiveness only after implementation."
+msgstr "Vérifiez l’efficacité uniquement après la réalisation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_quality_operation__operation__revoke
+msgid "Withdraw Participant Access"
+msgstr "Retirer l’accès du participant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Your complaint"
+msgstr "Votre réclamation"

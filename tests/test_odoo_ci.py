@@ -300,7 +300,7 @@ class WorkflowContract(unittest.TestCase):
             sum(
                 len(next(iter(job["strategy"]["matrix"].values()))) if "strategy" in job else 1 for job in jobs.values()
             ),
-            17,
+            18,
         )
         for path in (ROOT / ".github/workflows").glob("*.yml"):
             workflow = yaml.safe_load(path.read_text())
@@ -309,6 +309,19 @@ class WorkflowContract(unittest.TestCase):
                 self.assertEqual(path.name, "odoo.yml")
         gate_job = jobs["validation"]
         self.assertEqual(gate_job["steps"][1]["with"]["pattern"], "*-results*")
+
+    def test_quality_extension_is_required_without_replacing_previous_scenarios(self):
+        ledger = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
+        contract = ledger["extensions"]["quality"]
+        script = (ROOT / contract["script"]).read_text()
+        steps = re.findall(r"(?m)^(?:[A-Z0-9_]+=[^\n]*? )?step ([a-z0-9_]+) run_odoo", script)
+        self.assertEqual(contract["steps"], steps)
+        workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
+        job = workflow["jobs"]["quality"]
+        self.assertEqual(job["steps"][1]["run"], "bash " + contract["script"])
+        self.assertEqual(job["steps"][2]["with"]["name"], contract["artifacts"][0])
+        self.assertIn("quality", gate.REQUIRED_JOBS)
+        self.assertIn("--test-tags=/training_management", script)
 
     def test_parallelism_is_bounded_and_gate_cannot_be_skipped_by_failure(self):
         workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
