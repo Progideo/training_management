@@ -120,6 +120,12 @@ class PdfAccessibilityReview(models.Model):
             )
         return super().create(prepared)
 
+    def action_record_review(self):
+        """The native object button saves a new form without granting write rights."""
+        self.ensure_one()
+        self.check_access("read")
+        return {"type": "ir.actions.act_window", "res_model": self._name, "res_id": self.id, "view_mode": "form"}
+
     def write(self, vals):  # pylint: disable=method-required-super
         raise AccessError(self.env._("Keep this review; add a new human check after correction."))
 

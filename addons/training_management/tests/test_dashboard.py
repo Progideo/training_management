@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tests import HttpCase, new_test_user, tagged
+from odoo.tests import Form, HttpCase, new_test_user, tagged
 
 from .test_evaluation import EvaluationCase
 
@@ -286,7 +286,11 @@ class TestDashboard(EvaluationCase):
             {"user_ids": [Command.link(self.quality.id)]}
         )
         reviews = self.env["training.pdf.accessibility.review"].with_user(self.quality)
-        review = reviews.create({"material_id": material.id, "notes": "Fictional human check: correction needed"})
+        form = Form(reviews, view="training_management.view_pdf_accessibility_review_form")
+        form.material_id = material
+        form.notes = "Fictional human check: correction needed"
+        review = form.save()
+        self.assertEqual(review.action_record_review()["res_id"], review.id)
         self.assertFalse(review.passed)
         self.assertEqual(review.source_sha256, material.sha256)
         self.assertEqual(review.reviewer_id, self.quality)

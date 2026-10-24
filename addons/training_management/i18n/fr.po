@@ -10129,3 +10129,9 @@ msgid "Export only dashboard columns, without traversing source records."
 msgstr ""
 "Exportez uniquement les colonnes du tableau, sans parcourir les "
 "enregistrements sources."
+
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_pdf_accessibility_review_form
+msgid "Record Human Review"
+msgstr "Enregistrer le contrôle humain"
