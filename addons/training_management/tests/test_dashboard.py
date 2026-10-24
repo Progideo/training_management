@@ -113,7 +113,9 @@ class TestDashboard(EvaluationCase):
         self.assertTrue(row["attendance_incomplete"])
         self.assertEqual(self.dashboard()._dashboard(delivery.id, issue="attendance")["population"], 1)
         line = self.env["training.dashboard.line"].with_user(self.coordinator)
-        self.assertEqual(line.search([("attendance_incomplete", "=", True)]).ids, enrollment.ids)
+        self.assertEqual(
+            line.search([("delivery_id", "=", delivery.id), ("attendance_incomplete", "=", True)]).ids, enrollment.ids
+        )
         asynchronous = self.enrollment(self.delivery())
         self.assertFalse(self.dashboard()._participant(asynchronous.id)["attendance_incomplete"])
 
@@ -368,7 +370,16 @@ class TestDashboardHttp(EvaluationCase, HttpCase):
         url = "/my/training-dashboard/%s?start=2027-02-01&end=2027-01-01" % assignment.delivery_id.id
         response = self.url_open(url)
         self.assertEqual(response.status_code, 400)
-        self.assertIn("The end of the period must follow its start.", response.text)
+        from lxml import html
+
+        document = html.fromstring(response.content)
+        language = document.get("lang", "en-US").replace("-", "_")
+        message = (
+            self.env["training.dashboard.service"]
+            .with_context(lang=language)
+            .env._("The end of the period must follow its start.")
+        )
+        self.assertIn(message, document.xpath("string(//p[@role='alert'])"))
         self.assertIn('role="alert"', response.text)
         self.assertIn('value="2027-02-01"', response.text)
         self.assertNotIn(assignment.enrollment_id.participant_id.name, response.text)
