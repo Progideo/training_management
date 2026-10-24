@@ -22,7 +22,8 @@ dossier se conserve par archivage. Le gel empêche les mutations de contenu. Le 
 retirer le gel ou modifier les accès, avec traçabilité dans l’historique.
 
 L’affectation synchrone (y compris séries de séances) et la mission asynchrone
-affichent une alerte générique si les justificatifs sont absents ou hors validité.
+affichent une alerte générique si les justificatifs sont absents ou hors validité
+sur la période prévue (fin de séance/série ou réalisation incluse).
 Cette projection réservée aux coordonnateurs ne révèle ni fichier ni détail du
 dossier privé et ne bloque pas la planification. L’archivage d’un ancien dossier
 permet de conserver son histoire sans le considérer comme dossier courant.

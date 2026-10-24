@@ -119,6 +119,17 @@ class ProviderDossier(models.Model):
         # Authorization precedes mutation; reassignment can remove the actor.
         self.env["training.provider.event"]._append(self.sudo(), operation, before or {})
 
+    @api.private
+    def _record_content_change(self, operation, details):
+        # The child factory/mutation already locked and authorized this dossier.
+        # Keep the same review semantics for native nested forms and direct ORM.
+        before = self._snapshot()
+        if self.state == "active":
+            # pylint: disable-next=super-method-mismatch  # Authorized review invalidation.
+            super(ProviderDossier, self).write({"state": "draft"})
+        self._event(operation, {"dossier": before, "change": details})
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
         if not self.env.user.active or not (self.env.user.has_group(COORDINATOR) or self.env.user.has_group(QUALITY)):
@@ -133,7 +144,7 @@ class ProviderDossier(models.Model):
         return rows
 
     def write(self, vals):
-        if set(vals) - self._editable() - {"frozen"}:
+        if set(vals) - self._editable() - {"frozen", "evidence_ids", "obligation_ids"}:
             raise AccessError(self.env._("Retain dossier identity and use the workflow actions."))
         for row in self.sorted("id"):
             row._authorize(
@@ -277,7 +288,7 @@ class ProviderEvidence(models.Model):
                 raise ValidationError(self.env._("Provide evidence, its source, scope and a valid period."))
             # pylint: disable-next=super-method-mismatch  # Authorized server-controlled audit/workflow mutation.
             super(ProviderEvidence, row.sudo()).write({"checksum": hashlib.sha256(row.data.content).hexdigest()})
-            row.dossier_id._event(
+            row.dossier_id._record_content_change(
                 "evidence", {"evidence_id": row.id, "checksum": row.checksum, "previous_id": row.previous_id.id}
             )
         return rows
@@ -340,7 +351,7 @@ class ProviderObligation(models.Model):
             self.env["training.provider.dossier"].browse(vals.get("dossier_id"))._authorize()
         rows = super(ProviderObligation, clean_context(self)).create(vals_list)
         for row in rows:
-            row.dossier_id._event("obligation", row._snapshot())
+            row.dossier_id._record_content_change("obligation", row._snapshot())
         return rows
 
     def write(self, vals):
@@ -354,7 +365,7 @@ class ProviderObligation(models.Model):
                 raise ValidationError(self.env._("Retain controlled obligations; add a follow-up obligation."))
             before = row._snapshot()
             super(ProviderObligation, row).write(vals)
-            row.dossier_id._event(
+            row.dossier_id._record_content_change(
                 "obligation_updated", {"obligation_before": before, "obligation_after": row._snapshot()}
             )
         return True
@@ -376,6 +387,8 @@ class ProviderObligation(models.Model):
             row.dossier_id._authorize(quality=True)
             row.invalidate_recordset()
             if row.state != "pending":
+                if row.state != ("conform" if conform else "nonconform"):
+                    raise ValidationError(self.env._("Retain controlled obligations; add a follow-up obligation."))
                 continue
             if not text(row.control) or not row.evidence_id:
                 raise ValidationError(self.env._("Record control findings and supporting evidence."))
@@ -444,7 +457,7 @@ class ProviderService(models.AbstractModel):
     _description = "Provider Quality Projections"
 
     @api.private
-    def _assignment_warning(self, partners, company, on_date):
+    def _assignment_warning(self, partners, company, on_date, until=None):
         user = self.env.user
         if not (
             user.active
@@ -473,7 +486,9 @@ class ProviderService(models.AbstractModel):
             )
         for dossier in dossiers:
             latest = dossier.evidence_ids.filtered(lambda e: not e.replacement_ids)
-            if not latest or any(e.valid_from > on_date or (e.valid_until and e.valid_until < on_date) for e in latest):
+            if not latest or any(
+                e.valid_from > on_date or (e.valid_until and e.valid_until < (until or on_date)) for e in latest
+            ):
                 return self.env._(
                     "Instructor evidence is missing or outside its validity period. Ask the quality reviewer before assignment. Scheduling remains available."
                 )
@@ -496,14 +511,14 @@ class ProviderSession(models.Model):
 
     instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
 
-    @api.depends("instructor_id", "company_id", "start_at")
+    @api.depends("instructor_id", "company_id", "start_date", "end_date")
     def _compute_provider_warning(self):
         for row in self:
             row.instructor_warning = self.env["training.provider.service"]._assignment_warning(
-                row.instructor_id, row.company_id, fields.Date.to_date(row.start_at) or fields.Date.today()
+                row.instructor_id, row.company_id, row.start_date or fields.Date.today(), row.end_date
             )
 
-    @api.onchange("instructor_id", "start_at")
+    @api.onchange("instructor_id", "start_date", "end_date")
     def _onchange_provider_warning(self):
         if self.instructor_warning:
             return {"warning": {"title": self.env._("Instructor Evidence"), "message": self.instructor_warning}}
@@ -515,14 +530,17 @@ class ProviderDelivery(models.Model):
 
     instructor_warning = fields.Char(compute="_compute_provider_warning", groups=COORDINATOR)
 
-    @api.depends("evaluation_instructor_ids", "company_id")
+    @api.depends("evaluation_instructor_ids", "company_id", "start_at", "end_at")
     def _compute_provider_warning(self):
         for row in self:
             row.instructor_warning = self.env["training.provider.service"]._assignment_warning(
-                row.evaluation_instructor_ids, row.company_id, fields.Date.today()
+                row.evaluation_instructor_ids,
+                row.company_id,
+                fields.Date.to_date(row.start_at) or fields.Date.today(),
+                fields.Date.to_date(row.end_at),
             )
 
-    @api.onchange("evaluation_instructor_ids")
+    @api.onchange("evaluation_instructor_ids", "start_at", "end_at")
     def _onchange_provider_warning(self):
         if self.instructor_warning:
             return {"warning": {"title": self.env._("Instructor Evidence"), "message": self.instructor_warning}}

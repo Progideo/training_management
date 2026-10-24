@@ -87,7 +87,11 @@ class EvaluationAuthorization(models.Model):
             if set(vals) & {"issued_by_id", "issued_at", "revoked_by_id", "revoked_at"}:
                 raise AccessError(self.env._("Authorization audit fields are server controlled."))
             self._authorize_delivery(self.env["training.delivery"].browse(vals.get("delivery_id")))
-            prepared.append(dict(vals, issued_by_id=self.env.uid, issued_at=fields.Datetime.now()))
+            now = fields.Datetime.now()
+            decision = dict(vals, issued_by_id=self.env.uid, issued_at=now)
+            if vals.get("active") is False:
+                decision.update(revoked_by_id=self.env.uid, revoked_at=now)
+            prepared.append(decision)
         return super(EvaluationAuthorization, clean_context(self)).create(prepared)
 
     def write(self, vals):

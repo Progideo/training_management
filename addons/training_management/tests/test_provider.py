@@ -232,6 +232,26 @@ class TestProvider(EvaluationCase):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             grant.write({"active": True})
 
+        inactive = (
+            self.env["training.evaluation.authorization"]
+            .with_user(self.quality)
+            .with_context(default_issued_by_id=self.other_quality.id, default_revoked_at="2099-01-01")
+            .create(
+                {
+                    "delivery_id": assignment.delivery_id.id,
+                    "user_id": self.portal_b.id,
+                    "purpose": grant.purpose,
+                    "valid_from": grant.valid_from,
+                    "valid_until": grant.valid_until,
+                    "reason": "Fictional withdrawn initial decision",
+                    "active": False,
+                }
+            )
+        )
+        self.assertEqual(inactive.issued_by_id, self.quality)
+        self.assertEqual(inactive.revoked_by_id, self.quality)
+        self.assertEqual(inactive.issued_at, inactive.revoked_at)
+
     def test_s10_projection_applies_grants_before_counts_and_pagination(self):
         first = self.provider()
         hidden = self.provider(quality_id=self.other_quality.id)
@@ -263,6 +283,118 @@ class TestProvider(EvaluationCase):
         arch = model.get_view(view_type="form")["arch"]
         self.assertIn("Analyser le dossier", arch)
         self.assertIn("Veille analysée", arch)
+
+    def test_native_dossier_form_saves_evidence_and_obligations(self):
+        row = self.provider("subcontract")
+        with Form(row) as form:
+            with form.evidence_ids.new() as evidence:
+                evidence.name = "native.pdf"
+                evidence.competence = "Contract scope"
+                evidence.source = "Fictional signed contract"
+                evidence.data = BinaryBytes(PDF)
+        self.assertEqual(row.evidence_ids.data.content, PDF)
+        with Form(row) as form:
+            with form.obligation_ids.new() as obligation:
+                obligation.name = "Native obligation"
+                obligation.due_date = fields.Date.today()
+                obligation.evidence_id = row.evidence_ids
+                obligation.control = "Fictional control findings"
+        self.assertEqual(len(row.obligation_ids), 1)
+        row.action_review()
+        with Form(row) as form:
+            with form.obligation_ids.edit(0) as obligation:
+                obligation.control = "Corrected pending findings"
+        self.assertEqual(row.state, "draft")
+        row.obligation_ids.action_nonconform()
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            row.obligation_ids.action_conform()
+        # Parent commands must not provide an alternate way to move or erase evidence.
+        foreign = self.provider("subcontract")
+        for field, command in (
+            ("evidence_ids", Command.link(row.evidence_ids.id)),
+            ("obligation_ids", Command.link(row.obligation_ids.id)),
+            ("event_ids", Command.clear()),
+        ):
+            with self.assertRaises((AccessError, ValidationError)), self.env.cr.savepoint():
+                foreign.write({field: [command]})
+        row.write({"frozen": True})
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            row.write(
+                {
+                    "evidence_ids": [
+                        Command.create(
+                            {"name": "late.pdf", "competence": "Scope", "source": "Fictional", "data": BinaryBytes(PDF)}
+                        )
+                    ]
+                }
+            )
+
+    def test_direct_child_changes_invalidate_review(self):
+        row = self.provider()
+        first = self.evidence(row)
+        row.action_review()
+        self.evidence(row, previous_id=first.id)
+        self.assertEqual(row.state, "draft")
+        self.assertIn("reviewed", row.event_ids.mapped("operation"))
+        contract = self.provider("subcontract")
+        obligation = (
+            self.env["training.provider.obligation"]
+            .with_user(self.quality)
+            .create({"dossier_id": contract.id, "name": "Initial obligation", "due_date": fields.Date.today()})
+        )
+        contract.action_review()
+        obligation.write({"control": "Changed requirement control"})
+        self.assertEqual(contract.state, "draft")
+        contract.action_review()
+        self.env["training.provider.obligation"].with_user(self.quality).create(
+            {"dossier_id": contract.id, "name": "Additional obligation", "due_date": fields.Date.today()}
+        )
+        self.assertEqual(contract.state, "draft")
+
+    def test_assignment_warning_covers_multiday_session_and_future_async(self):
+        today = fields.Date.today()
+        row = self.provider()
+        self.evidence(row, valid_until=today + timedelta(days=1))
+        delivery = self.delivery(
+            kind="session", start_at=str(today), end_at=str(today + timedelta(days=10)), timezone="UTC"
+        )
+        wizard = (
+            self.env["training.session.edit"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "delivery_id": delivery.id,
+                    "instructor_id": self.portal_b.partner_id.id,
+                    "start_date": today,
+                    "end_date": today + timedelta(days=2),
+                }
+            )
+        )
+        self.assertTrue(wizard.instructor_warning)
+        session = (
+            self.env["training.session"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Multiday fictional session",
+                    "delivery_id": delivery.id,
+                    "instructor_id": self.portal_b.partner_id.id,
+                    "mode": "onsite",
+                    "start_date": today,
+                    "end_date": today + timedelta(days=2),
+                }
+            )
+        )
+        self.assertTrue(session.instructor_warning)
+        # A dated cohort can carry an asynchronous mission without any session.
+        asynchronous = self.delivery(
+            kind="session",
+            start_at=str(today + timedelta(days=3)),
+            end_at=str(today + timedelta(days=5)),
+            timezone="UTC",
+        )
+        asynchronous.write({"evaluation_instructor_ids": [Command.set(self.portal_b.partner_id.ids)]})
+        self.assertTrue(asynchronous.instructor_warning)
 
 
 @tagged("post_install", "-at_install")
