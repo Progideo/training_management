@@ -20,3 +20,7 @@ from . import account_journal
 from . import mail_message
 from . import mail_scheduled_message
 from . import training_allocation
+
+from . import dashboard
+
+from . import request_notice

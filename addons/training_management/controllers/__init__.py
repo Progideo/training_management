@@ -8,3 +8,5 @@ from . import closure_portal
 from . import evaluation_portal
 
 from . import quality_portal
+
+from . import dashboard_portal

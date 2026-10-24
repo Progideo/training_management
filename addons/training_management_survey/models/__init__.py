@@ -8,3 +8,5 @@ from . import ir_http
 from . import evaluation
 
 from . import feedback
+
+from . import dashboard

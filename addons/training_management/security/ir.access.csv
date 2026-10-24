@@ -137,3 +137,14 @@ rule_s094_obligation,S094 company obligation,training.provider.obligation,,crud,
 access_s094_event_coordinator,S094 assigned event,training.provider.event,training_management.group_training_coordinator,r,"[('dossier_id', 'access', 'read')]"
 access_s094_event_quality,S094 assigned event,training.provider.event,training_management.group_training_quality,r,"[('dossier_id', 'access', 'read')]"
 rule_s094_event,S094 company event,training.provider.event,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_s10_line_coord,S10 dashboard coordinator,training.dashboard.line,training_management.group_training_coordinator,r,
+access_s10_line_supervisor,S10 dashboard supervisor,training.dashboard.line,training_management.group_training_supervisor,r,"[('delivery_id.evaluation_supervisor_ids', 'in', user.id)]"
+access_s10_line_quality,S10 dashboard quality,training.dashboard.line,training_management.group_training_quality,r,"[('delivery_id.evaluation_quality_id', '=', user.id)]"
+access_s10_line_trainer,S10 dashboard trainer,training.dashboard.line,base.group_user,r,"['|',('delivery_id.evaluation_instructor_ids', 'in', user.partner_id.id),('delivery_id.session_ids', 'any', [('instructor_id','=',user.partner_id.id),('cancelled','=',False)])]"
+rule_s10_company,S10 dashboard company,training.dashboard.line,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_s10_notice,S10 lifecycle journal,training.notification,training_management.group_training_coordinator,r,
+rule_s10_notice,S10 lifecycle company,training.notification,,crud,"[('company_id','in',company_ids)]"
+access_s10_export,S10 own export manifests,training.dashboard.export,base.group_user,r,"[('actor_id','=',user.id)]"
+rule_s10_export,S10 export company,training.dashboard.export,,crud,"[('company_id','in',company_ids)]"
+access_s10_pdf,S10 PDF quality review,training.pdf.accessibility.review,training_management.group_training_quality,cr,"['|','|',('program_id','access','read'),('material_id','access','read'),('document_id','access','read')]"
+rule_s10_pdf,S10 PDF review company,training.pdf.accessibility.review,,crud,"[('company_id','in',company_ids)]"

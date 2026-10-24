@@ -1,6 +1,7 @@
+from datetime import timedelta
 from unittest.mock import patch
 
-from odoo import Command
+from odoo import Command, fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
 from odoo.tools.translate import load_language
@@ -1439,6 +1440,41 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(ValidationError), self.cr.savepoint():
             (invoice_receivable + cash_receivable).reconcile()
         self.assertEqual(final_invoice.amount_residual, 800)
+
+        # S10 reuses these real native down-payment/final-invoice fixtures;
+        # an advance is not omitted or counted twice in the invoice cohort.
+        delivery = self.env["training.delivery"].create(
+            {
+                "name": "Fictional S10 financial scope",
+                "program_id": self.program.id,
+                "kind": "autonomous",
+                "access_policy": "duration",
+                "access_days": 10,
+            }
+        )
+        self.env["training.seat.allocation"].create(
+            {
+                "delivery_id": delivery.id,
+                "customer_id": self.partner.id,
+                "quantity": 1,
+                "source_reference": "S10 financial scope",
+                "expires_at": fields.Datetime.now() + timedelta(days=1),
+                "sale_line_id": order.order_line.filtered(lambda line: line.training_program_id)[:1].id,
+            }
+        )
+        financial_reader = new_test_user(
+            self.env,
+            login="s10_financial_reader",
+            groups="training_management.group_training_coordinator,sales_team.group_sale_manager,account.group_account_manager",
+            company_id=self.company.id,
+            company_ids=[Command.set(self.company.ids)],
+        )
+        figures = self.env["training.dashboard.service"].with_user(financial_reader)._commercial(delivery, None, None)
+        invoiced = [row for row in figures if row["kind"] == "invoices"]
+        self.assertEqual(len(invoiced), 1)
+        self.assertEqual(invoiced[0]["currency"], "EUR")
+        self.assertEqual(invoiced[0]["amount"], 1600)
+        self.assertEqual(set(invoiced[0]["ids"]), {advance.id, final_invoice.id})
 
     def _server_guard_order(self):
         pricelist = self.env["product.pricelist"].create(

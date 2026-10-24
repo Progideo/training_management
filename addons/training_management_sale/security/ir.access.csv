@@ -10,3 +10,5 @@ access_delivery_sales,Training deliveries for sales,training.delivery,sales_team
 access_allocation_sales,Training seat allocations for sales,training.seat.allocation,sales_team.group_sale_salesman,r,
 access_enrollment_sales,Training enrollment states for sales,training.enrollment,sales_team.group_sale_salesman,r,
 access_category_sales,Training categories for sales,training.category,sales_team.group_sale_salesman,r,
+access_s10_request_notice,S10 authorized request journal,training.request.notice,sales_team.group_sale_salesman,r,"[('lead_id','access','read')]"
+rule_s10_request_notice,S10 request company,training.request.notice,,crud,"[('company_id','in',company_ids)]"

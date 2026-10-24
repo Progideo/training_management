@@ -231,6 +231,7 @@ def migration(entry, results):
             "S092",
             "S093",
             "S094",
+            "S10",
         ):
             env[f"TM_{prefix}_NETWORK"] = database.name
             env[f"TM_{prefix}_DB_HOST"] = "postgres"
