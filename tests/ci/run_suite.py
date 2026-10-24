@@ -12,15 +12,19 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 PLAN = json.loads((ROOT / "tests/ci/suite.json").read_text())
 IMAGE = "odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23"
-BAD_LOG = re.compile(r" CRITICAL |Traceback \(most recent call last\)| [1-9][0-9]* failed,| [1-9][0-9]* error\(s\)")
+BAD_LOG = re.compile(r" CRITICAL | [1-9][0-9]* failed,| [1-9][0-9]* error\(s\)")
 
 
-def checked(command, log, *, env=None, stdin=None):
+def checked(command, log, *, env=None, stdin=None, allow_tracebacks=False):
     started = time.monotonic()
     with log.open("w") as output:
         result = subprocess.run(command, cwd=ROOT, env=env, stdin=stdin, stdout=output, stderr=subprocess.STDOUT)
     text = log.read_text(errors="replace")
-    if result.returncode or BAD_LOG.search(text):
+    if (
+        result.returncode
+        or BAD_LOG.search(text)
+        or (not allow_tracebacks and "Traceback (most recent call last):" in text)
+    ):
         print(text[-12000:], flush=True)
         raise RuntimeError(f"{log.name}: failed ({result.returncode})")
     print(f"{log.parent.name}/{log.name}: OK ({time.monotonic() - started:.0f}s)", flush=True)
@@ -162,6 +166,7 @@ def suite(configuration, results):
                 "--test-tags=" + ",".join("/" + addon for addon in addons),
             ),
             folder / "tests.log",
+            allow_tracebacks=True,
         )
         assert_tests_ran(text, addons)
     (folder / "success.json").write_text(json.dumps({"configuration": configuration, "addons": addons}))
@@ -192,7 +197,12 @@ def migration(entry, results):
         checked(["bash", str(ROOT / entry["script"]), *entry["args"]], folder / "runner.log", env=env)
         for step in entry["steps"]:
             log = folder / f"{step}.log"
-            if not log.is_file() or not log.stat().st_size or BAD_LOG.search(log.read_text(errors="replace")):
+            if (
+                not log.is_file()
+                or not log.stat().st_size
+                or BAD_LOG.search(log.read_text(errors="replace"))
+                or "Traceback (most recent call last):" in log.read_text(errors="replace")
+            ):
                 raise ValueError(f"Missing or failed migration evidence: {entry['id']}/{step}")
     (folder / "success.json").write_text(json.dumps({"migration": entry["id"], "steps": entry["steps"]}))
 

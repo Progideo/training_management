@@ -9,9 +9,13 @@ from run_suite import BAD_LOG, PLAN, assert_tests_ran
 REQUIRED_JOBS = {"orchestration", "suite", "migrations"}
 
 
-def read_log(path):
+def read_log(path, *, allow_tracebacks=False):
     text = path.read_text(errors="replace")
-    if not text.strip() or BAD_LOG.search(text):
+    if (
+        not text.strip()
+        or BAD_LOG.search(text)
+        or (not allow_tracebacks and "Traceback (most recent call last):" in text)
+    ):
         raise ValueError(f"Missing or failed evidence: {path}")
     return text
 
@@ -31,7 +35,7 @@ def validate(needs, results):
         if config["website"]:
             if "CUMULATIVE_FRENCH_WEBSITE_READY" not in read_log(folder / "french.log"):
                 raise ValueError(f"{name}: missing French Website evidence")
-        assert_tests_ran(read_log(folder / "tests.log"), config["addons"])
+        assert_tests_ran(read_log(folder / "tests.log", allow_tracebacks=True), config["addons"])
     for entry in PLAN["migrations"]:
         folder = results / "migrations-results" / entry["id"]
         expected = {"migration": entry["id"], "steps": entry["steps"]}

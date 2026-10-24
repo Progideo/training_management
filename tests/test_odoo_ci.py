@@ -245,6 +245,13 @@ class FinalGate(unittest.TestCase):
             with self.assertRaises(ValueError):
                 gate.validate(self.needs, self.results)
 
+    def test_expected_security_exception_log_does_not_override_successful_test_result(self):
+        path = self.results / "suite-sale-results/tests.log"
+        path.write_text(
+            path.read_text() + "\nTraceback (most recent call last):\nExpected AccessError in mail denial test"
+        )
+        gate.validate(self.needs, self.results)
+
     def test_missing_selected_addon_cannot_hide_behind_other_tests(self):
         path = self.results / "suite-full-results/tests.log"
         path.write_text(path.read_text().replace("odoo.tests.stats: training_management_survey: 12 tests", ""))

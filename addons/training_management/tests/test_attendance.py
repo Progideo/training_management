@@ -400,7 +400,13 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         response = self.url_open(path, data=payload)
         self.env.invalidate_all()
         self.assertFalse(self.env["training.attendance"].search([("session_id", "=", session.id)]))
-        self.assertIn("session or confirmation text changed", response.text)
+        french = html.fromstring(response.content).get("lang", "en").startswith("fr")
+        expected = (
+            "La séance ou le texte de confirmation a changé. Rechargez puis confirmez les informations affichées."
+            if french
+            else "The session or confirmation text changed. Reload and confirm the displayed information."
+        )
+        self.assertIn(expected, html.fromstring(response.content).text_content())
 
     def test_confirmation_rejects_a_changed_session_definition(self):
         _, session, enrollment = self.scheduled()
@@ -566,7 +572,13 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Your declaration is recorded", response.text)
+        french = html.fromstring(response.content).get("lang", "en").startswith("fr")
+        expected = (
+            "Votre déclaration est enregistrée. Contactez le coordinateur pour une correction."
+            if french
+            else "Your declaration is recorded. Contact the coordinator for a correction."
+        )
+        self.assertIn(expected, html.fromstring(response.content).text_content())
         self.env.invalidate_all()
         token = limited_field_access_token(event, "data", scope="binary")
         url = f"/web/content/{event._name}/{event.id}/data?access_token={token}"
