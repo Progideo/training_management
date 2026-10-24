@@ -550,12 +550,6 @@ class ProviderSession(models.Model):
                 row.instructor_id, row.company_id, row.start_date or fields.Date.today(), row.end_date
             )
 
-    @api.onchange("instructor_id", "start_date", "end_date")
-    def _onchange_provider_warning(self):
-        if self.instructor_warning:
-            return {"warning": {"title": self.env._("Instructor Evidence"), "message": self.instructor_warning}}
-        return None
-
 
 class ProviderDelivery(models.Model):
     _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Keep QUA03 warning projections separate from evaluation authorization rules.
@@ -573,9 +567,3 @@ class ProviderDelivery(models.Model):
                 fields.Date.to_date(row.start_at) or fields.Date.today(),
                 fields.Date.to_date(row.end_at),
             )
-
-    @api.onchange("evaluation_instructor_ids", "start_at", "end_at")
-    def _onchange_provider_warning(self):
-        if self.instructor_warning:
-            return {"warning": {"title": self.env._("Instructor Evidence"), "message": self.instructor_warning}}
-        return None
