@@ -7,7 +7,7 @@ from .training_quality import QUALITY_MODELS
 
 
 class QualityPolicy(models.AbstractModel):
-    _inherit = "training.document.policy"
+    _inherit = "training.document.policy"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     @api.private
     def _document(self, record):
@@ -48,7 +48,7 @@ class QualityPolicy(models.AbstractModel):
 
 
 class QualityAttachment(models.Model):
-    _inherit = "ir.attachment"
+    _inherit = "ir.attachment"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -63,7 +63,7 @@ class QualityAttachment(models.Model):
 
 
 class QualityBinary(models.AbstractModel):
-    _inherit = "ir.binary"
+    _inherit = "ir.binary"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     def _find_record(self, xmlid=None, res_model="ir.attachment", res_id=None, access_token=None, field=None):
         record = super()._find_record(xmlid, res_model, res_id, access_token, field)
@@ -89,7 +89,7 @@ class QualityBinary(models.AbstractModel):
 
 
 class QualityMailMessage(models.Model):
-    _inherit = "mail.message"
+    _inherit = "mail.message"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -104,7 +104,7 @@ class QualityMailMessage(models.Model):
 
 
 class QualityMailActivity(models.Model):
-    _inherit = "mail.activity"
+    _inherit = "mail.activity"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     @api.model_create_multi
     def create(self, vals_list):

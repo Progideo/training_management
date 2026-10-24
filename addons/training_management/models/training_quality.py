@@ -17,7 +17,7 @@ def required_text(value):
 
 
 class QualityDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     complaint_quality_id = fields.Many2one("res.users", string="Complaint Intake Reviewer", groups=COORDINATOR)
     complaint_retention_id = fields.Many2one(
@@ -658,6 +658,6 @@ class QualityFile(models.Model):
 
 
 class QualityEnrollment(models.Model):
-    _inherit = "training.enrollment"
+    _inherit = "training.enrollment"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     complaint_ids = fields.One2many("training.complaint", "enrollment_id", groups=COORDINATOR + "," + QUALITY)
