@@ -7948,6 +7948,7 @@ msgstr "Amélioration"
 #. module: training_management
 #: model:ir.actions.act_window,name:training_management.action_improvement
 #: model:ir.ui.menu,name:training_management.menu_improvement
+#: model_terms:ir.ui.view,arch_db:training_management.view_complaint_form
 msgid "Improvement Actions"
 msgstr "Actions d’amélioration"
 
@@ -8562,3 +8563,9 @@ msgstr "Retirer l’accès du participant"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
 msgid "Your complaint"
 msgstr "Votre réclamation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality.py:0
+msgid "Complaint %s"
+msgstr "Réclamation %s"

@@ -19,7 +19,8 @@ plan de vérification. À décider → planifiée → réalisée → efficacité
 efficace / inefficace. La réalisation exige le résultat ou support corrigé ; elle
 ne conclut jamais automatiquement à l’efficacité. La qualité documente la
 vérification ; un échec impose une suite. La replanification motivée conserve la
-vérification antérieure.
+vérification antérieure dans l’historique. Les champs du nouveau cycle sont
+vidés : réalisation, support corrigé, dates, vérification, vérificateur et suite.
 
 Les habilitations sont propres à chaque dossier : référent qualité et personnes
 explicitement habilitées de la qualité ou de la coordination. Aucun accès global
@@ -29,6 +30,8 @@ retire les accès qui en dépendent aux historiques, fichiers et actions issues 
 la réclamation. Une habilitation indépendante doit être retirée explicitement. Les sociétés exploitantes restent isolées.
 
 Les fichiers privés sont non modifiables, avec source, date et empreinte.
+Ils peuvent être ajoutés dès la création du dossier. Les actions liées sont
+consultables depuis la réclamation selon les habilitations de chaque action.
 Une correction ajoute une version liée ; aucune suppression métier. Les
 échéances apparaissent dans les listes avec le filtre **En retard**. Les messages,
 pièces jointes et activités partagées ne transportent pas le contenu privé.

@@ -79,9 +79,15 @@ class QualityRecord(models.AbstractModel):
         default=False, string="Legal Hold", help="Prevents content and workflow changes; no automatic purge."
     )
 
+    @api.depends("state", "due_date")
+    @api.depends_context("tz")
     def _compute_overdue(self):
         for row in self:
-            row.overdue = row.state not in row._terminal_states() and row.due_date < fields.Date.context_today(row)
+            row.overdue = bool(
+                row.due_date
+                and row.state not in row._terminal_states()
+                and row.due_date < fields.Date.context_today(row)
+            )
 
     @api.model
     def _search_overdue(self, operator, value):
@@ -169,6 +175,7 @@ class QualityRecord(models.AbstractModel):
             "retention_id",
             "due_date",
             "confidentiality",
+            "file_ids",
         }
         specific = (
             {"enrollment_id", "complainant_id", "description", "channel", "portal_visible"}
@@ -319,8 +326,8 @@ class Complaint(models.Model):
     received_at = fields.Datetime(default=fields.Datetime.now, readonly=True, copy=False)
     resolved_at = fields.Datetime(readonly=True, copy=False)
     closed_at = fields.Datetime(readonly=True, copy=False)
-    improvement_ids = fields.One2many("training.improvement", "complaint_id")
-    event_ids = fields.One2many("training.quality.event", "complaint_id")
+    improvement_ids = fields.One2many("training.improvement", "complaint_id", readonly=True)
+    event_ids = fields.One2many("training.quality.event", "complaint_id", readonly=True)
     file_ids = fields.One2many("training.quality.file", "complaint_id")
 
     @api.constrains("enrollment_id", "delivery_id", "complainant_id", "portal_visible")
@@ -348,7 +355,7 @@ class Complaint(models.Model):
                 "default_quality_id": self.quality_id.id,
                 "default_retention_id": self.retention_id.id,
                 "default_origin": "complaint",
-                "default_origin_reference": "Complaint %s" % self.id,
+                "default_origin_reference": self.env._("Complaint %s", self.id),
             },
         }
 
@@ -452,7 +459,7 @@ class Improvement(models.Model):
     verifier_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
     verification = fields.Text(readonly=True, copy=False)
     follow_up = fields.Text(readonly=True, copy=False)
-    event_ids = fields.One2many("training.quality.event", "improvement_id")
+    event_ids = fields.One2many("training.quality.event", "improvement_id", readonly=True)
     file_ids = fields.One2many("training.quality.file", "improvement_id")
 
     @api.constrains(
@@ -551,7 +558,19 @@ class Improvement(models.Model):
             raise ValidationError(
                 self.env._("Replan an ineffective action with a reason; keep its earlier verification.")
             )
-        self._transition("decision", reason)
+        # The completed cycle remains in the immutable before-snapshot. A new
+        # cycle must record new implementation and verification evidence.
+        self._transition(
+            "decision",
+            reason,
+            implementation=False,
+            output_reference=False,
+            implemented_at=False,
+            verification=False,
+            verified_at=False,
+            verifier_id=False,
+            follow_up=False,
+        )
         return True
 
 

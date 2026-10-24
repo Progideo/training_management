@@ -138,7 +138,20 @@ class TestQuality(QualityCase):
         action.action_verify(False, "Review still finds errors", "Correct V3 and review again")
         old = action.event_ids[-1].details
         action.action_replan("Documented follow-up")
+        for field in (
+            "implementation",
+            "output_reference",
+            "implemented_at",
+            "verification",
+            "verified_at",
+            "verifier_id",
+            "follow_up",
+        ):
+            self.assertFalse(action[field], field)
         action.action_plan()
+        with self.assertRaises(ValidationError):
+            action.action_implement()
+        action.write({"implementation": "New correction V3", "output_reference": "Support V3"})
         action.action_implement()
         action.action_check_effectiveness()
         action.action_verify(True, "Later review confirms the criterion")
@@ -337,6 +350,77 @@ class TestQuality(QualityCase):
         with self.assertRaises(ValidationError):
             wizard.action_export()
 
+    def test_native_creation_with_initial_private_file(self):
+        enrollment = self.opened()
+        with Form(self.env["training.complaint"].with_user(self.coordinator)) as form:
+            form.name = "Fictional complaint with initial evidence"
+            form.delivery_id = enrollment.delivery_id
+            form.enrollment_id = enrollment
+            form.complainant_id = enrollment.participant_id
+            form.quality_id = self.quality
+            form.retention_id = self.retention
+            form.due_date = fields.Date.today()
+            form.description = "Original complaint"
+            with form.file_ids.new() as document:
+                document.name = "initial.pdf"
+                document.source = "Fictional original evidence"
+                document.data = BinaryBytes(PDF)
+        row = form.record.with_user(self.quality)
+        self.assertEqual(row.file_ids.data.content, PDF)
+        self.assertEqual(row.file_ids.create_uid, self.coordinator)
+        action = self.improvement(
+            row,
+            file_ids=[
+                Command.create(
+                    {
+                        "name": "correction.pdf",
+                        "source": "Fictional corrected support",
+                        "data": BinaryBytes(PDF),
+                    }
+                )
+            ],
+        )
+        self.assertEqual(action.file_ids.data.content, PDF)
+        with self.assertRaises(AccessError):
+            self.complaint(file_ids=[Command.link(action.file_ids.id)])
+        with self.assertRaises(AccessError):
+            self.complaint(
+                file_ids=[
+                    Command.create(
+                        {
+                            "name": "forged.pdf",
+                            "source": "Fictional",
+                            "data": BinaryBytes(PDF),
+                            "sha256": "forged",
+                        }
+                    )
+                ]
+            )
+
+    def test_native_draft_deadline_changes(self):
+        for model in ("training.complaint", "training.improvement"):
+            with self.subTest(model=model):
+                draft = Form(self.env[model].with_user(self.quality))
+                self.assertFalse(draft.overdue)
+                draft.due_date = fields.Date.today() - timedelta(days=1)
+                self.assertTrue(draft.overdue)
+                draft.due_date = fields.Date.today() + timedelta(days=1)
+                self.assertFalse(draft.overdue)
+
+    def test_native_linked_action_creation_and_visibility(self):
+        row = self.complaint()
+        action = row.action_new_improvement()
+        with Form(self.env["training.improvement"].with_user(self.quality).with_context(**action["context"])) as form:
+            form.name = "Fictional native linked correction"
+            form.due_date = fields.Date.today()
+        self.assertEqual(form.record.complaint_id, row)
+        self.assertEqual(form.record.origin, "complaint")
+        self.assertEqual(form.record.retention_id, row.retention_id)
+        self.assertEqual(len(Form(row).improvement_ids), 1)
+        self.assertEqual(len(Form(row.with_user(self.coordinator)).improvement_ids), 0)
+        with self.assertRaises(AccessError):
+            self.complaint(event_ids=[Command.create({"reason": "Forged history"})])
+
     def test_native_form_workflow(self):
         row = self.complaint()
         with Form(row) as form:
@@ -477,6 +561,8 @@ class TestQualityHttp(QualityCase, HttpCase):
         row = self.env["training.complaint"].sudo().search([("submission_key", "=", key)])
         self.assertEqual(len(row), 1)
         self.resolve(row.with_user(self.quality))
+        translated = row.with_user(self.quality).with_context(lang="fr_FR").action_new_improvement()
+        self.assertEqual(translated["context"]["default_origin_reference"], "Réclamation %s" % row.id)
         self.assertIn("Communicable reply", self.url_open("/my/training-complaints/%s" % row.id).text)
         self.assertNotIn("PRIVATE internal treatment", self.url_open("/my/training-complaints/%s" % row.id).text)
         self.authenticate(self.portal_b.login, self.portal_b.login)

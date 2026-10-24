@@ -53,7 +53,7 @@
                         <field name="confidentiality" readonly="id"/>
                         <field name="due_date"/>
                         <field name="overdue"/>
-                        <field name="frozen"/>
+                        <field name="frozen" readonly="not id"/>
                     </group>
                     <group>
                         <field name="enrollment_id" readonly="id" options="{'no_open': True}"/>
@@ -88,6 +88,16 @@
                                         <field name="sha256" readonly="1"/>
                                     </group>
                                 </form>
+                            </field>
+                        </page>
+                        <page string="Improvement Actions">
+                            <field name="improvement_ids" readonly="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="responsible_id"/>
+                                    <field name="due_date"/>
+                                    <field name="state"/>
+                                </list>
                             </field>
                         </page>
                         <page string="Private History">
@@ -173,7 +183,7 @@
                         <field name="confidentiality" readonly="id"/>
                         <field name="due_date"/>
                         <field name="overdue"/>
-                        <field name="frozen"/>
+                        <field name="frozen" readonly="not id"/>
                     </group>
                     <group>
                         <field name="origin" readonly="id"/>
