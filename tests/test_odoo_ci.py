@@ -1,6 +1,5 @@
 """Coverage conservation, isolated orchestration and fail-closed CI evidence."""
 
-import ast
 import json
 import os
 from pathlib import Path
@@ -9,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import yaml
 
@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests/ci"))
 import run_suite as runner  # noqa: E402
 import check_results as gate  # noqa: E402
+import check_inventory as inventory  # noqa: E402
 
 PLAN = runner.PLAN
 
@@ -27,7 +28,7 @@ file=Path(os.environ['CI_DOCKER_TRACE'])
 data=sys.stdin.buffer.read().decode() if 'shell' in args else ''
 with file.open('a') as stream:stream.write(json.dumps({'args':args,'stdin':data})+'\n')
 if args[0]=='inspect': print('healthy');sys.exit(0)
-if args[:2]==['volume','inspect']:sys.exit(1)
+if args[:2] in (['volume','inspect'], ['container','inspect'], ['network','inspect']):sys.exit(1)
 if os.environ.get('CI_FAIL_PATTERN') and any(os.environ['CI_FAIL_PATTERN'] in a for a in args):sys.exit(42)
 print('Synthetic Docker orchestration evidence (no Odoo executed)')
 if '--test-enable' in args:
@@ -66,8 +67,9 @@ class Coverage(unittest.TestCase):
         for path in sorted({entry["script"] for entry in PLAN["migrations"]}):
             with self.subTest(path=path):
                 self.assertEqual((ROOT / path).read_text(), normalize_migration(original(path)))
-        for path in (ROOT / "tests/probes").glob("*.py"):
-            self.assertEqual(path.read_text(), original(str(path.relative_to(ROOT))))
+        for name in inventory.source_files(ROOT, PLAN["source_commit"], "tests/probes"):
+            path = ROOT / name
+            self.assertEqual(path.read_text(), original(name))
         self.assertEqual(len(PLAN["migrations"]), 16)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
@@ -84,25 +86,7 @@ class Coverage(unittest.TestCase):
             self.assertEqual(entry["steps"], expected)
 
     def test_all_addon_test_modules_are_imported_and_existing_tests_retained(self):
-        # New files must be imported by Odoo; a broad selector alone cannot discover unimported files.
-        for tests in (ROOT / "addons").glob("training_management*/tests"):
-            tree = ast.parse((tests / "__init__.py").read_text())
-            imported = {alias.name for node in tree.body if isinstance(node, ast.ImportFrom) for alias in node.names}
-            for file in tests.glob("test_*.py"):
-                self.assertIn(file.stem, imported)
-                baseline = ast.parse(original(str(file.relative_to(ROOT))))
-                current = ast.parse(file.read_text())
-
-                def methods(tree):
-                    return {
-                        (node.name, method.name)
-                        for node in tree.body
-                        if isinstance(node, ast.ClassDef)
-                        for method in node.body
-                        if isinstance(method, ast.FunctionDef) and method.name.startswith("test_")
-                    }
-
-                self.assertTrue(methods(baseline) <= methods(current))
+        inventory.validate(ROOT, PLAN["source_commit"])
 
     def test_only_configuration_matrix_and_common_verdict(self):
         workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
@@ -120,6 +104,68 @@ class Coverage(unittest.TestCase):
         self.assertEqual(jobs["validation"]["name"], "Validation CI Odoo")
         self.assertEqual(workflow["permissions"], {"contents": "read"})
         self.assertEqual(len(matrix["matrix"]["include"]), 8)
+
+
+class InventoryRegressions(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.folder = self.root / "addons/training_management/tests"
+        self.folder.mkdir(parents=True)
+        self.init = self.folder / "__init__.py"
+        self.init.write_text("from . import test_existing\n")
+        self.existing = self.folder / "test_existing.py"
+        self.existing.write_text("class TestExisting:\n    def test_existing(self):\n        assert True\n")
+        subprocess.run(["git", "init", "-q"], cwd=self.root, check=True)
+        subprocess.run(["git", "add", "."], cwd=self.root, check=True)
+        subprocess.run(
+            [
+                "git",
+                "-c",
+                "user.name=Fictional CI",
+                "-c",
+                "user.email=ci@example.invalid",
+                "-c",
+                "commit.gpgsign=false",
+                "commit",
+                "-qm",
+                "baseline",
+            ],
+            cwd=self.root,
+            check=True,
+        )
+
+    def test_new_imported_file_and_method_enrich_the_suite(self):
+        self.init.write_text(self.init.read_text() + "from . import test_future\n")
+        (self.folder / "test_future.py").write_text(
+            "class TestFuture:\n    def test_future(self):\n        assert True\n"
+        )
+        self.existing.write_text(self.existing.read_text() + "    def test_more(self):\n        assert True\n")
+        inventory.validate(self.root, "HEAD")
+
+    def test_deleted_file_even_with_removed_import_is_rejected(self):
+        self.existing.unlink()
+        self.init.write_text("")
+        with self.assertRaisesRegex(ValueError, "Deleted baseline test files"):
+            inventory.validate(self.root, "HEAD")
+
+    def test_deleted_method_is_rejected(self):
+        self.existing.write_text("class TestExisting:\n    pass\n")
+        with self.assertRaisesRegex(ValueError, "Deleted baseline test methods"):
+            inventory.validate(self.root, "HEAD")
+
+    def test_new_unimported_file_is_rejected(self):
+        (self.folder / "test_future.py").write_text(
+            "class TestFuture:\n    def test_future(self):\n        assert True\n"
+        )
+        with self.assertRaisesRegex(ValueError, "not imported"):
+            inventory.validate(self.root, "HEAD")
+
+    def test_import_from_an_unrelated_module_is_not_odoo_discovery(self):
+        self.init.write_text("from unrelated import test_existing\n")
+        with self.assertRaisesRegex(ValueError, "not imported"):
+            inventory.validate(self.root, "HEAD")
 
 
 class Orchestration(unittest.TestCase):
@@ -180,6 +226,43 @@ class Orchestration(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse((folder / "suite-full/success.json").exists())
         self.assertTrue(any(event["args"][:2] == ["network", "rm"] for event in events))
+
+    def test_failed_retry_invalidates_previous_success_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory)
+            for name in ("suite-core", "migrations/s08"):
+                folder = results / name
+                folder.mkdir(parents=True)
+                (folder / "success.json").write_text("stale success")
+            with patch.object(runner.Database, "__enter__", side_effect=RuntimeError("injected setup failure")):
+                with self.assertRaises(RuntimeError):
+                    runner.suite("core", results)
+                with self.assertRaises(RuntimeError):
+                    runner.migration(next(entry for entry in PLAN["migrations"] if entry["id"] == "s08"), results)
+            self.assertFalse((results / "suite-core/success.json").exists())
+            self.assertFalse((results / "migrations/s08/success.json").exists())
+
+    def test_existing_network_is_never_cleaned_after_name_collision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(runner, "checked", side_effect=RuntimeError("network already exists")):
+                with patch.object(runner.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)) as command:
+                    with self.assertRaises(RuntimeError):
+                        with runner.Database("collision", Path(directory)):
+                            self.fail("Setup should fail before entering the database")
+            self.assertEqual(len(command.call_args_list), 4)
+            self.assertTrue(all(call.args[0][2] == "inspect" for call in command.call_args_list))
+
+    def test_preexisting_container_or_volume_is_refused_without_mutation(self):
+        for index in range(4):
+            with self.subTest(resource=index), tempfile.TemporaryDirectory() as directory:
+                states = [subprocess.CompletedProcess([], int(i != index)) for i in range(index + 1)]
+                with patch.object(runner.subprocess, "run", side_effect=states) as command:
+                    with patch.object(runner, "checked") as mutation:
+                        with self.assertRaisesRegex(RuntimeError, "already exists"):
+                            with runner.Database("collision", Path(directory)):
+                                self.fail("Pre-existing resources must be refused")
+                mutation.assert_not_called()
+                self.assertEqual(len(command.call_args_list), index + 1)
 
     def test_failed_migration_does_not_hide_other_results_or_publish_success(self):
         result, _, folder = self.run_plan("migrations", "tm_catpdf_test_upgrade")

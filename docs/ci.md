@@ -10,7 +10,9 @@ Tous les tests des addons sélectionnés sont découverts par Odoo avec des sél
 au niveau du module, sans liste de classes ni découpage par incrément. Ajouter un
 test dans le dossier `tests` de son addon et l’importer dans `tests/__init__.py`
 suffit à enrichir cette même suite. Les tests d’orchestration vérifient cet import
-et la présence des méthodes déjà couvertes.
+et la présence des fichiers et méthodes déjà couverts, en partant de l’inventaire
+Git de référence. Les nouveaux fichiers importés sont acceptés ; retirer un fichier
+historique avec son import reste détecté.
 
 La seule matrice porte sur les configurations :
 
@@ -62,6 +64,9 @@ Les parcours s’exécutent au maximum trois à la fois dans le contrôle commun
 Chacun possède son PostgreSQL, son réseau, ses bases et volumes ; les noms de
 bases historiques fixes restent donc isolés. Les phases d’une même base restent
 séquentielles. Un échec n’empêche pas les autres parcours de produire leurs preuves.
+Une collision de noms est refusée avant toute création ; un échec de réservation
+ne déclenche aucun nettoyage des ressources existantes. Une relance invalide son
+ancien marqueur de succès avant de commencer.
 Le nettoyage vise uniquement les ressources du run, sans purge Docker globale.
 Aucun accès OVH, secret ou jeu de données réel n’est utilisé.
 

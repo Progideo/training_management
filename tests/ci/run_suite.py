@@ -45,10 +45,26 @@ class Database:
         self.name = resource_id(name)
         self.folder = folder
         self.folder.mkdir(parents=True, exist_ok=True)
+        self.owns_network = False
 
     def __enter__(self):
+        self.owns_network = False
         try:
+            # Claim the network only after refusing pre-existing resources. A
+            # second invocation with the same ID must never destroy the first.
+            for kind, name in (
+                ("network", self.name),
+                ("container", self.name + "_pg"),
+                ("container", self.name + "_odoo"),
+                ("volume", self.name + "_data"),
+            ):
+                result = subprocess.run(
+                    ["docker", kind, "inspect", name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+                if result.returncode == 0:
+                    raise RuntimeError(f"Disposable resource already exists; use another TM_CI_ID: {name}")
             checked(["docker", "network", "create", self.name], self.folder / "network.log")
+            self.owns_network = True
             checked(
                 [
                     "docker",
@@ -90,6 +106,8 @@ class Database:
             raise
 
     def __exit__(self, kind, value, traceback):
+        if not self.owns_network:
+            return
         # Every resource name belongs to this run; never prune global Docker resources.
         failures = []
         commands = [
@@ -148,6 +166,7 @@ class Database:
 def suite(configuration, results):
     config = PLAN["configurations"][configuration]
     folder = results / f"suite-{configuration}"
+    prepare_results(folder)
     with Database(configuration, folder) as database:
         bootstrap = "website,website_slides" if config["website"] else "base"
         checked(database.odoo("-i", bootstrap, "--without-demo", "--stop-after-init"), folder / "bootstrap.log")
@@ -181,8 +200,14 @@ def assert_tests_ran(text, addons):
             raise ValueError(f"No executed tests for selected addon: {addon}")
 
 
+def prepare_results(folder):
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / "success.json").unlink(missing_ok=True)
+
+
 def migration(entry, results):
     folder = results / "migrations" / entry["id"]
+    prepare_results(folder)
     with Database(entry["id"], folder) as database:
         env = {
             **os.environ,
