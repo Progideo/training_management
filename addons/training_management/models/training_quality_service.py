@@ -76,6 +76,10 @@ class QualityService(models.AbstractModel):
         self.env.invalidate_all()
         if not enrollment.filtered_domain(self._enrollment_domain()):
             raise AccessError(self.env._("This enrollment is unavailable."))
+        # A row lock alone does not invalidate a stale REPEATABLE READ snapshot.
+        # After ownership is checked, create a PostgreSQL write fence without
+        # changing enrollment values or copying private content to its history.
+        self.env.cr.execute("UPDATE training_enrollment SET id = id WHERE id = %s", [enrollment.id])
         existing = (
             self.env["training.complaint"]
             .sudo()
