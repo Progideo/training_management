@@ -4,6 +4,8 @@ from datetime import timedelta
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from lxml import etree
+
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import Form, HttpCase, tagged
@@ -16,6 +18,55 @@ from .test_material import PDF
 
 @tagged("post_install", "-at_install")
 class TestProvider(EvaluationCase):
+    def test_assignment_onchange_keeps_inline_warning_without_modal(self):
+        today = fields.Date.today()
+        dossier = self.provider()
+        self.evidence(dossier, valid_from=today - timedelta(days=2), valid_until=today - timedelta(days=1))
+        delivery = self.delivery()
+        instructor = self.portal_b.partner_id
+        cases = [
+            (
+                "training.delivery",
+                {"company_id": delivery.company_id.id, "evaluation_instructor_ids": [Command.set(instructor.ids)]},
+                "evaluation_instructor_ids",
+            ),
+            (
+                "training.session",
+                {
+                    "delivery_id": delivery.id,
+                    "company_id": delivery.company_id.id,
+                    "instructor_id": instructor.id,
+                    "start_date": str(today),
+                    "end_date": str(today),
+                },
+                "instructor_id",
+            ),
+            (
+                "training.session.edit",
+                {
+                    "delivery_id": delivery.id,
+                    "company_id": delivery.company_id.id,
+                    "instructor_id": instructor.id,
+                    "start_date": str(today),
+                    "end_date": str(today),
+                    "repeat_count": 2,
+                    "interval_days": 7,
+                },
+                "instructor_id",
+            ),
+        ]
+        for model_name, values, changed in cases:
+            with self.subTest(model=model_name):
+                model = self.env[model_name].with_user(self.coordinator)
+                spec = {name: {} for name in values}
+                spec["instructor_warning"] = {}
+                result = model.onchange(dict(values), [changed], spec)
+                self.assertTrue(result["value"]["instructor_warning"])
+                self.assertNotIn("warning", result)
+                arch = model.get_view(view_type="form")["arch"]
+                root = etree.fromstring(arch.encode())
+                self.assertTrue(root.xpath("//div[@role='alert']/field[@name='instructor_warning']"))
+
     def test_native_delivery_save_reads_history_after_role_assignment(self):
         dossier = self.provider()
         self.evidence(

@@ -22,9 +22,3 @@ class ProviderSessionEdit(models.TransientModel):
             row.instructor_warning = service._assignment_warning(
                 row.instructor_id, row.company_id, row.start_date or fields.Date.today(), last_date
             )
-
-    @api.onchange("instructor_id", "start_date", "end_date", "repeat_count", "interval_days")
-    def _onchange_provider_warning(self):
-        if self.instructor_warning:
-            return {"warning": {"title": self.env._("Instructor Evidence"), "message": self.instructor_warning}}
-        return None

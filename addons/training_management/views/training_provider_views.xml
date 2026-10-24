@@ -141,7 +141,9 @@
         <field name="inherit_id" ref="view_training_session_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='instructor_id']" position="after">
-                <field name="instructor_warning" readonly="1" invisible="not instructor_warning" groups="training_management.group_training_coordinator" />
+                <div class="alert alert-warning" role="alert" invisible="not instructor_warning" groups="training_management.group_training_coordinator">
+                    <field name="instructor_warning" readonly="1" nolabel="1" />
+                </div>
             </xpath>
         </field>
     </record>
@@ -151,7 +153,9 @@
         <field name="inherit_id" ref="view_delivery_evaluation" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='evaluation_instructor_ids']" position="after">
-                <field name="instructor_warning" readonly="1" invisible="not instructor_warning" groups="training_management.group_training_coordinator" />
+                <div class="alert alert-warning" role="alert" invisible="not instructor_warning" groups="training_management.group_training_coordinator">
+                    <field name="instructor_warning" readonly="1" nolabel="1" />
+                </div>
             </xpath>
         </field>
     </record>
@@ -174,7 +178,9 @@
         <field name="inherit_id" ref="view_training_session_edit_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='instructor_id']" position="after">
-                <field name="instructor_warning" readonly="1" invisible="not instructor_warning" groups="training_management.group_training_coordinator" />
+                <div class="alert alert-warning" role="alert" invisible="not instructor_warning" groups="training_management.group_training_coordinator">
+                    <field name="instructor_warning" readonly="1" nolabel="1" />
+                </div>
             </xpath>
         </field>
     </record>
