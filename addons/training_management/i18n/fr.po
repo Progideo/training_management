@@ -1214,6 +1214,8 @@ msgstr "Créer le brouillon"
 #: model_terms:ir.ui.view,arch_db:training_management.view_attendance_edit
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_record_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_feedback_export
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_operation
+#: model_terms:ir.ui.view,arch_db:training_management.view_quality_export
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -8569,3 +8571,9 @@ msgstr "Votre réclamation"
 #: code:addons/training_management/models/training_quality.py:0
 msgid "Complaint %s"
 msgstr "Réclamation %s"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
+msgid "This private quality record is unavailable."
+msgstr "Cet enregistrement qualité privé est inaccessible."

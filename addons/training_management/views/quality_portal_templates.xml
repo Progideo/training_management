@@ -10,7 +10,7 @@
             <a href="/my/training-complaints/new" class="btn btn-primary">New complaint</a>
             <p t-if="not rows">No accessible complaint.</p>
             <ul>
-                <li t-foreach="rows" t-as="row">
+                <li t-foreach="rows" t-as="row" class="text-break">
                     <a t-att-href="'/my/training-complaints/%s' % row['id']" t-out="row['name']"/>
                 </li>
             </ul>
@@ -48,9 +48,8 @@
         <t t-call="portal.portal_layout">
             <a href="/my/training-complaints">My confidential complaints</a>
             <h1 class="text-break" t-out="name"/>
-            <p>
-                <span>Received:</span>
-                <span t-out="received_at"/>
+            <p>Received:
+                <span t-out="received_at" t-options="{'widget': 'datetime'}"/>
             </p>
             <p t-if="state == 'received'">Received</p>
             <p t-elif="state == 'processing'">In treatment</p>
