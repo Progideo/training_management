@@ -74,7 +74,14 @@ class Coverage(unittest.TestCase):
                 self.assertEqual((ROOT / path).read_text(), normalize_migration(original(path)))
         for name in inventory.source_files(ROOT, PLAN["source_commit"], "tests/probes"):
             path = ROOT / name
-            self.assertEqual(path.read_text(), original(name))
+            if name == "tests/probes/s091_history.py":
+                # The complete fixture and full-column/PDF capture stay frozen.
+                # Only verification admits S09.4's explicitly checked new NULLs.
+                self.assertEqual(path.read_text().split("\nelse:\n")[0], original(name).split("\nelse:\n")[0])
+                self.assertIn("assert actual == expected", path.read_text())
+                self.assertIn("assert after.pop(column) is None", path.read_text())
+            else:
+                self.assertEqual(path.read_text(), original(name))
         self.assertEqual(len(PLAN["migrations"]), 17)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
@@ -174,17 +181,25 @@ class InventoryRegressions(unittest.TestCase):
 
 
 class Orchestration(unittest.TestCase):
-    def run_plan(self, name, fail_pattern=None):
+    def run_plan(self, name, fail_pattern=None, missing_rg=False):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         folder = Path(tmp.name)
         docker = folder / "docker"
         docker.write_text(FAKE_DOCKER)
         docker.chmod(0o755)
+        # Unit orchestration is self-contained on runners without ripgrep.
+        # The real migration job installs the actual tool before starting Docker.
+        if not missing_rg:
+            rg = folder / "rg"
+            rg.write_text(
+                "#!/usr/bin/env python3\nimport re,sys\nfrom pathlib import Path\nsys.exit(0 if re.search(sys.argv[-2], Path(sys.argv[-1]).read_text()) else 1)\n"
+            )
+            rg.chmod(0o755)
         trace = folder / "trace.jsonl"
         env = {
             **os.environ,
-            "PATH": str(folder) + os.pathsep + os.environ["PATH"],
+            "PATH": str(folder) if missing_rg else str(folder) + os.pathsep + os.environ["PATH"],
             "CI_DOCKER_TRACE": str(trace),
             "TM_CI_ID": "contract",
             "TM_RESULTS_DIR": str(folder / "results"),
@@ -274,6 +289,12 @@ class Orchestration(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse((folder / "migrations/catalogue/success.json").exists())
         self.assertTrue((folder / "migrations/s093/success.json").exists())
+
+    def test_missing_migration_log_reader_never_starts_docker(self):
+        result, events, _ = self.run_plan("migrations", missing_rg=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("ripgrep (rg) is required", result.stderr)
+        self.assertEqual(events, [])
 
     def test_unknown_configuration_never_starts_docker(self):
         result, events, _ = self.run_plan("S09")

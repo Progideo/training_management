@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -266,6 +267,8 @@ if __name__ == "__main__":
     if len(sys.argv) != 2 or sys.argv[1] not in {*PLAN["configurations"], "migrations"}:
         raise SystemExit("Usage: run_suite.py <configuration|migrations>")
     if sys.argv[1] == "migrations":
+        if not shutil.which("rg"):
+            raise SystemExit("ripgrep (rg) is required to verify migration logs before starting Docker")
         migrations(results)
     else:
         suite(sys.argv[1], results)

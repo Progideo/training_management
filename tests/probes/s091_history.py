@@ -92,5 +92,17 @@ if os.environ["S091_PHASE"] == "prepare":
     env.cr.commit()  # Persist synthetic disposable fixtures, never real records.
     print("S091_HISTORY_PREPARED")
 else:
-    assert snapshot() == env["ir.config_parameter"].sudo().get_str(key)
+    expected = json.loads(env["ir.config_parameter"].sudo().get_str(key))
+    actual = json.loads(snapshot())
+    # S09.4 adds audit columns, never inferred authors/dates on old decisions.
+    # Preserve every old column/value and row; only these new NULLs may differ.
+    audit_columns = {"issued_by_id", "issued_at", "revoked_by_id", "revoked_at"}
+    for before, after in zip(
+        expected["training_evaluation_authorization"], actual["training_evaluation_authorization"]
+    ):
+        added = after.keys() - before.keys()
+        assert added <= audit_columns
+        for column in added:
+            assert after.pop(column) is None, "Migration invented an authorization audit value"
+    assert actual == expected
     print("S091_HISTORY_OK: versions, decisions, authorizations, proofs and PDF bytes preserved")
