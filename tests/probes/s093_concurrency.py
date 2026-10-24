@@ -112,6 +112,23 @@ with env.registry.cursor() as revoke, env.registry.cursor() as editing:
         pass
     else:
         raise AssertionError("Edit ignored the held grant-withdrawal lock")
+    try:
+        api.Environment(editing, actor.id, context)["training.improvement"].create(
+            {
+                "name": "Fictional stale linked action",
+                "origin": "complaint",
+                "complaint_id": received_id,
+                "origin_reference": "Fictional complaint",
+                "delivery_id": enrollment.delivery_id.id,
+                "quality_id": quality.id,
+                "retention_id": retained.retention_id.id,
+                "due_date": fields.Date.today(),
+            }
+        )
+    except LockError:
+        pass
+    else:
+        raise AssertionError("Linked action creation ignored the source grant-withdrawal lock")
     revoke.commit()
     editing.rollback()
 with env.registry.cursor() as after:

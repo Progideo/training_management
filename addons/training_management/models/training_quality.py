@@ -190,7 +190,12 @@ class QualityRecord(models.AbstractModel):
                 self.env["training.enrollment"].browse(vals["enrollment_id"]).check_access("read")
             for model, key in (("training.complaint", "complaint_id"), ("training.feedback.campaign", "campaign_id")):
                 if vals.get(key):
-                    self.env[model].browse(vals[key]).check_access("read")
+                    source = self.env[model].browse(vals[key])
+                    if key == "complaint_id":
+                        # Creation must serialize with removal of the source dossier grant.
+                        source._authorize()
+                    else:
+                        source.check_access("read")
             prepared.append(vals)
         records = super(QualityRecord, clean_context(self)).create(prepared)
         for row in records:
