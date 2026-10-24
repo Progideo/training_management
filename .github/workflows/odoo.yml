@@ -1,14 +1,12 @@
-name: CI Odoo
+name: CI Training Management
 
 on:
   pull_request:
     paths:
       - "addons/**"
-      - "tests/probes/**"
-      - "tests/ci/**"
-      - "tests/test_odoo_ci.py"
+      - "tests/**"
       - "docs/ci.md"
-      - ".github/workflows/odoo.yml"
+      - ".github/workflows/**"
       - ".pre-commit-config.yaml"
       - ".pylintrc"
       - "pyproject.toml"
@@ -19,7 +17,7 @@ permissions:
 
 jobs:
   orchestration:
-    name: Contrôles de l’orchestration
+    name: Qualité du code et orchestration
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -38,7 +36,7 @@ jobs:
           pre-commit run --all-files --show-diff-on-failure 2>&1 | tee pre-commit.log
 
   scenarios:
-    name: Odoo — ${{ matrix.scenario }}
+    name: Socle — ${{ matrix.label }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
@@ -46,6 +44,15 @@ jobs:
       max-parallel: 4
       matrix:
         scenario: [incremental, fresh, history, website]
+        include:
+          - scenario: incremental
+            label: Installation progressive
+          - scenario: fresh
+            label: Installation vierge
+          - scenario: history
+            label: Historiques S02–S03
+          - scenario: website
+            label: Website et eLearning
     services:
       postgres:
         image: postgres:18.6
@@ -78,9 +85,334 @@ jobs:
           path: test-results/${{ matrix.scenario }}/
           if-no-files-found: error
 
+  catalogue_pdf:
+    name: "Catalogue et PDF — Website : ${{ matrix.website }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        website: [false, true]
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Upgrade S04, preserve PDFs and check concurrent validation
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+          TM_CATPDF_WITH_WEBSITE: ${{ matrix.website }}
+        run: bash tests/ci/run_catalogue_pdf.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: catalogue-pdf-results-website-${{ matrix.website }}
+          path: test-results/catalogue-pdf/
+          if-no-files-found: error
+
+  document_policy:
+    name: "S02.1 — Protection documentaire"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve documents and PDF from the current release with Website
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s021.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s021-results
+          path: test-results/s021/
+          if-no-files-found: error
+
+  preparation:
+    name: "S04 — Préparation et séances"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Upgrade from S03.1 and test S04
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s04.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s04-results
+          path: test-results/s04/
+          if-no-files-found: error
+
+  materials:
+    name: "S05.1 — Supports privés"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve documents and PDF from the merged release with Website/eLearning
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s05.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s05-results
+          path: test-results/s05/
+          if-no-files-found: error
+
+  learning:
+    name: "S05.2 — Activités et tutorat"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S05.1 files, test private learning and French portal with Website/eLearning
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s052.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s052-results
+          path: test-results/s052/
+          if-no-files-found: error
+
+  mock_exams:
+    name: "S06 — Examens blancs"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S05.2 histories and test S06 with native Surveys regressions
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s06.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s06-results
+          path: test-results/s06/
+          if-no-files-found: error
+
+  attendance:
+    name: "S07 — Présences et émargement"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S06 histories and test attendance, isolation and concurrent requests
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s07.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s07-results
+          path: test-results/s07/
+          if-no-files-found: error
+
+  documents:
+    name: "S08 — Attestations et preuves"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S07 histories and test documents, isolation and concurrent requests
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s08.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s08-results
+          path: test-results/s08/
+          if-no-files-found: error
+
+  evaluations:
+    name: "S09.1 — Évaluations et droits"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S08 histories and test evaluations, role isolation and concurrency
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s091.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s091-results
+          path: test-results/s091/
+          if-no-files-found: error
+
+  feedback:
+    name: "S09.2 — Retours et anonymat"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: fictional_ci_password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U odoo -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Preserve S09.1 histories and test feedback, anonymity and concurrency
+        env:
+          ODOO_IMAGE: odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}
+        run: bash tests/ci/run_s092.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s092-results
+          path: test-results/s092/
+          if-no-files-found: error
+
   validation:
     name: Validation CI Odoo
-    needs: [orchestration, scenarios]
+    needs: [orchestration, scenarios, catalogue_pdf, document_policy, preparation, materials, learning, mock_exams, attendance, documents, evaluations, feedback]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -88,9 +420,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          pattern: odoo-*-results
+          pattern: "*-results*"
           path: test-results
       - name: Refuser tout résultat incomplet ou non réussi
+        if: ${{ always() }}
         run: python3 tests/ci/check_results.py
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}

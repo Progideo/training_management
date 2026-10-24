@@ -1,0 +1,238 @@
+{
+  "source_commit": "438b0034f68abca8c50d67c6cc8b4682c6db089d",
+  "jobs": {
+    "catalogue_pdf": {
+      "source_workflow": ".github/workflows/catalogue_pdf.yml",
+      "source_job": "catalogue-pdf",
+      "script": "tests/ci/run_catalogue_pdf.sh",
+      "artifacts": [
+        "catalogue-pdf-results-website-false",
+        "catalogue-pdf-results-website-true"
+      ],
+      "steps": [
+        "baseline",
+        "prepare",
+        "upgrade",
+        "history",
+        "repeat_upgrade",
+        "preserved_pdf",
+        "concurrency"
+      ]
+    },
+    "document_policy": {
+      "source_workflow": ".github/workflows/s021.yml",
+      "source_job": "document-policy",
+      "script": "tests/ci/run_s021.sh",
+      "artifacts": [
+        "s021-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved"
+      ]
+    },
+    "preparation": {
+      "source_workflow": ".github/workflows/s04.yml",
+      "source_job": "preparation",
+      "script": "tests/ci/run_s04.sh",
+      "artifacts": [
+        "s04-results"
+      ],
+      "steps": [
+        "baseline",
+        "prepare",
+        "upgrade",
+        "history",
+        "concurrency",
+        "dispatch_baseline",
+        "dispatch_prepare",
+        "dispatch_upgrade",
+        "dispatch_history"
+      ]
+    },
+    "materials": {
+      "source_workflow": ".github/workflows/s05.yml",
+      "source_job": "private-materials",
+      "script": "tests/ci/run_s05.sh",
+      "artifacts": [
+        "s05-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "concurrency"
+      ]
+    },
+    "learning": {
+      "source_workflow": ".github/workflows/s052.yml",
+      "source_job": "private-materials",
+      "script": "tests/ci/run_s052.sh",
+      "artifacts": [
+        "s052-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "concurrency",
+        "reminder_concurrency",
+        "french_prepare",
+        "french_http"
+      ]
+    },
+    "mock_exams": {
+      "source_workflow": ".github/workflows/s06.yml",
+      "source_job": "mock-exams",
+      "script": "tests/ci/run_s06.sh",
+      "artifacts": [
+        "s06-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "fresh"
+      ]
+    },
+    "attendance": {
+      "source_workflow": ".github/workflows/s07.yml",
+      "source_job": "attendance",
+      "script": "tests/ci/run_s07.sh",
+      "artifacts": [
+        "s07-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "fresh",
+        "attendance_prepare",
+        "second_update",
+        "attendance_preserved",
+        "concurrency"
+      ]
+    },
+    "documents": {
+      "source_workflow": ".github/workflows/s08.yml",
+      "source_job": "documents",
+      "script": "tests/ci/run_s08.sh",
+      "artifacts": [
+        "s08-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_preserved",
+        "native_schema_preserved",
+        "fresh",
+        "closure_prepare",
+        "second_update",
+        "closure_preserved",
+        "concurrency"
+      ]
+    },
+    "evaluations": {
+      "source_workflow": ".github/workflows/s091.yml",
+      "source_job": "evaluations",
+      "script": "tests/ci/run_s091.sh",
+      "artifacts": [
+        "s091-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "closure_prepare",
+        "upgrade",
+        "catalogue_preserved",
+        "documents_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_preserved",
+        "closure_preserved",
+        "native_schema_preserved",
+        "fresh",
+        "evaluation_prepare",
+        "second_update",
+        "evaluation_preserved",
+        "concurrency"
+      ]
+    },
+    "feedback": {
+      "source_workflow": ".github/workflows/s092.yml",
+      "source_job": "feedback",
+      "script": "tests/ci/run_s092.sh",
+      "artifacts": [
+        "s092-results"
+      ],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "closure_prepare",
+        "evaluation_prepare",
+        "evaluation_baseline",
+        "upgrade",
+        "catalogue_preserved",
+        "documents_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_preserved",
+        "closure_preserved",
+        "evaluation_preserved",
+        "native_schema_preserved",
+        "fresh",
+        "feedback_prepare",
+        "second_update",
+        "feedback_preserved",
+        "concurrency",
+        "core_without_survey"
+      ]
+    }
+  }
+}
