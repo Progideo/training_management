@@ -42,10 +42,9 @@ TM_ADDONS_DIR="$work_dir/addons" TM_UPGRADE_PHASE=prepare step catalogue_prepare
 TM_ADDONS_DIR="$work_dir/addons" S021_PHASE=prepare step documents_prepare run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
 TM_ADDONS_DIR="$work_dir/addons" S052_PHASE=prepare step learning_prepare run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
 TM_ADDONS_DIR="$work_dir/addons" S06_PHASE=prepare step exam_prepare run_odoo shell --no-http < "$repo/tests/probes/s06_history.py"
-step upgrade run_odoo -i training_management_survey -u training_management,training_management_sale --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale,/training_management_survey
+step upgrade run_odoo -i training_management_survey -u training_management,training_management_sale --stop-after-init
 S021_PHASE=verify step documents_preserved run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
 TM_UPGRADE_PHASE=verify step catalogue_preserved run_odoo shell --no-http < "$repo/tests/probes/catalogue_upgrade_probe.py"
 
 S06_PHASE=verify S052_PHASE=verify step learning_preserved run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
 S06_PHASE=verify step exam_preserved run_odoo shell --no-http < "$repo/tests/probes/s06_history.py"
-TM_S06_DATABASE=tm_s06_ci_fresh step fresh run_odoo -i training_management_survey --without-demo --stop-after-init --test-enable --test-tags=/training_management_survey

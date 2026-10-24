@@ -47,7 +47,7 @@ TM_ADDONS_DIR="$work_dir/addons" S06_PHASE=prepare step exam_prepare run_odoo sh
 TM_ADDONS_DIR="$work_dir/addons" S07_PHASE=prepare step attendance_prepare run_odoo shell --no-http < "$repo/tests/probes/s07_history.py"
 TM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step fixture_baseline run_odoo shell --no-http < "$repo/tests/probes/s08_upgrade_baseline.py"
 TM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step closure_prepare run_odoo shell --no-http < "$repo/tests/probes/s08_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale,/training_management_survey
+step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 TM_UPGRADE_PHASE=verify step catalogue_preserved run_odoo shell --no-http < "$repo/tests/probes/catalogue_upgrade_probe.py"
 S021_PHASE=verify step documents_preserved run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
 S06_PHASE=verify S052_PHASE=verify step learning_preserved run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
@@ -55,7 +55,6 @@ S06_PHASE=verify step exam_preserved run_odoo shell --no-http < "$repo/tests/pro
 S07_PHASE=verify step attendance_preserved run_odoo shell --no-http < "$repo/tests/probes/s07_history.py"
 S08_PHASE=verify step closure_preserved run_odoo shell --no-http < "$repo/tests/probes/s08_history.py"
 S08_PHASE=verify step native_schema_preserved run_odoo shell --no-http < "$repo/tests/probes/s08_upgrade_baseline.py"
-TM_S091_DATABASE=tm_s091_fresh step fresh run_odoo -i training_management_sale,training_management_survey --without-demo --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale,/training_management_survey
 S091_PHASE=prepare step evaluation_prepare run_odoo shell --no-http < "$repo/tests/probes/s091_history.py"
 step second_update run_odoo -u training_management,training_management_survey --stop-after-init
 S091_PHASE=verify step evaluation_preserved run_odoo shell --no-http < "$repo/tests/probes/s091_history.py"

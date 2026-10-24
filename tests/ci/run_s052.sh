@@ -41,12 +41,10 @@ TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i website,website_slide
 TM_ADDONS_DIR="$work_dir/addons" TM_UPGRADE_PHASE=prepare step catalogue_prepare run_odoo shell --no-http < "$repo/tests/probes/catalogue_upgrade_probe.py"
 TM_ADDONS_DIR="$work_dir/addons" S021_PHASE=prepare step documents_prepare run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
 TM_ADDONS_DIR="$work_dir/addons" S052_PHASE=prepare step learning_prepare run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
-step upgrade run_odoo -u training_management,training_management_sale --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale
+step upgrade run_odoo -u training_management,training_management_sale --stop-after-init
 S021_PHASE=verify step documents_preserved run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
 TM_UPGRADE_PHASE=verify step catalogue_preserved run_odoo shell --no-http < "$repo/tests/probes/catalogue_upgrade_probe.py"
 
 S052_PHASE=verify step learning_preserved run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s052_concurrency.py"
 step reminder_concurrency run_odoo shell --no-http < "$repo/tests/probes/s052_reminder_concurrency.py"
-S052_PHASE=french step french_prepare run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
-step french_http run_odoo -u training_management --stop-after-init --test-enable --test-tags=/training_management:TestLearningHttp,/training_management:TestTrainingMaterialHttp

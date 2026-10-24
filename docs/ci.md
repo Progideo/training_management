@@ -1,140 +1,92 @@
-# CI Odoo — organisation et couverture
+# CI Odoo — suite cumulative
 
 Référence : [issue #47](https://github.com/Progideo/training_management/issues/47).
-Le workflow unique **CI Training Management** regroupe tous les contrôles de PR.
-Son verdict final conserve le nom **Validation CI Odoo**. Il attend toutes les
-tâches, même après un échec. Aucun paramètre de protection GitHub n’est modifié ;
-si des contrôles spécialisés sont requis, remplacer leur sélection par ce verdict
-commun au moment de la fusion, après vérification des protections applicables.
+Un workflow **CI Training Management**, une suite cumulative et un verdict commun
+**Validation CI Odoo**. Aucun réglage de protection GitHub n’est modifié.
 
-## Vue commune
+## Suite et configurations
 
-Les tâches indépendantes se lancent en parallèle, avec leur propre runner,
-PostgreSQL, bases et volumes. Les séquences de préparation, mise à jour et
-comparaison restent internes à chaque tâche. La limite de quatre scénarios
-parallèles du socle et les deux variantes du catalogue sont conservées.
+Tous les tests des addons sélectionnés sont découverts par Odoo avec des sélecteurs
+au niveau du module, sans liste de classes ni découpage par incrément. Ajouter un
+test dans le dossier `tests` de son addon et l’importer dans `tests/__init__.py`
+suffit à enrichir cette même suite. Les tests d’orchestration vérifient cet import
+et la présence des méthodes déjà couvertes.
 
-| Tâches | Couverture conservée |
-| --- | --- |
-| Style et orchestration | Contrats de couverture, erreurs et règles Odoo |
-| Socle : progressive, vierge, historiques, Website | Les quatre scénarios décrits ci-dessous |
-| Catalogue et PDF, avec/sans Website | Versions, PDF et concurrence |
-| S02.1 | Protection documentaire et historiques |
-| S04 | Préparation, séances et concurrence |
-| S05.1 / S05.2 | Supports privés, activités, tutorat et portail français |
-| S06 / S07 | Examens blancs, présences et isolation |
-| S08 | Attestations, preuves, historiques et concurrence |
-| S09.1 / S09.2 | Évaluations, retours, droits, anonymat et concurrence |
-| S09.3 | Réclamations confidentielles, efficacité, reprise S09.2 et concurrence |
+La seule matrice porte sur les configurations :
 
-Les dix anciens workflows spécialisés sont intégrés comme tâches du workflow
-commun ; l’automatisation du Project reste indépendante. Les déclencheurs couvrent
-les addons, tous les tests, les workflows et la configuration de qualité. Modifier
-un scénario ou son orchestration déclenche ainsi toute la validation.
+| Configuration | Addons testés | Standard installé avant la suite |
+| --- | --- | --- |
+| Socle | Training Management | Base |
+| Ventes | Socle et Ventes | Base |
+| Surveys | Socle et Surveys | Base |
+| Ventes + Surveys | Les trois addons | Base |
+| Website + Ventes | Socle et Ventes | Website/eLearning en français |
+| Website + Ventes + Surveys | Les trois addons | Website/eLearning en français |
 
-Le contrat [workflow_coverage.json](../tests/ci/workflow_coverage.json) référence
-le code fusionné avant regroupement. Les tests comparent chaque ancienne tâche
-à sa nouvelle définition (commandes, variables, services, matrices, délais et
-artefacts) et vérifient que les scripts sont inchangés. Il recense aussi les
-139 phases spécialisées attendues, en comptant les deux variantes du catalogue.
-L’extension S09.3 ajoute 20 phases et un artefact sans remplacer ces contrats.
-Les quatre scénarios du socle conservent leur contrat historique de 21 étapes.
+Chaque configuration exécute toute sa suite une fois, sur une base vierge. Les
+profils restreints, cas multi-sociétés, HTTP, PDF et régressions natives Surveys
+restent dans leurs tests existants. Les variantes Website préparent le français
+avant l’installation des addons : les anciennes répétitions de deux classes HTTP
+après préparation de la langue sont ainsi incluses dans la suite entière.
 
-## Style et règles Odoo
+Le manifeste [suite.json](../tests/ci/suite.json) définit les configurations et les
+preuves attendues. [run_suite.py](../tests/ci/run_suite.py) utilise l’image Odoo
+Community `20.0-20261015` épinglée par digest et PostgreSQL 18.6. Le job de qualité
+exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
-Le job d’orchestration exécute `pre-commit run --all-files`, configuré par
-[.pre-commit-config.yaml](../.pre-commit-config.yaml) et [pyproject.toml](../pyproject.toml) :
-`ruff check` et `ruff format` (longueur de ligne 120, règles E4/E7/E9/F ; F401 toléré
-dans les `__init__.py`, `env` toléré dans les sondes `odoo shell`) puis `pylint-odoo`
-avec ses règles par défaut (`--enable=odoolint`). En local : `pip install pre-commit`
-puis `pre-commit run --all-files` avant de pousser. La version de `pylint-odoo`
-n’est pas épinglée (aucun dépôt de hooks externe) : un durcissement de ses
-règles peut donc faire échouer le contrôle sans changement du dépôt ; épingler
-alors la version fautive. Les vues XML sont indentées à raison d’un élément par ligne.
+## Migrations, conservation et concurrence
 
-## Quatre scénarios indépendants
+Un contrôle commun conserve les 16 parcours historiques : installation progressive,
+installation Ventes, reprises S02/S03, Website, catalogue avec/sans Website,
+protection documentaire, préparation, supports, activités, examens, présences,
+attestations, évaluations, retours et qualité S09.3.
 
-Chaque entrée de la matrice utilise son propre runner, service PostgreSQL 18.6,
-volume Docker et artefact. L’image Odoo reste celle épinglée pour S03 :
-`odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23`.
-Les données sont fictives ; aucun accès OVH ou secret de déploiement n’est utilisé.
+Les scripts historiques exécutent toujours les installations, mises à jour,
+préparations d’historiques, comparaisons, mises à jour répétées et sondes de
+concurrence réelle sur des données fictives. Ils ne relancent plus les tests des
+addons. Les installations vierges autonomes qui ne servaient qu’à relancer ces
+tests sont remplacées par les configurations correspondantes de la suite.
+Les champs, droits, références, PDF et historiques persistés restent comparés
+après migration ; les tests généraux du comportement courant sont centralisés.
 
-| Scénario | Étapes conservées, dans l’ordre | Nombre |
-| --- | --- | ---: |
-| `incremental` | Installation/test du socle ; préparation de l’historique catalogue ; mise à jour/test du socle ; comparaison de l’historique ; installation/test Ventes sur ce socle ; concurrence des références bancaires | 6 |
-| `fresh` | Installation/test Ventes sur base vierge ; concurrence S03 réelle | 2 |
-| `history` | Installation S02 avec Website/eLearning depuis `a0c95fa` ; préparation historique S02 ; préchargement XML avec le registre S04 figé ; mise à jour/tests actuels ; comparaison S02 ; préparation historique S03 ; seconde mise à jour ; comparaison S03 | 8 |
-| `website` | Installation Website/eLearning/socle courant ; préparation catalogue ; installation/tests Ventes ; mise à jour/tests Ventes ; comparaison catalogue | 5 |
+Les anciens contrats [coverage.json](../tests/ci/coverage.json) et
+[workflow_coverage.json](../tests/ci/workflow_coverage.json) restent des références
+de conservation. Le nouveau manifeste indique explicitement les phases déplacées.
+Les tests comparent les scripts à la version fusionnée S09.3 après retrait de ces
+seules répétitions : révisions historiques, arguments métier et sondes inchangés.
+Une nouvelle migration nécessite d’ajouter son parcours et ses preuves au contrat,
+sans créer de nouveau lot de tests généraux.
 
-L’installation progressive socle → Ventes reste dans un seul scénario : la séparer
-en deux bases supprimerait la preuve de cette transition. Les noms de bases,
-arguments Odoo, tags, sondes, phases et références historiques sont conservés.
-Les profils restreints, cas multi-sociétés et intégrations continuent à être
-exécutés par les mêmes suites Odoo ; aucun test d’addon n’est modifié.
+Les parcours s’exécutent au maximum trois à la fois dans le contrôle commun.
+Chacun possède son PostgreSQL, son réseau, ses bases et volumes ; les noms de
+bases historiques fixes restent donc isolés. Les phases d’une même base restent
+séquentielles. Un échec n’empêche pas les autres parcours de produire leurs preuves.
+Le nettoyage vise uniquement les ressources du run, sans purge Docker globale.
+Aucun accès OVH, secret ou jeu de données réel n’est utilisé.
 
-Le contrat [coverage.json](../tests/ci/coverage.json) recense les 21 appels du
-workflow de référence `80ad50c`. Les tests les comparent aux invocations effectives
-du script, y compris le contenu des sondes transmis sur l'entrée standard.
-Le préparateur historique utilise le registre S04 figé pour les anciennes vues
-S03/S04 uniquement. Le lot catégories/PDF est aussi testé par une mise à jour
-directe S04 avec et sans Website, sans préparation des vues ; voir le
-[cadrage et la migration](catalogue-categories-pdf.md). Aucune étape
-ni suite de tests n'est retirée. Un changement intentionnel de couverture doit
-actualiser ce contrat et sa justification.
+## Verdict et diagnostic
 
-## Exécution et diagnostic
+Neuf contrôles sont visibles : qualité, six configurations, migrations et verdict.
+Les artefacts comprennent un dossier par configuration et un artefact de migration
+avec les journaux de chacun des 16 parcours. Ils sont publiés même après échec.
 
-[run_odoo_scenario.sh](../tests/ci/run_odoo_scenario.sh) porte les opérations,
-avec arrêt au premier échec dans un scénario. Les autres scénarios continuent
-(`fail-fast: false`), pour conserver leurs résultats indépendants. La matrice est
-limitée à quatre scénarios simultanés ; le petit job d’orchestration peut aussi
-s’exécuter en parallèle, puis le contrôle final attend toutes les tâches spécialisées et le socle.
-Les étapes d’une même base restent strictement séquentielles.
+[check_results.py](../tests/ci/check_results.py) refuse les prérequis échoués,
+annulés, exclus ou manquants. Il vérifie chaque configuration, un résultat Odoo
+réussi avec au moins un test, la préparation française, chaque phase historique
+et les marqueurs de succès émis seulement après exécution et nettoyage.
+Les journaux absents, vides ou contenant un échec font échouer la validation.
+Le verdict utilise `needs` et `always()`, sans `continue-on-error`.
 
-Les bases sont propres à chaque scénario sur des services isolés. Les volumes et
-conteneurs portent l’identifiant du run, de sa tentative et du scénario ; le
-nettoyage vise seulement ces ressources. Aucun volume partagé entre jobs et
-aucune commande globale de purge. Le code S02 archivé reste dans un dossier
-temporaire, en dehors des artefacts, puis est supprimé.
+## Recette courte
 
-Les artefacts `odoo-<scenario>-results` contiennent un journal par étape, les
-résultats de nettoyage et `timings.tsv` (étape, code retour, secondes).
-Ils sont téléversés même en cas d’échec ; l’absence de fichiers fait échouer
-le téléversement. Le code retour de Docker et les erreurs d’écriture des journaux
-ne sont pas masqués par `tee`.
-
-[check_results.py](../tests/ci/check_results.py) exige :
-
-- succès de toutes les tâches, dont les deux matrices ; échec, annulation, exclusion
-  ou résultat manquant sont refusés ;
-- présence des quatre artefacts du socle et des 21 étapes dans l’ordre attendu ;
-- présence des douze artefacts spécialisés et de chaque journal de phase non vide ;
-- codes retour nuls, durées valides et journaux non vides, y compris pour le socle.
-
-Le job final utilise `needs` et `always()` pour ne pas devenir un succès implicite
-lorsqu’un préalable échoue. Aucune exception `continue-on-error`. Une annulation
-globale peut annuler le contrôle final lui-même ; elle ne produit pas de succès.
-Voir les références officielles GitHub sur [les dépendances entre jobs](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs)
-et [les matrices et leur concurrence](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations).
-
-La synthèse du verdict commun présente tous les scénarios et les phases vérifiées.
-Les mesures de durée du socle restent disponibles. L’objectif du regroupement est
-la lisibilité ; aucun scénario ni test n’est retiré pour réduire les minutes.
-
-## Recette
-
-1. `python3 -m pip install -r tests/ci/requirements.txt`, puis
-   `python3 -m unittest discover -s tests -p 'test_odoo_ci.py' -v` : contrats de
-   couverture, isolation, arrêt après panne injectée dans chaque scénario,
-   propagation via `tee`, et refus des résultats incomplets/non réussis.
-2. Vérifier la syntaxe Bash et GitHub Actions (actionlint 1.7.7 utilisé localement).
-3. Sur la PR, vérifier une seule exécution **CI Training Management**, ses 17
-   tâches nommées (matrices comprises), leurs quinze artefacts et le verdict
-   **Validation CI Odoo**. Examiner les scénarios spécialisés et la synthèse ;
-   les doubles Docker ne remplacent pas les exécutions Odoo réelles.
-4. Les tests de l’orchestration injectent des échecs et vérifient le refus de
-   toutes les tâches non réussies, des journaux manquants/vides et des phases
-   incomplètes. Un échec produit aussi une synthèse finale explicite.
-
-Cette modification concerne la CI uniquement ; aucune fusion ni aucun déploiement
-n’est autorisé par cette documentation.
+1. Installer `tests/ci/requirements.txt`, puis lancer
+   `python3 -m unittest discover -s tests -v`, `pre-commit run --all-files`,
+   la vérification syntaxique Bash des scripts et `actionlint`.
+2. Dans la PR, vérifier une seule CI, la matrice des six configurations et le
+   contrôle commun de migration. Aucun contrôle ne doit porter le nom d’un lot
+   fonctionnel. La suite ne doit pas être relancée depuis les scripts historiques.
+3. Examiner les sept artefacts : résultats Odoo non vides, préparation française
+   des deux variantes Website, sondes historiques et concurrence conservées.
+4. Vérifier **Validation CI Odoo** et sa synthèse. Les tests locaux injectent aussi
+   des pannes et des preuves manquantes ; ils ne remplacent pas les exécutions
+   Odoo réelles sur GitHub.
