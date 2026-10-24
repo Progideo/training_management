@@ -28,6 +28,7 @@ au contenu sensible par le seul rôle. Les autres rôles n’obtiennent aucun ac
 supplémentaire. Le retrait d’une habilitation ou la réaffectation du référent
 retire les accès qui en dépendent aux historiques, fichiers et actions issues de
 la réclamation. Une habilitation indépendante doit être retirée explicitement. Les sociétés exploitantes restent isolées.
+Un refus d’accès ne révèle ni sujet ni nom de fichier, y compris en mode développeur.
 
 Les fichiers privés sont non modifiables, avec source, date et empreinte.
 Ils peuvent être ajoutés dès la création du dossier. Les actions liées sont
@@ -89,4 +90,6 @@ qualité et deux participants de réalisations distinctes.
    ou d’une autre réalisation doit être refusé.
 7. Sur écran mobile puis au clavier seul, parcourir le formulaire portail, les
    erreurs et le retour à la liste ; vérifier les libellés français, le focus,
-   l’absence de débordement du texte et l’accès à tous les champs et boutons.
+   l’absence de débordement avec un sujet et un texte longs sans espaces, la date
+   de réception localisée et l’accès à tous les champs et boutons. Contrôler aussi
+   les assistants qualité, dont le bouton **Annuler**.

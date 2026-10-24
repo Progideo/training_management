@@ -2,6 +2,8 @@
 
 import json
 from datetime import timedelta
+from types import SimpleNamespace
+from unittest.mock import patch
 from uuid import uuid4
 
 from lxml import html
@@ -79,6 +81,34 @@ class QualityCase(ClosureCase):
 
 @tagged("post_install", "-at_install")
 class TestQuality(QualityCase):
+    def test_access_errors_do_not_disclose_private_labels(self):
+        self.other_quality.group_ids = [Command.link(self.env.ref("base.group_no_one").id)]
+        complaint = self.complaint(name="PRIVATE complaint subject")
+        improvement = self.improvement(complaint, name="PRIVATE improvement subject")
+        private_file = (
+            self.env["training.quality.file"]
+            .with_user(self.quality)
+            .create(
+                {
+                    "complaint_id": complaint.id,
+                    "name": "PRIVATE quality filename.pdf",
+                    "source": "PRIVATE original source",
+                    "data": BinaryBytes(PDF),
+                }
+            )
+        )
+        # The native diagnostic includes sudo display names in a debug request.
+        # Only the request's debug flag is supplied here; ORM rights stay real.
+        request = SimpleNamespace(session=SimpleNamespace(debug=True))
+        with patch("odoo.addons.base.models.res_users.request", request):
+            for record in (complaint, improvement, private_file, complaint.event_ids[:1]):
+                for operation in ("read", "write", "unlink"):
+                    with self.assertRaises(AccessError) as caught:
+                        record.with_user(self.other_quality).check_access(operation)
+                    for secret in (complaint.name, improvement.name, private_file.name, private_file.source):
+                        self.assertNotIn(secret, str(caught.exception))
+        self.assertEqual(complaint.with_user(self.quality).read(["name"])[0]["name"], complaint.name)
+
     def test_complaint_lifecycle_reply_reopen_and_history(self):
         row = self.complaint()
         with self.assertRaises(ValidationError):
@@ -531,6 +561,17 @@ class TestQualityHttp(QualityCase, HttpCase):
     def test_portal_submission_csrf_peer_denial_and_private_files(self):
         self.env["res.lang"]._activate_lang("fr_FR")
         self.env["ir.module.module"]._load_module_terms(["training_management"], ["fr_FR"])
+        for model, view in (
+            ("training.quality.operation", "view_quality_operation"),
+            ("training.quality.export", "view_quality_export"),
+        ):
+            form = (
+                self.env[model]
+                .with_user(self.quality)
+                .with_context(lang="fr_FR")
+                .get_view(view_id=self.env.ref("training_management." + view).id, view_type="form")
+            )
+            self.assertEqual(html.fromstring(form["arch"]).xpath('//button[@special="cancel"]/@string'), ["Annuler"])
         self.portal.write({"lang": "fr_FR"})
         if "website" in self.env and "language_ids" in self.env["website"]._fields:
             french = self.env.ref("base.lang_fr")
@@ -558,6 +599,8 @@ class TestQualityHttp(QualityCase, HttpCase):
         )
         self.assertEqual(result.status_code, 200)
         self.assertIn("HTTP private complaint", result.text)
+        self.assertIn("Reçue le :", result.text)
+        self.assertNotIn("Received:", result.text)
         row = self.env["training.complaint"].sudo().search([("submission_key", "=", key)])
         self.assertEqual(len(row), 1)
         self.resolve(row.with_user(self.quality))
