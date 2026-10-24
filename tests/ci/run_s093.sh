@@ -51,11 +51,9 @@ TM_ADDONS_DIR="$work_dir/addons" S091_PHASE=prepare step evaluation_prepare run_
 TM_ADDONS_DIR="$work_dir/addons" step evaluation_baseline run_odoo shell --no-http < "$repo/tests/probes/s092_upgrade_baseline.py"
 TM_ADDONS_DIR="$work_dir/addons" S092_PHASE=prepare step feedback_prepare run_odoo shell --no-http < "$repo/tests/probes/s092_history.py"
 S093_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale,/training_management_survey
+step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 S093_PHASE=verify step history_preserved run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
-TM_S093_DATABASE=tm_s093_fresh step fresh run_odoo -i training_management_sale,training_management_survey --without-demo --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale,/training_management_survey
 S093_PHASE=prepare step quality_prepare run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
 step second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 S093_PHASE=verify step quality_preserved run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s093_concurrency.py"
-TM_S093_DATABASE=tm_s093_core step core_without_survey run_odoo -i training_management --without-demo --stop-after-init --test-enable --test-tags=/training_management

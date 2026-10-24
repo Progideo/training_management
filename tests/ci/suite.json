@@ -1,0 +1,389 @@
+{
+  "source_commit": "67b7ff79cc154aa046531bdb4f7adff3ede66514",
+  "configurations": {
+    "core": {
+      "label": "Socle",
+      "addons": [
+        "training_management"
+      ],
+      "website": false
+    },
+    "sale": {
+      "label": "Socle + Ventes",
+      "addons": [
+        "training_management",
+        "training_management_sale"
+      ],
+      "website": false
+    },
+    "survey": {
+      "label": "Socle + Surveys",
+      "addons": [
+        "training_management",
+        "training_management_survey"
+      ],
+      "website": false
+    },
+    "full": {
+      "label": "Socle + Ventes + Surveys",
+      "addons": [
+        "training_management",
+        "training_management_sale",
+        "training_management_survey"
+      ],
+      "website": false
+    },
+    "website_sale": {
+      "label": "Website/eLearning + Ventes · anglais",
+      "addons": [
+        "training_management",
+        "training_management_sale"
+      ],
+      "website": true,
+      "language": "en_US"
+    },
+    "website_full": {
+      "label": "Website/eLearning + Ventes + Surveys · anglais",
+      "addons": [
+        "training_management",
+        "training_management_sale",
+        "training_management_survey"
+      ],
+      "website": true,
+      "language": "en_US"
+    },
+    "website_sale_fr": {
+      "label": "Website/eLearning + Ventes · français",
+      "addons": [
+        "training_management",
+        "training_management_sale"
+      ],
+      "website": true,
+      "language": "fr_FR"
+    },
+    "website_full_fr": {
+      "label": "Website/eLearning + Ventes + Surveys · français",
+      "addons": [
+        "training_management",
+        "training_management_sale",
+        "training_management_survey"
+      ],
+      "website": true,
+      "language": "fr_FR"
+    }
+  },
+  "migrations": [
+    {
+      "id": "incremental",
+      "script": "tests/ci/run_odoo_scenario.sh",
+      "args": [
+        "incremental"
+      ],
+      "steps": [
+        "install",
+        "baseline",
+        "update",
+        "history",
+        "commercial-install",
+        "commercial-concurrency"
+      ]
+    },
+    {
+      "id": "fresh",
+      "script": "tests/ci/run_odoo_scenario.sh",
+      "args": [
+        "fresh"
+      ],
+      "steps": [
+        "commercial-fresh-install",
+        "s03-concurrency"
+      ]
+    },
+    {
+      "id": "history",
+      "script": "tests/ci/run_odoo_scenario.sh",
+      "args": [
+        "history"
+      ],
+      "steps": [
+        "s03-old-install",
+        "s03-history-prepare",
+        "s03-view-bootstrap",
+        "s03-upgrade-tests",
+        "s03-history-verify",
+        "s03-update-prepare",
+        "s03-update",
+        "s03-update-verify"
+      ]
+    },
+    {
+      "id": "website",
+      "script": "tests/ci/run_odoo_scenario.sh",
+      "args": [
+        "website"
+      ],
+      "steps": [
+        "website-baseline-install",
+        "website-baseline",
+        "website-commercial-install",
+        "website-commercial-update",
+        "website-history"
+      ]
+    },
+    {
+      "id": "catalogue",
+      "script": "tests/ci/run_catalogue_pdf.sh",
+      "args": [],
+      "env": {
+        "TM_CATPDF_WITH_WEBSITE": "false"
+      },
+      "steps": [
+        "baseline",
+        "prepare",
+        "upgrade",
+        "history",
+        "repeat_upgrade",
+        "preserved_pdf",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "catalogue_website",
+      "script": "tests/ci/run_catalogue_pdf.sh",
+      "args": [],
+      "env": {
+        "TM_CATPDF_WITH_WEBSITE": "true"
+      },
+      "steps": [
+        "baseline",
+        "prepare",
+        "upgrade",
+        "history",
+        "repeat_upgrade",
+        "preserved_pdf",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s021",
+      "script": "tests/ci/run_s021.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved"
+      ]
+    },
+    {
+      "id": "s04",
+      "script": "tests/ci/run_s04.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "prepare",
+        "upgrade",
+        "history",
+        "concurrency",
+        "dispatch_baseline",
+        "dispatch_prepare",
+        "dispatch_upgrade",
+        "dispatch_history"
+      ]
+    },
+    {
+      "id": "s05",
+      "script": "tests/ci/run_s05.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s052",
+      "script": "tests/ci/run_s052.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "concurrency",
+        "reminder_concurrency"
+      ]
+    },
+    {
+      "id": "s06",
+      "script": "tests/ci/run_s06.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "exam_preserved"
+      ]
+    },
+    {
+      "id": "s07",
+      "script": "tests/ci/run_s07.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_prepare",
+        "second_update",
+        "attendance_preserved",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s08",
+      "script": "tests/ci/run_s08.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_preserved",
+        "native_schema_preserved",
+        "closure_prepare",
+        "second_update",
+        "closure_preserved",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s091",
+      "script": "tests/ci/run_s091.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "closure_prepare",
+        "upgrade",
+        "catalogue_preserved",
+        "documents_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_preserved",
+        "closure_preserved",
+        "native_schema_preserved",
+        "evaluation_prepare",
+        "second_update",
+        "evaluation_preserved",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s092",
+      "script": "tests/ci/run_s092.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "closure_prepare",
+        "evaluation_prepare",
+        "evaluation_baseline",
+        "upgrade",
+        "catalogue_preserved",
+        "documents_preserved",
+        "learning_preserved",
+        "exam_preserved",
+        "attendance_preserved",
+        "closure_preserved",
+        "evaluation_preserved",
+        "native_schema_preserved",
+        "feedback_prepare",
+        "second_update",
+        "feedback_preserved",
+        "concurrency"
+      ]
+    },
+    {
+      "id": "s093",
+      "script": "tests/ci/run_s093.sh",
+      "args": [],
+      "env": {},
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "learning_prepare",
+        "exam_prepare",
+        "attendance_prepare",
+        "fixture_baseline",
+        "closure_prepare",
+        "evaluation_prepare",
+        "evaluation_baseline",
+        "feedback_prepare",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "quality_prepare",
+        "second_update",
+        "quality_preserved",
+        "concurrency"
+      ]
+    }
+  ],
+  "relocated_steps": {
+    "fresh": "Cumulative suite: full and survey configurations",
+    "core_without_survey": "Cumulative suite: core configuration",
+    "french_prepare": "Cumulative suite: French Website bootstrap",
+    "french_http": "Cumulative suite: all HTTP classes included without class filtering"
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# S03.1 -> S04: persisted history, real Odoo tests and concurrent reservations.
+# S03.1 -> S04: persisted history, migration and concurrent reservations.
 set -Eeuo pipefail
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 : "${ODOO_IMAGE:?Use the workflow pinned image}"
@@ -38,7 +38,7 @@ mkdir -p "$work_dir/s031"
 git -C "$repo" archive 7fc2318d1bcfc13bce44be3181d2a1f45c8e33fc addons | tar -x -C "$work_dir/s031"
 TM_ADDONS_DIR="$work_dir/s031/addons" step baseline run_odoo -i training_management_sale --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/s031/addons" S04_PHASE=prepare step prepare run_odoo shell --no-http < "$repo/tests/probes/s04_history.py"
-step upgrade run_odoo -u training_management,training_management_sale --stop-after-init --test-enable --test-tags=/training_management,/training_management_sale
+step upgrade run_odoo -u training_management,training_management_sale --stop-after-init
 S04_PHASE=verify step history run_odoo shell --no-http < "$repo/tests/probes/s04_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s04_concurrency.py"
 

@@ -1,134 +1,278 @@
-"""Orchestration contracts, using a Docker double; Odoo itself runs in CI jobs."""
+"""Coverage conservation, isolated orchestration and fail-closed CI evidence."""
 
-import csv
-import hashlib
-import importlib.util
 import json
 import os
-import re
-import shlex
 from pathlib import Path
+import re
 import subprocess
+import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-LEDGER = json.loads((ROOT / "tests/ci/coverage.json").read_text())
-SCENARIOS = LEDGER["scenarios"]
-spec = importlib.util.spec_from_file_location("check_results", ROOT / "tests/ci/check_results.py")
-gate = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(gate)
+sys.path.insert(0, str(ROOT / "tests/ci"))
+import run_suite as runner  # noqa: E402
+import check_results as gate  # noqa: E402
+import check_inventory as inventory  # noqa: E402
+
+PLAN = runner.PLAN
 
 FAKE_DOCKER = r"""#!/usr/bin/env python3
-import hashlib,json,os,sys
+import json,os,sys
 from pathlib import Path
 args=sys.argv[1:]
 file=Path(os.environ['CI_DOCKER_TRACE'])
-previous=[json.loads(x) for x in file.read_text().splitlines()] if file.exists() else []
-entry={'args':args}
-if args[0]=='run':
- data=sys.stdin.buffer.read() if 'shell' in args else b''
- entry['stdin_sha256']=hashlib.sha256(data).hexdigest()
- count=sum(x['args'][0]=='run' for x in previous)+1
-else: count=0
-with file.open('a') as stream:stream.write(json.dumps(entry)+'\n')
-print('Docker orchestration test double')
-if args[0]=='run' and str(count)==os.environ.get('CI_FAIL_CALL'):sys.exit(42)
+data=sys.stdin.buffer.read().decode() if 'shell' in args else ''
+with file.open('a') as stream:stream.write(json.dumps({'args':args,'stdin':data})+'\n')
+if args[0]=='inspect': print('healthy');sys.exit(0)
+if args[:2] in (['volume','inspect'], ['container','inspect'], ['network','inspect']):sys.exit(1)
+if os.environ.get('CI_FAIL_PATTERN') and any(os.environ['CI_FAIL_PATTERN'] in a for a in args):sys.exit(42)
+print('Synthetic Docker orchestration evidence (no Odoo executed)')
+if '--test-enable' in args:
+ print('0 failed, 0 error(s) of 12 tests')
+ for arg in args:
+  if arg.startswith('--test-tags='):
+   for addon in arg.split('=',1)[1].split(','): print('odoo.tests.stats: '+addon.lstrip('/')+': 12 tests')
+if 'CUMULATIVE_FRENCH_WEBSITE_READY' in data: print('CUMULATIVE_FRENCH_WEBSITE_READY')
 """
 
 
-class ScenarioContracts(unittest.TestCase):
-    def run_scenario(self, scenario, fail_call=None):
+def original(path):
+    return subprocess.check_output(["git", "show", PLAN["source_commit"] + ":" + path], cwd=ROOT, text=True)
+
+
+def normalize_migration(text):
+    # Only redundant addon suite launches move. Every installation/update, probe,
+    # historical revision and phase on a persisted database remains unchanged.
+    text = (
+        "\n".join(
+            line
+            for line in text.splitlines()
+            if not re.search(r"\bstep (fresh|core_without_survey|french_prepare|french_http) run_odoo\b", line)
+        )
+        + "\n"
+    )
+    text = re.sub(r" --test-enable| --test-tags=[^\s\\]+", "", text)
+    return (
+        text.replace("real Odoo tests and concurrent reservations", "migration and concurrent reservations").rstrip()
+        + "\n"
+    )
+
+
+class Coverage(unittest.TestCase):
+    def test_every_migration_operation_and_probe_is_preserved(self):
+        for path in sorted({entry["script"] for entry in PLAN["migrations"]}):
+            with self.subTest(path=path):
+                self.assertEqual((ROOT / path).read_text(), normalize_migration(original(path)))
+        for name in inventory.source_files(ROOT, PLAN["source_commit"], "tests/probes"):
+            path = ROOT / name
+            self.assertEqual(path.read_text(), original(name))
+        self.assertEqual(len(PLAN["migrations"]), 16)
+
+    def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
+        base = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]
+        specialized = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
+        specialized = {**specialized["jobs"], **specialized.get("extensions", {})}
+        self.assertEqual({entry["id"] for entry in PLAN["migrations"][:4]}, set(base))
+        for entry in PLAN["migrations"]:
+            if entry["id"] in base:
+                expected = [step["step"] for step in base[entry["id"]]]
+            else:
+                contract = next(item for item in specialized.values() if item["script"] == entry["script"])
+                expected = [step for step in contract["steps"] if step not in PLAN["relocated_steps"]]
+            self.assertEqual(entry["steps"], expected)
+
+    def test_all_addon_test_modules_are_imported_and_existing_tests_retained(self):
+        inventory.validate(ROOT, PLAN["source_commit"])
+
+    def test_only_configuration_matrix_and_common_verdict(self):
+        workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
+        jobs = workflow["jobs"]
+        self.assertEqual(set(jobs), {*gate.REQUIRED_JOBS, "validation"})
+        matrix = jobs["suite"]["strategy"]
+        self.assertFalse(matrix["fail-fast"])
+        self.assertEqual({item["configuration"] for item in matrix["matrix"]["include"]}, set(PLAN["configurations"]))
+        for name, job in jobs.items():
+            if name != "suite":
+                self.assertNotIn("strategy", job)
+            self.assertNotIn("continue-on-error", job)
+        self.assertEqual(set(jobs["validation"]["needs"]), gate.REQUIRED_JOBS)
+        self.assertEqual(jobs["validation"]["if"], "${{ always() }}")
+        self.assertEqual(jobs["validation"]["name"], "Validation CI Odoo")
+        self.assertEqual(workflow["permissions"], {"contents": "read"})
+        self.assertEqual(len(matrix["matrix"]["include"]), 8)
+
+
+class InventoryRegressions(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.folder = self.root / "addons/training_management/tests"
+        self.folder.mkdir(parents=True)
+        self.init = self.folder / "__init__.py"
+        self.init.write_text("from . import test_existing\n")
+        self.existing = self.folder / "test_existing.py"
+        self.existing.write_text("class TestExisting:\n    def test_existing(self):\n        assert True\n")
+        subprocess.run(["git", "init", "-q"], cwd=self.root, check=True)
+        subprocess.run(["git", "add", "."], cwd=self.root, check=True)
+        subprocess.run(
+            [
+                "git",
+                "-c",
+                "user.name=Fictional CI",
+                "-c",
+                "user.email=ci@example.invalid",
+                "-c",
+                "commit.gpgsign=false",
+                "commit",
+                "-qm",
+                "baseline",
+            ],
+            cwd=self.root,
+            check=True,
+        )
+
+    def test_new_imported_file_and_method_enrich_the_suite(self):
+        self.init.write_text(self.init.read_text() + "from . import test_future\n")
+        (self.folder / "test_future.py").write_text(
+            "class TestFuture:\n    def test_future(self):\n        assert True\n"
+        )
+        self.existing.write_text(self.existing.read_text() + "    def test_more(self):\n        assert True\n")
+        inventory.validate(self.root, "HEAD")
+
+    def test_deleted_file_even_with_removed_import_is_rejected(self):
+        self.existing.unlink()
+        self.init.write_text("")
+        with self.assertRaisesRegex(ValueError, "Deleted baseline test files"):
+            inventory.validate(self.root, "HEAD")
+
+    def test_deleted_method_is_rejected(self):
+        self.existing.write_text("class TestExisting:\n    pass\n")
+        with self.assertRaisesRegex(ValueError, "Deleted baseline test methods"):
+            inventory.validate(self.root, "HEAD")
+
+    def test_new_unimported_file_is_rejected(self):
+        (self.folder / "test_future.py").write_text(
+            "class TestFuture:\n    def test_future(self):\n        assert True\n"
+        )
+        with self.assertRaisesRegex(ValueError, "not imported"):
+            inventory.validate(self.root, "HEAD")
+
+    def test_import_from_an_unrelated_module_is_not_odoo_discovery(self):
+        self.init.write_text("from unrelated import test_existing\n")
+        with self.assertRaisesRegex(ValueError, "not imported"):
+            inventory.validate(self.root, "HEAD")
+
+
+class Orchestration(unittest.TestCase):
+    def run_plan(self, name, fail_pattern=None):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        directory = Path(tmp.name)
-        docker = directory / "docker"
+        folder = Path(tmp.name)
+        docker = folder / "docker"
         docker.write_text(FAKE_DOCKER)
         docker.chmod(0o755)
-        trace = directory / "trace.jsonl"
-        env = dict(
-            os.environ,
-            PATH=str(directory) + os.pathsep + os.environ["PATH"],
-            ODOO_IMAGE="pinned-image-test-double",
-            TM_CI_ID="contract",
-            CI_DOCKER_TRACE=str(trace),
-            TM_RESULTS_DIR=str(directory / "results"),
-        )
-        # Do not inherit operator settings into the contract tests.
-        for key in ("TM_TEST_DB", "TM_ADDONS_DIR", "TM_UPGRADE_PHASE", "S03_UPGRADE_PHASE", "CI_FAIL_CALL"):
-            env.pop(key, None)
-        if fail_call:
-            env["CI_FAIL_CALL"] = str(fail_call)
+        trace = folder / "trace.jsonl"
+        env = {
+            **os.environ,
+            "PATH": str(folder) + os.pathsep + os.environ["PATH"],
+            "CI_DOCKER_TRACE": str(trace),
+            "TM_CI_ID": "contract",
+            "TM_RESULTS_DIR": str(folder / "results"),
+        }
+        if fail_pattern:
+            env["CI_FAIL_PATTERN"] = fail_pattern
         result = subprocess.run(
-            ["bash", str(ROOT / "tests/ci/run_odoo_scenario.sh"), scenario],
-            env=env,
-            stdin=subprocess.DEVNULL,
-            capture_output=True,
-            text=True,
+            [sys.executable, str(ROOT / "tests/ci/run_suite.py"), name], env=env, capture_output=True, text=True
         )
-        events = [json.loads(x) for x in trace.read_text().splitlines()] if trace.exists() else []
-        return result, events, directory
+        events = [json.loads(line) for line in trace.read_text().splitlines()] if trace.exists() else []
+        return result, events, folder / "results"
 
-    def test_all_original_operations_keep_arguments_phases_and_probes(self):
-        containers, volumes, databases = set(), set(), set()
-        self.assertEqual(sum(map(len, SCENARIOS.values())), 21)
-        for scenario, expected in SCENARIOS.items():
-            with self.subTest(scenario=scenario):
-                result, events, directory = self.run_scenario(scenario)
+    def test_one_complete_suite_per_configuration_with_http_and_french(self):
+        for name, config in PLAN["configurations"].items():
+            with self.subTest(configuration=name):
+                result, events, folder = self.run_plan(name)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-                calls = [event for event in events if event["args"][0] == "run"]
-                self.assertEqual(len(calls), len(expected))
-                own_dbs = set()
-                for call, step in zip(calls, expected):
-                    args = call["args"]
-                    start = args.index("pinned-image-test-double") + 2
-                    end = args.index("--db_host=127.0.0.1")
-                    self.assertEqual(args[start:end], step["args"])
-                    db = args[args.index("-d") + 1]
-                    self.assertEqual(db, step["database"])
-                    own_dbs.add(db)
-                    for phase in ("TM_UPGRADE_PHASE", "S03_UPGRADE_PHASE"):
-                        self.assertIn(f"{phase}={step['phase'].get(phase, '')}", args)
-                    data = (ROOT / step["probe"]).read_bytes() if step["probe"] else b""
-                    self.assertEqual(call["stdin_sha256"], hashlib.sha256(data).hexdigest())
-                    mount = next(x for x in args if x.endswith(":/mnt/extra-addons:ro"))
-                    self.assertEqual("s02-baseline/addons:" in mount, step["baseline"])
-                    self.assertEqual("s04-bridge/addons:" in mount, step["step"] == "s03-view-bootstrap")
-                    self.assertIn("--no-http", args)
-                    self.assertIn("--max-cron-threads=0", args)
-                    self.assertIn("--workers=0", args)
-                self.assertTrue(databases.isdisjoint(own_dbs))
-                databases.update(own_dbs)
-                args = calls[0]["args"]
-                container = args[args.index("--name") + 1]
-                volume = next(x.split(":")[0] for x in args if x.endswith(":/var/lib/odoo"))
-                self.assertNotIn(container, containers)
-                self.assertNotIn(volume, volumes)
-                containers.add(container)
-                volumes.add(volume)
-                self.assertIn(["rm", "-f", container], [e["args"] for e in events])
-                self.assertIn(["volume", "rm", volume], [e["args"] for e in events])
-                with (directory / "results/timings.tsv").open() as stream:
-                    rows = list(csv.DictReader(stream, delimiter="\t"))
-                self.assertEqual([r["step"] for r in rows], [s["step"] for s in expected])
-                self.assertTrue(all(r["exit_code"] == "0" for r in rows))
+                runs = [event for event in events if event["args"][0] == "run" and "odoo" in event["args"]]
+                tests = [event for event in runs if "--test-enable" in event["args"]]
+                self.assertEqual(len(tests), 1)
+                self.assertIn("--test-tags=" + ",".join("/" + addon for addon in config["addons"]), tests[0]["args"])
+                self.assertNotIn("--no-http", tests[0]["args"])
+                self.assertEqual(
+                    any("CUMULATIVE_FRENCH_WEBSITE_READY" in event["stdin"] for event in runs),
+                    config.get("language") == "fr_FR",
+                )
+                self.assertTrue((folder / f"suite-{name}" / "success.json").exists())
+                self.assertTrue(any(event["args"][:2] == ["network", "rm"] for event in events))
 
-    def test_failure_stops_each_scenario_and_survives_tee(self):
-        for scenario in SCENARIOS:
-            with self.subTest(scenario=scenario):
-                result, events, directory = self.run_scenario(scenario, fail_call=2)
-                self.assertEqual(result.returncode, 42)
-                self.assertEqual(sum(e["args"][0] == "run" for e in events), 2)
-                with (directory / "results/timings.tsv").open() as stream:
-                    rows = list(csv.DictReader(stream, delimiter="\t"))
-                self.assertEqual(rows[-1]["exit_code"], "42")
-                self.assertEqual(events[-1]["args"][0:2], ["volume", "rm"])
+    def test_every_migration_runs_without_launching_addon_tests(self):
+        result, events, folder = self.run_plan("migrations")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertFalse(any("--test-enable" in event["args"] for event in events))
+        networks = [event["args"][-1] for event in events if event["args"][:2] == ["network", "create"]]
+        self.assertEqual(len(networks), len(PLAN["migrations"]))
+        self.assertEqual(len(set(networks)), len(networks))
+        for entry in PLAN["migrations"]:
+            self.assertTrue((folder / "migrations" / entry["id"] / "success.json").exists())
+            for phase in entry["steps"]:
+                self.assertTrue((folder / "migrations" / entry["id"] / f"{phase}.log").stat().st_size)
 
-    def test_unknown_scenario_never_starts_docker(self):
-        result, events, _ = self.run_scenario("production")
-        self.assertEqual(result.returncode, 2)
+    def test_failed_suite_has_no_success_marker_and_cleans_resources(self):
+        result, events, folder = self.run_plan("full", "--test-enable")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((folder / "suite-full/success.json").exists())
+        self.assertTrue(any(event["args"][:2] == ["network", "rm"] for event in events))
+
+    def test_failed_retry_invalidates_previous_success_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory)
+            for name in ("suite-core", "migrations/s08"):
+                folder = results / name
+                folder.mkdir(parents=True)
+                (folder / "success.json").write_text("stale success")
+            with patch.object(runner.Database, "__enter__", side_effect=RuntimeError("injected setup failure")):
+                with self.assertRaises(RuntimeError):
+                    runner.suite("core", results)
+                with self.assertRaises(RuntimeError):
+                    runner.migration(next(entry for entry in PLAN["migrations"] if entry["id"] == "s08"), results)
+            self.assertFalse((results / "suite-core/success.json").exists())
+            self.assertFalse((results / "migrations/s08/success.json").exists())
+
+    def test_existing_network_is_never_cleaned_after_name_collision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(runner, "checked", side_effect=RuntimeError("network already exists")):
+                with patch.object(runner.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)) as command:
+                    with self.assertRaises(RuntimeError):
+                        with runner.Database("collision", Path(directory)):
+                            self.fail("Setup should fail before entering the database")
+            self.assertEqual(len(command.call_args_list), 4)
+            self.assertTrue(all(call.args[0][2] == "inspect" for call in command.call_args_list))
+
+    def test_preexisting_container_or_volume_is_refused_without_mutation(self):
+        for index in range(4):
+            with self.subTest(resource=index), tempfile.TemporaryDirectory() as directory:
+                states = [subprocess.CompletedProcess([], int(i != index)) for i in range(index + 1)]
+                with patch.object(runner.subprocess, "run", side_effect=states) as command:
+                    with patch.object(runner, "checked") as mutation:
+                        with self.assertRaisesRegex(RuntimeError, "already exists"):
+                            with runner.Database("collision", Path(directory)):
+                                self.fail("Pre-existing resources must be refused")
+                mutation.assert_not_called()
+                self.assertEqual(len(command.call_args_list), index + 1)
+
+    def test_failed_migration_does_not_hide_other_results_or_publish_success(self):
+        result, _, folder = self.run_plan("migrations", "tm_catpdf_test_upgrade")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((folder / "migrations/catalogue/success.json").exists())
+        self.assertTrue((folder / "migrations/s093/success.json").exists())
+
+    def test_unknown_configuration_never_starts_docker(self):
+        result, events, _ = self.run_plan("S09")
+        self.assertNotEqual(result.returncode, 0)
         self.assertEqual(events, [])
 
 
@@ -137,212 +281,79 @@ class FinalGate(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.results = Path(self.tmp.name)
-        self.needs = {name: {"result": "success"} for name in gate.REQUIRED_JOBS}
-        for scenario, steps in SCENARIOS.items():
-            folder = self.results / f"odoo-{scenario}-results"
+        self.needs = {job: {"result": "success"} for job in gate.REQUIRED_JOBS}
+        for name, config in PLAN["configurations"].items():
+            folder = self.results / f"suite-{name}-results"
             folder.mkdir()
-            with (folder / "timings.tsv").open("w") as stream:
-                stream.write("step\texit_code\tduration_seconds\n")
-                for step in steps:
-                    stream.write(step["step"] + "\t0\t1\n")
-                    (folder / (step["step"] + ".log")).write_text("Synthetic orchestration evidence\n")
-
-        for job in gate.SPECIALIZED.values():
-            for artifact in job["artifacts"]:
-                folder = self.results / artifact
-                folder.mkdir()
-                for step in job["steps"]:
-                    (folder / (step + ".log")).write_text("Synthetic specialized evidence\n")
+            (folder / "success.json").write_text(json.dumps({"configuration": name, "addons": config["addons"]}))
+            (folder / "bootstrap.log").write_text("Synthetic install evidence")
+            if config.get("language") == "fr_FR":
+                (folder / "french.log").write_text("CUMULATIVE_FRENCH_WEBSITE_READY")
+            (folder / "tests.log").write_text(
+                "0 failed, 0 error(s) of 12 tests\n"
+                + "\n".join(f"odoo.tests.stats: {addon}: 12 tests" for addon in config["addons"])
+            )
+        for entry in PLAN["migrations"]:
+            folder = self.results / "migrations-results" / entry["id"]
+            folder.mkdir(parents=True)
+            (folder / "success.json").write_text(json.dumps({"migration": entry["id"], "steps": entry["steps"]}))
+            for step in entry["steps"]:
+                (folder / f"{step}.log").write_text("Synthetic migration evidence")
 
     def test_complete_success(self):
-        self.assertEqual(sum(gate.validate(self.needs, self.results).values()), 21)
+        gate.validate(self.needs, self.results)
 
-    def test_every_non_success_job_result_is_rejected(self):
-        for job in self.needs:
-            for result in ("failure", "cancelled", "skipped", "timed_out", "neutral", "", None):
-                with self.subTest(job=job, result=result):
-                    needs = {**self.needs, job: {"result": result}}
-                    with self.assertRaises(ValueError):
-                        gate.validate(needs, self.results)
+    def test_every_unsuccessful_or_missing_job_is_rejected(self):
+        for name in self.needs:
+            for state in ("failure", "cancelled", "skipped", "neutral", None):
+                with self.subTest(name=name, state=state), self.assertRaises(ValueError):
+                    gate.validate({**self.needs, name: {"result": state}}, self.results)
+            with self.assertRaises(ValueError):
+                gate.validate({key: value for key, value in self.needs.items() if key != name}, self.results)
 
-    def test_absent_job_or_artifact_is_rejected(self):
-        with self.assertRaises(ValueError):
-            gate.validate({"scenarios": {"result": "success"}}, self.results)
-        (self.results / "odoo-fresh-results/timings.tsv").unlink()
-        with self.assertRaises(FileNotFoundError):
-            gate.validate(self.needs, self.results)
+    def test_missing_empty_and_failed_logs_or_markers_are_rejected(self):
+        for path in self.results.rglob("*"):
+            if not path.is_file() or path.name == "french.log" and "website" not in str(path):
+                continue
+            saved = path.read_text()
+            for replacement in (None, "", "Traceback (most recent call last):\nAssertionError"):
+                with self.subTest(path=path, replacement=replacement):
+                    path.unlink() if replacement is None else path.write_text(replacement)
+                    with self.assertRaises((ValueError, OSError)):
+                        gate.validate(self.needs, self.results)
+                    path.write_text(saved)
 
-    def test_missing_failed_or_duplicate_step_is_rejected(self):
-        path = self.results / "odoo-fresh-results/timings.tsv"
-        original = path.read_text()
-        for text in (
-            original.splitlines()[0] + "\n",
-            original.replace("\t0\t", "\t42\t"),
-            original + original.splitlines()[1] + "\n",
-        ):
-            with self.subTest(text=text), self.assertRaises(ValueError):
-                path.write_text(text)
+    def test_zero_tests_and_failed_odoo_results_are_rejected(self):
+        path = self.results / "suite-core-results/tests.log"
+        for text in ("0 failed, 0 error(s) of 0 tests", "1 failed, 0 error(s) of 12 tests", "Odoo started"):
+            path.write_text(text)
+            with self.assertRaises(ValueError):
                 gate.validate(self.needs, self.results)
 
-    def test_specialized_missing_or_empty_evidence_is_rejected(self):
-        for job in gate.SPECIALIZED.values():
-            for artifact in job["artifacts"]:
-                for step in job["steps"]:
-                    path = self.results / artifact / (step + ".log")
-                    original = path.read_text()
-                    for empty in (False, True):
-                        with self.subTest(artifact=artifact, step=step, empty=empty):
-                            path.write_text("") if empty else path.unlink()
-                            with self.assertRaises(ValueError):
-                                gate.validate(self.needs, self.results)
-                            path.write_text(original)
+    def test_expected_security_exception_log_does_not_override_successful_test_result(self):
+        path = self.results / "suite-sale-results/tests.log"
+        path.write_text(
+            path.read_text() + "\nTraceback (most recent call last):\nExpected AccessError in mail denial test"
+        )
+        gate.validate(self.needs, self.results)
 
-    def test_failed_job_produces_a_failed_verdict_and_summary(self):
+    def test_missing_selected_addon_cannot_hide_behind_other_tests(self):
+        path = self.results / "suite-full-results/tests.log"
+        path.write_text(path.read_text().replace("odoo.tests.stats: training_management_survey: 12 tests", ""))
+        with self.assertRaises(ValueError):
+            gate.validate(self.needs, self.results)
+
+    def test_failure_produces_failed_summary_and_exit_status(self):
         summary = self.results / "summary.md"
-        needs = {**self.needs, "feedback": {"result": "failure"}}
         result = subprocess.run(
-            [os.sys.executable, str(ROOT / "tests/ci/check_results.py")],
+            [sys.executable, str(ROOT / "tests/ci/check_results.py")],
             cwd=self.results,
-            env={**os.environ, "NEEDS_JSON": json.dumps(needs), "GITHUB_STEP_SUMMARY": str(summary)},
+            env={**os.environ, "NEEDS_JSON": "{}", "GITHUB_STEP_SUMMARY": str(summary)},
             capture_output=True,
             text=True,
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Validation Training Management : échec", summary.read_text())
-        self.assertIn("feedback", summary.read_text())
-
-    def test_empty_base_evidence_is_rejected(self):
-        for scenario, steps in SCENARIOS.items():
-            for step in steps:
-                path = self.results / f"odoo-{scenario}-results" / (step["step"] + ".log")
-                original = path.read_text()
-                with self.subTest(scenario=scenario, step=step["step"]):
-                    path.write_text("")
-                    try:
-                        with self.assertRaises(ValueError):
-                            gate.validate(self.needs, self.results)
-                    finally:
-                        path.write_text(original)
-
-    def test_missing_log_is_rejected(self):
-        (self.results / "odoo-fresh-results/s03-concurrency.log").unlink()
-        with self.assertRaises(ValueError):
-            gate.validate(self.needs, self.results)
-
-
-class WorkflowContract(unittest.TestCase):
-    def test_coverage_ledger_matches_the_original_21_commands(self):
-        text = subprocess.check_output(
-            ["git", "show", LEDGER["source_commit"] + ":.github/workflows/odoo.yml"], cwd=ROOT, text=True
-        )
-        block = yaml.safe_load(text)["jobs"]["catalogue"]["steps"][1]["run"]
-        original = {}
-        for line in re.sub(r"\\\n\s*", " ", block).splitlines():
-            match = re.search(r"tee test-results/([\w-]+)\.log", line)
-            if not match:
-                continue
-            args = line.split("run_odoo", 1)[1].split("2>&1", 1)[0].strip()
-            probe = None
-            if "< " in args:
-                args, probe = args.split("< ", 1)
-                probe = probe.strip()
-            db = re.search(r"TM_TEST_DB=([^ ]+)", line)
-            phase = re.search(r"(TM_UPGRADE_PHASE|S03_UPGRADE_PHASE)=(\w+)", line)
-            original[match.group(1)] = dict(
-                step=match.group(1),
-                args=shlex.split(args),
-                probe=probe,
-                database=db.group(1) if db else "tm_s01_test_ci",
-                phase={phase.group(1): phase.group(2)} if phase else {},
-                baseline="TM_ADDONS_DIR=" in line,
-            )
-        current = {step["step"]: step for steps in SCENARIOS.values() for step in steps}
-        self.assertEqual(len(original), 21)
-        self.assertEqual(current, original)
-
-    def test_single_workflow_preserves_all_specialized_execution_contracts(self):
-        ledger = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
-        jobs = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())["jobs"]
-        self.assertEqual(set(jobs), {*gate.REQUIRED_JOBS, "validation"})
-        self.assertEqual(len(ledger["jobs"]), 10)
-        for name, contract in ledger["jobs"].items():
-            with self.subTest(job=name):
-                original = subprocess.check_output(
-                    ["git", "show", ledger["source_commit"] + ":" + contract["source_workflow"]],
-                    cwd=ROOT,
-                    text=True,
-                )
-                old = yaml.safe_load(original)["jobs"][contract["source_job"]]
-                current = dict(jobs[name])
-                self.assertTrue(current.pop("name"))
-                self.assertEqual(current, old)
-                script = ROOT / contract["script"]
-                self.assertEqual(
-                    script.read_bytes(),
-                    subprocess.check_output(
-                        ["git", "show", ledger["source_commit"] + ":" + contract["script"]],
-                        cwd=ROOT,
-                    ),
-                )
-                steps = re.findall(r"(?m)^(?:[A-Z0-9_]+=[^\n]*? )?step ([a-z0-9_]+) run_odoo", script.read_text())
-                self.assertEqual(contract["steps"], steps)
-                upload = next(step["with"] for step in old["steps"] if step.get("uses") == "actions/upload-artifact@v4")
-                expected = [upload["name"]]
-                if "strategy" in old:
-                    expected = [
-                        upload["name"].replace("${{ matrix.website }}", str(value).lower())
-                        for value in old["strategy"]["matrix"]["website"]
-                    ]
-                self.assertEqual(contract["artifacts"], expected)
-                self.assertFalse((ROOT / contract["source_workflow"]).exists())
-        # Four base jobs, two catalogue variants, nine specialized jobs, style and verdict.
-        self.assertEqual(
-            sum(
-                len(next(iter(job["strategy"]["matrix"].values()))) if "strategy" in job else 1 for job in jobs.values()
-            ),
-            18,
-        )
-        for path in (ROOT / ".github/workflows").glob("*.yml"):
-            workflow = yaml.safe_load(path.read_text())
-            trigger = workflow.get("on", workflow.get(True))
-            if "pull_request" in trigger:
-                self.assertEqual(path.name, "odoo.yml")
-        gate_job = jobs["validation"]
-        self.assertEqual(gate_job["steps"][1]["with"]["pattern"], "*-results*")
-
-    def test_quality_extension_is_required_without_replacing_previous_scenarios(self):
-        ledger = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
-        contract = ledger["extensions"]["quality"]
-        script = (ROOT / contract["script"]).read_text()
-        steps = re.findall(r"(?m)^(?:[A-Z0-9_]+=[^\n]*? )?step ([a-z0-9_]+) run_odoo", script)
-        self.assertEqual(contract["steps"], steps)
-        workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
-        job = workflow["jobs"]["quality"]
-        self.assertEqual(job["steps"][1]["run"], "bash " + contract["script"])
-        self.assertEqual(job["steps"][2]["with"]["name"], contract["artifacts"][0])
-        self.assertIn("quality", gate.REQUIRED_JOBS)
-        self.assertIn("--test-tags=/training_management", script)
-
-    def test_parallelism_is_bounded_and_gate_cannot_be_skipped_by_failure(self):
-        workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
-        jobs = workflow["jobs"]
-        matrix = jobs["scenarios"]
-        self.assertEqual(matrix["strategy"]["matrix"]["scenario"], list(SCENARIOS))
-        self.assertFalse(matrix["strategy"]["fail-fast"])
-        self.assertEqual(matrix["strategy"]["max-parallel"], 4)
-        self.assertNotIn("continue-on-error", matrix)
-        self.assertNotIn("if", matrix)
-        self.assertEqual(set(jobs["validation"]["needs"]), gate.REQUIRED_JOBS)
-        self.assertEqual(jobs["validation"]["if"], "${{ always() }}")
-        self.assertEqual(jobs["validation"]["name"], "Validation CI Odoo")
-        self.assertNotIn("continue-on-error", jobs["validation"])
-        self.assertEqual(workflow["permissions"], {"contents": "read"})
-        old = subprocess.check_output(
-            ["git", "show", LEDGER["source_commit"] + ":.github/workflows/odoo.yml"], cwd=ROOT, text=True
-        )
-        baseline = yaml.safe_load(old)["jobs"]["catalogue"]
-        self.assertEqual(matrix["services"], baseline["services"])
-        self.assertEqual(matrix["env"]["ODOO_IMAGE"], baseline["env"]["ODOO_IMAGE"])
 
 
 if __name__ == "__main__":
