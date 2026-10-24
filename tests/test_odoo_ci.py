@@ -211,6 +211,19 @@ class FinalGate(unittest.TestCase):
         self.assertIn("Validation Training Management : échec", summary.read_text())
         self.assertIn("feedback", summary.read_text())
 
+    def test_empty_base_evidence_is_rejected(self):
+        for scenario, steps in SCENARIOS.items():
+            for step in steps:
+                path = self.results / f"odoo-{scenario}-results" / (step["step"] + ".log")
+                original = path.read_text()
+                with self.subTest(scenario=scenario, step=step["step"]):
+                    path.write_text("")
+                    try:
+                        with self.assertRaises(ValueError):
+                            gate.validate(self.needs, self.results)
+                    finally:
+                        path.write_text(original)
+
     def test_missing_log_is_rejected(self):
         (self.results / "odoo-fresh-results/s03-concurrency.log").unlink()
         with self.assertRaises(ValueError):

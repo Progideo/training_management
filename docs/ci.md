@@ -86,7 +86,7 @@ actualiser ce contrat et sa justification.
 avec arrêt au premier échec dans un scénario. Les autres scénarios continuent
 (`fail-fast: false`), pour conserver leurs résultats indépendants. La matrice est
 limitée à quatre scénarios simultanés ; le petit job d’orchestration peut aussi
-s’exécuter en parallèle, puis le contrôle final attend les deux ensembles.
+s’exécuter en parallèle, puis le contrôle final attend toutes les tâches spécialisées et le socle.
 Les étapes d’une même base restent strictement séquentielles.
 
 Les bases sont propres à chaque scénario sur des services isolés. Les volumes et
@@ -107,7 +107,7 @@ ne sont pas masqués par `tee`.
   ou résultat manquant sont refusés ;
 - présence des quatre artefacts du socle et des 21 étapes dans l’ordre attendu ;
 - présence des onze artefacts spécialisés et de chaque journal de phase non vide ;
-- codes retour nuls, durées valides et journaux présents.
+- codes retour nuls, durées valides et journaux non vides, y compris pour le socle.
 
 Le job final utilise `needs` et `always()` pour ne pas devenir un succès implicite
 lorsqu’un préalable échoue. Aucune exception `continue-on-error`. Une annulation

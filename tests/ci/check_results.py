@@ -27,8 +27,9 @@ def validate(needs, results):
         for row in rows:
             if row["exit_code"] != "0" or int(row["duration_seconds"]) < 0:
                 raise ValueError(f"{scenario}/{row['step']}: unsuccessful step")
-            if not (folder / (row["step"] + ".log")).is_file():
-                raise ValueError(f"{scenario}/{row['step']}: missing log")
+            log = folder / (row["step"] + ".log")
+            if not log.is_file() or not log.stat().st_size:
+                raise ValueError(f"{scenario}/{row['step']}: missing or empty log")
         durations[scenario] = sum(int(row["duration_seconds"]) for row in rows)
     for job in SPECIALIZED.values():
         for artifact in job["artifacts"]:
