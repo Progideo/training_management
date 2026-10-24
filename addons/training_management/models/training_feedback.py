@@ -269,6 +269,7 @@ class Campaign(models.Model):
 class Recipient(models.Model):
     _name = "training.feedback.recipient"
     _description = "Administrative Feedback Invitation"
+    _rec_name = "user_id"
     _check_company_auto = True
 
     campaign_id = fields.Many2one("training.feedback.campaign", required=True, ondelete="restrict", check_company=True)

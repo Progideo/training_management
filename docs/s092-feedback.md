@@ -116,7 +116,9 @@ Socle `20.0.1.10.0`, intégration Survey `20.0.1.2.1` ; le socle reste installab
 - Superviseur affecté puis retiré, qualité affectée/non affectée, autre client et
   société étrangère : vérifier listes, liens, synthèses et preuves. Contrôler au
   clavier et en largeur 320/390 px : labels, conservation de saisie après erreur,
-  focus sur le message et absence de débordement.
+  focus sur le message et absence de débordement. Inclure une réponse nominative
+  sur plusieurs lignes avec une URL longue ; vérifier les noms dans le journal
+  des invitations et relances.
 - Clôturer, créer le vrai PDF S08 puis une nouvelle collecte/version ; comparer
   les anciens PDF et synthèses. Vérifier l’exclusion client et le gel du dossier.
 - Exécuter [run_s092.sh](../tests/ci/run_s092.sh) : mise à jour depuis S09.1 avec

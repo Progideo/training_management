@@ -187,6 +187,9 @@ class TestFeedback(FeedbackCase):
         notice = campaign.notice_ids.filtered(
             lambda n: n.recipient_id.user_id == users[0] and n.occurrence.startswith("reminder:")
         )
+        self.assertEqual(
+            notice.with_user(self.coordinator).read(["recipient_id"])[0]["recipient_id"][1], users[0].display_name
+        )
         outgoing = notice.mail_id
         self.assertTrue(notice._authorized())
         notice.recipient_id.write({"active": False, "exclusion_reason": "Fictional withdrawal"})
