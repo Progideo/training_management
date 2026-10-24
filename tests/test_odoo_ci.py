@@ -137,7 +137,7 @@ class FinalGate(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.results = Path(self.tmp.name)
-        self.needs = {name: {"result": "success"} for name in ("orchestration", "scenarios")}
+        self.needs = {name: {"result": "success"} for name in gate.REQUIRED_JOBS}
         for scenario, steps in SCENARIOS.items():
             folder = self.results / f"odoo-{scenario}-results"
             folder.mkdir()
@@ -146,6 +146,13 @@ class FinalGate(unittest.TestCase):
                 for step in steps:
                     stream.write(step["step"] + "\t0\t1\n")
                     (folder / (step["step"] + ".log")).write_text("Synthetic orchestration evidence\n")
+
+        for job in gate.SPECIALIZED.values():
+            for artifact in job["artifacts"]:
+                folder = self.results / artifact
+                folder.mkdir()
+                for step in job["steps"]:
+                    (folder / (step + ".log")).write_text("Synthetic specialized evidence\n")
 
     def test_complete_success(self):
         self.assertEqual(sum(gate.validate(self.needs, self.results).values()), 21)
@@ -176,6 +183,33 @@ class FinalGate(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 path.write_text(text)
                 gate.validate(self.needs, self.results)
+
+    def test_specialized_missing_or_empty_evidence_is_rejected(self):
+        for job in gate.SPECIALIZED.values():
+            for artifact in job["artifacts"]:
+                for step in job["steps"]:
+                    path = self.results / artifact / (step + ".log")
+                    original = path.read_text()
+                    for empty in (False, True):
+                        with self.subTest(artifact=artifact, step=step, empty=empty):
+                            path.write_text("") if empty else path.unlink()
+                            with self.assertRaises(ValueError):
+                                gate.validate(self.needs, self.results)
+                            path.write_text(original)
+
+    def test_failed_job_produces_a_failed_verdict_and_summary(self):
+        summary = self.results / "summary.md"
+        needs = {**self.needs, "feedback": {"result": "failure"}}
+        result = subprocess.run(
+            [os.sys.executable, str(ROOT / "tests/ci/check_results.py")],
+            cwd=self.results,
+            env={**os.environ, "NEEDS_JSON": json.dumps(needs), "GITHUB_STEP_SUMMARY": str(summary)},
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Validation Training Management : échec", summary.read_text())
+        self.assertIn("feedback", summary.read_text())
 
     def test_missing_log_is_rejected(self):
         (self.results / "odoo-fresh-results/s03-concurrency.log").unlink()
@@ -213,6 +247,56 @@ class WorkflowContract(unittest.TestCase):
         self.assertEqual(len(original), 21)
         self.assertEqual(current, original)
 
+    def test_single_workflow_preserves_all_specialized_execution_contracts(self):
+        ledger = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
+        jobs = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())["jobs"]
+        self.assertEqual(set(jobs), {*gate.REQUIRED_JOBS, "validation"})
+        self.assertEqual(len(ledger["jobs"]), 10)
+        for name, contract in ledger["jobs"].items():
+            with self.subTest(job=name):
+                original = subprocess.check_output(
+                    ["git", "show", ledger["source_commit"] + ":" + contract["source_workflow"]],
+                    cwd=ROOT,
+                    text=True,
+                )
+                old = yaml.safe_load(original)["jobs"][contract["source_job"]]
+                current = dict(jobs[name])
+                self.assertTrue(current.pop("name"))
+                self.assertEqual(current, old)
+                script = ROOT / contract["script"]
+                self.assertEqual(
+                    script.read_bytes(),
+                    subprocess.check_output(
+                        ["git", "show", ledger["source_commit"] + ":" + contract["script"]],
+                        cwd=ROOT,
+                    ),
+                )
+                steps = re.findall(r"(?m)^(?:[A-Z0-9_]+=[^\n]*? )?step ([a-z0-9_]+) run_odoo", script.read_text())
+                self.assertEqual(contract["steps"], steps)
+                upload = next(step["with"] for step in old["steps"] if step.get("uses") == "actions/upload-artifact@v4")
+                expected = [upload["name"]]
+                if "strategy" in old:
+                    expected = [
+                        upload["name"].replace("${{ matrix.website }}", str(value).lower())
+                        for value in old["strategy"]["matrix"]["website"]
+                    ]
+                self.assertEqual(contract["artifacts"], expected)
+                self.assertFalse((ROOT / contract["source_workflow"]).exists())
+        # Four base jobs, two catalogue variants, nine specialized jobs, style and verdict.
+        self.assertEqual(
+            sum(
+                len(next(iter(job["strategy"]["matrix"].values()))) if "strategy" in job else 1 for job in jobs.values()
+            ),
+            17,
+        )
+        for path in (ROOT / ".github/workflows").glob("*.yml"):
+            workflow = yaml.safe_load(path.read_text())
+            trigger = workflow.get("on", workflow.get(True))
+            if "pull_request" in trigger:
+                self.assertEqual(path.name, "odoo.yml")
+        gate_job = jobs["validation"]
+        self.assertEqual(gate_job["steps"][1]["with"]["pattern"], "*-results*")
+
     def test_parallelism_is_bounded_and_gate_cannot_be_skipped_by_failure(self):
         workflow = yaml.safe_load((ROOT / ".github/workflows/odoo.yml").read_text())
         jobs = workflow["jobs"]
@@ -222,7 +306,7 @@ class WorkflowContract(unittest.TestCase):
         self.assertEqual(matrix["strategy"]["max-parallel"], 4)
         self.assertNotIn("continue-on-error", matrix)
         self.assertNotIn("if", matrix)
-        self.assertEqual(jobs["validation"]["needs"], ["orchestration", "scenarios"])
+        self.assertEqual(set(jobs["validation"]["needs"]), gate.REQUIRED_JOBS)
         self.assertEqual(jobs["validation"]["if"], "${{ always() }}")
         self.assertEqual(jobs["validation"]["name"], "Validation CI Odoo")
         self.assertNotIn("continue-on-error", jobs["validation"])

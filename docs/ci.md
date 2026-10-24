@@ -1,12 +1,42 @@
 # CI Odoo — organisation et couverture
 
 Référence : [issue #47](https://github.com/Progideo/training_management/issues/47).
-Le workflow s’appelle désormais **CI Odoo** ; son contrôle final est
-**Validation CI Odoo**. L’ancien nom `catalogue` venait du premier incrément S01.
-Le 22 octobre 2026, l’API GitHub ne retourne aucun contrôle de statut obligatoire
-pour `main`, ni ruleset applicable ; le renommage ne nécessite aucune modification
-des protections. Si un contrôle requis est ajouté ultérieurement, sélectionner
-le contrôle final, et vérifier les noms avant de les changer.
+Le workflow unique **CI Training Management** regroupe tous les contrôles de PR.
+Son verdict final conserve le nom **Validation CI Odoo**. Il attend toutes les
+tâches, même après un échec. Aucun paramètre de protection GitHub n’est modifié ;
+si des contrôles spécialisés sont requis, remplacer leur sélection par ce verdict
+commun au moment de la fusion, après vérification des protections applicables.
+
+## Vue commune
+
+Les tâches indépendantes se lancent en parallèle, avec leur propre runner,
+PostgreSQL, bases et volumes. Les séquences de préparation, mise à jour et
+comparaison restent internes à chaque tâche. La limite de quatre scénarios
+parallèles du socle et les deux variantes du catalogue sont conservées.
+
+| Tâches | Couverture conservée |
+| --- | --- |
+| Style et orchestration | Contrats de couverture, erreurs et règles Odoo |
+| Socle : progressive, vierge, historiques, Website | Les quatre scénarios décrits ci-dessous |
+| Catalogue et PDF, avec/sans Website | Versions, PDF et concurrence |
+| S02.1 | Protection documentaire et historiques |
+| S04 | Préparation, séances et concurrence |
+| S05.1 / S05.2 | Supports privés, activités, tutorat et portail français |
+| S06 / S07 | Examens blancs, présences et isolation |
+| S08 | Attestations, preuves, historiques et concurrence |
+| S09.1 / S09.2 | Évaluations, retours, droits, anonymat et concurrence |
+
+Les dix anciens workflows spécialisés sont intégrés comme tâches du workflow
+commun ; l’automatisation du Project reste indépendante. Les déclencheurs couvrent
+les addons, tous les tests, les workflows et la configuration de qualité. Modifier
+un scénario ou son orchestration déclenche ainsi toute la validation.
+
+Le contrat [workflow_coverage.json](../tests/ci/workflow_coverage.json) référence
+le code fusionné avant regroupement. Les tests comparent chaque ancienne tâche
+à sa nouvelle définition (commandes, variables, services, matrices, délais et
+artefacts) et vérifient que les scripts sont inchangés. Il recense aussi les
+139 phases spécialisées attendues, en comptant les deux variantes du catalogue.
+Les quatre scénarios du socle conservent leur contrat historique de 21 étapes.
 
 ## Style et règles Odoo
 
@@ -73,9 +103,10 @@ ne sont pas masqués par `tee`.
 
 [check_results.py](../tests/ci/check_results.py) exige :
 
-- succès des jobs d’orchestration et de la matrice ; échec, annulation, exclusion
+- succès de toutes les tâches, dont les deux matrices ; échec, annulation, exclusion
   ou résultat manquant sont refusés ;
-- présence des quatre artefacts et des 21 étapes dans l’ordre attendu ;
+- présence des quatre artefacts du socle et des 21 étapes dans l’ordre attendu ;
+- présence des onze artefacts spécialisés et de chaque journal de phase non vide ;
 - codes retour nuls, durées valides et journaux présents.
 
 Le job final utilise `needs` et `always()` pour ne pas devenir un succès implicite
@@ -84,20 +115,9 @@ globale peut annuler le contrôle final lui-même ; elle ne produit pas de succ�
 Voir les références officielles GitHub sur [les dépendances entre jobs](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-jobs)
 et [les matrices et leur concurrence](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations).
 
-## Mesures et coût
-
-La CI précédente [n° 71](https://github.com/Progideo/training_management/actions/runs/39789685043)
-exécutait un seul job `catalogue` : **348 secondes**, du début à la fin du job
-(données API GitHub). Les durées de la nouvelle exécution sont consignées dans
-la PR, avec durée écoulée et somme des durées des jobs. La synthèse GitHub donne
-aussi la somme des étapes de chaque scénario ; ces mesures excluent préparation
-des runners, services et transferts d’artefacts, et ne sont donc pas directement
-comparables aux durées complètes des jobs.
-
-La parallélisation vise le délai de retour ; elle ne garantit pas une diminution
-du temps machine cumulé. Quatre démarrages PostgreSQL/Odoo, téléchargements et
-runners peuvent augmenter le cumul. Les quotas du compte et les files d’attente
-peuvent réduire le parallélisme effectif. Aucun achat ni changement de quota.
+La synthèse du verdict commun présente tous les scénarios et les phases vérifiées.
+Les mesures de durée du socle restent disponibles. L’objectif du regroupement est
+la lisibilité ; aucun scénario ni test n’est retiré pour réduire les minutes.
 
 ## Recette
 
@@ -106,12 +126,13 @@ peuvent réduire le parallélisme effectif. Aucun achat ni changement de quota.
    couverture, isolation, arrêt après panne injectée dans chaque scénario,
    propagation via `tee`, et refus des résultats incomplets/non réussis.
 2. Vérifier la syntaxe Bash et GitHub Actions (actionlint 1.7.7 utilisé localement).
-3. Sur la PR, attendre les quatre scénarios Odoo réels, le job d’orchestration
-   et **Validation CI Odoo**, tous réussis ; examiner les quatre artefacts et
-   la synthèse. Les doubles Docker des tests d’orchestration ne remplacent pas
-   ces exécutions réelles.
-4. Comparer les durées complètes aux données du run n° 71 et documenter la limite
-   d’une comparaison entre deux exécutions, sans prétendre à un benchmark stable.
+3. Sur la PR, vérifier une seule exécution **CI Training Management**, ses 17
+   tâches nommées (matrices comprises), leurs quinze artefacts et le verdict
+   **Validation CI Odoo**. Examiner les scénarios spécialisés et la synthèse ;
+   les doubles Docker ne remplacent pas les exécutions Odoo réelles.
+4. Les tests de l’orchestration injectent des échecs et vérifient le refus de
+   toutes les tâches non réussies, des journaux manquants/vides et des phases
+   incomplètes. Un échec produit aussi une synthèse finale explicite.
 
 Cette modification concerne la CI uniquement ; aucune fusion ni aucun déploiement
 n’est autorisé par cette documentation.
