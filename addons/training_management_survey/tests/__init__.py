@@ -7,3 +7,5 @@ from . import test_feedback
 
 from . import test_dashboard
 from . import test_security
+
+from . import test_l01
