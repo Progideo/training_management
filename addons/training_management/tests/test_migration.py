@@ -1,6 +1,7 @@
 """M01: demonstrate the native Contacts import contract; no old schema is assumed."""
 
 import csv
+import json
 
 from odoo import Command
 from odoo.tests import TransactionCase, new_test_user, tagged
@@ -117,3 +118,50 @@ class TestNativeMigrationContacts(TransactionCase):
         self.assertTrue([m for m in result["messages"] if m["type"] == "error"])
         self.assertEqual(foreign.name, "Private fictional M01 Contact")
         self.assertEqual(foreign.company_id, other_company)
+
+    def test_native_ice_json_replay_export_and_company_scope(self):
+        with file_open("training_management/tests/data/m01_contacts_identifiers.csv", "r") as stream:
+            self.fields, *rows = list(csv.reader(stream))
+        users = self.env["res.users"].with_context(active_test=False).search_count([])
+        mails = self.env["mail.mail"].search_count([])
+        contacts = self.native_import(rows)
+        expected = {"MA_ICE": "000000000000097"}  # Synthetic checksum-compatible fixture, no fiscal validity.
+        self.assertEqual(contacts[0].additional_identifiers, expected)
+        self.assertEqual(contacts[1].additional_identifiers, expected)
+        self.assertFalse(contacts[2].additional_identifiers)
+        self.assertEqual(self.native_import(rows), contacts)
+        exported = contacts.with_user(self.operator).with_context(lang="en_US").export_data(self.fields)["datas"]
+        for actual, original in zip(exported, rows, strict=True):
+            self.assertEqual(json.loads(actual[-1] or "{}"), json.loads(original[-1]))
+        self.assertFalse(any(contacts.mapped("active")))
+        self.assertFalse(contacts.user_ids)
+        self.assertEqual(self.env["res.users"].with_context(active_test=False).search_count([]), users)
+        self.assertEqual(self.env["mail.mail"].search_count([]), mails)
+        self.assertFalse(contacts.with_user(self.env.ref("base.public_user")).has_access("read"))
+        other_company = self.env["res.company"].create({"name": "Fictional ICE Other Company"})
+        other = new_test_user(
+            self.env,
+            login="m01_ice_other",
+            groups="base.group_user,base.group_partner_manager",
+            company_id=other_company.id,
+            company_ids=[Command.set(other_company.ids)],
+        )
+        self.assertFalse(contacts.with_user(other).has_access("read"))
+        portal = new_test_user(self.env, login="m01_ice_portal", groups="base.group_portal")
+        self.assertFalse(contacts.with_user(portal).has_access("read"))
+        # A deliberate, qualified source change updates the same archived identities.
+        changed = [list(row) for row in rows]
+        for row in changed[:2]:
+            row[-1] = '{"MA_ICE": "000000000000000"}'
+        self.assertEqual(self.native_import(changed), contacts)
+        self.assertEqual(contacts[0].additional_identifiers, {"MA_ICE": "000000000000000"})
+        self.assertEqual(contacts[1].additional_identifiers, contacts[0].additional_identifiers)
+
+    def test_native_ice_bad_checksum_rolls_back_batch(self):
+        with file_open("training_management/tests/data/m01_contacts_identifiers.csv", "r") as stream:
+            fields, *rows = list(csv.reader(stream))
+        rows[1][-1] = '{"MA_ICE": "000000000000096"}'
+        result = self.env["res.partner"].with_user(self.operator).with_context(import_file=True).load(fields, rows)
+        self.assertTrue([m for m in result["messages"] if m["type"] == "error"])
+        for row in rows:
+            self.assertFalse(self.env.ref(row[0], raise_if_not_found=False))
