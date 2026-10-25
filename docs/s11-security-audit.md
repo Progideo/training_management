@@ -58,7 +58,8 @@ exceptionnel nouveau n’est accordé.
 
 Les fiches portent un titre traduit (« Manifeste d’export nº… »), calculé par
 le mécanisme natif `display_name`, sans nouveau champ stocké ni modification
-des preuves existantes.
+des preuves existantes. Le titre complet reste aussi dans la fiche pour les
+petits écrans où la barre native de navigation est tronquée.
 
 « Mes manifestes d’export » présente seulement les nouveaux manifestes de
 l’acteur, dans ses sociétés sélectionnées. Ils ne contiennent pas les valeurs
