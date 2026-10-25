@@ -12,24 +12,6 @@ from .training_attachment import CONFIDENTIAL_MODELS
 _logger = logging.getLogger(__name__)
 
 
-class TrainingAccessDiagnostic(models.Model):
-    _inherit = "ir.access"
-
-    def _make_record_access_error(self, records, operation):
-        if records._name.startswith("training."):
-            # Native debug diagnostics resolve display names with sudo. Even
-            # an identifier guessed by an unauthorized user must reveal no name.
-            _logger.info(
-                "Training access denied: uid=%s model=%s operation=%s records=%s",
-                self.env.uid,
-                records._name,
-                operation,
-                records.ids[:6],
-            )
-            return AccessError(self.env._("This private training record is unavailable."))
-        return super()._make_record_access_error(records, operation)
-
-
 class TrainingSecurityPolicy(models.AbstractModel):
     _inherit = "training.document.policy"
 
@@ -95,23 +77,6 @@ class TrainingSecurityPolicy(models.AbstractModel):
                 document.id,
                 self.env.su or self.env.user.has_group("base.group_system"),
             )
-
-
-class TrainingSecurityBinary(models.AbstractModel):
-    _inherit = "ir.binary"  # pylint: disable=consider-merging-classes-inherited  # Keep access auditing separate from binary authorization.
-
-    def _get_stream_from(
-        self,
-        record,
-        field_name="raw",
-        filename=None,
-        filename_field="name",
-        mimetype=None,
-        default_mimetype="application/octet-stream",
-    ):
-        stream = super()._get_stream_from(record, field_name, filename, filename_field, mimetype, default_mimetype)
-        self.env["training.document.policy"]._audit_file_read(record)
-        return stream
 
 
 class TrainingExportAudit(models.Model):

@@ -34,7 +34,7 @@ class IrBinary(models.AbstractModel):
             # recipients. A field-level group is not dossier authorization:
             # a client may also be a quality reviewer on unrelated dossiers.
             filename_field = "filename"
-        return super()._get_stream_from(
+        stream = super()._get_stream_from(
             record,
             field_name,
             filename,
@@ -42,3 +42,5 @@ class IrBinary(models.AbstractModel):
             mimetype,
             default_mimetype,
         )
+        self.env["training.document.policy"]._audit_file_read(record)
+        return stream
