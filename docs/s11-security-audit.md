@@ -9,7 +9,10 @@ contrôleurs, exports et vues restent ceux d’Odoo et des modules officiels. Le
 exact du résolveur `ir.binary`, du diagnostic `ir.access` et de l’export ORM a été
 pris comme référence. `ir.exports` conserve les modèles de colonnes d’export,
 pas un journal des extractions : le seul nouveau modèle S11 conserve le manifeste
-exigé par SEC02. Les règles spécifiques complètent les contrôles natifs aux
+exigé par SEC02. Le contrôleur officiel trace déjà l’auteur, le modèle, les champs
+et un échantillon d’identifiants dans ses logs ; ce complément conserve le
+périmètre complet et immuable par société, sans journal parallèle des valeurs.
+Les règles spécifiques complètent les contrôles natifs aux
 frontières où un jeton ou un export d’identifiant peut les contourner.
 
 ## Matrice des frontières et preuves
@@ -38,7 +41,10 @@ Les aménagements rejoignent la politique documentaire commune pour le
 téléchargement, l’aperçu PDF et les en-têtes `private, no-store`. L’ancien jeton
 ne remplace jamais la mission courante ; les fichiers ordinaires Odoo conservent
 leur fonctionnement natif. Les courriels ne distribuent pas ces pièces, ni les
-fichiers privés d’examen ou de réponse. Les notifications métier continuent de
+fichiers privés d’examen ou de réponse. Le groupe coordonnateur ne remplace pas
+les règles natives du parent Survey : les réponses d’évaluation exclues de la
+lecture native restent exclues des fichiers et aperçus. Un lien de fichier dont
+le parent a disparu est refusé. Les notifications métier continuent de
 recontrôler leurs destinataires au transport.
 
 Les refus des modèles `training.*` donnent une erreur générique, y compris en

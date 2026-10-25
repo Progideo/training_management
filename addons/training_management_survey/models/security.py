@@ -1,7 +1,7 @@
 """Apply the common preview/cache/mail boundary to private native exam files."""
 
 from odoo import api, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 
 from .binary import _training_exam
 
@@ -17,7 +17,10 @@ def private_source(record):
             "survey.user_input",
             "survey.user_input.line",
         ):
-            target = record.env[model].sudo().browse(target.res_id).exists()
+            source_id = target.res_id
+            target = record.env[model].sudo().browse(source_id).exists()
+            if source_id and not target:
+                raise AccessError(record.env._("This private training record is unavailable."))
     return target
 
 
@@ -51,12 +54,16 @@ class SurveySecurityPolicy(models.AbstractModel):
     def _can_read(self, record):
         if feedback_file(record):
             return False
-        exam = _training_exam(private_source(record))
+        source = private_source(record)
+        exam = _training_exam(source)
         if exam:
             return bool(
                 self.env.user.active
                 and self.env.user.has_group("training_management.group_training_coordinator")
                 and exam.training_company_id in self.env.companies
+                # Classification and coordinator membership never replace the
+                # native parent rules, especially for S09 evaluation answers.
+                and source.with_env(self.env(su=False)).has_access("read")
             )
         return super()._can_read(record)
 

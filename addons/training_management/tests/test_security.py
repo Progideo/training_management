@@ -1,6 +1,9 @@
 """SEC01–02: transversal gaps, complementing the existing workflow suites."""
 
+import io
+import json
 from unittest.mock import patch
+import zipfile
 
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
@@ -138,6 +141,40 @@ class TestSecurity(SecurityCase):
 
 @tagged("post_install", "-at_install")
 class TestSecurityHttp(SecurityCase, HttpCase):
+    def test_official_csv_xlsx_exports_keep_scope_and_manifests(self):
+        enrollment = self.enrollment(self.delivery())
+        audit = self.env["training.export.audit"]
+        before = audit.search_count([])
+        self.authenticate(self.coordinator.login, self.coordinator.login)
+        payload = json.dumps(
+            {
+                "model": enrollment._name,
+                "ids": enrollment.ids,
+                "domain": [],
+                "import_compat": False,
+                "fields": [{"name": "id", "label": "ID"}, {"name": "state", "label": "State"}],
+            }
+        )
+        for index, kind in enumerate(("csv", "xlsx"), start=1):
+            response = self.url_open(f"/web/export/{kind}", data={"data": payload, "csrf_token": self.csrf_token()})
+            self.assertEqual(response.status_code, 200)
+            if kind == "csv":
+                labels = dict(
+                    enrollment.with_context(lang=self.coordinator.lang).fields_get(["state"])["state"]["selection"]
+                )
+                self.assertIn(labels[enrollment.state], response.text)
+            else:
+                with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+                    self.assertIn("xl/worksheets/sheet1.xml", archive.namelist())
+            self.assertEqual(audit.search_count([]), before + index)
+        self.internal.sudo().group_ids += self.env.ref("base.group_allow_export")
+        self.authenticate(self.internal.login, self.internal.login)
+        response = self.url_open("/web/export/csv", data={"data": payload, "csrf_token": self.csrf_token()})
+        # This is the official controller's serialized error response.
+        self.assertEqual(response.status_code, 500)
+        self.assertNotIn(enrollment.participant_id.name, response.text)
+        self.assertEqual(audit.search_count([]), before + 2)
+
     def test_confidential_pdf_preview_rechecks_role_and_cache(self):
         delivery, _adaptation, attachment = self.confidential_file()
         preview = f"/mail/attachment/pdf_first_page/{attachment.id}?access_token={attachment._get_ownership_token()}"

@@ -3,13 +3,38 @@
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, tagged
+from odoo.tools.misc import limited_field_access_token
 
 from .test_exam import ExamCase
 from .test_feedback import FeedbackCase
+from .test_evaluation import NativeEvaluationCase
+
+
+def legacy_pdf(case, model, record_id):
+    """Simulate only a historical pointer; current factories stay protected."""
+    attachment = case.env["ir.attachment"].create(
+        {
+            "name": "private-legacy.pdf",
+            "raw": case.program.pdf_attachment_id.raw.content,
+        }
+    )
+    case.env.cr.execute(
+        "UPDATE ir_attachment SET res_model=%s, res_id=%s WHERE id=%s",
+        (model, record_id, attachment.id),
+    )
+    attachment.invalidate_recordset(["res_model", "res_id"])
+    return attachment
 
 
 @tagged("post_install", "-at_install")
 class TestExamSecurity(ExamCase, HttpCase):
+    def test_orphan_survey_pdf_token_cannot_replace_a_parent(self):
+        question_id = self.env["survey.question"].search([], order="id desc", limit=1).id + 10000
+        attachment = legacy_pdf(self, "survey.question", question_id)
+        url = f"/mail/attachment/pdf_first_page/{attachment.id}?access_token={attachment._get_ownership_token()}"
+        self.authenticate(self.coordinator.login, self.coordinator.login)
+        self.assertEqual(self.url_open(url).status_code, 404)
+
     def test_native_exam_export_keeps_scope_and_ordinary_survey_unchanged(self):
         _exam, question, _other_question = self.exam()
         audit = self.env["training.export.audit"].with_user(self.coordinator)
@@ -93,3 +118,25 @@ class TestFeedbackSecurity(FeedbackCase, HttpCase):
             self.assertEqual(self.url_open(url).status_code, 404)
         self.authenticate(None, None)
         self.assertEqual(self.url_open(url).status_code, 404)
+
+
+@tagged("post_install", "-at_install")
+class TestEvaluationFileSecurity(NativeEvaluationCase, HttpCase):
+    def test_native_parent_rules_protect_evaluation_response_files(self):
+        row, _grant, _survey, question = self.native_evaluation()
+        service = self.env["training.evaluation.service"].with_user(self.portal)
+        service._start(row.id)
+        service._save_answers(row.id, {question.id: question.suggested_answer_ids[:1].ids}, submit=True)
+        attempt = self.env["survey.user_input"].search([("training_evaluation_assignment_id", "=", row.id)])
+        self.assertFalse(attempt.with_user(self.coordinator).has_access("read"))
+        attachment = legacy_pdf(self, attempt._name, attempt.id)
+        token = limited_field_access_token(attachment, "raw", scope="binary")
+        urls = (
+            f"/web/content/{attachment.id}?access_token={token}",
+            f"/mail/attachment/pdf_first_page/{attachment.id}?access_token={attachment._get_ownership_token()}",
+        )
+        self.authenticate(self.coordinator.login, self.coordinator.login)
+        for url in urls:
+            response = self.url_open(url)
+            self.assertEqual(response.status_code, 404)
+            self.assertNotIn(attachment.raw.content, response.content)
