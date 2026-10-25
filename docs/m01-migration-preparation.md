@@ -43,12 +43,19 @@ validation. Le contrat 2 ajoute :
   `[modèle_source, champ_source]` de l’extraction. Comparer cette liste au relevé
   privé des 44 correspondances approuvées ; l’exemple ne remplace pas ce relevé.
 - `field_mappings` : exactement une décision par couple, avec `source`, `policy`,
-  `records` (couples lot/identifiant), `archive` (couples archive/identifiant) et
+  `records` (couples lot/identifiant uniques), `expected_record_count` (leur nombre),
+  `archive` (couples archive/identifiant) et
   `qualification` lorsque le sens ou l’affectation exige un contrôle métier.
   Les références doivent exister. Chaque champ persistant doit renvoyer à des
   originaux locaux vérifiés ; ces archives doivent effectivement couvrir ses
   valeurs, relations et provenance. L’outil vérifie liens et empreintes, pas leur
   exhaustivité sémantique. Les assistants transitoires n’ont aucune ligne à importer.
+
+Un champ inutilisé peut déclarer zéro ligne : `records: []`,
+`expected_record_count: 0`, justification de cette absence et archive des
+métadonnées/preuves de contrôle. Ne pas inventer de question ou de ligne cible
+pour satisfaire le plan. Un inventaire réellement vide déclare zéro champ et
+zéro correspondance. La fidélité de ces constats à la source reste à contrôler.
 
 Les décisions absentes, en double, hors inventaire, sans qualification requise
 ou sans originaux bloquent tout CSV. La qualification est une déclaration humaine,

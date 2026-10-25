@@ -58,7 +58,6 @@ def inspect_mappings(bundle):
     if (
         not isinstance(inventory, dict)
         or not isinstance(inventory.get("fields"), list)
-        or not inventory["fields"]
         or any(not pair(p) for p in inventory["fields"])
         or type(inventory.get("expected_count")) is not int
         or inventory["expected_count"] != len(inventory["fields"])
@@ -82,7 +81,7 @@ def inspect_mappings(bundle):
     for index, mapping in enumerate(mappings):
         if (
             not isinstance(mapping, dict)
-            or set(mapping) - {"source", "policy", "records", "archive", "qualification"}
+            or set(mapping) - {"source", "policy", "records", "archive", "qualification", "expected_record_count"}
             or not pair(mapping.get("source"))
             or not isinstance(mapping.get("policy"), str)
             or mapping["policy"] not in POLICIES
@@ -101,6 +100,16 @@ def inspect_mappings(bundle):
         for refs in (records, archives):
             if not isinstance(refs, list) or any(not pair(r) or tuple(r) not in identities for r in refs):
                 fail("field_mapping_reference_unresolved", index)
+        expected = mapping.get("expected_record_count")
+        if (
+            type(expected) is not int
+            or expected < 0
+            or not isinstance(records, list)
+            or expected != len(records)
+            or any(not pair(r) for r in records)
+            or len({tuple(r) for r in records if pair(r)}) != len(records)
+        ):
+            fail("field_record_count_mismatch", index)
         if action == "exclude_transient":
             if records != [] or archives != []:
                 fail("transient_records_not_migrated", index)
@@ -113,7 +122,10 @@ def inspect_mappings(bundle):
             ):
                 fail("field_originals_archive_missing", index)
             if action not in ("archive", "reserve") and not records:
-                fail("field_target_records_missing", index)
+                # An unused source field must not require inventing a target row.
+                # Its explicit zero count, qualification and metadata archive remain required.
+                if expected != 0 or not isinstance(notes, str) or not notes.strip():
+                    fail("field_empty_selection_unqualified", index)
         if mapping["policy"] == "ice" and isinstance(records, list):
             for ref in records:
                 if pair(ref) and ref[0] == "contacts":

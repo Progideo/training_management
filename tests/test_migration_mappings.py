@@ -88,9 +88,9 @@ class MigrationMappings(unittest.TestCase):
 
     def test_ice_requires_explicit_per_contact_mapping_and_country(self):
         # Both parent and linked contact need provenance before generating their JSON.
-        self.mapping("ice")["records"].append(["contacts", "person-1"])
         self.assertFalse(self.codes())
         self.mapping("ice")["records"] = []
+        self.mapping("ice")["expected_record_count"] = 0
         self.assertIn("ice_contact_mapping_required", self.codes())
         self.bundle["lots"]["contacts"]["records"][0]["values"]["country_xmlid"] = "base.fr"
         self.assertIn("contact_identifiers_unresolved", self.codes())
@@ -145,3 +145,35 @@ class MigrationMappings(unittest.TestCase):
             self.assertEqual(main([str(source), str(destination)]), 2)
             self.assertFalse((destination / "contacts.csv").exists())
             self.assertFalse((destination / "mapping-plan.json").exists())
+
+    def test_empty_field_selection_requires_explicit_count_qualification_and_archive(self):
+        mapping = self.mapping("answer_image")
+        mapping["records"] = []
+        self.assertIn("field_record_count_mismatch", self.codes())
+        mapping["expected_record_count"] = 0
+        mapping["qualification"] = "No source image; metadata and absence check archived, no invented question."
+        self.assertFalse(self.codes())
+        mapping["qualification"] = ""
+        self.assertIn("field_empty_selection_unqualified", self.codes())
+        mapping["qualification"] = "Declared absent"
+        mapping["archive"] = []
+        self.assertIn("field_originals_archive_missing", self.codes())
+
+    def test_field_record_counts_and_duplicate_references_fail_closed(self):
+        mapping = self.mapping("duration")
+        for invalid in (None, True, -1, "1", 0, 2):
+            mapping["expected_record_count"] = invalid
+            self.assertIn("field_record_count_mismatch", self.codes())
+        mapping["records"] *= 2
+        mapping["expected_record_count"] = 2
+        self.assertIn("field_record_count_mismatch", self.codes())
+
+    def test_source_without_specific_fields_needs_no_invented_mapping(self):
+        self.bundle["field_inventory"] = {"expected_count": 0, "fields": []}
+        self.bundle["field_mappings"] = []
+        for row in self.bundle["lots"]["contacts"]["records"]:
+            row["values"].pop("additional_identifiers", None)
+        self.assertFalse(self.codes())
+        report = inspect(self.bundle, EXAMPLE.parent)
+        self.assertEqual(report["field_mapping_count"], 0)
+        self.assertFalse(report["cutover_authorized"])
