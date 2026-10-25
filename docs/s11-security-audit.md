@@ -45,7 +45,7 @@ Les refus des modèles `training.*` donnent une erreur générique, y compris en
 mode développeur : aucun nom de participant, sujet ou nom de fichier n’est
 résolu pour le diagnostic. Les journaux serveur ajoutent les identifiants
 d’acteur, société, modèle et source lors de la préparation autorisée d’un fichier
-protégé, et signalent le contexte privilégié. Ils ne recopient ni contenu, ni
+protégé, et signalent le contexte privilégié. Ces nouvelles traces ne recopient ni contenu, ni
 adresse, ni jeton. Une préparation de flux ne prouve pas sa réception complète.
 Leur accès et conservation relèvent de l’exploitation ; aucun droit de support
 exceptionnel nouveau n’est accordé.
@@ -55,8 +55,9 @@ l’acteur, dans ses sociétés sélectionnées. Ils ne contiennent pas les vale
 exportées et n’ouvrent aucun accès aux sources. Ils sont immuables et exclus de
 l’export en masse. Les manifestes S04 et S10 existants restent leurs sources de
 référence, sans double journal. Le hook ORM hérité de `base._export_rows` ne
-modifie le comportement que des modèles `training.*`, après leurs propres
-protections ; aucun patch du cœur.
+modifie le comportement que des modèles `training.*` et des examens Surveys
+rattachés à Training Management, après leurs propres protections. Les enquêtes
+ordinaires restent natives ; aucun patch du cœur.
 
 ## Conservation et instruction humaine
 

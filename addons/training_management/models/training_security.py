@@ -132,14 +132,16 @@ class TrainingExportAudit(models.Model):
         # The caller checked the entire source recordset and successfully built
         # its export. Retain scope, not values, names, emails or private answers.
         records.check_access("read")
-        if "company_id" not in records._fields:
-            return
-        for company in records.company_id:
-            rows = records.filtered(lambda row: row.company_id == company)
+        grouped = {}
+        for row in records:
+            company = row._training_export_company()
+            if company:
+                grouped[company.id] = grouped.get(company.id, records.browse()) | row
+        for company_id, rows in grouped.items():
             manifest = {"model": records._name, "ids": sorted(rows.ids), "fields": columns, "population": len(rows)}
             self._create_evidence(
                 {
-                    "company_id": company.id,
+                    "company_id": company_id,
                     "actor_id": self.env.uid,
                     "exported_at": fields.Datetime.now(),
                     "model_name": records._name,
@@ -152,23 +154,29 @@ class TrainingExportAudit(models.Model):
 class TrainingExportScope(models.AbstractModel):
     _inherit = "base"
 
+    @api.private
+    def _training_export_records(self):
+        return self if self._name.startswith("training.") else self.browse()
+
+    @api.private
+    def _training_export_company(self):
+        self.ensure_one()
+        return self.company_id if "company_id" in self._fields else self.env["res.company"]
+
     def _export_rows(self, fields, *, _is_toplevel_call=True):
-        training = self._name.startswith("training.")
-        if training:
+        records = self._training_export_records()
+        if records:
             # Native export of the external identifier can avoid any field read.
             # Enforce the record rules even for that path and nested traversal.
-            self.check_access("read")
+            if not self.env.user.active:
+                raise AccessError(self.env._("This private training record is unavailable."))
+            records.check_access("read")
         result = super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
-        if (
-            training
-            and self
-            and self._name
-            not in (
-                "training.adaptation",
-                "training.adaptation.history",
-                "training.dashboard.line",
-            )
+        if records and self._name not in (
+            "training.adaptation",
+            "training.adaptation.history",
+            "training.dashboard.line",
         ):
             # These three sources already retain their own immutable manifest.
-            self.env["training.export.audit"]._record_export(self, fields)
+            self.env["training.export.audit"]._record_export(records, fields)
         return result

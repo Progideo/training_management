@@ -65,3 +65,24 @@ class SurveySecurityPolicy(models.AbstractModel):
         if document and (feedback_file(document) or _training_exam(private_source(document))):
             raise ValidationError(self.env._("Do not distribute private exam or feedback files through email."))
         return super()._check_send(document, partners, **kwargs)
+
+
+class SurveyExportScope(models.AbstractModel):
+    _inherit = "base"
+
+    @api.private
+    def _training_export_records(self):
+        if self._name in (
+            "survey.survey",
+            "survey.question",
+            "survey.question.answer",
+            "survey.user_input",
+            "survey.user_input.line",
+        ):
+            return self.filtered(lambda row: bool(_training_exam(row)))
+        return super()._training_export_records()
+
+    @api.private
+    def _training_export_company(self):
+        exam = _training_exam(self)
+        return exam.training_company_id if exam else super()._training_export_company()

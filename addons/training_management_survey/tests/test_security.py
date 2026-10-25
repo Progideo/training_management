@@ -1,7 +1,7 @@
 """SEC01: native previews must not bypass exam or response confidentiality."""
 
 from odoo import Command
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, tagged
 
 from .test_exam import ExamCase
@@ -10,6 +10,22 @@ from .test_feedback import FeedbackCase
 
 @tagged("post_install", "-at_install")
 class TestExamSecurity(ExamCase, HttpCase):
+    def test_native_exam_export_keeps_scope_and_ordinary_survey_unchanged(self):
+        _exam, question, _other_question = self.exam()
+        audit = self.env["training.export.audit"].with_user(self.coordinator)
+        prior = audit.search([])
+        question.export_data(["id", "title"])
+        created = audit.search([]) - prior
+        self.assertEqual(len(created), 1)
+        self.assertEqual(created.model_name, question._name)
+        self.assertEqual(created.manifest["ids"], question.ids)
+        ordinary = self.env["survey.survey"].with_user(self.coordinator).create({"title": "Ordinary survey"})
+        ordinary.export_data(["title"])
+        self.assertEqual(audit.search_count([]), len(prior) + 1)
+        self.coordinator.sudo().active = False
+        with self.assertRaises(AccessError):
+            question.export_data(["id"])
+
     def test_exam_pdf_preview_current_coordinator_and_private_cache(self):
         exam, question, _choice = self.exam()
         attachment = (

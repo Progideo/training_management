@@ -35,8 +35,16 @@ def fingerprints(columns):
     result = {}
     for table, names in columns.items():
         env.cr.execute(SQL("SELECT %s FROM %s", SQL(",").join(map(SQL.identifier, names)), SQL.identifier(table)))
+
+        # psycopg returns bytea as memoryview: str(value) includes a process
+        # address and changes even for identical bytes. Hash the actual bytes.
+        def stable(value):
+            return (
+                hashlib.sha256(value).hexdigest() if isinstance(value, (bytes, bytearray, memoryview)) else str(value)
+            )
+
         result[table] = hashlib.sha256(
-            json.dumps(sorted(json.dumps(row, default=str, sort_keys=True) for row in env.cr.fetchall())).encode()
+            json.dumps(sorted(json.dumps(row, default=stable, sort_keys=True) for row in env.cr.fetchall())).encode()
         ).hexdigest()
     return result
 
@@ -186,7 +194,9 @@ if phase == "baseline":
     print("S11_BASELINE_HISTORY_READY")
 elif phase == "verify":
     saved = json.loads(env["ir.config_parameter"].search([("key", "=", key)]).value)
-    assert fingerprints(saved["columns"]) == saved["fingerprints"]
+    actual = fingerprints(saved["columns"])
+    changed = [table for table, expected in saved["fingerprints"].items() if actual[table] != expected]
+    assert not changed, "Retained table fingerprints changed: %s" % changed
     assert visibility_schema() == saved["visibility"]
     assert env["training.notification"].search_count([]) == saved["notices"]
     assert env["training.request.notice"].search_count([]) == saved["requests"]
@@ -201,7 +211,9 @@ elif phase == "verify":
         == saved["files"]["attachment"]
     )
     assert (
-        hashlib.sha256(lines.enrollment_id.program_id.pdf_attachment_id.raw.content).hexdigest()
+        hashlib.sha256(
+            env["training.enrollment"].browse(saved["enrollment"]).program_id.pdf_attachment_id.raw.content
+        ).hexdigest()
         == saved["files"]["program"]
     )
     assert (
