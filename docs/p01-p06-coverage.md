@@ -73,3 +73,19 @@ L01 et la reprise réelle M01 restent distinctes ; cette matrice ne vaut pas dé
 de lancement. Website et eLearning ne deviennent pas des dépendances du socle.
 Le mini-quiz P04 utilise deux choix publics sans tentative persistée : Surveys,
 déjà intégré aux véritables évaluations, n’est pas imposé au catalogue seul.
+
+## Actions et comptes concernés
+
+| Compte / espace | Lecture et téléchargement | Création / soumission / validation | Modification et export |
+| --- | --- | --- | --- |
+| Public / Portal-QWeb | Programme explicitement approuvé et publié, extrait public | Demande CRM par service borné ; mini-quiz sans résultat métier | Aucun accès ORM métier ni export |
+| Portail représentant / portail étendu | Projection des demandes de son client/exploitant ; seuls lots, participants et PDF habilités | Nomination ; accord sur une version intra soumise | Ni modification de variante, ni inscription/activation, ni export métier ; révocation recontrôlée à chaque route |
+| Portail participant ou formateur/tuteur | Droits personnels S03–S11 inchangés | Remises, évaluations, examens et émargement existants | Aucun élargissement par rôle représentant ; cumul de mandats explicites possible |
+| Interne coordination / gestion native | Nouveaux modèles dans les sociétés autorisées | Habilitations, documents client, versions intra, confirmation et traitement des nominations | ACL/règles/groupes natifs ; versions et preuves figées ; exports tracés par S11 |
+| Interne commercial / CRM-Ventes | CRM et métadonnées de réalisation selon ACL natives ; documents commerciaux S02.1 | Qualification et devis natifs | Aucun accès aux variantes/PDF intra ; pointeur de version de réalisation réservé à la coordination côté serveur |
+
+Une habilitation P05 reste valable jusqu’à révocation explicite ; elle ne se
+réattribue pas lors d’un changement d’employeur et ne crée aucun droit sur le
+nouvel employeur. Le responsable révise puis révoque l’ancien mandat si nécessaire.
+Les durées pédagogiques et l’expiration des accès participants restent gérées par
+S03. Aucun nouveau compte interne, service séparé ou coût de composant n’est introduit.

@@ -229,7 +229,12 @@ class TrainingIntraDelivery(models.Model):
     _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # intra content lifecycle is separate from attendance and scheduling
 
     intra_version_id = fields.Many2one(
-        "training.intra.version", readonly=True, copy=False, ondelete="restrict", check_company=True
+        "training.intra.version",
+        readonly=True,
+        copy=False,
+        ondelete="restrict",
+        check_company=True,
+        groups="training_management.group_training_coordinator",
     )
     intra_version_ids = fields.One2many(
         "training.intra.version", "delivery_id", groups="training_management.group_training_coordinator"

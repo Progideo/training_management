@@ -1,6 +1,6 @@
 from odoo import Command
 from odoo.exceptions import AccessError
-from odoo.tests import HttpCase, tagged
+from odoo.tests import HttpCase, new_test_user, tagged
 
 from odoo.addons.training_management.tests.test_catalogue import CatalogueCase
 
@@ -47,3 +47,30 @@ class TestCompanyRequests(CatalogueCase, HttpCase):
             self.env["crm.lead"].with_user(self.portal).search([])
         grant.action_revoke()
         self.assertNotIn("Authorised client request", self.url_open("/my/company-trainings").text)
+
+    def test_sales_read_delivery_metadata_without_private_variant_pointer(self):
+        program = self.new_program()
+        program.action_validate()
+        delivery = (
+            self.env["training.delivery"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Fictional commercial delivery",
+                    "program_id": program.id,
+                    "kind": "autonomous",
+                    "access_policy": "duration",
+                    "access_days": 10,
+                }
+            )
+        )
+        salesperson = new_test_user(
+            self.env,
+            login="p06_sales_reader",
+            groups="sales_team.group_sale_salesman",
+            company_id=self.company.id,
+            company_ids=[Command.set(self.company.ids)],
+        )
+        self.assertEqual(delivery.with_user(salesperson).read(["name"])[0]["name"], delivery.name)
+        with self.assertRaises(AccessError):
+            delivery.with_user(salesperson).read(["intra_version_id"])
