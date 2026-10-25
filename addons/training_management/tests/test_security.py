@@ -117,6 +117,9 @@ class TestSecurity(SecurityCase):
         enrollment.export_data(["id", "state"])
         created = audit.search([]) - prior
         self.assertEqual(len(created), 1)
+        self.assertEqual(created.with_context(lang="en_US").display_name, f"Export Manifest #{created.id}")
+        if self.env["res.lang"].search_count([("code", "=", "fr_FR")]):
+            self.assertEqual(created.with_context(lang="fr_FR").display_name, f"Manifeste d’export nº{created.id}")
         self.assertEqual(created.actor_id, self.coordinator)
         self.assertEqual(
             created.manifest,

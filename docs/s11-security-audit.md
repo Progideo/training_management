@@ -56,6 +56,10 @@ adresse, ni jeton. Une préparation de flux ne prouve pas sa réception complèt
 Leur accès et conservation relèvent de l’exploitation ; aucun droit de support
 exceptionnel nouveau n’est accordé.
 
+Les fiches portent un titre traduit (« Manifeste d’export nº… »), calculé par
+le mécanisme natif `display_name`, sans nouveau champ stocké ni modification
+des preuves existantes.
+
 « Mes manifestes d’export » présente seulement les nouveaux manifestes de
 l’acteur, dans ses sociétés sélectionnées. Ils ne contiennent pas les valeurs
 exportées et n’ouvrent aucun accès aux sources. Ils sont immuables et exclus de
