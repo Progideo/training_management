@@ -82,13 +82,16 @@ class Coverage(unittest.TestCase):
                 self.assertIn("assert after.pop(column) is None", path.read_text())
             else:
                 self.assertEqual(path.read_text(), original(name))
-        self.assertEqual(len(PLAN["migrations"]), 18)
+        self.assertEqual(len(PLAN["migrations"]), 19)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
         base = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]
         specialized = json.loads((ROOT / "tests/ci/workflow_coverage.json").read_text())
         specialized = {**specialized["jobs"], **specialized.get("extensions", {})}
         self.assertEqual({entry["id"] for entry in PLAN["migrations"][:4]}, set(base))
+        self.assertLessEqual(
+            {item["script"] for item in specialized.values()}, {entry["script"] for entry in PLAN["migrations"]}
+        )
         for entry in PLAN["migrations"]:
             if entry["id"] in base:
                 expected = [step["step"] for step in base[entry["id"]]]

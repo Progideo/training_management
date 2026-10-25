@@ -10,3 +10,4 @@ from . import evaluation
 from . import feedback
 
 from . import dashboard
+from . import security

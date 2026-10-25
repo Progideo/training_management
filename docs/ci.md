@@ -39,7 +39,7 @@ exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
 ## Migrations, conservation et concurrence
 
-Un contrôle commun conserve les 18 parcours de migration : installation progressive,
+Un contrôle commun conserve les 18 parcours de migration et ajoute la mise à jour S11 : installation progressive,
 installation Ventes, reprises S02/S03, Website, catalogue avec/sans Website,
 protection documentaire, préparation, supports, activités, examens, présences,
 attestations, évaluations, retours, qualité S09.3, intervenants S09.4 et mise à jour S10.
@@ -74,7 +74,7 @@ Aucun accès OVH, secret ou jeu de données réel n’est utilisé.
 
 Onze contrôles sont visibles : qualité, huit configurations, migrations et verdict.
 Les artefacts comprennent un dossier par configuration et un artefact de migration
-avec les journaux de chacun des 16 parcours. Ils sont publiés même après échec.
+avec les journaux de chacun des 19 parcours. Ils sont publiés même après échec.
 
 [check_results.py](../tests/ci/check_results.py) refuse les prérequis échoués,
 annulés, exclus ou manquants. Il vérifie chaque configuration, un résultat Odoo

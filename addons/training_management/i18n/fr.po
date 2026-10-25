@@ -225,6 +225,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_export_audit__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -1402,6 +1403,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_document__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_provider_event__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__actor_id
+#: model:ir.model.fields,field_description:training_management.field_training_export_audit__actor_id
 msgid "Actor"
 msgstr "Auteur"
 
@@ -1870,6 +1872,7 @@ msgstr "Marquer comme réalisée"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__model_name
+#: model:ir.model.fields,field_description:training_management.field_training_export_audit__model_name
 msgid "Model Name"
 msgstr "Modèle"
 
@@ -4225,6 +4228,7 @@ msgstr "Ordre"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sha256
+#: model:ir.model.fields,field_description:training_management.field_training_export_audit__sha256
 msgid "Sha256"
 msgstr "Empreinte SHA-256"
 
@@ -9572,6 +9576,7 @@ msgstr "Ordre de lecture logique contrôlé"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__manifest
+#: model:ir.model.fields,field_description:training_management.field_training_export_audit__manifest
 msgid "Manifest"
 msgstr "Manifeste"
 
@@ -10164,3 +10169,25 @@ msgstr "Nouveau contrôle PDF"
 #: code:addons/training_management/controllers/dashboard_portal.py:0
 msgid "Choose a valid scheduled session."
 msgstr "Choisissez une séance planifiée valide."
+
+
+#. module: training_management
+#: code:addons/training_management/models/training_security.py:0
+msgid "This private training record is unavailable."
+msgstr "Cet enregistrement privé de formation est indisponible."
+
+#. module: training_management
+#: code:addons/training_management/models/training_security.py:0
+msgid "Do not distribute confidential adaptations through email."
+msgstr "Ne diffusez pas les aménagements confidentiels par courriel."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_training_export_audit
+#: model:ir.ui.menu,name:training_management.menu_training_export_audit
+msgid "My Export Manifests"
+msgstr "Mes manifestes d’export"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_export_audit__exported_at
+msgid "Exported At"
+msgstr "Exporté le"

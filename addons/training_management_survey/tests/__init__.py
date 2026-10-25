@@ -6,3 +6,4 @@ from . import test_evaluation
 from . import test_feedback
 
 from . import test_dashboard
+from . import test_security

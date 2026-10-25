@@ -199,5 +199,7 @@ class TrainingPrivateAttachment(AttachmentController):
                 policy._check_read(attachment)
             except (AccessError, MissingError):
                 raise request.not_found() from None
-            return TrainingParticipantPortal._private(super()._get_pdf_first_page_response(attachment))
+            response = super()._get_pdf_first_page_response(attachment)
+            policy._audit_file_read(attachment)
+            return TrainingParticipantPortal._private(response)
         return super()._get_pdf_first_page_response(attachment)
