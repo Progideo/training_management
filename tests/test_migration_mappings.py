@@ -177,3 +177,39 @@ class MigrationMappings(unittest.TestCase):
         report = inspect(self.bundle, EXAMPLE.parent)
         self.assertEqual(report["field_mapping_count"], 0)
         self.assertFalse(report["cutover_authorized"])
+
+    def test_reconciliation_rejects_truncated_and_extra_cells_for_both_contracts(self):
+        for filename in ("bundle.json", "qualified-bundle.json"):
+            bundle = json.loads((EXAMPLE.parent / filename).read_text())
+            expected = io.StringIO()
+            contacts_csv(bundle, expected)
+            rows = list(csv.reader(io.StringIO(expected.getvalue())))
+            for extra in (False, True):
+                changed = copy.deepcopy(rows)
+                if extra:
+                    changed[-1].append("undeclared data")
+                else:
+                    changed[-1].pop()  # Missing empty JSON used to compare as the expected {}.
+                observed = io.StringIO()
+                csv.writer(observed).writerows(changed)
+                observed.seek(0)
+                codes = {f["code"] for f in reconcile_contacts(bundle, observed)}
+                self.assertIn("target_row_shape_mismatch", codes, (filename, extra))
+
+    def test_cli_truncated_empty_json_is_blocked_without_contact_or_mapping_payload(self):
+        with tempfile.TemporaryDirectory() as folder:
+            folder = Path(folder)
+            expected = io.StringIO()
+            contacts_csv(self.bundle, expected)
+            rows = list(csv.reader(io.StringIO(expected.getvalue())))
+            rows[-1].pop()
+            target = folder / "truncated.csv"
+            with target.open("w", newline="") as stream:
+                csv.writer(stream).writerows(rows)
+            destination = folder / "reconciliation"
+            self.assertEqual(main([str(EXAMPLE), str(destination), "--target-contacts", str(target)]), 2)
+            report = json.loads((destination / "report.json").read_text())
+            self.assertEqual(report["status"], "blocked")
+            self.assertEqual(report["contact_target_reconciliation"], "mismatch")
+            self.assertFalse((destination / "contacts.csv").exists())
+            self.assertFalse((destination / "mapping-plan.json").exists())
