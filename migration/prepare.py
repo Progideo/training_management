@@ -78,6 +78,8 @@ def inspect(bundle, root):
         if method == "native_import" and kind != "contacts":
             fail("native_import_not_demonstrated", kind)
         if kind == "contacts" and method == "native_import":
+            if lot.get("target") != "res.partner":
+                fail("native_contact_target_mismatch", kind)
             company = lot.get("target_company_xmlid")
             if not isinstance(company, str) or not XMLID.fullmatch(company):
                 fail("target_company_mapping_missing", kind)
@@ -135,7 +137,7 @@ def inspect(bundle, root):
                     fail("country_mapping_unresolved", kind, index)
                 parent = values.get("parent_source_id")
                 has_vat = bool(values.get("vat")) and values.get("vat") not in ("/", "na", "NA")
-                if lot["method"] == "native_import" and values.get("is_company") != (not parent and has_vat):
+                if lot.get("method") == "native_import" and values.get("is_company") != (not parent and has_vat):
                     fail("native_company_type_unresolved", kind, index)
                 if parent:
                     parent_row = identities.get((kind, parent)) if isinstance(parent, str) else None
@@ -149,7 +151,7 @@ def inspect(bundle, root):
                         fail("contact_parent_unresolved", kind, index)
                     else:
                         parent_values = parent_row["values"]
-                        if lot["method"] == "native_import" and any(
+                        if lot.get("method") == "native_import" and any(
                             values.get(k, "") != parent_values.get(k, "")
                             for k in ("vat", "street", "city", "zip", "country_xmlid")
                         ):
@@ -278,6 +280,8 @@ def contacts_csv(bundle, stream):
 
 def reconcile_contacts(bundle, stream):
     """Compare a native export of the imported selection to the exact prepared CSV."""
+    if bundle["lots"]["contacts"].get("method") != "native_import":
+        return [{"code": "target_reconciliation_requires_native_contacts"}]
     expected = io.StringIO()
     contacts_csv(bundle, expected)
     expected.seek(0)

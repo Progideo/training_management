@@ -28,7 +28,8 @@ Une méthode inconnue reste `unknown` et produit un écart bloquant.
 Les méthodes `manual` et `archive` documentent une destination à traiter :
 elles n’exécutent aucun import. L’outil vérifie la cohérence du paquet déclaré,
 pas sa fidélité à une base source non inspectée. Seuls les contacts ont un
-format d’import natif démontré dans cet incrément.
+format d’import natif démontré dans cet incrément, vers `res.partner` uniquement.
+Le rapprochement CSV est réservé à cette méthode, pas aux lots manuels.
 
 Dans cette version exacte d’Odoo 20, `is_company` est calculé : entité commerciale
 racine avec identifiant fiscal renseigné. Le booléen source est contrôlé mais

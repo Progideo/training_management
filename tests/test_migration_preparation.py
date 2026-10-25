@@ -123,6 +123,25 @@ class MigrationPreparation(unittest.TestCase):
         self.bundle["lots"]["contacts"]["target_company_xmlid"] = ""
         self.assertIn("target_company_mapping_missing", self.findings())
 
+    def test_native_target_must_match_the_demonstrated_odoo_model(self):
+        self.bundle["lots"]["contacts"]["target"] = "res.users"
+        self.assertIn("native_contact_target_mismatch", self.findings())
+
+    def test_missing_method_reports_a_blocking_finding(self):
+        del self.bundle["lots"]["contacts"]["method"]
+        self.assertEqual(inspect(self.bundle, self.root)["status"], "blocked")
+        self.assertIn("mapping_unresolved", self.findings())
+
+    def test_manual_contacts_cannot_claim_native_target_reconciliation(self):
+        stream = io.StringIO()
+        contacts_csv(self.bundle, stream)
+        self.bundle["lots"]["contacts"]["method"] = "manual"
+        del self.bundle["lots"]["contacts"]["target_company_xmlid"]
+        self.assertEqual(
+            reconcile_contacts(self.bundle, io.StringIO(stream.getvalue())),
+            [{"code": "target_reconciliation_requires_native_contacts"}],
+        )
+
     def test_parent_country_and_unsupported_native_mapping_fail_closed(self):
         self.bundle["lots"]["contacts"]["records"][1]["values"].update(parent_source_id="unknown", country_xmlid="FR")
         self.bundle["lots"]["balances"]["method"] = "native_import"
