@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "source": {
+    "system": "odoo19-FICTITIOUS-instance",
+    "snapshot": "synthetic-2026-10-25",
+    "owner": "Préparateur fictif"
+  },
+  "lots": {
+    "contacts": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.contacts",
+      "target": "res.partner",
+      "method": "native_import",
+      "expected_count": 3,
+      "records": [
+        {
+          "id": "company-1",
+          "values": {
+            "name": "Entreprise fictive M01",
+            "is_company": true,
+            "country_xmlid": "base.ma",
+            "vat": "00000000"
+          }
+        },
+        {
+          "id": "person-1",
+          "values": {
+            "name": "Personne fictive M01",
+            "is_company": false,
+            "email": "person@example.invalid",
+            "parent_source_id": "company-1",
+            "country_xmlid": "base.ma",
+            "vat": "00000000"
+          }
+        },
+        {
+          "id": "independent-1",
+          "values": {
+            "name": "Personne indépendante fictive M01",
+            "is_company": false,
+            "country_xmlid": "base.fr"
+          }
+        }
+      ],
+      "target_company_xmlid": "base.main_company"
+    },
+    "offers": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.offers",
+      "target": "training.program.version",
+      "method": "manual",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "offer-1",
+          "historical_version": "synthetic-v1"
+        }
+      ]
+    },
+    "sessions": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.sessions",
+      "target": "training.delivery",
+      "method": "manual",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "session-1",
+          "links": [
+            [
+              "offers",
+              "offer-1"
+            ]
+          ]
+        }
+      ]
+    },
+    "enrollments": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.enrollments",
+      "target": "training.enrollment",
+      "method": "manual",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "enrollment-1",
+          "active": true,
+          "participant": "person-1",
+          "session": "session-1"
+        }
+      ]
+    },
+    "balances": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.balances",
+      "target": "manual reconciliation; no accounting entries",
+      "method": "manual",
+      "expected_count": 2,
+      "records": [
+        {
+          "id": "mad-1",
+          "currency": "MAD",
+          "amount": "1000.50",
+          "links": [
+            [
+              "contacts",
+              "company-1"
+            ]
+          ]
+        },
+        {
+          "id": "eur-1",
+          "currency": "EUR",
+          "amount": "120.25",
+          "links": [
+            [
+              "contacts",
+              "person-1"
+            ]
+          ]
+        }
+      ]
+    },
+    "supports": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.supports",
+      "target": "training.material; manual historical review",
+      "method": "manual",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "supports-1",
+          "path": "files/support.txt",
+          "sha256": "01b8f54065dad67c91c510b006ce2c286f2967a195993074c210be8c009096ce",
+          "access_owner": "Responsable fictif archive",
+          "retention": "Paramètre fictif à remplacer avant reprise réelle",
+          "links": [
+            [
+              "enrollments",
+              "enrollment-1"
+            ]
+          ]
+        }
+      ]
+    },
+    "results": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.results",
+      "target": "restricted archive; no synthetic attempts",
+      "method": "archive",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "result-1",
+          "historical_version": "synthetic-v1",
+          "links": [
+            [
+              "enrollments",
+              "enrollment-1"
+            ]
+          ]
+        }
+      ]
+    },
+    "documents": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.documents",
+      "target": "restricted archive; no regenerated attestations",
+      "method": "archive",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "documents-1",
+          "path": "files/evidence.txt",
+          "sha256": "3188820f4b8038e82e4414081af5369b209c0c1e81c8df9071ba6ad37ec493af",
+          "access_owner": "Responsable fictif archive",
+          "retention": "Paramètre fictif à remplacer avant reprise réelle",
+          "links": [
+            [
+              "enrollments",
+              "enrollment-1"
+            ]
+          ]
+        }
+      ]
+    },
+    "archive": {
+      "owner": "Responsable fictif M01",
+      "source_model": "FICTITIOUS.archive",
+      "target": "restricted archive index",
+      "method": "archive",
+      "expected_count": 1,
+      "records": [
+        {
+          "id": "archive-1",
+          "path": "files/archive.txt",
+          "sha256": "b202011d6f4a8868439bdc38e426d663f157a7e46ab1be40286a45ec2165785e",
+          "access_owner": "Responsable fictif archive",
+          "retention": "Paramètre fictif à remplacer avant reprise réelle",
+          "links": [
+            [
+              "enrollments",
+              "enrollment-1"
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "expected_balances": {
+    "MAD": "1000.50",
+    "EUR": "120.25"
+  }
+}

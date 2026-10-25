@@ -20,3 +20,4 @@ from . import test_provider
 
 from . import test_dashboard
 from . import test_security
+from . import test_migration

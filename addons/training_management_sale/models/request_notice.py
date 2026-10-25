@@ -87,7 +87,7 @@ class TrainingRequestNotice(models.Model):
 
 
 class RequestLead(models.Model):
-    _inherit = "crm.lead"
+    _inherit = "crm.lead"  # pylint: disable=consider-merging-classes-inherited  # Request acknowledgements have a separate lifecycle.
 
     @api.model_create_multi
     def create(self, vals_list):
