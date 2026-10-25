@@ -85,6 +85,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | P03–P04 — catalogue public et aperçu | [p03-p04-public-catalogue.md](p03-p04-public-catalogue.md) |
 | P05–P06 — portail entreprise et versions intra | [p05-p06-company-dossiers.md](p05-p06-company-dossiers.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
+| L01 — recette intégrée de lancement | [l01-launch-acceptance.md](l01-launch-acceptance.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
