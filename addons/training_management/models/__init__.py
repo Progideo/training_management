@@ -38,3 +38,5 @@ from . import training_notification
 
 from . import training_dashboard_audit
 from . import training_security
+
+from . import training_public_catalogue

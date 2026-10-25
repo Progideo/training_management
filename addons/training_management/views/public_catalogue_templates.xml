@@ -1,0 +1,32 @@
+<odoo>
+    <template id="public_catalogue" name="Training catalogue">
+        <t t-call="portal.frontend_layout"><main class="container py-4">
+            <h1>Formations</h1>
+            <form method="get" action="/formations" class="row g-3 mb-4">
+                <div class="col-md-4"><label for="search">Rechercher</label><input id="search" name="search" class="form-control" t-att-value="search"/></div>
+                <div class="col-md-3"><label for="category">Catégorie</label><select id="category" name="category" class="form-select"><option value="">Toutes</option><option t-foreach="categories" t-as="c" t-att-value="c[0]" t-att-selected="str(c[0]) == category" t-out="c[1]"/></select></div>
+                <div class="col-md-3"><label for="mode">Modalité</label><select id="mode" name="mode" class="form-select"><option value="">Toutes</option><option value="onsite" t-att-selected="mode == 'onsite'">Présentiel</option><option value="remote" t-att-selected="mode == 'remote'">Distanciel</option><option value="blended" t-att-selected="mode == 'blended'">Mixte</option><option value="elearning" t-att-selected="mode == 'elearning'">eLearning</option></select></div>
+                <div class="col-md-2 align-self-end"><button class="btn btn-primary">Rechercher</button></div>
+            </form>
+            <p t-if="not programs">Aucune formation publiée.</p>
+            <ul class="list-group"><li t-foreach="programs" t-as="p" class="list-group-item"><a t-att-href="'/formations/%s' % p['id']"><t t-out="p['title']"/> — <t t-out="p['version']"/></a></li></ul>
+        </main></t>
+    </template>
+    <template id="public_programme" name="Public programme">
+        <t t-call="portal.frontend_layout"><main class="container py-4">
+            <a href="/formations">Catalogue</a><h1 t-out="program['title']"/>
+            <p>Version <t t-out="program['version']"/> · <t t-out="program['duration']"/> h · <t t-out="program['mode']"/></p>
+            <p>Prix sur devis. Un examen blanc ne constitue pas une certification officielle.</p>
+            <div id="training_request_actions"/>
+            <a class="btn btn-outline-primary" t-att-href="'/formations/%s/pdf' % program['id']">Programme PDF de cette version</a>
+            <section t-foreach="program['sections']" t-as="s" class="my-4"><h2 t-out="s[0]"/><p style="white-space:pre-wrap" t-out="s[1]"/></section>
+            <section t-if="program['preview'] or questions"><h2>Aperçu pédagogique public</h2><p>Démonstration sans enregistrement de progression ni de résultat.</p>
+                <a t-if="program['preview']" t-att-href="'/formations/%s/apercu.pdf' % program['id']">Extrait PDF public</a>
+                <form t-if="questions" method="post"><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <fieldset t-foreach="questions" t-as="q" class="my-3"><legend t-out="q['name']"/><label t-foreach="q['choices']" t-as="c" class="d-block"><input type="radio" t-att-name="q['id']" t-att-value="c[0]" required="required"/> <t t-out="c[1]"/></label><p role="status" t-if="q['feedback']" t-out="q['feedback']"/></fieldset>
+                    <button class="btn btn-primary">Voir la correction de démonstration</button>
+                </form>
+            </section>
+        </main></t>
+    </template>
+</odoo>
