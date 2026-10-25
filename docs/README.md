@@ -79,6 +79,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S09.3 — réclamations et amélioration continue | [s093-quality.md](s093-quality.md) |
 | S09.4 — intervenants, sous-traitance et veille | [s094-intervenants-veille.md](s094-intervenants-veille.md) |
 | S10 — tableau de suivi, indicateurs et notifications | [s10-operational-dashboard.md](s10-operational-dashboard.md) |
+| S11 — sécurité transversale, conservation et accès | [s11-security-audit.md](s11-security-audit.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et

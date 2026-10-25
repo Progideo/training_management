@@ -1,0 +1,24 @@
+<odoo>
+    <record id="view_training_export_audit_list" model="ir.ui.view">
+        <field name="name">training.export.audit.list</field>
+        <field name="model">training.export.audit</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false" export_xlsx="false">
+                <field name="exported_at"/><field name="model_name"/><field name="actor_id"/><field name="company_id" groups="base.group_multi_company"/><field name="sha256" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_export_audit_form" model="ir.ui.view">
+        <field name="name">training.export.audit.form</field>
+        <field name="model">training.export.audit</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false" duplicate="false">
+                <sheet><group><field name="exported_at"/><field name="actor_id"/><field name="company_id"/><field name="model_name"/><field name="sha256"/></group><group><field name="manifest"/></group></sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_training_export_audit" model="ir.actions.act_window">
+        <field name="name">My Export Manifests</field><field name="res_model">training.export.audit</field><field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_training_export_audit" name="My Export Manifests" parent="menu_training_root" action="action_training_export_audit" sequence="98" groups="base.group_user"/>
+</odoo>

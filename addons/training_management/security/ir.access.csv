@@ -1,64 +1,64 @@
 id,name,model_id,group_id/id,operation,domain
 access_course_reader,training.course reader,training.course,training_management.group_training_reader,r,
 access_course_coordinator,training.course coordinator,training.course,training_management.group_training_coordinator,crud,
-rule_course_company,Courses allowed companies,training.course,,crud,"[('company_id', 'in', company_ids)]"
+rule_course_company,Courses allowed companies,training.course,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_program_reader,training.program.version reader,training.program.version,training_management.group_training_reader,r,
 access_program_coordinator,training.program.version coordinator,training.program.version,training_management.group_training_coordinator,crud,
-rule_program_company,Programme versions allowed companies,training.program.version,,crud,"[('company_id', 'in', company_ids)]"
+rule_program_company,Programme versions allowed companies,training.program.version,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_new_version_coordinator,training.program.new.version coordinator,training.program.new.version,training_management.group_training_coordinator,crud,
-rule_new_version_company,New programme versions allowed companies,training.program.new.version,,crud,"[('company_id', 'in', company_ids)]"
+rule_new_version_company,New programme versions allowed companies,training.program.new.version,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_delivery_coordinator,training.delivery coordinator,training.delivery,training_management.group_training_coordinator,cru,
-rule_delivery_company,training.delivery allowed companies,training.delivery,,crud,"[('company_id', 'in', company_ids)]"
+rule_delivery_company,training.delivery allowed companies,training.delivery,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_allocation_coordinator,training.seat.allocation coordinator,training.seat.allocation,training_management.group_training_coordinator,cru,
-rule_allocation_company,training.seat.allocation allowed companies,training.seat.allocation,,crud,"[('company_id', 'in', company_ids)]"
+rule_allocation_company,training.seat.allocation allowed companies,training.seat.allocation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_enrollment_coordinator,training.enrollment coordinator,training.enrollment,training_management.group_training_coordinator,cru,
-rule_enrollment_company,training.enrollment allowed companies,training.enrollment,,crud,"[('company_id', 'in', company_ids)]"
+rule_enrollment_company,training.enrollment allowed companies,training.enrollment,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_operation_coordinator,training.operation coordinator,training.operation,training_management.group_training_coordinator,r,
-rule_operation_company,Training history allowed companies,training.operation,,crud,"[('company_id', 'in', company_ids)]"
+rule_operation_company,Training history allowed companies,training.operation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_enrollment_operation_coordinator,Enrollment operation coordinator,training.enrollment.operation,training_management.group_training_coordinator,crud,
-rule_enrollment_operation_company,Enrollment operation allowed companies,training.enrollment.operation,,crud,"[('company_id', 'in', company_ids)]"
+rule_enrollment_operation_company,Enrollment operation allowed companies,training.enrollment.operation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_delivery_dates_coordinator,Change delivery dates coordinator,training.delivery.dates,training_management.group_training_coordinator,crud,
-rule_delivery_dates_company,Change delivery dates allowed companies,training.delivery.dates,,crud,"[('company_id', 'in', company_ids)]"
+rule_delivery_dates_company,Change delivery dates allowed companies,training.delivery.dates,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_allocation_extend_coordinator,Extend places deadline coordinator,training.allocation.extend,training_management.group_training_coordinator,crud,
-rule_allocation_extend_company,Extend places deadline allowed companies,training.allocation.extend,,crud,"[('company_id', 'in', company_ids)]"
+rule_allocation_extend_company,Extend places deadline allowed companies,training.allocation.extend,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_allocation_release_coordinator,Release places coordinator,training.allocation.release,training_management.group_training_coordinator,crud,
-rule_allocation_release_company,Release places allowed companies,training.allocation.release,,crud,"[('company_id', 'in', company_ids)]"
+rule_allocation_release_company,Release places allowed companies,training.allocation.release,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_action_reason_coordinator,Training action reason coordinator,training.action.reason,training_management.group_training_coordinator,crud,
 access_session_coordinator,Sessions coordinator,training.session,training_management.group_training_coordinator,cru,
-rule_session_company,Sessions allowed companies,training.session,,crud,"[('company_id', 'in', company_ids)]"
+rule_session_company,Sessions allowed companies,training.session,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_unavailability_coordinator,Unavailability coordinator,training.unavailability,training_management.group_training_coordinator,crud,
-rule_unavailability_company,Unavailability allowed companies,training.unavailability,,crud,"[('company_id', 'in', company_ids)]"
+rule_unavailability_company,Unavailability allowed companies,training.unavailability,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_room_coordinator,Training rooms coordinator,resource.resource,training_management.group_training_coordinator,cru,"[('training_room', '=', True), ('company_id', 'in', company_ids)]"
 access_adaptation_referent,Confidential adaptations referent,training.adaptation,training_management.group_training_coordinator,cru,"['|', ('delivery_id.adaptation_referent_id', '=', user.id), ('delivery_id.adaptation_deputy_id', '=', user.id)]"
-rule_adaptation_company,Adaptations allowed companies,training.adaptation,,crud,"[('company_id', 'in', company_ids)]"
+rule_adaptation_company,Adaptations allowed companies,training.adaptation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_adaptation_history_referent,Confidential history referent,training.adaptation.history,training_management.group_training_coordinator,r,"['|', ('adaptation_id.delivery_id.adaptation_referent_id', '=', user.id), ('adaptation_id.delivery_id.adaptation_deputy_id', '=', user.id)]"
-rule_adaptation_history_company,Adaptation history allowed companies,training.adaptation.history,,crud,"[('company_id', 'in', company_ids)]"
+rule_adaptation_history_company,Adaptation history allowed companies,training.adaptation.history,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_invitation_coordinator,Invitations coordinator,training.invitation,training_management.group_training_coordinator,r,
-rule_invitation_company,Invitations allowed companies,training.invitation,,crud,"[('company_id', 'in', company_ids)]"
+rule_invitation_company,Invitations allowed companies,training.invitation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_session_edit,Session assistant coordinator,training.session.edit,training_management.group_training_coordinator,crud,
-rule_session_edit_company,Session assistant allowed companies,training.session.edit,,crud,"[('company_id', 'in', company_ids)]"
+rule_session_edit_company,Session assistant allowed companies,training.session.edit,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_invitation_send,Invitation assistant coordinator,training.invitation.send,training_management.group_training_coordinator,crud,
 access_category_reader,Training category reader,training.category,training_management.group_training_reader,r,
 access_category_coordinator,Training category coordinator,training.category,training_management.group_training_coordinator,crud,
-rule_category_company,Training category allowed companies,training.category,,crud,"[('company_id', 'in', company_ids)]"
+rule_category_company,Training category allowed companies,training.category,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_material_coordinator,Private PDFs coordinator,training.material,training_management.group_training_coordinator,cru,
-rule_material_company,Private PDFs allowed companies,training.material,,crud,"[('company_id', 'in', company_ids)]"
+rule_material_company,Private PDFs allowed companies,training.material,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_material_assignment_coordinator,Private PDF references coordinator,training.material.assignment,training_management.group_training_coordinator,cru,
-rule_material_assignment_company,Private PDF references allowed companies,training.material.assignment,,crud,"[('company_id', 'in', company_ids)]"
+rule_material_assignment_company,Private PDF references allowed companies,training.material.assignment,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_learning_activity_coordinator,Learning activities coordinator,training.learning.activity,training_management.group_training_coordinator,crud,
-rule_learning_activity_company,Learning activities company,training.learning.activity,,crud,"[('company_id', 'in', company_ids)]"
+rule_learning_activity_company,Learning activities company,training.learning.activity,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_learning_progress_coordinator,Learning progress coordinator,training.learning.progress,training_management.group_training_coordinator,r,
-rule_learning_progress_company,Learning progress company,training.learning.progress,,crud,"[('company_id', 'in', company_ids)]"
+rule_learning_progress_company,Learning progress company,training.learning.progress,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_learning_entry_internal,Private learning mission,training.learning.entry,base.group_user,r,
-rule_learning_entry_company,Private learning company,training.learning.entry,,crud,"[('company_id', 'in', company_ids)]"
+rule_learning_entry_company,Private learning company,training.learning.entry,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_learning_notice_coordinator,Learning notification journal,training.learning.notice,training_management.group_training_coordinator,r,
-rule_learning_notice_company,Learning notification company,training.learning.notice,,crud,"[('company_id', 'in', company_ids)]"
+rule_learning_notice_company,Learning notification company,training.learning.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_attendance_coordinator,Attendance coordinator,training.attendance,training_management.group_training_coordinator,r,
-rule_attendance_company,Attendance company,training.attendance,,crud,"[('company_id', 'in', company_ids)]"
+rule_attendance_company,Attendance company,training.attendance,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_attendance_event_coordinator,Attendance history coordinator,training.attendance.event,training_management.group_training_coordinator,r,
-rule_attendance_event_company,Attendance history company,training.attendance.event,,crud,"[('company_id', 'in', company_ids)]"
+rule_attendance_event_company,Attendance history company,training.attendance.event,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_attendance_edit,Attendance assistant coordinator,training.attendance.edit,training_management.group_training_coordinator,crud,
-rule_attendance_edit_company,Attendance assistant company,training.attendance.edit,,crud,"[('company_id', 'in', company_ids)]"
+rule_attendance_edit_company,Attendance assistant company,training.attendance.edit,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_attendance_edit_owner,Attendance assistant owner,training.attendance.edit,,crud,"[('create_uid', '=', user.id)]"
 access_s08_training_retention_category_quality,S08 training_retention_category_quality,training.retention.category,training_management.group_training_quality,cru,""
 access_s08_training_retention_category_coordinator,S08 training_retention_category_coordinator,training.retention.category,training_management.group_training_coordinator,r,""
@@ -70,35 +70,35 @@ access_s08_training_document_quality,S08 training_document_quality,training.docu
 access_s08_training_enrollment_quality,S08 training_enrollment_quality,training.enrollment,training_management.group_training_quality,r,"[('closure_ids.quality_id', '=', user.id)]"
 access_s08_training_delivery_quality,S08 training_delivery_quality,training.delivery,training_management.group_training_quality,r,"[('enrollment_ids.closure_ids.quality_id', '=', user.id)]"
 access_s08_training_learning_activity_quality,S08 training_learning_activity_quality,training.learning.activity,training_management.group_training_quality,r,"[('delivery_id.enrollment_ids.closure_ids.quality_id', '=', user.id)]"
-rule_s08_training_retention_category,S08 company,training.retention.category,,crud,"[('company_id', 'in', company_ids)]"
-rule_s08_training_closure,S08 company,training.closure,,crud,"[('company_id', 'in', company_ids)]"
-rule_s08_training_proof,S08 company,training.proof,,crud,"[('company_id', 'in', company_ids)]"
-rule_s08_training_document,S08 company,training.document,,crud,"[('company_id', 'in', company_ids)]"
+rule_s08_training_retention_category,S08 company,training.retention.category,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_s08_training_closure,S08 company,training.closure,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_s08_training_proof,S08 company,training.proof,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_s08_training_document,S08 company,training.document,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s091_evaluation_coordinator,S091 evaluation coordinator,training.evaluation,training_management.group_training_coordinator,crud,""
 access_s091_evaluation_quality,S091 evaluation quality,training.evaluation,training_management.group_training_quality,r,"[('company_id', 'in', company_ids)]"
-rule_s091_evaluation,S091 company,training.evaluation,,crud,"[('company_id', 'in', company_ids)]"
+rule_s091_evaluation,S091 company,training.evaluation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s091_evaluation_assignment_coordinator,S091 evaluation_assignment coordinator,training.evaluation.assignment,training_management.group_training_coordinator,cr,""
 access_s091_evaluation_assignment_supervisor,S091 evaluation_assignment supervisor,training.evaluation.assignment,training_management.group_training_supervisor,r,"[('delivery_id.evaluation_supervisor_ids', 'in', user.id)]"
 access_s091_evaluation_assignment_quality,S091 evaluation_assignment quality,training.evaluation.assignment,training_management.group_training_quality,r,"[('delivery_id.evaluation_quality_id', '=', user.id)]"
-rule_s091_evaluation_assignment,S091 company,training.evaluation.assignment,,crud,"[('company_id', 'in', company_ids)]"
+rule_s091_evaluation_assignment,S091 company,training.evaluation.assignment,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s091_evaluation_result_coordinator,S091 evaluation_result coordinator,training.evaluation.result,training_management.group_training_coordinator,r,""
 access_s091_evaluation_result_quality,S091 evaluation_result quality,training.evaluation.result,training_management.group_training_quality,r,"[('assignment_id.delivery_id.evaluation_quality_id', '=', user.id)]"
-rule_s091_evaluation_result,S091 company,training.evaluation.result,,crud,"[('company_id', 'in', company_ids)]"
+rule_s091_evaluation_result,S091 company,training.evaluation.result,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s091_evaluation_authorization_coordinator,S091 evaluation_authorization coordinator,training.evaluation.authorization,training_management.group_training_coordinator,r,""
 access_s091_evaluation_authorization_quality,S091 evaluation_authorization quality,training.evaluation.authorization,training_management.group_training_quality,cru,"[('delivery_id.evaluation_quality_id', '=', user.id)]"
-rule_s091_evaluation_authorization,S091 company,training.evaluation.authorization,,crud,"[('company_id', 'in', company_ids)]"
+rule_s091_evaluation_authorization,S091 company,training.evaluation.authorization,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s091_evaluation_record_coordinator,S091 evaluation_record coordinator,training.evaluation.record,training_management.group_training_coordinator,crud,""
 access_s091_evaluation_record_quality,S091 evaluation_record quality,training.evaluation.record,training_management.group_training_quality,crud,""
 rule_s091_record_owner,S091 owner,training.evaluation.record,,crud,"[('create_uid', '=', user.id)]"
 access_s091_delivery_quality,S091 delivery quality,training.delivery,training_management.group_training_quality,r,"[('evaluation_quality_id', '=', user.id)]"
 access_s092_feedback,S092 coordination,training.feedback,training_management.group_training_coordinator,cru,""
-rule_s092_feedback,S092 company,training.feedback,,crud,"[('company_id', 'in', company_ids)]"
+rule_s092_feedback,S092 company,training.feedback,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s092_feedback_campaign,S092 coordination,training.feedback.campaign,training_management.group_training_coordinator,cru,""
-rule_s092_feedback_campaign,S092 company,training.feedback.campaign,,crud,"[('company_id', 'in', company_ids)]"
+rule_s092_feedback_campaign,S092 company,training.feedback.campaign,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s092_feedback_recipient,S092 coordination,training.feedback.recipient,training_management.group_training_coordinator,cru,""
-rule_s092_feedback_recipient,S092 company,training.feedback.recipient,,crud,"[('company_id', 'in', company_ids)]"
+rule_s092_feedback_recipient,S092 company,training.feedback.recipient,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s092_feedback_notice,S092 coordination,training.feedback.notice,training_management.group_training_coordinator,r,""
-rule_s092_feedback_notice,S092 company,training.feedback.notice,,crud,"[('company_id', 'in', company_ids)]"
+rule_s092_feedback_notice,S092 company,training.feedback.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s092_campaign_supervisor,S092 scoped campaign,training.feedback.campaign,training_management.group_training_supervisor,r,"[('delivery_id.evaluation_supervisor_ids', 'in', [user.id])]"
 access_s092_campaign_quality,S092 scoped campaign,training.feedback.campaign,training_management.group_training_quality,r,"[('delivery_id.evaluation_quality_id', 'in', [user.id])]"
 access_s092_export_coordinator,S092 export,training.feedback.export,training_management.group_training_coordinator,crud,
@@ -143,8 +143,10 @@ access_s10_line_quality,S10 dashboard quality,training.dashboard.line,training_m
 access_s10_line_trainer,S10 dashboard trainer,training.dashboard.line,base.group_user,r,"['|',('delivery_id.evaluation_instructor_ids', 'in', user.partner_id.id),('delivery_id.session_ids', 'any', [('instructor_id','=',user.partner_id.id),('cancelled','=',False)])]"
 rule_s10_company,S10 dashboard company,training.dashboard.line,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_s10_notice,S10 lifecycle journal,training.notification,training_management.group_training_coordinator,r,
-rule_s10_notice,S10 lifecycle company,training.notification,,crud,"[('company_id','in',company_ids)]"
+rule_s10_notice,S10 lifecycle company,training.notification,,crud,"[('company_id','in',company_ids)] if user.active else [('id', '=', 0)]"
 access_s10_export,S10 own export manifests,training.dashboard.export,base.group_user,r,"[('actor_id','=',user.id)]"
-rule_s10_export,S10 export company,training.dashboard.export,,crud,"[('company_id','in',company_ids)]"
+rule_s10_export,S10 export company,training.dashboard.export,,crud,"[('company_id','in',company_ids)] if user.active else [('id', '=', 0)]"
 access_s10_pdf,S10 PDF quality review,training.pdf.accessibility.review,training_management.group_training_quality,cr,"['|','|',('program_id','access','read'),('material_id','access','read'),('document_id','access','read')]"
-rule_s10_pdf,S10 PDF review company,training.pdf.accessibility.review,,crud,"[('company_id','in',company_ids)]"
+rule_s10_pdf,S10 PDF review company,training.pdf.accessibility.review,,crud,"[('company_id','in',company_ids)] if user.active else [('id', '=', 0)]"
+access_s11_export_audit,S11 own export manifests,training.export.audit,base.group_user,r,"[('actor_id', '=', user.id)]"
+rule_s11_export_audit,S11 export company,training.export.audit,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

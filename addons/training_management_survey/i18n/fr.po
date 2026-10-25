@@ -1345,3 +1345,16 @@ msgstr ""
 #: code:addons/training_management_survey/models/dashboard.py:0
 msgid " · %(ongoing)s unfinished attempts"
 msgstr " · %(ongoing)s tentatives non terminées"
+
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/security.py:0
+msgid "Do not distribute private exam or feedback files through email."
+msgstr "Ne diffusez pas les fichiers privés d’examen ou de réponse par courriel."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/security.py:0
+msgid "This private training record is unavailable."
+msgstr "Cet enregistrement privé de formation est indisponible."

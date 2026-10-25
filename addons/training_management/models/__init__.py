@@ -37,3 +37,4 @@ from . import training_dashboard
 from . import training_notification
 
 from . import training_dashboard_audit
+from . import training_security

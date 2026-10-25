@@ -193,11 +193,15 @@ class TrainingPrivateAttachment(AttachmentController):
         # Native ownership tokens bypass the parent's ACL and extract bytes
         # directly, without ir.binary. Recheck the current grant before extraction.
         policy = request.env["training.document.policy"]
-        document = policy._document(attachment)
-        if policy._is_pedagogical(document):
-            try:
+        try:
+            document = policy._document(attachment)
+            protected = policy._is_pedagogical(document)
+            if protected:
                 policy._check_read(attachment)
-            except (AccessError, MissingError):
-                raise request.not_found() from None
-            return TrainingParticipantPortal._private(super()._get_pdf_first_page_response(attachment))
+        except (AccessError, MissingError):
+            raise request.not_found() from None
+        if protected:
+            response = super()._get_pdf_first_page_response(attachment)
+            policy._audit_file_read(attachment)
+            return TrainingParticipantPortal._private(response)
         return super()._get_pdf_first_page_response(attachment)

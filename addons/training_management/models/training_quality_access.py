@@ -14,21 +14,22 @@ PRIVATE_FILE_MODELS = ("training.quality.file", "training.provider.evidence")
 _logger = logging.getLogger(__name__)
 
 
-class QualityAccessError(models.Model):
+class TrainingAccessError(models.Model):
     _inherit = "ir.access"
 
     def _make_record_access_error(self, records, operation):
-        if records._name in QUALITY_MODELS:
+        if records._name.startswith("training."):
+            # S11 extends this existing native hook to all owned business models.
             # Odoo's debug diagnostic reads display names with sudo. A refusal
             # must not disclose private subjects or filenames, even in debug.
             _logger.info(
-                "Private quality access denied: model=%s operation=%s uid=%s records=%s",
+                "Training access denied: model=%s operation=%s uid=%s records=%s",
                 records._name,
                 operation,
                 self.env.uid,
                 records.ids[:6],
             )
-            return AccessError(self.env._("This private quality record is unavailable."))
+            return AccessError(self.env._("This private training record is unavailable."))
         return super()._make_record_access_error(records, operation)
 
 

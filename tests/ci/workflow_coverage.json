@@ -293,6 +293,20 @@
         "second_update",
         "repeated_history_preserved"
       ]
+    },
+    "security_audit": {
+      "script": "tests/ci/run_s11.sh",
+      "artifacts": [
+        "s11-results"
+      ],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "second_update",
+        "repeated_history_preserved"
+      ]
     }
   }
 }

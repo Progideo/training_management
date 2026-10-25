@@ -3,7 +3,7 @@ access_course_sales,Training courses for sales,training.course,sales_team.group_
 access_program_sales,Training programmes for sales,training.program.version,sales_team.group_sale_salesman,r,"[('state', 'in', ('validated', 'published', 'retired'))]"
 access_transfer_notice_sales,Transfer notices for sales,training.bank.transfer.notice,sales_team.group_sale_salesman,cr,"[('order_id', 'access', 'read')]"
 access_transfer_notice_accounting,Transfer notices for accounting,training.bank.transfer.notice,account.group_account_invoice,cru,
-rule_transfer_notice_company,Transfer notices allowed companies,training.bank.transfer.notice,,crud,"[('company_id', 'in', company_ids)]"
+rule_transfer_notice_company,Transfer notices allowed companies,training.bank.transfer.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_training_sale_portal,Training quotations require named contact,sale.order,,r,"[(1, '=', 1)] if not user.share else ['|', ('training_request_kind', '=', False), ('training_portal_partner_ids', 'in', [user.partner_id.id])]"
 rule_training_invoice_portal,Training invoices require named contact,account.move,,r,"[(1, '=', 1)] if not user.share else ['|', ('training_is_sale_invoice', '=', False), ('training_portal_partner_ids', 'in', [user.partner_id.id])]"
 access_delivery_sales,Training deliveries for sales,training.delivery,sales_team.group_sale_salesman,r,
@@ -11,4 +11,4 @@ access_allocation_sales,Training seat allocations for sales,training.seat.alloca
 access_enrollment_sales,Training enrollment states for sales,training.enrollment,sales_team.group_sale_salesman,r,
 access_category_sales,Training categories for sales,training.category,sales_team.group_sale_salesman,r,
 access_s10_request_notice,S10 authorized request journal,training.request.notice,sales_team.group_sale_salesman,r,"[('lead_id','access','read')]"
-rule_s10_request_notice,S10 request company,training.request.notice,,crud,"[('company_id','in',company_ids)]"
+rule_s10_request_notice,S10 request company,training.request.notice,,crud,"[('company_id','in',company_ids)] if user.active else [('id', '=', 0)]"

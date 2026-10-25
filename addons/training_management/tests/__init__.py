@@ -19,3 +19,4 @@ from . import test_quality
 from . import test_provider
 
 from . import test_dashboard
+from . import test_security
