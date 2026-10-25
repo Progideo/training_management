@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 
 class TrainingSecurityPolicy(models.AbstractModel):
-    _inherit = "training.document.policy"
+    _inherit = "training.document.policy"  # pylint: disable=consider-merging-classes-inherited  # security audit is separate from closure grants
 
     @api.private
     def _document(self, record):

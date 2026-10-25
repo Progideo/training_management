@@ -171,6 +171,7 @@ msgstr ""
 "Les tarifs commerciaux seront gérés par les produits et devis standards "
 "Odoo."
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__company_id
@@ -180,7 +181,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_document__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__company_id
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__company_id
@@ -226,6 +226,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_notification__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_export_audit__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -256,6 +257,7 @@ msgstr "Consignes de contact conservées dans cette version du programme."
 msgid "Content"
 msgstr "Contenu"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__create_uid
@@ -266,7 +268,6 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_document__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_proof__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__create_uid
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__create_uid
@@ -313,9 +314,11 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_notification__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__create_date
@@ -326,7 +329,6 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_document__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_proof__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__create_date
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__create_date
@@ -373,6 +375,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_notification__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -391,6 +394,7 @@ msgstr ""
 msgid "Delivery Mode"
 msgstr "Modalité"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_mail_activity__display_name
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_quality_summary__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__display_name
@@ -406,7 +410,6 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_document__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_proof__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__display_name
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__display_name
@@ -475,6 +478,7 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_service__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_notification__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -525,9 +529,11 @@ msgstr "Prolonger l’échéance"
 
 #. module: training_management
 #: model:ir.ui.menu,name:training_management.menu_training_root
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
 msgid "Formations"
 msgstr "Formations"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_mail_activity__id
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_quality_summary__id
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__id
@@ -543,7 +549,6 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_document__id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__id
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__id
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__id
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__id
@@ -612,6 +617,7 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_service__id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__id
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__id
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__id
 msgid "ID"
 msgstr "ID"
 
@@ -620,6 +626,7 @@ msgstr "ID"
 msgid "Labels"
 msgstr "Libellés"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__write_uid
@@ -630,7 +637,6 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_document__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_proof__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__write_uid
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__write_uid
@@ -677,9 +683,11 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_notification__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__write_date
@@ -690,7 +698,6 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_document__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_proof__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__write_date
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_course__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__write_date
@@ -737,6 +744,7 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_notification__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -745,8 +753,8 @@ msgstr "Dernière modification le"
 msgid "Model"
 msgstr "Modèle"
 
-#: model:ir.model.fields,field_description:training_management.field_training_retention_category__name
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__name
 #: model:ir.model.fields,field_description:training_management.field_training_course__name
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__name
 #: model:ir.model.fields,field_description:training_management.field_training_session__name
@@ -760,6 +768,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__participant_name
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__name
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__name
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__name
 msgid "Name"
 msgstr "Nom"
 
@@ -804,8 +813,10 @@ msgid "Not Finished"
 msgstr "Non terminées"
 
 #. module: training_management
+#. odoo-python
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__objectives
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Objectives"
 msgstr "Objectifs"
 
@@ -856,9 +867,11 @@ msgid "Postponed"
 msgstr "Reportée"
 
 #. module: training_management
+#. odoo-python
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__prerequisites
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__prerequisites
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Prerequisites"
 msgstr "Prérequis"
 
@@ -1037,10 +1050,10 @@ msgstr "Formation standard"
 msgid "Standard training catalogue and controlled programme versions"
 msgstr "Catalogue de formations standards et versions de programme contrôlées"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__state
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__state
 #: model:ir.model.fields,field_description:training_management.field_training_closure__state
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__state
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__state
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__state
@@ -1190,14 +1203,14 @@ msgstr "Valider"
 msgid "Validated"
 msgstr "Validé"
 
-#: model:ir.model.fields,field_description:training_management.field_training_proof__validated_at
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__validated_at
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_at
 msgid "Validated At"
 msgstr "Validé le"
 
-#: model:ir.model.fields,field_description:training_management.field_training_proof__validated_by_id
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__validated_by_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_by_id
 msgid "Validated By"
 msgstr "Validé par"
@@ -1244,6 +1257,7 @@ msgstr "Référence de version"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__elearning
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
 msgid "eLearning"
 msgstr "eLearning"
 
@@ -1584,10 +1598,10 @@ msgstr "Sélectionnez un lot disponible pour cette réalisation."
 msgid "Close"
 msgstr "Clôturer"
 
+#. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_complaint__state__closed
 #: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
 #: model:ir.model.fields.selection,name:training_management.selection__training_closure__state__closed
-#. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__closed
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__closed
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__closed
@@ -1675,8 +1689,8 @@ msgstr "Créez une inscription demandée sans métadonnées d’admission."
 msgid "Create a reservation before confirming its places."
 msgstr "Créez une réservation avant de confirmer ses places."
 
-#: model:ir.model.fields,field_description:training_management.field_training_closure__customer_id
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__customer_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__customer_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 msgid "Customer"
@@ -1703,11 +1717,11 @@ msgstr "Réalisée"
 msgid "Deliveries"
 msgstr "Réalisations"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__delivery_id
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_operation__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__delivery_id
@@ -1753,9 +1767,9 @@ msgstr "Accès effectif"
 msgid "End At"
 msgstr "Fin"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__enrollment_id
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__enrollment_ids
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__enrollment_ids
@@ -1996,6 +2010,7 @@ msgstr "Préparation"
 #: model:ir.model.fields,field_description:training_management.field_training_material__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__program_id
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__program_id
 msgid "Program"
 msgstr "Programme"
 
@@ -2010,10 +2025,10 @@ msgstr "Proposer ou réserver une place"
 msgid "Quantity"
 msgstr "Nombre de places"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__reason
 #: model:ir.model.fields,field_description:training_management.field_training_quality_operation__reason
 #: model:ir.model.fields,field_description:training_management.field_training_proof__reason
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__reason
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__reason
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__reason
@@ -2118,11 +2133,11 @@ msgstr "Réserver / prolonger / transférer"
 msgid "Reserved"
 msgstr "Réservée"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__responsible_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__responsible_id
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__responsible_id
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__responsible_id
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__responsible_id
 #: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__responsible_id
 msgid "Responsible"
@@ -3713,12 +3728,16 @@ msgstr ""
 "l’autre société."
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Access conditions"
 msgstr "Conditions d’accès"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Accessibility"
 msgstr "Accessibilité"
 
@@ -3730,8 +3749,8 @@ msgstr ""
 "Archivez les catégories utilisées par des formations au lieu de les "
 "supprimer."
 
-#: model:ir.model.fields,field_description:training_management.field_training_proof__category
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__category
 #: model:ir.model.fields,field_description:training_management.field_training_course__category_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__category_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_course_search
@@ -3766,8 +3785,10 @@ msgid "Enter a category name."
 msgstr "Saisissez un nom de catégorie."
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__evaluation_id
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Evaluation"
 msgstr "Évaluation"
 
@@ -3858,7 +3879,9 @@ msgid "Programme PDF"
 msgstr "Programme PDF"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Programme content"
 msgstr "Contenu du programme"
 
@@ -3905,12 +3928,16 @@ msgid "Select a programme to print."
 msgstr "Sélectionnez un programme à imprimer."
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Target audience"
 msgstr "Public concerné"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
+#: code:addons/training_management/models/training_public_catalogue.py:0
 msgid "Teaching methods"
 msgstr "Méthodes pédagogiques"
 
@@ -4052,10 +4079,10 @@ msgstr "Référence PDF de réalisation"
 msgid "File streaming helper model for controllers"
 msgstr "Service de diffusion des fichiers pour les contrôleurs"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__name
 #: model:ir.model.fields,field_description:training_management.field_training_document__filename
 #: model:ir.model.fields,field_description:training_management.field_training_proof__filename
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__filename
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__filename
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__filename
@@ -4165,9 +4192,9 @@ msgstr "Les preuves du PDF sont générées par le serveur."
 msgid "Preserved Evidence"
 msgstr "Preuves conservées"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_proof__previous_id
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__previous_id
@@ -4219,13 +4246,14 @@ msgstr "Agenda"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__sequence
 #: model:ir.model.fields,field_description:training_management.field_training_learning_activity__sequence
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__sequence
 msgid "Sequence"
 msgstr "Ordre"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_document__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_proof__sha256
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_export_audit__sha256
@@ -4285,12 +4313,13 @@ msgstr "Utilisez Nouvelle version PDF pour conserver le fichier original."
 msgid "Use the PDF field of a new private support version."
 msgstr "Utilisez le champ PDF d’une nouvelle version de support privé."
 
-#: model:ir.model.fields,field_description:training_management.field_training_proof__version
 #. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_proof__version
 #: model:ir.model.fields,field_description:training_management.field_training_material__version
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__version
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__version
 #: model_terms:ir.ui.view,arch_db:training_management.feedback_document
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
 msgid "Version"
 msgstr "Version"
 
@@ -5231,10 +5260,10 @@ msgstr "Correction du coordinateur"
 msgid "Correct Validated Attendance"
 msgstr "Corriger une présence validée"
 
+#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__data
 #: model:ir.model.fields,field_description:training_management.field_training_document__data
 #: model:ir.model.fields,field_description:training_management.field_training_proof__data
-#. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__data
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__data
 msgid "Data"
@@ -5597,8 +5626,8 @@ msgstr ""
 "Une non-applicabilité ou dérogation exige un motif et aucun fichier de "
 "substitution vide."
 
-#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
 msgid "Achievement Certificate"
 msgstr "Attestation de réussite"
@@ -5774,8 +5803,8 @@ msgid "Complete every required activity and review its supporting evidence."
 msgstr ""
 "Terminez toutes les activités obligatoires et contrôlez leurs justificatifs."
 
-#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
 msgid "Completion Certificate"
 msgstr "Attestation de réalisation"
@@ -6108,8 +6137,8 @@ msgstr ""
 msgid "Output"
 msgstr "Document conservé"
 
-#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
 msgid "Participation Certificate"
 msgstr "Attestation de participation"
@@ -6364,7 +6393,6 @@ msgstr "Émise le"
 msgid "— version"
 msgstr "— version"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.certificate_document
 msgid "Formation :"
@@ -6400,18 +6428,15 @@ msgstr "Un rôle de coordinateur ou de responsable qualité affecté est requis.
 msgid "% — Seuil :"
 msgstr "% — Seuil :"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "% — Threshold:"
 msgstr "% — Seuil :"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid ". Deadline (UTC):"
 msgstr ". Échéance (UTC) :"
-
 
 #. module: training_management
 #. odoo-python
@@ -6423,7 +6448,6 @@ msgstr ""
 "Une mission et une habilitation d’évaluation en cours de validité sont "
 "nécessaires."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
@@ -6433,14 +6457,12 @@ msgstr ""
 "Une évaluation qualitative ne permet pas de délivrer une attestation de "
 "réussite chiffrée."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Assign a published evaluation of this programme with a valid period."
 msgstr ""
 "Choisissez une évaluation publiée de ce programme et une période valide."
-
 
 #. module: training_management
 #. odoo-python
@@ -6449,13 +6471,11 @@ msgid "Assign an active quality reviewer authorized for this company."
 msgstr ""
 "Choisissez un responsable qualité actif et autorisé pour cette société."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Assign an active supervisor authorized for this company."
 msgstr "Choisissez un superviseur actif et autorisé pour cette société."
-
 
 #. module: training_management
 #: model:ir.actions.act_window,name:training_management.action_evaluation_assignment
@@ -6463,18 +6483,15 @@ msgstr "Choisissez un superviseur actif et autorisé pour cette société."
 msgid "Assigned Evaluations"
 msgstr "Évaluations affectées"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__evaluation_supervisor_ids
 msgid "Assigned Supervisors"
 msgstr "Superviseurs affectés"
 
-
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_evaluation_assignment
 msgid "Assigned Training Evaluation"
 msgstr "Évaluation de formation affectée"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__attempt_number
@@ -6482,12 +6499,10 @@ msgstr "Évaluation de formation affectée"
 msgid "Attempt Number"
 msgstr "Numéro de tentative"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Authorize a new attempt"
 msgstr "Autoriser une nouvelle tentative"
-
 
 #. module: training_management
 #. odoo-python
@@ -6495,13 +6510,11 @@ msgstr "Autoriser une nouvelle tentative"
 msgid "Choose an evaluation action."
 msgstr "Choisissez une action d’évaluation."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Choose an open closure dossier and a validated evaluation."
 msgstr "Choisissez un dossier de clôture ouvert et une évaluation validée."
-
 
 #. module: training_management
 #. odoo-python
@@ -6509,19 +6522,16 @@ msgstr "Choisissez un dossier de clôture ouvert et une évaluation validée."
 msgid "Complete the current attempt first."
 msgstr "Terminez d’abord la tentative en cours."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid ""
 "Complete the observed assessment according to your trainer's instructions."
 msgstr "Réalisez l’évaluation selon les consignes de votre formateur."
 
-
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__submitted
 msgid "Completed / Awaiting Validation"
 msgstr "Terminée / À valider"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__conclusion
@@ -6530,7 +6540,6 @@ msgstr "Terminée / À valider"
 msgid "Conclusion"
 msgstr "Conclusion"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_assignment_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_feedback_campaign_form
@@ -6538,37 +6547,31 @@ msgstr "Conclusion"
 msgid "Create S08 Evidence"
 msgstr "Créer la preuve S08"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__criteria
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__criteria
 msgid "Criteria"
 msgstr "Critères"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Critères :"
 msgstr "Critères :"
-
 
 #. module: training_management
 #: model:ir.actions.report,name:training_management.report_evaluation
 msgid "Dedicated Evaluation Evidence"
 msgstr "Preuve d’évaluation dédiée"
 
-
 #. module: training_management
 #: model:ir.model,name:training_management.model_report_training_management_evaluation_document
 msgid "Dedicated Evaluation Evidence Report"
 msgstr "Rapport de preuve d’évaluation dédiée"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__evaluation_instructor_ids
 msgid "Delivery Instructors"
 msgstr "Formateurs de la réalisation"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__due_at
@@ -6576,12 +6579,10 @@ msgstr "Formateurs de la réalisation"
 msgid "Due At"
 msgstr "Échéance"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__evaluation_authorization_ids
 msgid "Evaluation Authorization"
 msgstr "Habilitation d’évaluation"
-
 
 #. module: training_management
 #: model:ir.actions.act_window,name:training_management.action_evaluation_authorization
@@ -6589,31 +6590,26 @@ msgstr "Habilitation d’évaluation"
 msgid "Evaluation Authorizations"
 msgstr "Habilitations d’évaluation"
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Evaluation PDF generation failed."
 msgstr "La génération du PDF d’évaluation a échoué."
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__evaluation_quality_id
 msgid "Evaluation Quality Reviewer"
 msgstr "Responsable qualité des évaluations"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_delivery_evaluation
 msgid "Evaluation Roles"
 msgstr "Rôles d’évaluation"
 
-
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_evaluation_record
 msgid "Evaluation Validation or Motivated Revision"
 msgstr "Validation ou révision motivée d’évaluation"
-
 
 #. module: training_management
 #: model:ir.actions.act_window,name:training_management.action_evaluation
@@ -6621,13 +6617,11 @@ msgstr "Validation ou révision motivée d’évaluation"
 msgid "Evaluation Versions"
 msgstr "Versions d’évaluation"
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Evaluation decisions are immutable."
 msgstr "Les décisions d’évaluation sont immuables."
-
 
 #. module: training_management
 #. odoo-python
@@ -6635,12 +6629,10 @@ msgstr "Les décisions d’évaluation sont immuables."
 msgid "Evaluation state is server controlled."
 msgstr "L’état de l’évaluation est contrôlé par le serveur."
 
-
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__expected
 msgid "Expected"
 msgstr "Attendue"
-
 
 #. module: training_management
 #: model:ir.model.fields,help:training_management.field_training_delivery__evaluation_instructor_ids
@@ -6649,18 +6641,15 @@ msgid ""
 "session."
 msgstr "Mission pédagogique explicite, y compris en asynchrone sans séance."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Finalité :"
 msgstr "Finalité :"
 
-
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_evaluation_result
 msgid "Immutable Evaluation Decision"
 msgstr "Décision d’évaluation immuable"
-
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__in_progress
@@ -6668,67 +6657,56 @@ msgstr "Décision d’évaluation immuable"
 msgid "In Progress"
 msgstr "En cours"
 
-
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__purpose__acquired
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_authorization__purpose__acquired
 msgid "Learning Outcomes"
 msgstr "Acquis"
 
-
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_activity__criterion__evaluation
 msgid "Mock Exam Threshold"
 msgstr "Seuil de l’examen blanc"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Modèle S091-QWEB-1. Ne constitue pas une certification officielle."
 msgstr "Modèle S091-QWEB-1. Ne constitue pas une certification officielle."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Motif :"
 msgstr "Motif :"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "My evaluations"
 msgstr "Mes évaluations"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluations_link
 msgid "My training evaluations"
 msgstr "Mes évaluations de formation"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "New deadline (UTC)"
 msgstr "Nouvelle échéance (UTC)"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluations
 msgid "No authorized evaluation."
 msgstr "Aucune évaluation autorisée."
-
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__not_started
 msgid "Not Started"
 msgstr "Non commencée"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Not evaluated / score not applicable."
 msgstr "Non évalué / score non applicable."
-
 
 #. module: training_management
 #: model:ir.model.fields,help:training_management.field_training_evaluation_record__source
@@ -6736,13 +6714,11 @@ msgid ""
 "Observed assessment, paper reference or completed native questionnaire."
 msgstr "Évaluation observée, référence papier ou questionnaire natif terminé."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Only the assigned quality reviewer may authorize evaluators."
 msgstr "Seul le responsable qualité affecté peut habiliter les évaluateurs."
-
 
 #. module: training_management
 #. odoo-python
@@ -6750,19 +6726,16 @@ msgstr "Seul le responsable qualité affecté peut habiliter les évaluateurs."
 msgid "Only validated evaluations can supply evidence."
 msgstr "Seules les évaluations validées peuvent fournir une preuve."
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__opens_at
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__opens_at
 msgid "Opens At"
 msgstr "Ouverture"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Pedagogical validation"
 msgstr "Validation pédagogique"
-
 
 #. module: training_management
 #. odoo-python
@@ -6770,12 +6743,10 @@ msgstr "Validation pédagogique"
 msgid "Provide criteria and a finite threshold between zero and 100."
 msgstr "Renseignez des critères et un seuil fini compris entre zéro et 100."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_form
 msgid "Publish Evaluation"
 msgstr "Publier l’évaluation"
-
 
 #. module: training_management
 #. odoo-python
@@ -6784,26 +6755,22 @@ msgstr "Publier l’évaluation"
 msgid "Publish the source first."
 msgstr "Publiez d’abord la source."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Published evaluations are immutable; create a new version."
 msgstr "Les évaluations publiées sont immuables ; créez une nouvelle version."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Reason / revision"
 msgstr "Motif / révision"
-
 
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Reload and provide a reason and future deadline."
 msgstr "Actualisez puis renseignez un motif et une échéance future."
-
 
 #. module: training_management
 #. odoo-python
@@ -6814,12 +6781,10 @@ msgstr ""
 "Actualisez l’évaluation puis renseignez la conclusion, la source et le "
 "motif."
 
-
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_result__kind__reopening
 msgid "Reopening"
 msgstr "Réouverture"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_operation__result
@@ -6827,19 +6792,16 @@ msgstr "Réouverture"
 msgid "Result"
 msgstr "Résultat"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__result_available
 msgid "Result Available"
 msgstr "Résultat chiffré disponible"
-
 
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Retain authorization decisions."
 msgstr "Conservez les décisions d’habilitation."
-
 
 #. module: training_management
 #. odoo-python
@@ -6848,13 +6810,11 @@ msgid "Retain authorization decisions; revoke and create a new authorization."
 msgstr ""
 "Conservez les décisions ; retirez l’habilitation et créez-en une nouvelle."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Retain evaluation assignments and their history."
 msgstr "Conservez les affectations d’évaluation et leur historique."
-
 
 #. module: training_management
 #. odoo-python
@@ -6862,55 +6822,46 @@ msgstr "Conservez les affectations d’évaluation et leur historique."
 msgid "Retain evaluation decisions."
 msgstr "Conservez les décisions d’évaluation."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Retain published evaluations."
 msgstr "Conservez les évaluations publiées."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Save answers"
 msgstr "Enregistrer les réponses"
-
 
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_evaluation_authorization
 msgid "Scoped Evaluation Authorization"
 msgstr "Habilitation d’évaluation par périmètre"
 
-
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_evaluation_service
 msgid "Scoped Evaluation Operations"
 msgstr "Opérations d’évaluation par périmètre"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Score (%)"
 msgstr "Score (%)"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Score :"
 msgstr "Score :"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__score_confirmed
 msgid "Score explicitly checked, including zero"
 msgstr "Score explicitement vérifié, y compris zéro"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__scored
 msgid "Scored"
 msgstr "Avec score"
-
 
 #. module: training_management
 #. odoo-python
@@ -6918,24 +6869,20 @@ msgstr "Avec score"
 msgid "Set a valid period, an authorized user and a reason."
 msgstr "Renseignez une période valide, un utilisateur autorisé et un motif."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Source / observed evidence"
 msgstr "Source / preuve observée"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Source :"
 msgstr "Source :"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Start evaluation"
 msgstr "Commencer l’évaluation"
-
 
 #. module: training_management
 #. odoo-python
@@ -6943,36 +6890,30 @@ msgstr "Commencer l’évaluation"
 msgid "Start the evaluation and submit before its deadline."
 msgstr "Commencez l’évaluation puis remettez-la avant son échéance."
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__started_at
 msgid "Started At"
 msgstr "Début"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "State:"
 msgstr "État :"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Submit final answers"
 msgstr "Remettre les réponses définitives"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__submitted_at
 msgid "Submitted At"
 msgstr "Remise"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Tentative :"
 msgstr "Tentative :"
-
 
 #. module: training_management
 #. odoo-python
@@ -6980,13 +6921,11 @@ msgstr "Tentative :"
 msgid "This delivery is unavailable."
 msgstr "Cette réalisation est indisponible."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "This evaluation is not open for a new attempt."
 msgstr "Cette évaluation n’est pas ouverte à une nouvelle tentative."
-
 
 #. module: training_management
 #. odoo-python
@@ -6994,24 +6933,20 @@ msgstr "Cette évaluation n’est pas ouverte à une nouvelle tentative."
 msgid "This evaluation is unavailable."
 msgstr "Cette évaluation est indisponible."
 
-
 #. module: training_management
 #: model:ir.model.constraint,message:training_management.constraint_training_evaluation_assignment_unique_assignment
 msgid "This evaluation version is already assigned."
 msgstr "Cette version d’évaluation est déjà affectée."
-
 
 #. module: training_management
 #: model:res.groups,name:training_management.group_training_supervisor
 msgid "Training Supervisor"
 msgstr "Superviseur de formation"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluations
 msgid "Training evaluations"
 msgstr "Évaluations de formation"
-
 
 #. module: training_management
 #. odoo-python
@@ -7019,13 +6954,11 @@ msgstr "Évaluations de formation"
 msgid "Use a finite score between zero and 100."
 msgstr "Utilisez un score fini compris entre zéro et 100."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Use the checked evaluation actions."
 msgstr "Utilisez les actions d’évaluation contrôlées."
-
 
 #. module: training_management
 #. odoo-python
@@ -7033,13 +6966,11 @@ msgstr "Utilisez les actions d’évaluation contrôlées."
 msgid "Use the evaluation validation action."
 msgstr "Utilisez l’action de validation d’évaluation."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
 msgid "Use the publication and version actions."
 msgstr "Utilisez les actions de publication et de version."
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__valid_from
@@ -7047,96 +6978,80 @@ msgstr "Utilisez les actions de publication et de version."
 msgid "Valid From"
 msgstr "Valide à partir du"
 
-
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__valid_until
 msgid "Valid Until"
 msgstr "Valide jusqu’au"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_assignment_form
 msgid "Validate / Revise Result"
 msgstr "Valider / Réviser le résultat"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Validate / revise result"
 msgstr "Valider / Réviser le résultat"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_evaluation_record_form
 msgid "Validate Evaluation"
 msgstr "Valider l’évaluation"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Validated score:"
 msgstr "Score validé :"
-
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_result__kind__validation
 msgid "Validation"
 msgstr "Validation"
 
-
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_evaluation
 msgid "Versioned Training Evaluation"
 msgstr "Évaluation de formation versionnée"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "YYYY-MM-DD HH:MM:SS"
 msgstr "AAAA-MM-JJ HH:MM:SS"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Évaluateur :"
 msgstr "Évaluateur :"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "Évaluation pédagogique dédiée"
 msgstr "Évaluation pédagogique dédiée"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "— Attempt"
 msgstr "— Tentative"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "— Date serveur (UTC) :"
 msgstr "— Date serveur (UTC) :"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
 msgid "— Décision :"
 msgstr "— Décision :"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluations
 msgid "— Not evaluated / score not applicable"
 msgstr "— Non évalué / score non applicable"
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "— Version"
 msgstr "— Version"
-
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.evaluation_document
@@ -7221,7 +7136,9 @@ msgstr "Une nouvelle tentative a été autorisée."
 #. odoo-python
 #: code:addons/training_management/controllers/evaluation_portal.py:0
 msgid "The deadline has passed. Only previously saved answers were submitted."
-msgstr "L’échéance est dépassée. Seules les réponses déjà enregistrées ont été remises."
+msgstr ""
+"L’échéance est dépassée. Seules les réponses déjà enregistrées ont été "
+"remises."
 
 #. module: training_management
 #: model:ir.model,name:training_management.model_training_feedback_recipient
@@ -8719,7 +8636,6 @@ msgstr "Réclamation %s"
 msgid "This private quality record is unavailable."
 msgstr "Cet enregistrement qualité privé est inaccessible."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_evaluation.py:0
@@ -10135,12 +10051,10 @@ msgstr ""
 "Exportez uniquement les colonnes du tableau, sans parcourir les "
 "enregistrements sources."
 
-
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_pdf_accessibility_review_form
 msgid "Record Human Review"
 msgstr "Enregistrer le contrôle humain"
-
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__name
@@ -10170,7 +10084,6 @@ msgstr "Nouveau contrôle PDF"
 msgid "Choose a valid scheduled session."
 msgstr "Choisissez une séance planifiée valide."
 
-
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_quality_access.py:0
@@ -10199,3 +10112,279 @@ msgstr "Exporté le"
 #: code:addons/training_management/models/training_security.py:0
 msgid "Export Manifest #%(id)s"
 msgstr "Manifeste d’export nº%(id)s"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Expected outcomes"
+msgstr "Résultats attendus"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Exercises and deliverables"
+msgstr "Exercices et livrables"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Instructor profiles"
+msgstr "Profils des intervenants"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Material access duration"
+msgstr "Durée d’accès aux supports"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Included training services"
+msgstr "Prestations de formation incluses"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Exam preparation"
+msgstr "Préparation à l’examen"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Mock exam (not an official certification)"
+msgstr "Examen blanc (sans certification officielle)"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Official exam and inclusion"
+msgstr "Examen officiel et inclusion"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Public demonstration questions are frozen with their programme."
+msgstr "Les questions de démonstration sont figées avec leur programme."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "The public extract must be a PDF of at most 10 MB."
+msgstr "L’extrait public doit être un PDF de 10 Mo au maximum."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Not confirmed"
+msgstr "Non confirmé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_public_catalogue.py:0
+msgid "Information awaiting confirmation"
+msgstr "Informations à confirmer"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/public_catalogue.py:0
+msgid "Try again. "
+msgstr "Réessayez. "
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__public_catalogue
+msgid "Approved for Public Catalogue"
+msgstr "Approbation du catalogue public"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__expected_outcomes
+msgid "Expected Outcomes"
+msgstr "Résultats attendus"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__practice_deliverables
+msgid "Practice Deliverables"
+msgstr "Exercices et livrables"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__instructor_profiles
+msgid "Instructor Profiles"
+msgstr "Profils des intervenants"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__material_access_duration
+msgid "Material Access Duration"
+msgstr "Durée d’accès aux supports"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__included_services
+msgid "Included Services"
+msgstr "Prestations incluses"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__preparation_details
+msgid "Preparation Details"
+msgstr "Préparation aux examens"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__mock_exam_details
+msgid "Mock Exam Details"
+msgstr "Examens blancs"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__official_exam_details
+msgid "Official Exam Details"
+msgstr "Examen officiel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__unconfirmed_information
+msgid "Unconfirmed Information"
+msgstr "Informations non confirmées"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__preview_pdf
+msgid "Public PDF Extract"
+msgstr "Extrait PDF public"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__preview_filename
+msgid "Public Extract Filename"
+msgstr "Nom du fichier d’extrait"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__preview_question_ids
+msgid "Preview Question"
+msgstr "Questions de démonstration"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Public Information"
+msgstr "Informations publiques"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid ""
+"Validation approves this extract and these questions for public publication."
+" Never copy confidential content here."
+msgstr ""
+"La validation approuve la diffusion publique de cet extrait et de ces "
+"questions. N’y copiez jamais de contenu confidentiel."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_preview_question__correct_choice__a
+msgid "A"
+msgstr "A"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "Aperçu pédagogique public"
+msgstr "Aperçu pédagogique public"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Aucune formation publiée."
+msgstr "Aucune formation publiée."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_preview_question__correct_choice__b
+msgid "B"
+msgstr "B"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "Catalogue"
+msgstr "Catalogue"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Catégorie"
+msgstr "Catégorie"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__choice_a
+msgid "Choice A"
+msgstr "Choix A"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__choice_b
+msgid "Choice B"
+msgstr "Choix B"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__correct_choice
+msgid "Correct Choice"
+msgstr "Choix correct"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Distanciel"
+msgstr "Distanciel"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "Démonstration sans enregistrement de progression ni de résultat."
+msgstr "Démonstration sans enregistrement de progression ni de résultat."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_preview_question__explanation
+msgid "Explanation"
+msgstr "Explication"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "Extrait PDF public"
+msgstr "Extrait PDF public"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Mixte"
+msgstr "Mixte"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Modalité"
+msgstr "Modalité"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid ""
+"Prix sur devis. Un examen blanc ne constitue pas une certification "
+"officielle."
+msgstr ""
+"Prix sur devis. Un examen blanc ne constitue pas une certification "
+"officielle."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "Programme PDF de cette version"
+msgstr "Programme PDF de cette version"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Présentiel"
+msgstr "Présentiel"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_preview_question
+msgid "Public Demonstration Question"
+msgstr "Question de démonstration publique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Rechercher"
+msgstr "Rechercher"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_catalogue
+msgid "Toutes"
+msgstr "Toutes"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "Voir la correction de démonstration"
+msgstr "Voir la correction de démonstration"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme
+msgid "h ·"
+msgstr "h ·"

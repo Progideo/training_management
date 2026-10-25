@@ -150,3 +150,6 @@ access_s10_pdf,S10 PDF quality review,training.pdf.accessibility.review,training
 rule_s10_pdf,S10 PDF review company,training.pdf.accessibility.review,,crud,"[('company_id','in',company_ids)] if user.active else [('id', '=', 0)]"
 access_s11_export_audit,S11 own export manifests,training.export.audit,base.group_user,r,"[('actor_id', '=', user.id)]"
 rule_s11_export_audit,S11 export company,training.export.audit,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_preview_reader,Public preview reader,training.preview.question,training_management.group_training_reader,r,
+access_preview_coordinator,Public preview coordinator,training.preview.question,training_management.group_training_coordinator,crud,
+rule_preview_company,Public previews allowed companies,training.preview.question,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

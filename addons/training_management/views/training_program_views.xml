@@ -70,6 +70,26 @@
                                 <field name="accessibility_information" readonly="state != 'draft'"/>
                             </group>
                         </page>
+                        <page string="Public Information">
+                            <group>
+                                <field name="public_catalogue" readonly="state != 'draft'"/>
+                                <field name="expected_outcomes" readonly="state != 'draft'"/>
+                                <field name="practice_deliverables" readonly="state != 'draft'"/>
+                                <field name="instructor_profiles" readonly="state != 'draft'"/>
+                                <field name="material_access_duration" readonly="state != 'draft'"/>
+                                <field name="included_services" readonly="state != 'draft'"/>
+                                <field name="preparation_details" readonly="state != 'draft'"/>
+                                <field name="mock_exam_details" readonly="state != 'draft'"/>
+                                <field name="official_exam_details" readonly="state != 'draft'"/>
+                                <field name="unconfirmed_information" readonly="state != 'draft'"/>
+                                <field name="preview_filename" readonly="state != 'draft'"/>
+                                <field name="preview_pdf" filename="preview_filename" readonly="state != 'draft'"/>
+                            </group>
+                            <p>Validation approves this extract and these questions for public publication. Never copy confidential content here.</p>
+                            <field name="preview_question_ids" readonly="state != 'draft'">
+                                <list editable="bottom"><field name="sequence"/><field name="name"/><field name="choice_a"/><field name="choice_b"/><field name="correct_choice"/><field name="explanation"/></list>
+                            </field>
+                        </page>
                         <page string="Validation History">
                             <group>
                                 <field name="validated_by_id"/>

@@ -80,6 +80,8 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | S09.4 — intervenants, sous-traitance et veille | [s094-intervenants-veille.md](s094-intervenants-veille.md) |
 | S10 — tableau de suivi, indicateurs et notifications | [s10-operational-dashboard.md](s10-operational-dashboard.md) |
 | S11 — sécurité transversale, conservation et accès | [s11-security-audit.md](s11-security-audit.md) |
+| P01–P06 — couverture et droits C02/C04 | [p01-p06-coverage.md](p01-p06-coverage.md) |
+| P03–P04 — catalogue public et aperçu | [p03-p04-public-catalogue.md](p03-p04-public-catalogue.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
