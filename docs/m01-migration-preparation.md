@@ -2,8 +2,9 @@
 
 Référence : [#22](https://github.com/Progideo/training_management/issues/22),
 MIG01–MIG03 et chapitre 24. Cet incrément prépare la reprise ; il ne migre pas
-une base Odoo 19. Aucun schéma source réel n’est encore démontré. L’audit
-historique reste suspendu. Les migrations de versions de l’addon dans la CI
+une base Odoo 19. L’inventaire ciblé en lecture seule et les correspondances
+validées dans #22 orientent cette version ; le relevé détaillé reste privé.
+L’audit historique général reste suspendu. Les migrations de versions de l’addon dans la CI
 ne prouvent pas une reprise depuis Odoo 19.
 
 ## Contrat et correspondances
@@ -31,6 +32,72 @@ pas sa fidélité à une base source non inspectée. Seuls les contacts ont un
 format d’import natif démontré dans cet incrément, vers `res.partner` uniquement.
 Le rapprochement CSV est réservé à cette méthode, pas aux lots manuels.
 
+### Correspondances validées : contrat 2
+
+`migration/example/qualified-bundle.json` illustre toutes les politiques avec
+**des champs et données fictifs**. Le contrat 1 reste accepté sans changement ;
+il ne peut pas contenir les nouvelles déclarations et ne revendique pas leur
+validation. Le contrat 2 ajoute :
+
+- `field_inventory` : `expected_count` et `fields`, liste exhaustive des couples
+  `[modèle_source, champ_source]` de l’extraction. Comparer cette liste au relevé
+  privé des 44 correspondances approuvées ; l’exemple ne remplace pas ce relevé.
+- `field_mappings` : exactement une décision par couple, avec `source`, `policy`,
+  `records` (couples lot/identifiant), `archive` (couples archive/identifiant) et
+  `qualification` lorsque le sens ou l’affectation exige un contrôle métier.
+  Les références doivent exister. Chaque champ persistant doit renvoyer à des
+  originaux locaux vérifiés ; ces archives doivent effectivement couvrir ses
+  valeurs, relations et provenance. L’outil vérifie liens et empreintes, pas leur
+  exhaustivité sémantique. Les assistants transitoires n’ont aucune ligne à importer.
+
+Les décisions absentes, en double, hors inventaire, sans qualification requise
+ou sans originaux bloquent tout CSV. La qualification est une déclaration humaine,
+pas une déduction depuis le nom du champ. Aucun chemin cible libre n’est accepté :
+les politiques autorisées sont définies dans `migration/mapping.py`.
+
+| Politiques | Préparation autorisée, contrôles à effectuer sur copie |
+| --- | --- |
+| `catalogue`, `delivery`, `programme_template` | Cours, programme versionné et réalisation TM ; identités et liens source conservés, aucune fusion par nom ni version historique inventée. Produit commercial natif si nécessaire. |
+| `instructors`, `partner_projection` | Contacts professionnels et missions/séances existantes ; rapprocher les projections utilisateur avec leur contact, sans importer RH, paie ou comptes. |
+| `description`, `duration`, `commercial_reference` | Description HTML native à assainir ; durée annoncée dans le programme, jamais dans `total_time` calculé ; code commercial unique/société confirmé, jamais utilisé comme version historique. |
+| `category`, `inverse_relation` | Catégorie TM et tags natifs après arbitrage des classements multiples ; reconstruire les inverses depuis les liens, pas de second champ miroir. |
+| `publication` | Politique manuelle fermée : cours non publié, visibilité restreinte, inscription contrôlée ; aucun ancien drapeau n’accorde de droits. Vérifier le comportement des choix natifs dans la copie avant ouverture. |
+| `exam`, `survey_purpose`, `survey_context`, `answer_image` | Surveys et fonctions S06/S09 existantes ; finalité réelle examen/évaluation nominative/satisfaction anonyme. Types natifs selon finalité, jamais recopie des anciennes sélections. Image vers `survey.question.answer.value_image` uniquement si conversion qualifiée d’une vraie question ; original conservé. |
+| `historical_result`, `historical_presence`, `legacy_state` | Archive des résultats, preuves et drapeaux ; aucune tentative, anonymisation rétroactive, signature ou confirmation reconstituée. Une version inconnue va en archive avec sa réserve, jamais comme résultat opérationnel inventé. |
+| `ice`, `fiscal_identifier` | ICE JSON natif uniquement ; autre identifiant vers `vat` après qualification de sa nature, du pays et du format, pas par copie globale. |
+| `analytic_identity` | Rapprocher plans et comptes natifs par identité métier et société ; laisser Odoo générer les colonnes, sans recopier un suffixe local. |
+| `amount_words` | Archiver les anciens documents ; montant en lettres natif pour les nouveaux documents uniquement. Aucun mouvement validé ni PDF historique réécrit. |
+| `optional_project`, `transient` | Réserve sur le projet facultatif, aucune dépendance installée ; assistants exclus de la reprise. |
+| `fiscal_period`, `unqualified` | Réserve et originaux restreints : les paramètres annuels ne remplacent pas toutes les périodes ; pas de clé JSON fiscale inventée ni de sens supposé pour un champ RH inconnu. Lot comptable/RH distinct à qualifier si nécessaire. |
+
+La sortie privée `mapping-plan.json` rend ces décisions vérifiables avec leurs
+cibles imposées, références et actions. Elle n’est **jamais un fichier d’import**.
+Les lots hors contacts restent manuels/archives ; ils ne deviennent pas des
+transformations automatiques. Les réserves sont comptées dans le rapport,
+`field_mapping_validation` reste `not_executed` et chaque ligne du plan porte
+`execution_authorized: false`. La validation des correspondances ne lève pas les
+réserves portant sur des données dont le sens reste inconnu.
+
+### ICE natif
+
+Le contrat 2 accepte `values.additional_identifiers: {"MA_ICE": "…"}` pour les
+contacts explicitement couverts par une politique `ice`, avec `country_xmlid:
+base.ma`. La colonne CSV `additional_identifiers` contient un objet JSON.
+Seule cette clé native démontrée est autorisée : aucune clé arbitraire pour RC,
+CNSS, ITP ou capital. Une valeur non canonique de quinze chiffres ASCII bloque ;
+le validateur officiel Odoo contrôle ensuite le numéro et sa clé de contrôle.
+Le préparateur hors ligne ne prouve pas sa validité fiscale ni son attribution.
+La valeur de test `000000000000097` est synthétique, sans valeur fiscale.
+
+L’ICE parent/contact doit être identique avant préparation : le standard le
+synchronise. Ne pas ajouter de faux `vat` pour faire apparaître une société.
+L’import JSON remplace le dictionnaire : avant un rejeu sur des contacts déjà
+enrichis, exporter la sélection et arrêter l’opération si des identifiants cible
+supplémentaires seraient effacés ; arbitrer leur conservation hors de ce format
+limité. Le rapprochement compare l’objet JSON sémantiquement (y compris les clés
+supplémentaires), refuse les clés dupliquées et accepte la cellule vide native
+comme objet vide. Les autres colonnes gardent leur comparaison exacte.
+
 Dans cette version exacte d’Odoo 20, `is_company` est calculé : entité commerciale
 racine avec identifiant fiscal renseigné. Le booléen source est contrôlé mais
 n’est pas envoyé comme champ modifiable. Une entreprise source sans identifiant
@@ -51,7 +118,7 @@ python3 -m migration.prepare migration/example/bundle.json /tmp/m01-preparation
 
 Le répertoire de sortie doit être nouveau. Il contient un rapport privé
 (`report.json`, empreinte du paquet, date UTC, volumes, écarts et soldes par
-devise) et, si le paquet est cohérent, `contacts.csv`. Aucun accès réseau ni
+devise) et, si le paquet est cohérent, `contacts.csv` et le plan du contrat 2. Aucun accès réseau ni
 écriture Odoo. Les clés de secrets et d’autorisations sont refusées.
 
 Codes de sortie : `0` préparation cohérente avec seconde vérification déclarée ;
@@ -107,7 +174,21 @@ autres lots et l’accord de direction restent indispensables à une bascule.
 3. Retirer une référence d’inscription, altérer un fichier, un solde ou une valeur
    exportée : rapport bloqué. Dupliquer un identifiant : aucun nouveau CSV émis.
    Deux contacts partageant un e-mail restent distincts.
-4. Faire contrôler l’échantillon par une seconde personne. Archiver paquet,
+4. Préparer `qualified-bundle.json` dans un nouveau répertoire. Vérifier la
+   couverture de l’inventaire, les cibles et les réserves du plan. Retirer une
+   décision, sa qualification ou son archive : rapport bloqué et aucun CSV/plan.
+   Vérifier manuellement la couverture des 44 champs du relevé privé avant toute
+   extraction réelle, sans publier ce relevé ni des valeurs métier dans GitHub.
+5. Sur copie neutralisée, importer/rejouer le CSV ICE, exporter et rapprocher.
+   Vérifier l’ICE parent/contact, le pays, les mêmes contacts archivés et l’absence
+   de comptes/courriels. Un mauvais contrôle ICE doit faire échouer tout le lot
+   natif ; une clé inconnue, un pays incohérent ou un conflit parent/contact doit
+   être bloqué avant émission du CSV. Tester aussi les profils société/portail.
+6. Pour les lots manuels, vérifier sur copie les liens cours/programme/réalisation,
+   la durée, la classification des questionnaires, les pièces et les droits fermés.
+   Aucun résultat historique transformé en tentative/signature/anonymat. Ces essais
+   ne sont pas couverts par les seuls tests d’import des contacts.
+7. Faire contrôler l’échantillon par une seconde personne. Archiver paquet,
    empreintes, relevés cible, écarts et procès-verbal dans un espace restreint,
    hors dépôt public. Une version historique inconnue reste une réserve.
 
@@ -115,3 +196,14 @@ Les essais réels, l’activation sécurisée des comptes, la validation des
 habilitations entreprise et la bascule exigent des décisions distinctes. Aucun
 mot de passe source à extraire, aucun compte activé par correspondance de domaine,
 aucune reprise automatique des personnalisations anciennes.
+
+## Validation de cet incrément
+
+Les tests hors ligne couvrent le contrat 1 conservé, la couverture des décisions,
+les réserves, les archives, les conflits et le rapprochement JSON. Les tests natifs
+utilisent l’image Community épinglée `20.0-20261015`, l’ORM officiel `load`/`export_data`
+et des données fictives sur base jetable : rejeu, annulation du lot invalide,
+relations, sociétés, public, absence de comptes et courriels. Ils ne constituent
+pas une migration réelle ni une recette dynamique de tous les lots manuels.
+La CI cumulative, ses configurations et les migrations historiques restent
+inchangées. Les résultats réellement exécutés figurent dans la PR.

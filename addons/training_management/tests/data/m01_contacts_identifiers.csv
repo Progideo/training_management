@@ -1,0 +1,4 @@
+id,name,email,phone,street,city,zip,vat,country_id/id,parent_id/id,company_id/id,active,additional_identifiers
+__import__.tm_m01_contact_afc012046fee4afeb679f154941885fd7180fb60a40bbacf53f4b326f9870076,Entreprise fictive M01,,,,,,00000000,base.ma,,base.main_company,False,"{""MA_ICE"": ""000000000000097""}"
+__import__.tm_m01_contact_8ff72be14dbf1c311299b13139a13456bce41b452ba57f793d83bb16f06dde6f,Personne fictive M01,person@example.invalid,,,,,00000000,base.ma,__import__.tm_m01_contact_afc012046fee4afeb679f154941885fd7180fb60a40bbacf53f4b326f9870076,base.main_company,False,"{""MA_ICE"": ""000000000000097""}"
+__import__.tm_m01_contact_c27e1b938080d488b2ffb43d366217886e31f1f9633e38d58c6c6919294d731a,Personne indépendante fictive M01,,,,,,,base.fr,,base.main_company,False,{}

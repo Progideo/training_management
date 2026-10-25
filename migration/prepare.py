@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import re
 
+from migration.mapping import inspect_mappings
+
 
 LOTS = ("contacts", "offers", "sessions", "enrollments", "balances", "supports", "results", "documents", "archive")
 METHODS = {"native_import", "manual", "archive", "unknown"}
@@ -50,7 +52,7 @@ def inspect(bundle, root):
 
     if not isinstance(bundle, dict):
         raise ValueError("The bundle must be an object")
-    if type(bundle.get("schema")) is not int or bundle["schema"] != 1:
+    if type(bundle.get("schema")) is not int or bundle["schema"] not in (1, 2):
         fail("unsupported_schema")
     if forbidden_keys(bundle):
         fail("credentials_or_permissions_forbidden")
@@ -126,12 +128,30 @@ def inspect(bundle, root):
                 if not isinstance(values, dict):
                     fail("invalid_contact", kind, index)
                     continue
-                if set(values) - {*CONTACT_FIELDS, "is_company", "country_xmlid", "parent_source_id"}:
+                if set(values) - {
+                    *CONTACT_FIELDS,
+                    "is_company",
+                    "country_xmlid",
+                    "parent_source_id",
+                    *(["additional_identifiers"] if bundle.get("schema") == 2 else []),
+                }:
                     fail("unsupported_contact_field", kind, index)
                 if not text(values.get("name")) or type(values.get("is_company")) is not bool:
                     fail("contact_type_or_name_missing", kind, index)
-                if any(not isinstance(v, str) for k, v in values.items() if k != "is_company"):
+                if any(
+                    not isinstance(v, str)
+                    for k, v in values.items()
+                    if k not in ("is_company", "additional_identifiers")
+                ):
                     fail("invalid_contact_value", kind, index)
+                identifiers = values.get("additional_identifiers", {})
+                if (
+                    not isinstance(identifiers, dict)
+                    or set(identifiers) - {"MA_ICE"}
+                    or any(not isinstance(v, str) or not re.fullmatch(r"[0-9]{15}", v) for v in identifiers.values())
+                    or (identifiers and values.get("country_xmlid") != "base.ma")
+                ):
+                    fail("contact_identifiers_unresolved", kind, index)
                 country = values.get("country_xmlid")
                 if country and (not isinstance(country, str) or not XMLID.fullmatch(country)):
                     fail("country_mapping_unresolved", kind, index)
@@ -152,8 +172,9 @@ def inspect(bundle, root):
                     else:
                         parent_values = parent_row["values"]
                         if lot.get("method") == "native_import" and any(
-                            values.get(k, "") != parent_values.get(k, "")
-                            for k in ("vat", "street", "city", "zip", "country_xmlid")
+                            values.get(k, {} if k == "additional_identifiers" else "")
+                            != parent_values.get(k, {} if k == "additional_identifiers" else "")
+                            for k in ("vat", "street", "city", "zip", "country_xmlid", "additional_identifiers")
                         ):
                             fail("native_shared_address_or_vat_conflict", kind, index)
             if kind == "enrollments":
@@ -210,6 +231,13 @@ def inspect(bundle, root):
     except (ValueError, TypeError):
         fail("expected_balances_invalid")
 
+    mapping_plan = []
+    if bundle.get("schema") == 2:
+        mapping_plan, mapping_findings = inspect_mappings(bundle)
+        findings.extend(mapping_findings)
+    elif "field_inventory" in bundle or "field_mappings" in bundle:
+        fail("field_mapping_requires_schema_2")
+
     # This records a declared second-person check; it does not authenticate or sign it.
     review = bundle.get("review", {})
     reviewed = False
@@ -243,6 +271,9 @@ def inspect(bundle, root):
         "second_person_review_declared": reviewed,
         "contact_target_reconciliation": "pending",
         "cutover_authorized": False,
+        "field_mapping_count": len(mapping_plan),
+        "field_mapping_reserves": sum(p["action"] == "reserve" for p in mapping_plan),
+        "field_mapping_validation": "not_executed" if bundle.get("schema") == 2 else "not_declared",
     }
 
 
@@ -257,10 +288,23 @@ def forbidden_keys(value):
     return isinstance(value, list) and any(forbidden_keys(item) for item in value)
 
 
+def contact_columns(bundle):
+    return CSV_FIELDS + (("additional_identifiers",) if bundle.get("schema") == 2 else ())
+
+
+def unique_object(pairs):
+    obj = {}
+    for key, value in pairs:
+        if key in obj:
+            raise ValueError("Duplicate JSON key")
+        obj[key] = value
+    return obj
+
+
 def contacts_csv(bundle, stream):
     """Native res.partner import: archived contacts, no accounts, no email merge."""
     writer = csv.writer(stream)
-    writer.writerow(CSV_FIELDS)
+    writer.writerow(contact_columns(bundle))
     system = bundle["source"]["system"]
     # Companies first: Odoo can resolve every parent without a second pass.
     for row in sorted(bundle["lots"]["contacts"]["records"], key=lambda r: not r["values"]["is_company"]):
@@ -275,6 +319,11 @@ def contacts_csv(bundle, stream):
                 bundle["lots"]["contacts"]["target_company_xmlid"],
                 "False",
             ]
+            + (
+                [json.dumps(values.get("additional_identifiers", {}), sort_keys=True)]
+                if bundle.get("schema") == 2
+                else []
+            )
         )
 
 
@@ -287,11 +336,20 @@ def reconcile_contacts(bundle, stream):
     expected.seek(0)
     wanted = {r["id"]: r for r in csv.DictReader(expected)}
     reader = csv.DictReader(stream)
-    if reader.fieldnames != list(CSV_FIELDS):
+    if reader.fieldnames != list(contact_columns(bundle)):
         return [{"code": "target_columns_mismatch"}]
     observed = {}
     findings = []
     for row in reader:
+        if bundle.get("schema") == 2:
+            try:
+                # Native export represents an empty JSON field as an empty cell.
+                identifiers = json.loads(row["additional_identifiers"] or "{}", object_pairs_hook=unique_object)
+                if not isinstance(identifiers, dict):
+                    raise ValueError
+                row["additional_identifiers"] = json.dumps(identifiers, sort_keys=True)
+            except (ValueError, TypeError):
+                findings.append({"code": "target_identifiers_invalid"})
         if row["id"] in observed:
             findings.append({"code": "duplicate_target_identity"})
         observed[row["id"]] = row
@@ -310,18 +368,9 @@ def main(argv=None):
     parser.add_argument("--target-contacts", type=Path, help="Native CSV export of the imported contact selection")
     args = parser.parse_args(argv)
 
-    # Duplicate JSON keys must not silently replace source rows or control declarations.
-    def unique(pairs):
-        obj = {}
-        for key, value in pairs:
-            if key in obj:
-                raise ValueError("Duplicate JSON key")
-            obj[key] = value
-        return obj
-
     try:
         raw = args.bundle.read_bytes()
-        bundle = json.loads(raw, object_pairs_hook=unique)
+        bundle = json.loads(raw, object_pairs_hook=unique_object)
         report = inspect(bundle, args.bundle.parent)
         if args.target_contacts and report["status"] != "blocked":
             observed = args.target_contacts.read_bytes()
@@ -338,6 +387,11 @@ def main(argv=None):
         report_file = args.output / "report.json"
         report_file.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         report_file.chmod(0o600)
+        if report["status"] != "blocked" and bundle.get("schema") == 2:
+            plan, _ = inspect_mappings(bundle)
+            destination = args.output / "mapping-plan.json"
+            destination.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            destination.chmod(0o600)
         if report["status"] != "blocked" and bundle["lots"]["contacts"]["method"] == "native_import":
             destination = args.output / "contacts.csv"
             with destination.open("w", newline="", encoding="utf-8") as stream:
