@@ -97,6 +97,12 @@ class TestCompanyPortal(PreparationCase, HttpCase):
         nomination = service._nominate(allocation.id, "Fictional Nominee", "nominee@example.invalid")
         self.assertEqual(service._nominate(allocation.id, "Fictional Nominee", "nominee@example.invalid"), nomination)
         self.assertFalse(nomination.enrollment_id)
+        with self.assertRaises(ValidationError):
+            nomination.with_user(self.coordinator).write({"name": "Changed submission"})
+        with self.assertRaises(ValidationError):
+            nomination.with_user(self.coordinator).write({"fingerprint": "forged"})
+        with self.assertRaises(ValidationError):
+            nomination.with_user(self.coordinator).write({"state": "processed"})
         self.assertEqual(own.state, "requested")
         self.assertNotEqual(own._effective_state(), "active")
         with self.assertRaises(AccessError):

@@ -26,6 +26,7 @@ Pour chaque lot, le représentant voit les séances, les noms et statuts des
 participants de ce lot, ses nominations et les PDF explicitement diffusés.
 Réponses, scores, positionnements, adaptations personnelles et tutorat ne sont
 pas projetés. Les nominations ne créent ni contact, ni utilisateur, ni inscription.
+Le nom, l’email et l’auteur de la proposition transmise ne sont plus modifiables.
 La coordination traite la proposition dans le circuit d’inscription existant,
 puis peut y rattacher l’inscription du même lot. L’activation pédagogique reste
 une décision séparée de S03. Répéter la même nomination retrouve la proposition.
