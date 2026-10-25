@@ -733,14 +733,19 @@ msgstr "Lot de places de formation"
 #. module: training_management_sale
 #. odoo-python
 #: code:addons/training_management_sale/models/training_document_policy.py:0
-msgid "This training document is not accessible with your current permissions."
-msgstr "Vos autorisations actuelles ne permettent pas d’accéder à ce document de formation."
+msgid ""
+"This training document is not accessible with your current permissions."
+msgstr ""
+"Vos autorisations actuelles ne permettent pas d’accéder à ce document de "
+"formation."
 
 #. module: training_management_sale
 #. odoo-python
 #: code:addons/training_management_sale/models/training_document_policy.py:0
 msgid "Send training documents only to currently authorized named contacts."
-msgstr "Envoyez les documents de formation uniquement aux contacts nommément habilités actuellement."
+msgstr ""
+"Envoyez les documents de formation uniquement aux contacts nommément "
+"habilités actuellement."
 
 #. module: training_management_sale
 #: model:ir.model,name:training_management_sale.model_training_document_policy
@@ -1312,3 +1317,391 @@ msgid ""
 msgstr ""
 "Cohorte des factures comptabilisées entières liées aux commandes affectées, "
 "moins avoirs HT : %(amount)s %(currency)s · S10-1"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Training request — %s"
+msgstr "Demande de formation — %s"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid ""
+"Complete the contact, request type, objectives, level, participants, "
+"country, modality and currency."
+msgstr ""
+"Renseignez le contact, le type de besoin, les objectifs, le niveau, "
+"l’effectif, le pays, la modalité et la devise."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "A request field exceeds 5000 characters."
+msgstr "Un champ de la demande dépasse 5 000 caractères."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Enter a valid email address."
+msgstr "Saisissez une adresse email valide."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose a valid training request type."
+msgstr "Choisissez un type de demande valide."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Enter the organisation for an intra-company request."
+msgstr "Renseignez l’entreprise pour une demande intra."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid ""
+"Use a positive participant count (one for an individual) and ordered dates."
+msgstr ""
+"L’effectif doit être positif (un pour une demande individuelle) et les dates"
+" ordonnées."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose preferred dates or indicate that dates are to be discussed."
+msgstr ""
+"Choisissez des dates souhaitées ou indiquez que les dates sont à discuter."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose a country and MAD or EUR independently of the language."
+msgstr "Choisissez un pays et MAD ou EUR indépendamment de la langue."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose a valid delivery mode."
+msgstr "Choisissez une modalité valide."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose a published programme, or request custom training."
+msgstr "Choisissez un programme publié ou une formation sur mesure."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Dates to discuss"
+msgstr "Dates à discuter"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "A training specification cannot be shared or reassigned."
+msgstr ""
+"Un cahier des charges de formation ne peut pas être partagé ou réaffecté."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Check the participant count, country, programme and dates."
+msgstr "Vérifiez l’effectif, le pays, le programme et les dates."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "The private specification must be a PDF of at most 10 MB."
+msgstr "Le cahier des charges privé doit être un PDF de 10 Mo au maximum."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid ""
+"This form was already submitted with different content. Start a new request."
+msgstr ""
+"Ce formulaire a déjà été envoyé avec un contenu différent. Ouvrez une "
+"nouvelle demande."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Private training specifications cannot be copied to another envelope."
+msgstr ""
+"Les cahiers des charges privés ne peuvent pas être copiés dans un autre "
+"dossier."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid ""
+"Training request attachments must remain private without sharing tokens."
+msgstr ""
+"Les pièces des demandes de formation doivent rester privées, sans jeton de "
+"partage."
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_type__adaptation
+msgid "Adaptation"
+msgstr "Adaptation"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Adaptation du catalogue"
+msgstr "Adaptation du catalogue"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid ""
+"Après une erreur, sélectionnez à nouveau votre pièce jointe avant de "
+"renvoyer."
+msgstr ""
+"Après une erreur, sélectionnez à nouveau votre pièce jointe avant de "
+"renvoyer."
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_ir_attachment
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Cahier des charges privé (PDF, 10 Mo maximum)"
+msgstr "Cahier des charges privé (PDF, 10 Mo maximum)"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_type__catalogue
+msgid "Catalogue"
+msgstr "Catalogue"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Choisir"
+msgstr "Choisir"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Choisir indépendamment du pays"
+msgstr "Choisir indépendamment du pays"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+msgid "Choisir mon parcours"
+msgstr "Choisir mon parcours"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+msgid "Choisir pour moi"
+msgstr "Choisir pour moi"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+msgid "Choisir pour mon équipe"
+msgstr "Choisir pour mon équipe"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_type__custom
+msgid "Custom"
+msgstr "Sur mesure"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Dates à discuter"
+msgstr "Dates à discuter"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.request_received
+msgid "Demande reçue"
+msgstr "Demande reçue"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Devise souhaitée"
+msgstr "Devise souhaitée"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+msgid "Décrire un projet sur mesure"
+msgstr "Décrire un projet sur mesure"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "EUR"
+msgstr "EUR"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Effectif (1 pour une demande individuelle)"
+msgstr "Effectif (1 pour une demande individuelle)"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Formation (facultative pour le sur mesure)"
+msgstr "Formation (facultative pour le sur mesure)"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Formation du catalogue"
+msgstr "Formation du catalogue"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_programme_actions
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Former mon équipe"
+msgstr "Former mon équipe"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Je souhaite un échange avec un conseiller"
+msgstr "Je souhaite un échange avec un conseiller"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "MAD"
+msgstr "MAD"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_programme_actions
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Me former"
+msgstr "Me former"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Modalité"
+msgstr "Modalité"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Objectifs attendus"
+msgstr "Objectifs attendus"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Outils disponibles"
+msgstr "Outils disponibles"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Parcours"
+msgstr "Parcours"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Pays"
+msgstr "Pays"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.request_received
+msgid "Retour au catalogue"
+msgstr "Retour au catalogue"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Sur mesure"
+msgstr "Sur mesure"
+
+#. module: training_management_sale
+#: model:ir.model.constraint,message:training_management_sale.constraint_crm_lead_unique_training_submission
+msgid "This request was already recorded."
+msgstr "Cette demande a déjà été enregistrée."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_advice_requested
+msgid "Training Advice Requested"
+msgstr "Échange avec un conseiller demandé"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_country_id
+msgid "Training Country"
+msgstr "Pays de la formation"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_level
+msgid "Training Level"
+msgstr "Niveau des participants"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_objectives
+msgid "Training Objectives"
+msgstr "Objectifs de formation"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_request_type
+msgid "Training Request Type"
+msgstr "Type de demande"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_submission_hash
+msgid "Training Submission Hash"
+msgstr "Empreinte de soumission"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_submission_key
+msgid "Training Submission Key"
+msgstr "Clé de soumission"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_tools
+msgid "Training Tools"
+msgstr "Outils disponibles"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Transmettre ma demande"
+msgstr "Transmettre ma demande"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Type de besoin"
+msgstr "Type de besoin"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
+msgid "Un projet intraentreprise, une adaptation ou une formation sur mesure."
+msgstr ""
+"Un projet intraentreprise, une adaptation ou une formation sur mesure."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid ""
+"Une demande ne confirme ni disponibilité, ni commande, ni inscription. "
+"Paiement par virement après devis MAD ou EUR."
+msgstr ""
+"Une demande ne confirme ni disponibilité, ni commande, ni inscription. "
+"Paiement par virement après devis MAD ou EUR."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.request_received
+msgid ""
+"Votre demande est enregistrée. Un accusé de réception est préparé pour votre"
+" adresse email. L’équipe vous recontactera ; aucune inscription ni "
+"disponibilité n’est confirmée."
+msgstr ""
+"Votre demande est enregistrée. Un accusé de réception est préparé pour votre"
+" adresse email. L’équipe vous recontactera ; aucune inscription ni "
+"disponibilité n’est confirmée."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Votre projet de formation"
+msgstr "Votre projet de formation"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid ""
+"Vous pouvez changer de parcours dans ce formulaire en conservant vos "
+"saisies. Les champs entreprise restent disponibles."
+msgstr ""
+"Vous pouvez changer de parcours dans ce formulaire en conservant vos "
+"saisies. Les champs entreprise restent disponibles."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "À définir"
+msgstr "À définir"

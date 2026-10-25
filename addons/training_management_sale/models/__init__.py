@@ -24,3 +24,5 @@ from . import training_allocation
 from . import dashboard
 
 from . import request_notice
+
+from . import training_public_request
