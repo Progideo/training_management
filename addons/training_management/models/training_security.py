@@ -92,6 +92,11 @@ class TrainingExportAudit(models.Model):
     manifest = fields.Json(required=True)
     sha256 = fields.Char(required=True)
 
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for row in self:
+            row.display_name = self.env._("Export Manifest #%(id)s", id=row.id)
+
     @api.private
     def _record_export(self, records, columns):
         # The caller checked the entire source recordset and successfully built

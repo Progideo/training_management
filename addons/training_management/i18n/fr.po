@@ -10193,3 +10193,9 @@ msgstr "Mes manifestes d’export"
 #: model:ir.model.fields,field_description:training_management.field_training_export_audit__exported_at
 msgid "Exported At"
 msgstr "Exporté le"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_security.py:0
+msgid "Export Manifest #%(id)s"
+msgstr "Manifeste d’export nº%(id)s"
