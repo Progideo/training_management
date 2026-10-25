@@ -5,6 +5,7 @@ on:
     paths:
       - "addons/**"
       - "tests/**"
+      - "migration/**"
       - "docs/ci.md"
       - ".github/workflows/**"
       - ".pre-commit-config.yaml"
