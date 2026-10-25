@@ -341,6 +341,10 @@ def reconcile_contacts(bundle, stream):
     observed = {}
     findings = []
     for row in reader:
+        # Missing cells are unknown, not empty JSON. Extra cells have no declared field.
+        if None in row or any(value is None for value in row.values()):
+            findings.append({"code": "target_row_shape_mismatch"})
+            continue
         if bundle.get("schema") == 2:
             try:
                 # Native export represents an empty JSON field as an empty cell.

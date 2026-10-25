@@ -103,7 +103,10 @@ enrichis, exporter la sélection et arrêter l’opération si des identifiants 
 supplémentaires seraient effacés ; arbitrer leur conservation hors de ce format
 limité. Le rapprochement compare l’objet JSON sémantiquement (y compris les clés
 supplémentaires), refuse les clés dupliquées et accepte la cellule vide native
-comme objet vide. Les autres colonnes gardent leur comparaison exacte.
+comme objet vide. Une cellule absente dans une ligne tronquée reste inconnue :
+elle ne vaut pas un objet vide. Les lignes avec cellules manquantes ou
+supplémentaires bloquent le rapprochement et toute sortie CSV/plan. Les autres
+colonnes gardent leur comparaison exacte.
 
 Dans cette version exacte d’Odoo 20, `is_company` est calculé : entité commerciale
 racine avec identifiant fiscal renseigné. Le booléen source est contrôlé mais
