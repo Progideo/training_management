@@ -5,10 +5,9 @@ import json
 from datetime import date
 
 from psycopg2 import IntegrityError
-from psycopg2.errors import SerializationFailure
 
 from odoo import SUPERUSER_ID, api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, ConcurrencyError, ValidationError
 from odoo.tools import email_normalize
 from odoo.tools.binary import BinaryBytes
 
@@ -166,7 +165,7 @@ class TrainingPublicRequest(models.Model):
             if error.diag.constraint_name == "crm_lead_unique_training_submission":
                 # Native Odoo retry starts a fresh REPEATABLE READ transaction,
                 # where the winning request is visible. Never return a stale read.
-                raise SerializationFailure("Concurrent training request; retry with a fresh snapshot") from error
+                raise ConcurrencyError("Concurrent training request; retry with a fresh snapshot") from error
             raise
 
 
