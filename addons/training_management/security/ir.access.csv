@@ -153,3 +153,11 @@ rule_s11_export_audit,S11 export company,training.export.audit,,crud,"[('company
 access_preview_reader,Public preview reader,training.preview.question,training_management.group_training_reader,r,
 access_preview_coordinator,Public preview coordinator,training.preview.question,training_management.group_training_coordinator,crud,
 rule_preview_company,Public previews allowed companies,training.preview.question,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_company_authorization,Company portal authorizations,training.company.authorization,training_management.group_training_coordinator,crud,
+rule_company_authorization,Company portal authorizations operator,training.company.authorization,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_company_nomination,Client participant nominations,training.company.nomination,training_management.group_training_coordinator,cru,
+rule_company_nomination,Client nominations operator,training.company.nomination,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_company_document,Authorized client PDFs,training.company.document,training_management.group_training_coordinator,crud,
+rule_company_document,Client PDFs operator,training.company.document,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_intra_version,Client intra programme versions,training.intra.version,training_management.group_training_coordinator,cru,
+rule_intra_version,Intra versions operator,training.intra.version,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

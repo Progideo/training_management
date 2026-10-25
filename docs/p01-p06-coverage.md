@@ -57,3 +57,19 @@ Aucun addon Enterprise ou communautaire supplémentaire requis.
 Un contenu déjà publié dans le catalogue interne n’est pas rendu public par la
 mise à jour : l’approbation publique est désactivée par défaut et choisie sur une
 nouvelle version brouillon. Aucun domaine email ne vaut habilitation.
+
+## Preuves de l’extension P01–P06
+
+| Parcours | Fonctions et recette | Tests ajoutés à la suite cumulative |
+| --- | --- | --- |
+| P01–P02 | [Parcours et demande guidée](p01-p02-guided-requests.md), PR #81 après #80 | `TestPublicRequest` : contexte HTTP, erreurs, champs/PDF, accusé, répétition, droits CRM et jetons |
+| P03–P04 | [Catalogue et aperçu](p03-p04-public-catalogue.md), PR #80 | `TestPublicCatalogue` : fiche/PDF, mini-quiz, programme privé, société, immutabilité et retrait |
+| P05 | [Portail entreprise](p05-p06-company-dossiers.md) | `TestCompanyPortal` : lots/participants/fichiers, nomination, export, révocation ; `TestCompanyRequests` : CRM par client et exploitant |
+| P06 | [Versions intra](p05-p06-company-dossiers.md) | `TestCompanyPortal` : accord exact, métadonnées protégées, succession, catalogue inchangé, isolation des PDF |
+| Mise à jour/concurrence | [CI](ci.md), parcours `p01p06` | Main `1db3b95` → nouvelle version → mise à jour répétée ; fichiers et historiques conservés ; deux connexions réelles sur une même demande et nomination |
+
+Les résultats d’exécution et réserves de revue restent dans les PR. La recette
+L01 et la reprise réelle M01 restent distinctes ; cette matrice ne vaut pas décision
+de lancement. Website et eLearning ne deviennent pas des dépendances du socle.
+Le mini-quiz P04 utilise deux choix publics sans tentative persistée : Surveys,
+déjà intégré aux véritables évaluations, n’est pas imposé au catalogue seul.

@@ -23,3 +23,5 @@ from . import test_security
 from . import test_migration
 
 from . import test_public_catalogue
+
+from . import test_company_portal

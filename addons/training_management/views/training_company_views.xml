@@ -1,0 +1,189 @@
+<odoo>
+    <record id="view_company_authorization_list" model="ir.ui.view">
+        <field name="name">training.company.authorization.list</field>
+        <field name="model">training.company.authorization</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="customer_id" />
+                <field name="user_id" />
+                <field name="company_id" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+    <record id="view_company_authorization_form" model="ir.ui.view">
+        <field name="name">training.company.authorization.form</field>
+        <field name="model">training.company.authorization</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm Authorization" invisible="state != 'draft'" class="btn-primary" />
+                    <button name="action_revoke" type="object" string="Revoke" invisible="state != 'active'" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="company_id" readonly="state != 'draft'" />
+                        <field name="customer_id" readonly="state != 'draft'" />
+                        <field name="user_id" readonly="state != 'draft'" />
+                        <field name="allocation_ids" widget="many2many_tags" readonly="state != 'draft'" />
+                        <field name="confirmed_by_id" />
+                        <field name="confirmed_at" />
+                        <field name="revoked_by_id" />
+                        <field name="revoked_at" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_company_authorization" model="ir.actions.act_window">
+        <field name="name">Company Portal Authorizations</field>
+        <field name="res_model">training.company.authorization</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_company_authorization" name="Company Portal Authorizations" parent="training_management.menu_training_root" action="action_company_authorization" groups="training_management.group_training_coordinator" />
+    <record id="view_company_nomination_list" model="ir.ui.view">
+        <field name="name">training.company.nomination.list</field>
+        <field name="model">training.company.nomination</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="allocation_id" />
+                <field name="email" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+    <record id="view_company_nomination_form" model="ir.ui.view">
+        <field name="name">training.company.nomination.form</field>
+        <field name="model">training.company.nomination</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <sheet>
+                    <group>
+                        <field name="allocation_id" readonly="1" />
+                        <field name="name" readonly="1" />
+                        <field name="email" readonly="1" />
+                        <field name="submitted_by_id" readonly="1" />
+                        <field name="enrollment_id" />
+                        <field name="state" />
+                    </group>
+                    <p>Create the enrollment separately through the existing allocation workflow, then link it here. Never activate learning access from a nomination.</p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_company_nomination" model="ir.actions.act_window">
+        <field name="name">Participant Nominations</field>
+        <field name="res_model">training.company.nomination</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_company_nomination" name="Participant Nominations" parent="training_management.menu_training_root" action="action_company_nomination" groups="training_management.group_training_coordinator" />
+    <record id="view_company_document_list" model="ir.ui.view">
+        <field name="name">training.company.document.list</field>
+        <field name="model">training.company.document</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="allocation_id" />
+                <field name="released" />
+            </list>
+        </field>
+    </record>
+    <record id="view_company_document_form" model="ir.ui.view">
+        <field name="name">training.company.document.form</field>
+        <field name="model">training.company.document</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="allocation_id" />
+                        <field name="filename" />
+                        <field name="data" filename="filename" />
+                        <field name="released" />
+                    </group>
+                    <p>Release only documents explicitly approved for this client allocation. Do not copy individual scores or private exchanges.</p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_company_document" model="ir.actions.act_window">
+        <field name="name">Authorized Client Documents</field>
+        <field name="res_model">training.company.document</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_company_document" name="Authorized Client Documents" parent="training_management.menu_training_root" action="action_company_document" groups="training_management.group_training_coordinator" />
+    <record id="view_intra_version_list" model="ir.ui.view">
+        <field name="name">training.intra.version.list</field>
+        <field name="model">training.intra.version</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="version" />
+                <field name="delivery_id" />
+                <field name="customer_id" />
+                <field name="program_id" />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+    <record id="view_intra_version_form" model="ir.ui.view">
+        <field name="name">training.intra.version.form</field>
+        <field name="model">training.intra.version</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <header>
+                    <button name="action_submit" type="object" string="Submit to Client" invisible="state != 'draft'" />
+                    <button name="action_record_agreement" type="object" string="Record Client Agreement" invisible="state != 'submitted'" />
+                    <button name="action_confirm" type="object" string="Confirm Client Version" invisible="state != 'approved'" class="btn-primary" />
+                    <button name="action_new_version" type="object" string="New Client Version" invisible="state == 'draft'" />
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="delivery_id" readonly="id" />
+                        <field name="customer_id" readonly="id" />
+                        <field name="program_id" />
+                        <field name="previous_id" readonly="id" />
+                        <field name="version" readonly="state != 'draft'" />
+                        <field name="objectives" readonly="state != 'draft'" />
+                        <field name="business_cases" readonly="state != 'draft'" />
+                        <field name="instructions" readonly="state != 'draft'" />
+                        <field name="filename" readonly="state != 'draft'" />
+                        <field name="data" filename="filename" readonly="state != 'draft'" />
+                        <field name="agreement_contact_id" readonly="state not in ('draft', 'submitted')" />
+                        <field name="approval_reference" readonly="state not in ('draft', 'submitted')" />
+                        <field name="create_uid" />
+                        <field name="create_date" />
+                        <field name="submitted_by_id" />
+                        <field name="submitted_at" />
+                        <field name="approved_contact_id" />
+                        <field name="approved_by_id" />
+                        <field name="approved_at" />
+                        <field name="confirmed_by_id" />
+                        <field name="confirmed_at" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_intra_version" model="ir.actions.act_window">
+        <field name="name">Client Intra Versions</field>
+        <field name="res_model">training.intra.version</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_intra_version" name="Client Intra Versions" parent="training_management.menu_training_root" action="action_intra_version" groups="training_management.group_training_coordinator" />
+    <record id="view_delivery_intra" model="ir.ui.view">
+        <field name="name">training.delivery.intra</field>
+        <field name="model">training.delivery</field>
+        <field name="inherit_id" ref="training_management.view_training_delivery_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Client Intra Versions" groups="training_management.group_training_coordinator">
+                    <field name="intra_version_id" />
+                    <field name="intra_version_ids" context="{'default_delivery_id': id}" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

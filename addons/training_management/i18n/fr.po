@@ -110,6 +110,7 @@ msgstr "Méthode de l’action"
 #: model:ir.model.fields,field_description:training_management.field_training_category__active
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__active
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__active
+#: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__active
 msgid "Active"
 msgstr "Actif"
 
@@ -227,6 +228,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_export_audit__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -315,6 +320,10 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -376,6 +385,10 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -479,6 +492,11 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_company_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -491,6 +509,8 @@ msgstr "Nom affiché"
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__draft
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -618,6 +638,11 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__id
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__id
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__id
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__id
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__id
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__id
+#: model:ir.model.fields,field_description:training_management.field_training_company_service__id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__id
 msgid "ID"
 msgstr "ID"
 
@@ -684,6 +709,10 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -745,6 +774,10 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_pdf_accessibility_review__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -769,6 +802,8 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__name
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__name
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__name
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__name
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__name
 msgid "Name"
 msgstr "Nom"
 
@@ -817,6 +852,7 @@ msgstr "Non terminées"
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__objectives
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
 #: code:addons/training_management/models/training_public_catalogue.py:0
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__objectives
 msgid "Objectives"
 msgstr "Objectifs"
 
@@ -1070,6 +1106,9 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__state
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__state
 #: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__state
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__state
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__state
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__state
 msgid "State"
 msgstr "État"
 
@@ -1446,6 +1485,9 @@ msgstr "Le nombre de places doit être strictement positif."
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__allocation_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_search
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_allocation_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__allocation_ids
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__allocation_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__allocation_id
 msgid "Allocation"
 msgstr "Lot de places"
 
@@ -1663,6 +1705,7 @@ msgstr "Confirmez l’inscription avant l’autorisation commerciale."
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 #: model:ir.model.fields.selection,name:training_management.selection__training_dashboard_line__state__confirmed
 #: model_terms:ir.ui.view,arch_db:training_management.view_dashboard_search
+#: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__confirmed
 msgid "Confirmed"
 msgstr "Confirmée"
 
@@ -1693,6 +1736,8 @@ msgstr "Créez une réservation avant de confirmer ses places."
 #: model:ir.model.fields,field_description:training_management.field_training_closure__customer_id
 #: model:ir.model.fields,field_description:training_management.field_training_seat_allocation__customer_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__customer_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__customer_id
 msgid "Customer"
 msgstr "Client"
 
@@ -1745,6 +1790,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__delivery_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_dashboard_search
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1783,6 +1829,7 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -2011,6 +2058,7 @@ msgstr "Préparation"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__program_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__program_id
 msgid "Program"
 msgstr "Programme"
 
@@ -2165,6 +2213,7 @@ msgstr "Révoquer l’accès"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__access_state__revoked
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__effective_access__revoked
+#: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__revoked
 msgid "Revoked"
 msgstr "Révoqué"
 
@@ -2386,6 +2435,7 @@ msgstr "Utilisez le circuit de la réalisation pour modifier son état."
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__user_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__user_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__user_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__user_id
 msgid "User"
 msgstr "Compte utilisateur"
 
@@ -2953,6 +3003,7 @@ msgstr "Export"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__fingerprint
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__fingerprint
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__fingerprint
 msgid "Fingerprint"
 msgstr "Empreinte"
 
@@ -4088,6 +4139,8 @@ msgstr "Service de diffusion des fichiers pour les contrôleurs"
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__filename
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__filename
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__name
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__filename
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__filename
 msgid "Filename"
 msgstr "Nom du fichier"
 
@@ -4200,6 +4253,7 @@ msgstr "Preuves conservées"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__previous_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__previous_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__previous_id
 msgid "Previous"
 msgstr "Version précédente"
 
@@ -4320,6 +4374,8 @@ msgstr "Utilisez le champ PDF d’une nouvelle version de support privé."
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__version
 #: model_terms:ir.ui.view,arch_db:training_management.feedback_document
 #: model_terms:ir.ui.view,arch_db:training_management.public_programme
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__version
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
 msgid "Version"
 msgstr "Version"
 
@@ -4600,6 +4656,7 @@ msgstr "Tuteur individuel"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_activity__instructions
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__instructions
 msgid "Instructions"
 msgstr "Consignes"
 
@@ -4962,6 +5019,7 @@ msgstr "Remettre une nouvelle version"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__submitted
+#: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__submitted
 msgid "Submitted"
 msgstr "Remis"
 
@@ -5266,6 +5324,7 @@ msgstr "Corriger une présence validée"
 #: model:ir.model.fields,field_description:training_management.field_training_proof__data
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__data
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__data
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__data
 msgid "Data"
 msgstr "Fichier"
 
@@ -5607,6 +5666,7 @@ msgstr "(UTC), par"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
 msgid "(UTC)."
 msgstr "(UTC)."
 
@@ -5650,11 +5710,13 @@ msgstr "Approuver la politique"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__approved_at
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__approved_at
 msgid "Approved At"
 msgstr "Approuvé le"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__approved_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__approved_by_id
 msgid "Approved By"
 msgstr "Approuvé par"
 
@@ -6907,6 +6969,7 @@ msgstr "Remettre les réponses définitives"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__submitted_at
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__submitted_at
 msgid "Submitted At"
 msgstr "Remise"
 
@@ -7235,6 +7298,7 @@ msgstr "Décrivez les critères de complétion."
 #: model:ir.model.fields.selection,name:training_management.selection__training_complaint__channel__email
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__email
 #: model:ir.model.fields,field_description:training_management.field_training_notification__email
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__email
 msgid "Email"
 msgstr "Courriel"
 
@@ -9008,11 +9072,13 @@ msgstr "Revu"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__revoked_at
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__revoked_at
 msgid "Revoked At"
 msgstr "Retirée le"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__revoked_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__revoked_by_id
 msgid "Revoked By"
 msgstr "Retirée par"
 
@@ -10388,3 +10454,593 @@ msgstr "Voir la correction de démonstration"
 #: model_terms:ir.ui.view,arch_db:training_management.public_programme
 msgid "h ·"
 msgstr "h ·"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "<strong>Version confirmée pour cette réalisation</strong>"
+msgstr "<strong>Version confirmée pour cette réalisation</strong>"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid ""
+"A delivery with client versions keeps its operator and standard programme."
+msgstr ""
+"Une réalisation avec des versions client conserve sa société exploitante et "
+"son programme standard."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"A released client PDF is immutable. Withdraw it and create another document."
+msgstr ""
+"Un PDF client diffusé est figé. Retirez sa diffusion et créez un autre "
+"document."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "A revoked authorization cannot be reactivated."
+msgstr "Une habilitation révoquée ne peut pas être réactivée."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_intra_version_one_successor
+msgid "A successor already exists for this intra version."
+msgstr "Une version suivante existe déjà pour cette version intra."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__agreement_contact_id
+msgid "Agreement Contact"
+msgstr "Contact ayant donné son accord"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "An intra delivery and all its variants belong to one client company."
+msgstr ""
+"Une réalisation intra et toutes ses variantes appartiennent à une seule "
+"entreprise cliente."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "An intra variant cannot cover another client's allocation."
+msgstr "Une variante intra ne peut pas couvrir le lot d’un autre client."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__approval_reference
+msgid "Approval Reference"
+msgstr "Référence de l’accord"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__approved
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__approved_contact_id
+msgid "Approved Contact"
+msgstr "Contact approbateur"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_trainings
+msgid "Aucun dossier de session habilité."
+msgstr "Aucun dossier de session habilité."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_company_document
+#: model:ir.ui.menu,name:training_management.menu_company_document
+msgid "Authorized Client Documents"
+msgstr "Documents client autorisés"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_company_document
+msgid "Authorized Client Training PDF"
+msgstr "PDF de formation client autorisé"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__business_cases
+msgid "Business Cases"
+msgstr "Cas métiers"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Cas métiers"
+msgstr "Cas métiers"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Choose a frozen predecessor from the same client delivery."
+msgstr ""
+"Choisissez une version précédente figée de la même réalisation et du même "
+"client."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"Choose an active portal user and allocations for the same client company and"
+" operator."
+msgstr ""
+"Choisissez un utilisateur portail actif et des lots de la même entité "
+"cliente et de la même société exploitante."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_intra_version
+msgid "Client Intra Programme Version"
+msgstr "Version du programme intra client"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_intra_version
+#: model:ir.ui.menu,name:training_management.menu_intra_version
+msgid "Client Intra Versions"
+msgstr "Versions intra client"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_company_nomination
+msgid "Client Participant Nomination"
+msgstr "Proposition de participant client"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "Client document evidence is generated by the server."
+msgstr "Les preuves du document client sont produites par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"Client dossier PDFs are distributed through the authorized portal only."
+msgstr ""
+"Les PDF du dossier client sont diffusés uniquement par le portail habilité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Client programme version history must be preserved."
+msgstr "L’historique des versions du programme client doit être conservé."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_company_authorization
+#: model:ir.ui.menu,name:training_management.menu_company_authorization
+msgid "Company Portal Authorizations"
+msgstr "Habilitations du portail entreprise"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid ""
+"Complete the client objectives, business cases, instructions and version."
+msgstr ""
+"Renseignez les objectifs client, cas métiers, consignes et référence de "
+"version."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__data
+msgid "Confidential Client PDF"
+msgstr "PDF client confidentiel"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_company_authorization_form
+msgid "Confirm Authorization"
+msgstr "Confirmer l’habilitation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_intra_version_form
+msgid "Confirm Client Version"
+msgstr "Confirmer la version client"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid ""
+"Confirm the approved client programme before confirming the intra delivery."
+msgstr ""
+"Confirmez le programme client approuvé avant de confirmer la réalisation "
+"intra."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Confirm the latest client version only after its agreement."
+msgstr "Confirmez uniquement la dernière version client après son accord."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__confirmed_at
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__confirmed_at
+msgid "Confirmed At"
+msgstr "Confirmé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_company_authorization__confirmed_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__confirmed_by_id
+msgid "Confirmed By"
+msgstr "Confirmé par"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"Confirmed authorizations are immutable. Revoke and replace the "
+"authorization."
+msgstr ""
+"Les habilitations confirmées sont figées. Révoquez et remplacez "
+"l’habilitation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"Create a draft authorization; confirmation evidence is generated by the "
+"server."
+msgstr ""
+"Créez une habilitation brouillon ; les preuves de confirmation sont "
+"produites par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Create a draft client version without approval metadata."
+msgstr "Créez une version client brouillon sans métadonnées d’accord."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Create one client successor per delivery at a time."
+msgstr "Créez une seule version client suivante par réalisation à la fois."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid ""
+"Create the delivery first, then obtain agreement on its client version."
+msgstr ""
+"Créez d’abord la réalisation, puis recueillez l’accord sur sa version "
+"client."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_company_nomination_form
+msgid ""
+"Create the enrollment separately through the existing allocation workflow, "
+"then link it here. Never activate learning access from a nomination."
+msgstr ""
+"Créez séparément l’inscription depuis le lot existant, puis rattachez-la "
+"ici. Une proposition ne permet jamais d’activer un accès pédagogique."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Documents autorisés"
+msgstr "Documents autorisés"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "Enter a participant name and, if supplied, a valid email address."
+msgstr ""
+"Saisissez le nom du participant et, si elle est renseignée, une adresse "
+"email valide."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__frozen_at
+msgid "Frozen At"
+msgstr "Figé le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__intra_version_id
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__intra_version_ids
+msgid "Intra Version"
+msgstr "Version intra"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "Keep released client documents; withdraw their portal access instead."
+msgstr ""
+"Conservez les documents client diffusés et retirez leur accès au portail."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "Keep the authorization and revocation evidence."
+msgstr "Conservez les preuves d’habilitation et de révocation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid ""
+"Keep the frozen intra version. Create a successor and obtain a new client "
+"agreement."
+msgstr ""
+"Conservez la version intra figée. Créez une version suivante et obtenez un "
+"nouvel accord client."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid ""
+"La coordination vérifie l’inscription et ouvre séparément les accès. Cette "
+"proposition ne donne aucun accès au cours."
+msgstr ""
+"La coordination vérifie l’inscription et ouvre séparément les accès. Cette "
+"proposition ne donne aucun accès au cours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Link the new intra version to its predecessor."
+msgstr "Reliez la nouvelle version intra à la précédente."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid ""
+"L’accord porte sur les objectifs, cas, consignes et document de cette "
+"version précise."
+msgstr ""
+"L’accord porte sur les objectifs, cas, consignes et document de cette "
+"version précise."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_intra_version_form
+msgid "New Client Version"
+msgstr "Nouvelle version client"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Only a training coordinator may manage client programme versions."
+msgstr "Seule la coordination peut gérer les versions de programme client."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"Only the training coordinator may manage company portal authorizations."
+msgstr ""
+"Seule la coordination peut gérer les habilitations du portail entreprise."
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_company_nomination
+#: model:ir.ui.menu,name:training_management.menu_company_nomination
+msgid "Participant Nominations"
+msgstr "Propositions de participants"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_company_nomination__state__processed
+msgid "Processed"
+msgstr "Traité"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_company_nomination__state__proposed
+msgid "Proposed"
+msgstr "Proposé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_intra_version_form
+msgid "Record Client Agreement"
+msgstr "Enregistrer l’accord client"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid ""
+"Record the client contact and the reference of their agreement on this "
+"version."
+msgstr ""
+"Renseignez le contact client et la référence de son accord sur cette "
+"version."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_intra_version__approval_reference
+msgid "Reference to the client agreement recorded by the coordinator."
+msgstr "Référence de l’accord client consigné par la coordination."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_company_nomination__state__rejected
+msgid "Rejected"
+msgstr "Refusé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_company_document_form
+msgid ""
+"Release only documents explicitly approved for this client allocation. Do "
+"not copy individual scores or private exchanges."
+msgstr ""
+"Diffusez uniquement les documents explicitement approuvés pour ce lot "
+"client. N’y copiez pas de scores individuels ni d’échanges privés."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_company_document__released
+msgid "Released"
+msgstr "Diffusé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_company_authorization_form
+msgid "Revoke"
+msgstr "Révoquer"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid ""
+"Select the manually created enrollment of this allocation before marking the"
+" nomination processed."
+msgstr ""
+"Sélectionnez l’inscription créée manuellement sur ce lot avant de marquer la"
+" proposition comme traitée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_trainings
+msgid ""
+"Seuls les dossiers expressément habilités sont présentés. Aucun score, "
+"réponse ou échange pédagogique privé n’est partagé."
+msgstr ""
+"Seuls les dossiers expressément habilités sont présentés. Aucun score, "
+"réponse ou échange pédagogique privé n’est partagé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Submit this exact client version before recording the agreement."
+msgstr "Soumettez cette version client précise avant d’enregistrer l’accord."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_intra_version_form
+msgid "Submit to Client"
+msgstr "Soumettre au client"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_company_nomination__submitted_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_intra_version__submitted_by_id
+msgid "Submitted By"
+msgstr "Soumis par"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Séances"
+msgstr "Séances"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "The client version must use the delivery standard programme."
+msgstr ""
+"La version client doit utiliser le programme standard de la réalisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "The confidential client document must be a PDF."
+msgstr "Le document client confidentiel doit être un PDF."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "This client version is already approved."
+msgstr "Cette version client est déjà approuvée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "This company training dossier is not authorized."
+msgstr "Ce dossier de formation entreprise n’est pas autorisé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "This dossier no longer accepts nominations."
+msgstr "Ce dossier n’accepte plus de propositions de participants."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_intra_version_unique_version
+msgid "This intra version already exists for the delivery."
+msgstr "Cette version intra existe déjà pour la réalisation."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_company_nomination_unique_nomination
+msgid "This nomination already exists for the allocation."
+msgstr "Cette proposition existe déjà pour le lot."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_company_authorization
+msgid "Training Company Portal Authorization"
+msgstr "Habilitation du portail entreprise de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_company_service
+msgid "Training Company Portal Projection"
+msgstr "Projection du portail entreprise de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_company_portal.py:0
+msgid "Upload an authorized client PDF."
+msgstr "Déposez un PDF client autorisé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_intra_version.py:0
+msgid "Use Confirm on the approved client programme version."
+msgstr "Utilisez Confirmer sur la version approuvée du programme client."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "enregistré le"
+msgstr "enregistré le"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Accord de"
+msgstr "Accord de"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Consignes"
+msgstr "Consignes"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_trainings
+msgid "Demandes de mon entreprise"
+msgstr "Demandes de mon entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Document confidentiel de cette version"
+msgstr "Document confidentiel de cette version"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Email du participant (facultatif)"
+msgstr "Email du participant (facultatif)"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Enregistrer mon accord sur cette version"
+msgstr "Enregistrer mon accord sur cette version"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_portal_home
+#: model_terms:ir.ui.view,arch_db:training_management.company_trainings
+msgid "Formations de mon entreprise"
+msgstr "Formations de mon entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Mes dossiers entreprise"
+msgstr "Mes dossiers entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Nom du participant"
+msgstr "Nom du participant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Objectifs client"
+msgstr "Objectifs client"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Participants de mon lot"
+msgstr "Participants de mon lot"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Programme standard :"
+msgstr "Programme standard :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Proposer"
+msgstr "Proposer"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Proposer un participant"
+msgstr "Proposer un participant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Versions du dossier intra"
+msgstr "Versions du dossier intra"
