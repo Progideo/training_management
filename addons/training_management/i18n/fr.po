@@ -10172,11 +10172,13 @@ msgstr "Choisissez une séance planifiée valide."
 
 
 #. module: training_management
-#: code:addons/training_management/models/training_security.py:0
+#. odoo-python
+#: code:addons/training_management/models/training_quality_access.py:0
 msgid "This private training record is unavailable."
 msgstr "Cet enregistrement privé de formation est indisponible."
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_security.py:0
 msgid "Do not distribute confidential adaptations through email."
 msgstr "Ne diffusez pas les aménagements confidentiels par courriel."

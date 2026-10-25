@@ -87,6 +87,12 @@ class TestSecurity(SecurityCase):
         )
         self.assertNotIn("PRIVATE-S11-PERSON", str(diagnostic))
         self.assertNotIn("SECRET S04", str(diagnostic))
+        if self.env["res.lang"].search_count([("code", "=", "fr_FR")]):
+            french = self.env["ir.access"].with_user(self.other_coordinator).with_context(lang="fr_FR")
+            self.assertEqual(
+                str(french._make_record_access_error(adaptation.with_env(french.env), "read")),
+                "Cet enregistrement privé de formation est indisponible.",
+            )
 
     def test_file_audit_has_identity_and_scope_without_content(self):
         _delivery, adaptation, attachment = self.confidential_file()
