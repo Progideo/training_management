@@ -40,3 +40,6 @@ from . import training_dashboard_audit
 from . import training_security
 
 from . import training_public_catalogue
+
+from . import training_company_portal
+from . import training_intra_version

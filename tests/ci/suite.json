@@ -419,6 +419,20 @@
         "second_update",
         "repeated_history_preserved"
       ]
+    },
+    {
+      "id": "p01p06",
+      "script": "tests/ci/run_p01_p06.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "second_update",
+        "repeated_history_preserved",
+        "concurrency"
+      ]
     }
   ],
   "relocated_steps": {

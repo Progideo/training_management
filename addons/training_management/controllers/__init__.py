@@ -12,3 +12,5 @@ from . import quality_portal
 from . import dashboard_portal
 
 from . import public_catalogue
+
+from . import company_portal

@@ -83,6 +83,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | P01–P06 — couverture et droits C02/C04 | [p01-p06-coverage.md](p01-p06-coverage.md) |
 | P01–P02 — parcours et demande guidée | [p01-p02-guided-requests.md](p01-p02-guided-requests.md) |
 | P03–P04 — catalogue public et aperçu | [p03-p04-public-catalogue.md](p03-p04-public-catalogue.md) |
+| P05–P06 — portail entreprise et versions intra | [p05-p06-company-dossiers.md](p05-p06-company-dossiers.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 

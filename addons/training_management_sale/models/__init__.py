@@ -26,3 +26,5 @@ from . import dashboard
 from . import request_notice
 
 from . import training_public_request
+
+from . import training_company_portal

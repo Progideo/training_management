@@ -897,6 +897,7 @@ msgstr "Devise"
 #: model:ir.model.fields,field_description:training_management_sale.field_training_document_policy__display_name
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__display_name
 #: model:ir.model.fields,field_description:training_management_sale.field_training_seat_allocation__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_company_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -951,6 +952,7 @@ msgstr "Générer un lien de paiement de vente"
 #: model:ir.model.fields,field_description:training_management_sale.field_training_document_policy__id
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__id
 #: model:ir.model.fields,field_description:training_management_sale.field_training_seat_allocation__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_company_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -1285,6 +1287,7 @@ msgstr ""
 
 #. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_delivery_mode__elearning
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
 msgid "eLearning"
 msgstr "eLearning"
 
@@ -1705,3 +1708,58 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
 msgid "À définir"
 msgstr "À définir"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Date de début souhaitée"
+msgstr "Date de début souhaitée"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Date de fin souhaitée"
+msgstr "Date de fin souhaitée"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Présentiel"
+msgstr "Présentiel"
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_company_service
+msgid "Training Company Portal Projection"
+msgstr "Projection du portail entreprise de formation"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Téléphone"
+msgstr "Téléphone"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Distanciel"
+msgstr "Distanciel"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Entreprise (obligatoire en intra)"
+msgstr "Entreprise (obligatoire en intra)"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Mixte"
+msgstr "Mixte"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Niveau des participants"
+msgstr "Niveau des participants"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Votre email"
+msgstr "Votre email"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
+msgid "Votre nom"
+msgstr "Votre nom"

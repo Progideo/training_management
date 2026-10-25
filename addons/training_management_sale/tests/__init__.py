@@ -10,3 +10,5 @@ from . import test_document_policy
 from . import test_dashboard
 
 from . import test_public_request
+
+from . import test_company_requests
