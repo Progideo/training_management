@@ -13,6 +13,7 @@
                         <field name="training_requested_currency_id" invisible="not training_request_kind" options="{'no_create': True}"/>
                     </group>
                     <group invisible="not training_request_kind">
+                        <field name="training_request_type"/><field name="training_objectives"/><field name="training_level"/><field name="training_country_id"/><field name="training_tools"/><field name="training_advice_requested"/>
                         <field name="training_delivery_mode"/>
                         <field name="training_date_from"/>
                         <field name="training_date_to"/>
