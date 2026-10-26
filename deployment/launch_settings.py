@@ -98,6 +98,32 @@ def _export_sales(env, company, source_tax, profile):
     }
 
 
+def _sales_currencies(env, company, profile):
+    def currencies(codes):
+        records = env["res.currency"].with_context(active_test=False).search([("name", "in", codes)])
+        if set(records.mapped("name")) != set(codes):
+            raise ValueError("Unknown sales currency in deployment profile")
+        return records
+
+    active = currencies(profile.get("commercial_currencies", [profile["currency"]]))
+    active.filtered(lambda item: not item.active).write({"active": True})
+    result = {"commercial_currencies": sorted(active.mapped("name"))}
+    for key, field in [
+        ("domestic_sales_currencies", "sale_domestic_currency_ids"),
+        ("foreign_sales_currencies", "sale_foreign_currency_ids"),
+    ]:
+        if key in profile:
+            if field not in company._fields:
+                raise ValueError("Upgrade sale_invoice_address_fiscal before configuring currency restrictions")
+            allowed = currencies(profile[key])
+            if key == "domestic_sales_currencies" and allowed and company.currency_id not in allowed:
+                raise ValueError("The company base currency must be authorized for domestic sales")
+            if company[field] != allowed:
+                company[field] = allowed
+        result[key] = sorted(company[field].mapped("name")) if field in company._fields else []
+    return result
+
+
 def _apply(env, profile):
     """Initialize localization only before accounting activity; then apply defaults."""
     if not env.is_system() or env.cr.dbname != profile["database"]:
@@ -185,11 +211,13 @@ def _apply(env, profile):
         raise ValueError("Payment term must match the reviewed days after invoice date")
     _default(env, company, "res.partner", "property_payment_term_id", term.id)
     export = _export_sales(env, company, tax, profile.get("export_sales"))
+    currencies = _sales_currencies(env, company, profile)
     env.flush_all()
     if env["account.move"].search([("company_id", "=", company.id)]) != moves:
         raise ValueError("Launch configuration must not create accounting moves")
     return {
         **export,
+        **currencies,
         "company_id": company.id,
         "localization_module": module.name,
         "chart_template": company.chart_template,

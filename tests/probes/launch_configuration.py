@@ -3,7 +3,7 @@
 from datetime import date
 
 from odoo import Command
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
 
 before = {name: env[name].search_count([]) for name in ("res.partner", "sale.order", "account.move")}
 first = apply(env, PROFILE)
@@ -31,6 +31,11 @@ assert before == {name: env[name].search_count([]) for name in before}
 env.cr.commit()
 
 company = env.ref(PROFILE["company_xmlid"])
+eur = env.ref("base.EUR")
+eur_prices = env["product.pricelist"].create(
+    {"name": "Fictional EUR", "currency_id": eur.id, "company_id": env.ref(PROFILE["company_xmlid"]).id}
+)
+
 partner = env["res.partner"].create({"name": "Fictional launch customer", "country_id": company.country_id.id})
 assert partner.property_product_pricelist == pricelist
 assert partner.property_payment_term_id.id == first["payment_term_id"]
@@ -61,6 +66,7 @@ for billing, shipping, expected in [(foreign, partner, 0), (partner, foreign, 20
             "partner_id": partner.id,
             "partner_invoice_id": billing.id,
             "partner_shipping_id": shipping.id,
+            "pricelist_id": eur_prices.id if billing == foreign else pricelist.id,
             "order_line": [Command.create({"product_id": product.id, "product_uom_qty": 1})],
         }
     )
@@ -89,10 +95,10 @@ quote = env["sale.order"].create(
     }
 )
 assert quote.amount_tax == 200
-quote.partner_invoice_id = foreign
+quote.write({"partner_invoice_id": foreign.id, "pricelist_id": eur_prices.id})
 assert quote.fiscal_position_id == export_position
 assert quote.amount_tax == 0
-quote.partner_invoice_id = partner
+quote.write({"partner_invoice_id": partner.id, "pricelist_id": pricelist.id})
 assert quote.amount_tax == 200
 
 # Disabling the policy retains native delivery-based selection. Purchases always do.
@@ -121,6 +127,7 @@ sales_quote = (
     .create(
         {
             "partner_id": foreign.id,
+            "pricelist_id": eur_prices.id,
             "order_line": [Command.create({"product_id": product.id, "product_uom_qty": 1})],
         }
     )
@@ -130,6 +137,7 @@ for move_type in ("out_invoice", "out_refund"):
     direct = env["account.move"].create(
         {
             "move_type": move_type,
+            "currency_id": eur.id,
             "partner_id": foreign.id,
             "partner_shipping_id": partner.id,
             "invoice_line_ids": [Command.create({"product_id": product.id, "quantity": 1, "price_unit": 1000})],
@@ -146,6 +154,124 @@ except AccessError:
     pass
 else:
     raise AssertionError("Sales user can change company fiscal policy")
+
+
+def must_reject(operation):
+    try:
+        with env.cr.savepoint():
+            operation()
+    except ValidationError:
+        return
+    raise AssertionError("Forbidden domestic currency was accepted")
+
+
+assert company.sale_domestic_currency_ids == company.currency_id
+assert company.sale_foreign_currency_ids == eur
+for billing, prices, tax_amount in [(partner, pricelist, 20), (foreign, eur_prices, 0)]:
+    allowed = env["sale.order"].create(
+        {
+            "partner_id": partner.id,
+            "partner_invoice_id": billing.id,
+            "partner_shipping_id": partner.id,
+            "pricelist_id": prices.id,
+            "order_line": [Command.create({"product_id": product.id, "product_uom_qty": 1, "price_unit": 100})],
+        }
+    )
+    assert allowed.currency_id == prices.currency_id
+    assert (allowed.amount_untaxed, allowed.amount_tax, allowed.amount_total) == (100, tax_amount, 100 + tax_amount)
+    allowed.action_confirm()
+    allowed_invoice = allowed._create_invoices()
+    allowed_invoice.invoice_date = date(2026, 10, 26)
+    assert allowed_invoice.currency_id == prices.currency_id
+    assert allowed_invoice.amount_total == 100 + tax_amount
+    allowed_invoice._post()
+    assert allowed_invoice.state == "posted"
+
+must_reject(
+    lambda: (
+        env["sale.order"]
+        .with_user(sales_user)
+        .create(
+            {
+                "partner_id": foreign.id,
+                "partner_invoice_id": partner.id,
+                "partner_shipping_id": foreign.id,
+                "pricelist_id": eur_prices.id,
+            }
+        )
+    )
+)
+must_reject(lambda: quote.write({"pricelist_id": eur_prices.id}))
+foreign_quote = env["sale.order"].create({"partner_id": foreign.id, "pricelist_id": eur_prices.id})
+must_reject(lambda: foreign_quote.write({"partner_invoice_id": partner.id}))
+for kind in ("out_invoice", "out_refund"):
+    must_reject(
+        lambda: env["account.move"].create({"move_type": kind, "partner_id": partner.id, "currency_id": eur.id})
+    )
+    permitted = env["account.move"].create({"move_type": kind, "partner_id": foreign.id, "currency_id": eur.id})
+    must_reject(lambda: permitted.write({"partner_id": partner.id}))
+must_reject(lambda: invoice.write({"currency_id": eur.id}))
+
+# A later country change on a contact is caught at both workflow boundaries.
+late_partner = env["res.partner"].create({"name": "Fictional changing address", "country_id": foreign.country_id.id})
+late_quote = env["sale.order"].create({"partner_id": late_partner.id, "pricelist_id": eur_prices.id})
+late_invoice = env["account.move"].create(
+    {"move_type": "out_invoice", "partner_id": late_partner.id, "currency_id": eur.id}
+)
+late_partner.country_id = partner.country_id
+must_reject(lambda: late_quote.action_confirm())
+must_reject(lambda: late_invoice._post())
+assert late_quote.state == "draft" and late_invoice.state == "draft"
+
+# Purchases are out of scope. Company policy is explicit, not a global EUR ban.
+env["account.move"].create({"move_type": "in_invoice", "partner_id": partner.id, "currency_id": eur.id})
+other_company = env["res.company"].create({"name": "Fictional other operator", "country_id": partner.country_id.id})
+assert not other_company.sale_domestic_currency_ids and not other_company.sale_foreign_currency_ids
+other_company._check_sale_invoice_currency(partner, eur)
+try:
+    with env.cr.savepoint():
+        company.with_user(sales_user).write({"sale_domestic_currency_ids": [Command.clear()]})
+except AccessError:
+    pass
+else:
+    raise AssertionError("Sales user can remove currency guard")
+must_reject(lambda: env["sale.order"].create({"partner_id": foreign.id, "pricelist_id": pricelist.id}))
+must_reject(lambda: foreign_quote.write({"pricelist_id": pricelist.id}))
+for kind in ("out_invoice", "out_refund"):
+    must_reject(
+        lambda: env["account.move"].create(
+            {"move_type": kind, "partner_id": foreign.id, "currency_id": company.currency_id.id}
+        )
+    )
+# Same guard in the other direction after a contact country change.
+late_partner.country_id = foreign.country_id
+local_quote = env["sale.order"].create({"partner_id": partner.id})
+local_invoice = env["account.move"].create({"move_type": "out_invoice", "partner_id": partner.id})
+# Changing the invoice partner and currency together preserves an authorized export.
+local_quote.write({"partner_invoice_id": foreign.id, "pricelist_id": eur_prices.id})
+local_invoice.write({"partner_id": foreign.id, "currency_id": eur.id})
+assert local_quote.currency_id == eur and local_invoice.currency_id == eur
+late_local = env["res.partner"].create(
+    {"name": "Fictional local changing address", "country_id": partner.country_id.id}
+)
+local_stored_quote = env["sale.order"].create({"partner_id": late_local.id})
+local_stored_invoice = env["account.move"].create({"move_type": "out_invoice", "partner_id": late_local.id})
+late_local.country_id = foreign.country_id
+must_reject(lambda: local_stored_quote.action_confirm())
+must_reject(lambda: local_stored_invoice._post())
+
+# Policy activation preserves a pre-existing, now incompatible draft.
+company.sale_foreign_currency_ids = False
+legacy_quote = env["sale.order"].create({"partner_id": foreign.id})
+legacy_invoice = env["account.move"].create({"move_type": "out_invoice", "partner_id": foreign.id})
+legacy_amounts = (legacy_quote.amount_total, legacy_invoice.amount_total)
+company.sale_foreign_currency_ids = eur
+assert legacy_quote.state == "draft" and legacy_invoice.state == "draft"
+assert legacy_amounts == (legacy_quote.amount_total, legacy_invoice.amount_total)
+must_reject(lambda: legacy_quote.action_confirm())
+must_reject(lambda: legacy_invoice._post())
+print("SALES_CURRENCY_GUARD_SMOKE_OK")
+
 print("EXPORT_BILLING_POLICY_SMOKE_OK")
 env.cr.rollback()
 assert before == {name: env[name].search_count([]) for name in before}

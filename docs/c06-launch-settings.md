@@ -69,13 +69,28 @@ M01 restent des archives.
 
 ## Devises du parcours commercial
 
-Décision de périmètre NeoPro : clients facturés au Maroc en MAD ; EUR réservée
-aux ventes à l’étranger. Le scénario commercial Maroc/EUR est écarté de la
-recette. La vérification technique de la TVA par pays ne constitue pas une
-validation de ce scénario commercial ni de sa licéité. Le blocage éventuel des
-combinaisons interdites par cette politique reste à mettre en œuvre et à tester ;
-activer EUR ne constitue pas ce blocage. La règle demeure distincte du module
-fiscal générique.
+Décision de périmètre NeoPro : adresse de facturation au Maroc → MAD ; à
+l’étranger → EUR. Les anciens scénarios Maroc/EUR et étranger/MAD sont écartés.
+Le profil renseigne `domestic_sales_currencies: ["MAD"]` et
+`foreign_sales_currencies: ["EUR"]`, après mise à jour de
+`sale_invoice_address_fiscal`. Les listes sont configurées par société ; une liste
+vide conserve les choix natifs pour la zone concernée. Aucun pays ni code devise
+n’est codé en dur dans l’addon générique.
+
+Les devis, factures de vente et avoirs hors de la liste autorisée sont refusés
+côté serveur à la création/modification, puis à la confirmation du devis ou à la
+comptabilisation de la facture. Ce second contrôle couvre aussi un pays modifié
+sur le contact après l’enregistrement. Le pays de facturation détermine la zone ;
+la livraison ne change pas la règle. Le message indique la devise attendue.
+Les achats et les sociétés sans restriction configurée conservent leurs choix.
+Un pays absent ne déclenche pas la règle de zone et ne qualifie pas l’exonération.
+
+Le profil active MAD et EUR pour les usages autorisés. Au déploiement, rejouer le
+profil et vérifier Maroc/MAD et étranger/EUR, puis le refus de Maroc/EUR et
+étranger/MAD : devis, facture directe, avoir, changements d’adresse ou de devise.
+Les anciens documents de recette restent conservés ; une combinaison désormais
+interdite ne pourra plus être confirmée ou comptabilisée. Aucun montant ni prix
+n’est converti automatiquement. Exclure les documents fictifs de la production.
 
 ## Coordonnées de virement sur les PDF
 

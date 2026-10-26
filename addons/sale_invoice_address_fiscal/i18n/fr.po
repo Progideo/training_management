@@ -24,3 +24,28 @@ msgstr "Fiscalité des ventes"
 #: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_fiscal_by_invoice_address
 msgid "Use the billing country for domestic/export sales. Purchases keep native rules."
 msgstr "Utiliser le pays de facturation pour les ventes locales ou à l’exportation. Les achats conservent les règles natives."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_domestic_currency_ids
+msgid "Allowed domestic sales currencies"
+msgstr "Devises autorisées pour les ventes locales"
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_foreign_currency_ids
+msgid "Allowed foreign sales currencies"
+msgstr "Devises autorisées pour les ventes à l’étranger"
+
+#. module: sale_invoice_address_fiscal
+#: code:addons/sale_invoice_address_fiscal/models/fiscal_position.py:0
+msgid "Sales billed to %(country)s must use %(currencies)s. Change the pricelist or invoice currency."
+msgstr "Les ventes facturées en %(country)s doivent être en %(currencies)s. Modifiez la liste de prix ou la devise de la facture."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_domestic_currency_ids
+msgid "An empty list keeps the native currency choices for domestic sales."
+msgstr "Une liste vide conserve les choix de devises natifs pour les ventes locales."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_foreign_currency_ids
+msgid "An empty list keeps the native currency choices for foreign sales."
+msgstr "Une liste vide conserve les choix de devises natifs pour les ventes à l’étranger."

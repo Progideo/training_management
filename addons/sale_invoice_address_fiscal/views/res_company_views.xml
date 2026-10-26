@@ -9,6 +9,8 @@
                 <page string="Sales Fiscal Policy" groups="base.group_system">
                     <group>
                         <field name="sale_fiscal_by_invoice_address"/>
+                        <field name="sale_domestic_currency_ids" widget="many2many_tags"/>
+                        <field name="sale_foreign_currency_ids" widget="many2many_tags"/>
                         <field name="sale_export_fiscal_position_id" domain="[('company_id', '=', id)]"/>
                     </group>
                 </page>

@@ -16,5 +16,15 @@
     "tax_name": "TVA 0% — Exportation de services",
     "invoice_note": "Exonération de TVA – Exportation de services",
     "tax_group_ref": "tax_group_vat_0"
-  }
+  },
+  "commercial_currencies": [
+    "MAD",
+    "EUR"
+  ],
+  "domestic_sales_currencies": [
+    "MAD"
+  ],
+  "foreign_sales_currencies": [
+    "EUR"
+  ]
 }
