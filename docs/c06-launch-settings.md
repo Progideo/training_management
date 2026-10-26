@@ -67,6 +67,27 @@ L’activation ne réécrit pas les documents existants : recalculer seulement l
 devis brouillons explicitement retenus pour la recette. Les rapports historiques
 M01 restent des archives.
 
+## Coordonnées de virement sur les PDF
+
+Utiliser le pied de page natif de la société, commun aux devis et factures :
+Paramètres → mise en page des documents → pied de page. Conserver les mentions
+existantes et ajouter le bénéficiaire, la banque, le RIB/IBAN et le BIC/SWIFT utiles,
+repris et rapprochés des coordonnées de référence Odoo 19. Si les instructions
+MAD et EUR diffèrent, identifier clairement chaque compte. Aucune valeur bancaire
+réelle ne doit entrer dans ce dépôt public.
+
+Ce pied de page permet aussi l’affichage sur facture brouillon : le bloc bancaire
+natif du corps de facture dépend notamment de la référence de paiement et ne
+suffit pas à notre contrôle. Le pied de page ne crée pas de compte bancaire ni de
+mode de paiement ; leur rattachement natif reste à vérifier séparément. Il ne
+nécessite aucune autorisation de prélèvement ou d’émission de virement.
+
+Au déploiement de production autorisé, renseigner le même pied de page validé
+sur la société cible, puis contrôler les PDF devis et facture en MAD et EUR :
+coordonnées exactes, complètes et lisibles, sans coupure. Conserver Odoo 19 comme
+référence des coordonnées jusqu’à leur validation. Cette étape fait partie du
+déploiement ; elle n’est pas exécutée par `launch_settings.py`.
+
 ## Recette et passage en production
 
 - Nouveau client fictif marocain, service fictif à 1 000 MAD HT : vérifier
