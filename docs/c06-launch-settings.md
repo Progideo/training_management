@@ -120,7 +120,7 @@ déploiement ; elle n’est pas exécutée par `launch_settings.py`.
 - Vérifier devis PDF puis facture brouillon et échéance. Les vérifications
   techniques sur copie ne remplacent pas le contrôle utilisateur.
 - Contrôler le scénario export à 0 % suivant l’adresse de facturation, sans
-  numéro de TVA exigé : 1 000 MAD HT = 1 000 MAD TTC et mention
+  numéro de TVA exigé : 100 EUR HT = 100 EUR TTC et mention
   « Exonération de TVA – Exportation de services » sur devis et facture.
   Tester aussi facturation France/livraison Maroc et l’inverse.
 - Les prix EUR et les coordonnées de virement font également partie de C06.
