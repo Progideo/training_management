@@ -24,8 +24,7 @@
                     h1 { font-size: 21pt; } h2 { font-size: 13pt; margin-top: 18pt; page-break-after: avoid; }
                     .text { white-space: pre-wrap; line-height: 1.45; overflow-wrap: anywhere; }
                     .notice { padding: 10pt; border: 1pt solid #596e84; margin: 12pt 0; }
-                    .section:not(.programme-content) { page-break-inside: avoid; }
-                    .programme-content { page-break-before: always; }
+                    .section { page-break-inside: avoid; }
                     .programme-content .text { white-space: normal; }
                     .programme-content h3 { font-size: 12pt; margin-top: 12pt; page-break-after: avoid; }
                     .programme-content li { margin-bottom: 4pt; }
@@ -54,7 +53,8 @@
                                 This does not reproduce a historical document sent to a customer.
                             </p>
                             <section t-att-class="'section programme-content' if section_index == 3 else 'section'" t-foreach="o._catalogue_sections()" t-as="section">
-                                <h2 t-out="section[0]"/><div class="text" t-out="section[1]"/>
+                                <div t-if="section_index == 3" class="text"><h2 t-out="section[0]"/><t t-out="section[1]"/></div>
+                                <t t-else=""><h2 t-out="section[0]"/><div class="text" t-out="section[1]"/></t>
                             </section>
                             <p t-out="o.accessibility_contact_id.name"/>
                         </div>
