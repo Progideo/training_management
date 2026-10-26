@@ -10,5 +10,11 @@
   "sales_tax_rate": 20,
   "pricelist_name": "Ventes MAD",
   "payment_term_xmlid": "account.account_payment_term_30days",
-  "payment_term_days": 30
+  "payment_term_days": 30,
+  "export_sales": {
+    "name": "Exportation de services",
+    "tax_name": "TVA 0% — Exportation de services",
+    "invoice_note": "Exonération de TVA – Exportation de services",
+    "tax_group_ref": "tax_group_vat_0"
+  }
 }

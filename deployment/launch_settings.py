@@ -37,6 +37,67 @@ def _bind(env, key, record):
         )
 
 
+def _export_sales(env, company, source_tax, profile):
+    if not profile:
+        return {}
+    if "sale_fiscal_by_invoice_address" not in company._fields:
+        raise ValueError("Install sale_invoice_address_fiscal before export configuration")
+    group = env.ref(f"account.{company.id}_{profile['tax_group_ref']}")
+    if group.company_id != company:
+        raise ValueError("Export tax group must belong to the company")
+    key = f"launch_settings.company_{company.id}_export_sales"
+    position = env.ref(key, raise_if_not_found=False)
+    if not position:
+        position = env["account.fiscal.position"].create({"name": profile["name"], "company_id": company.id})
+        _bind(env, key, position)
+    if position._name != "account.fiscal.position" or position.company_id != company:
+        raise ValueError("Export fiscal position must belong to the company")
+    position.write(
+        {"name": profile["name"], "auto_apply": False, "vat_required": False, "note": profile["invoice_note"]}
+    )
+    key = f"launch_settings.company_{company.id}_export_sales_tax"
+    tax = env.ref(key, raise_if_not_found=False)
+    if not tax:
+        tax = env["account.tax"].create(
+            {
+                "name": profile["tax_name"],
+                "company_id": company.id,
+                "type_tax_use": "sale",
+                "amount_type": "percent",
+                "amount": 0,
+                "tax_group_id": group.id,
+            }
+        )
+        _bind(env, key, tax)
+    if tax._name != "account.tax" or tax.company_id != company:
+        raise ValueError("Export tax must belong to the company")
+    tax.write(
+        {
+            "active": True,
+            "amount": 0,
+            "amount_type": "percent",
+            "type_tax_use": "sale",
+            "name": profile["tax_name"],
+            "invoice_label": "0%",
+            "tax_group_id": group.id,
+            "fiscal_position_ids": [(6, 0, position.ids)],
+            "original_tax_ids": [(6, 0, source_tax.ids)],
+        }
+    )
+    position.tax_ids = tax
+    if not company.domestic_fiscal_position_id:
+        raise ValueError("Native domestic fiscal position is required")
+    company.write({"sale_export_fiscal_position_id": position.id, "sale_fiscal_by_invoice_address": True})
+    if position.map_tax(source_tax) != tax:
+        raise ValueError("Export tax mapping failed")
+    return {
+        "export_fiscal_position_id": position.id,
+        "export_sales_tax_id": tax.id,
+        "export_sales_tax_rate": tax.amount,
+        "fiscal_address": "invoice",
+    }
+
+
 def _apply(env, profile):
     """Initialize localization only before accounting activity; then apply defaults."""
     if not env.is_system() or env.cr.dbname != profile["database"]:
@@ -59,9 +120,7 @@ def _apply(env, profile):
             [("company_id", "=", company.id), ("bank_account_id", "!=", False)]
         ):
             raise ValueError("Cannot replace accounting configuration with existing moves or configured bank journals")
-        if env["sale.order"].search_count(
-            [("company_id", "=", company.id), ("state", "not in", ["draft", "sent"])]
-        ):
+        if env["sale.order"].search_count([("company_id", "=", company.id), ("state", "not in", ["draft", "sent"])]):
             raise ValueError("Cannot initialize accounting after commercial confirmation")
         env["account.chart.template"].try_loading(profile["chart_template"], company, install_demo=False)
         company.invalidate_recordset()
@@ -104,9 +163,7 @@ def _apply(env, profile):
         raise ValueError("Launch pricelist must belong to the target company")
     if pricelist.currency_id != currency and (
         pricelist.item_ids
-        or env["sale.order"].search_count(
-            [("pricelist_id", "=", pricelist.id), ("state", "not in", ["draft", "sent"])]
-        )
+        or env["sale.order"].search_count([("pricelist_id", "=", pricelist.id), ("state", "not in", ["draft", "sent"])])
     ):
         raise ValueError("Existing prices or commercial history prevent a currency change")
     values = {"name": profile["pricelist_name"], "currency_id": currency.id, "active": True, "sequence": 1}
@@ -127,10 +184,12 @@ def _apply(env, profile):
     ):
         raise ValueError("Payment term must match the reviewed days after invoice date")
     _default(env, company, "res.partner", "property_payment_term_id", term.id)
+    export = _export_sales(env, company, tax, profile.get("export_sales"))
     env.flush_all()
     if env["account.move"].search([("company_id", "=", company.id)]) != moves:
         raise ValueError("Launch configuration must not create accounting moves")
     return {
+        **export,
         "company_id": company.id,
         "localization_module": module.name,
         "chart_template": company.chart_template,

@@ -26,7 +26,8 @@ bancaire, client ou secret n’est nécessaire dans ce fichier de paramétrage.
    courriel ni tâche automatique.
 2. Installer le module de localisation du profil avec le même binaire Odoo
    que l’application, sans données de démonstration, pendant une maintenance
-   de l’application concernée. Pour le profil marocain : `-i l10n_ma`.
+   de l’application concernée. Pour le profil marocain avec règle export :
+   `-i l10n_ma,sale_invoice_address_fiscal`. Livrer aussi cet addon.
 3. Depuis `odoo shell`, charger le profil privé, puis exécuter
    [launch_settings.py](../deployment/launch_settings.py) et appeler
    `apply(env, profile)`. Examiner le résultat avant `env.cr.commit()` ; faire
@@ -43,15 +44,39 @@ ne sont pas convertis silencieusement. Les valeurs explicitement renseignées
 sur les clients et les devis ouverts restent à contrôler : les nouveaux défauts
 ne doivent pas écraser leurs choix.
 
+## TVA suivant l’adresse de facturation
+
+Le standard de cette version choisit la position fiscale selon la livraison.
+L’addon optionnel `sale_invoice_address_fiscal` permet d’activer, société par
+société, une politique commerciale suivant le pays de facturation : pays fiscal
+local → position domestique native ; autre pays renseigné → position export
+configurée ; pays absent → position domestique, jamais une exonération implicite.
+Cette règle concerne les ventes, y compris les factures directes et avoirs ; les
+achats et sociétés sans activation conservent leur sélection native.
+
+Le profil `export_sales` crée une position dédiée et une taxe de vente à 0 % qui
+remplace la taxe de services du profil. Il ajoute la mention validée aux rapports
+natifs, sans imposer d’identifiant TVA. Aucun pays étranger n’est codé en dur.
+La taxe reste distincte des catégories légales des déclarations : leurs rubriques
+et droits à déduction ne sont pas qualifiés par ce réglage commercial.
+
+Les champs restent modifiables selon les droits natifs. Au changement d’adresse
+de facturation, la position est recalculée ; les taxes des lignes suivent la
+position fiscale. Une dérogation manuelle reste une action de l’utilisateur.
+L’activation ne réécrit pas les documents existants : recalculer seulement les
+devis brouillons explicitement retenus pour la recette. Les rapports historiques
+M01 restent des archives.
+
 ## Recette et passage en production
 
 - Nouveau client fictif marocain, service fictif à 1 000 MAD HT : vérifier
   liste MAD, TVA de services à 20 %, total 1 200 MAD et paiement à 30 jours.
 - Vérifier devis PDF puis facture brouillon et échéance. Les vérifications
   techniques sur copie ne remplacent pas le contrôle utilisateur.
-- Qualifier séparément le scénario export à 0 % suivant l’adresse de facturation
-  et la mention validées, y compris lorsque l’adresse de livraison diffère.
-  Le chargement du plan marocain ne valide pas à lui seul ce scénario.
+- Contrôler le scénario export à 0 % suivant l’adresse de facturation, sans
+  numéro de TVA exigé : 1 000 MAD HT = 1 000 MAD TTC et mention
+  « Exonération de TVA – Exportation de services » sur devis et facture.
+  Tester aussi facturation France/livraison Maroc et l’inverse.
 - Les prix EUR et les coordonnées de virement font également partie de C06.
   Ne pas interpréter un taux de change d’initialisation comme un tarif validé.
 - Rejouer ce paramétrage sur la cible de production lors du déploiement autorisé,

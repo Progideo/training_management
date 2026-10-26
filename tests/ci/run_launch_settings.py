@@ -31,7 +31,10 @@ env['ir.mail_server'].search([]).write({'active': False})
 env.cr.commit()
 """,
         )
-        checked(database.odoo("-i", "l10n_ma", "--without-demo", "--stop-after-init"), folder / "localization.log")
+        checked(
+            database.odoo("-i", "l10n_ma,sale_invoice_address_fiscal", "--without-demo", "--stop-after-init"),
+            folder / "localization.log",
+        )
         profile = json.loads((ROOT / "deployment/launch-settings.example.json").read_text())
         profile["database"] = "tm_suite_test"
         source = "import json\nPROFILE=json.loads(" + repr(json.dumps(profile)) + ")\n"
