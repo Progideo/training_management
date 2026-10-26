@@ -3,7 +3,7 @@ from psycopg2 import IntegrityError
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import Form, TransactionCase, new_test_user, tagged
-from odoo.tools import mute_logger
+from odoo.tools import html2plaintext, mute_logger
 
 
 @tagged("post_install", "-at_install")
@@ -421,12 +421,12 @@ class TestCatalogue(CatalogueCase):
                 "access_conditions",
                 "accessibility_information",
             ):
-                setattr(form, field, self.values[field])
+                setattr(form, "content_formatted" if field == "content" else field, self.values[field])
             form.accessibility_contact_id = self.contact.with_user(self.coordinator)
         self.env.flush_all()
         self.env.invalidate_all()
         reloaded = model.browse(program.id)
-        self.assertEqual(reloaded.content, self.values["content"])
+        self.assertEqual(html2plaintext(reloaded.content_formatted).strip(), self.values["content"])
         self.assertEqual(reloaded.objectives, self.values["objectives"])
         self.assertEqual(reloaded.accessibility_contact_id, self.contact)
         self.assertEqual(model.search_count(action["domain"]), 1)

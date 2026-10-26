@@ -129,7 +129,7 @@
         <field name="res_model">training.complaint</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_complaint" name="Complaints" parent="menu_training_root" action="action_complaint" sequence="81" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
+    <menuitem id="menu_complaint" name="Complaints" parent="menu_training_quality" action="action_complaint" groups="training_management.group_training_coordinator,training_management.group_training_quality" sequence="10"/>
     <record id="view_improvement_list" model="ir.ui.view">
         <field name="name">training.improvement.list</field>
         <field name="model">training.improvement</field>
@@ -251,7 +251,7 @@
         <field name="res_model">training.improvement</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_improvement" name="Improvement Actions" parent="menu_training_root" action="action_improvement" sequence="82" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
+    <menuitem id="menu_improvement" name="Improvement Actions" parent="menu_training_quality" action="action_improvement" groups="training_management.group_training_coordinator,training_management.group_training_quality" sequence="20"/>
     <record id="view_quality_operation" model="ir.ui.view">
         <field name="name">training.quality.operation</field>
         <field name="model">training.quality.operation</field>

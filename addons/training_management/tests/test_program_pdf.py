@@ -14,6 +14,46 @@ class TestProgrammePdf(CatalogueCase):
     def text(self, raw):
         return "\n".join(page.extract_text() for page in PdfFileReader(io.BytesIO(bytes(raw))).pages)
 
+    def test_formatted_content_round_trip_pdf_and_immutable_version(self):
+        from lxml import html
+
+        program = self.new_program(content="Legacy chapter\nLegacy detail")
+        self.assertIn("Legacy chapter", program.content_formatted)
+        self.assertIn("<br", program.content_formatted)
+        rich = "<h3>Chapter one</h3><ul><li>Topic<ul><li>Detail</li></ul></li></ul>"
+        program.write({"content_formatted": rich})
+        program.invalidate_recordset()
+        tree = html.fragment_fromstring(program.content_formatted, create_parent="div")
+        self.assertEqual(tree.xpath(".//h3/text()"), ["Chapter one"])
+        self.assertEqual(tree.xpath(".//li/ul/li/text()"), ["Detail"])
+        section = program._catalogue_sections()[3][1]
+        self.assertIn("<h3>", section.__html__())
+        program.action_validate()
+        raw = bytes(program._reference_pdf().raw)
+        for text in ("Chapter one", "Topic", "Detail"):
+            self.assertIn(text, self.text(raw))
+        with self.assertRaises(ValidationError):
+            program.write({"content_formatted": "<p>Changed</p>"})
+        self.assertEqual(bytes(program._reference_pdf().raw), raw)
+        clone = program.copy({"version": "Rich V2"})
+        self.assertIn("<h3>", clone.content_formatted)
+        self.assertFalse(clone.pdf_attachment_id)
+
+    def test_html_content_sanitized_for_editor_and_public_projection(self):
+        from lxml import html
+
+        program = self.new_program(content='<h3 onclick="alert(1)">Safe</h3><script>alert(2)</script>')
+        for value in (program.content_formatted, program._catalogue_sections()[3][1]):
+            tree = html.fragment_fromstring(value, create_parent="div")
+            self.assertFalse(tree.xpath(".//script|.//*[@onclick]"))
+        program.write({"content_formatted": '<p onclick="alert(1)">Still safe</p>'})
+        self.assertNotIn("onclick", program.content)
+        with self.assertRaises(AccessError):
+            program.with_user(self.reader).write({"content_formatted": "<p>Forbidden</p>"})
+        program.write({"content_formatted": "<p><br></p>"})
+        with self.assertRaises(ValidationError):
+            program.action_validate()
+
     def test_one_validation_real_pdf_and_stable_v1(self):
         program = self.new_program(content="\n".join(["Detailed fictional programme content"] * 130))
         with Form(program) as form:

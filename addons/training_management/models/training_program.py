@@ -1,5 +1,8 @@
+import re
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import html_sanitize, is_html_empty, plaintext2html
 
 
 class TrainingProgramVersion(models.Model):
@@ -41,6 +44,15 @@ class TrainingProgramVersion(models.Model):
     target_audience = fields.Text(translate=True)
     prerequisites = fields.Text(translate=True)
     content = fields.Text(translate=True)
+    content_formatted = fields.Html(
+        string="Programme Content",
+        compute="_compute_content_formatted",
+        inverse="_inverse_content_formatted",
+        sanitize=True,
+        sanitize_overridable=False,
+        help="Headings and nested lists are preserved in the programme and its PDF.",
+    )
+
     duration_hours = fields.Float(string="Duration (hours)")
     delivery_mode = fields.Selection(
         [
@@ -92,6 +104,21 @@ class TrainingProgramVersion(models.Model):
         "CHECK(duration_hours >= 0)",
         "Duration cannot be negative.",
     )
+
+    @api.depends("content")
+    @api.depends_context("lang")
+    def _compute_content_formatted(self):
+        # One source of truth: keep the existing translated storage/API, expose
+        # a native sanitized HTML editor. Legacy plain text keeps its line breaks.
+        for program in self:
+            value = program.content or ""
+            program.content_formatted = (
+                html_sanitize(value) if re.search(r"</?[a-z][^>]*>", value, re.I) else plaintext2html(value)
+            )
+
+    def _inverse_content_formatted(self):
+        for program in self:
+            program.write({"content": html_sanitize(program.content_formatted or "")})
 
     @api.depends("course_id.name", "version")
     @api.depends_context("lang")
@@ -172,7 +199,7 @@ class TrainingProgramVersion(models.Model):
                 for name in required_fields
                 if not program[name] or (isinstance(program[name], str) and not program[name].strip())
             ]
-            if missing or program.duration_hours <= 0:
+            if missing or is_html_empty(program.content_formatted) or program.duration_hours <= 0:
                 raise ValidationError(
                     self.env._("Complete all programme information and enter a positive duration before validation.")
                 )

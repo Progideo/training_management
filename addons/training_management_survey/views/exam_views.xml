@@ -48,7 +48,7 @@
         <field name="name">Mock Exams</field><field name="res_model">survey.survey</field><field name="view_mode">list,form</field>
         <field name="domain">[('training_program_id', '!=', False), ('training_evaluation_id', '=', False)]</field><field name="context">{'training_exam_editor': True}</field>
     </record>
-    <menuitem id="exam_menu" name="Mock Exams" parent="training_management.menu_training_root" action="exam_action" sequence="60" groups="training_management.group_training_coordinator"/>
+    <menuitem id="exam_menu" name="Mock Exams" parent="training_management.menu_training_pedagogy" action="exam_action" sequence="60" groups="training_management.group_training_coordinator"/>
     <record id="course_exam_form" model="ir.ui.view">
         <field name="name">training.program.exam</field><field name="model">training.program.version</field>
         <field name="inherit_id" ref="training_management.view_training_program_form"/>

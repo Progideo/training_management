@@ -58,7 +58,10 @@
                                 <field name="objectives" readonly="state != 'draft'"/>
                                 <field name="target_audience" readonly="state != 'draft'"/>
                                 <field name="prerequisites" readonly="state != 'draft'"/>
-                                <field name="content" readonly="state != 'draft'"/>
+                            </group>
+                            <separator string="Programme Content"/>
+                            <field name="content_formatted" widget="html" readonly="state != 'draft'"/>
+                            <group>
                                 <field name="teaching_methods" readonly="state != 'draft'"/>
                                 <field name="evaluation_criteria" readonly="state != 'draft'"/>
                             </group>
