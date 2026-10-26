@@ -1,0 +1,14 @@
+{
+  "database": "fictional_launch_test",
+  "company_xmlid": "base.main_company",
+  "expected_company_name": "Fictional Training Company",
+  "country_code": "MA",
+  "currency": "MAD",
+  "localization_module": "l10n_ma",
+  "chart_template": "ma",
+  "sales_tax_ref": "vat_out_20_81",
+  "sales_tax_rate": 20,
+  "pricelist_name": "Ventes MAD",
+  "payment_term_xmlid": "account.account_payment_term_30days",
+  "payment_term_days": 30
+}

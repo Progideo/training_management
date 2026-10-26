@@ -1,0 +1,69 @@
+# C06 — Paramétrage commercial au déploiement
+
+Référence : [C06 #10](https://github.com/Progideo/training_management/issues/10).
+La reprise M01 et le paramétrage de facturation sont deux étapes de la livraison.
+La fiche société ne suffit pas à valider son pays fiscal ni son plan comptable.
+
+## Socle natif
+
+Odoo Community `20.0-20261015` fournit `l10n_ma`, dépendant de `account`.
+Sur cette version exacte, le module contient le plan marocain, les taxes et
+les positions fiscales. Son installation et le chargement du plan sont à vérifier
+explicitement : une base précédemment initialisée avec un plan générique peut
+conserver celui-ci après changement du pays de la société.
+
+Le profil privé de déploiement reprend les décisions validées : pays et devise
+de la société, module et modèle de localisation, taxe de vente applicable,
+liste de prix par défaut et conditions de paiement. L’exemple public
+[launch-settings.example.json](../deployment/launch-settings.example.json)
+est fictif. Le profil réel reste hors Git ; aucun identifiant fiscal, compte
+bancaire, client ou secret n’est nécessaire dans ce fichier de paramétrage.
+
+## Application
+
+1. Sauvegarder la base et le filestore ; vérifier la société cible et le pays
+   de sa fiche. Pour la préparation, utiliser une copie isolée sans envoi de
+   courriel ni tâche automatique.
+2. Installer le module de localisation du profil avec le même binaire Odoo
+   que l’application, sans données de démonstration, pendant une maintenance
+   de l’application concernée. Pour le profil marocain : `-i l10n_ma`.
+3. Depuis `odoo shell`, charger le profil privé, puis exécuter
+   [launch_settings.py](../deployment/launch_settings.py) et appeler
+   `apply(env, profile)`. Examiner le résultat avant `env.cr.commit()` ; faire
+   `env.cr.rollback()` en cas d’échec. La fonction ne valide jamais une facture.
+4. Relancer `apply` et comparer les identifiants et le résultat. Les mêmes
+   listes et valeurs par défaut doivent être réutilisées sans création de
+   doublon. Vérifier aussi la conservation des données et des archives M01.
+5. Redémarrer l’application et effectuer la recette commerciale ci-dessous.
+
+L’initialisation d’un autre plan est refusée en présence d’écritures comptables,
+de journaux bancaires renseignés ou de commandes confirmées. Une liste de prix
+initiale vide n’est réutilisée qu’avant confirmation ; les prix fixes existants
+ne sont pas convertis silencieusement. Les valeurs explicitement renseignées
+sur les clients et les devis ouverts restent à contrôler : les nouveaux défauts
+ne doivent pas écraser leurs choix.
+
+## Recette et passage en production
+
+- Nouveau client fictif marocain, service fictif à 1 000 MAD HT : vérifier
+  liste MAD, TVA de services à 20 %, total 1 200 MAD et paiement à 30 jours.
+- Vérifier devis PDF puis facture brouillon et échéance. Les vérifications
+  techniques sur copie ne remplacent pas le contrôle utilisateur.
+- Qualifier séparément le scénario export à 0 % suivant l’adresse de facturation
+  et la mention validées, y compris lorsque l’adresse de livraison diffère.
+  Le chargement du plan marocain ne valide pas à lui seul ce scénario.
+- Les prix EUR et les coordonnées de virement font également partie de C06.
+  Ne pas interpréter un taux de change d’initialisation comme un tarif validé.
+- Rejouer ce paramétrage sur la cible de production lors du déploiement autorisé,
+  puis refaire les contrôles. Exclure les clients, produits et devis fictifs de
+  recette : livrer les réglages ne signifie pas recopier la base de dev.
+- Reprendre les compteurs commerciaux à la bascule selon le gel Odoo 19 ; ce
+  script ne règle ni les séquences ni les compteurs et ne déclenche aucune bascule.
+
+Odoo 19 reste la référence jusqu’à validation et autorisation de bascule.
+Aucune écriture historique active ne doit être créée par ce paramétrage.
+
+Contrôle automatisé reproductible : `python3 tests/ci/run_launch_settings.py`.
+La CI exécute ce scénario natif avec des données fictives, puis son rejeu dans
+une nouvelle session. Les essais de devis et facture sont annulés par retour de
+transaction ; les réglages restent disponibles pour le second passage.
