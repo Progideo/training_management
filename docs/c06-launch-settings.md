@@ -67,6 +67,16 @@ L’activation ne réécrit pas les documents existants : recalculer seulement l
 devis brouillons explicitement retenus pour la recette. Les rapports historiques
 M01 restent des archives.
 
+## Devises du parcours commercial
+
+Décision de périmètre NeoPro : clients facturés au Maroc en MAD ; EUR réservée
+aux ventes à l’étranger. Le scénario commercial Maroc/EUR est écarté de la
+recette. La vérification technique de la TVA par pays ne constitue pas une
+validation de ce scénario commercial ni de sa licéité. Le blocage éventuel des
+combinaisons interdites par cette politique reste à mettre en œuvre et à tester ;
+activer EUR ne constitue pas ce blocage. La règle demeure distincte du module
+fiscal générique.
+
 ## Coordonnées de virement sur les PDF
 
 Utiliser le pied de page natif de la société, commun aux devis et factures :
