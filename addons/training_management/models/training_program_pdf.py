@@ -1,6 +1,9 @@
 import hashlib
 import io
 
+from lxml import etree, html
+from markupsafe import Markup
+
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
@@ -20,6 +23,26 @@ class TrainingProgramPdf(models.Model):
     pdf_language_code = fields.Char(string="PDF Language", readonly=True, copy=False)
     pdf_reconstructed = fields.Boolean(string="Reconstructed PDF", readonly=True, copy=False)
     pdf_legacy = fields.Boolean(string="Historical Programme", readonly=True, copy=False)
+
+    @api.private
+    def _pdf_content_html(self, title):
+        """Keep the section label with the first chapter, without a page-sized box."""
+        self.ensure_one()
+        self.check_access("read")
+        root = html.fragment_fromstring(self.content_formatted or "<p></p>", create_parent="div")
+        if root.text and root.text.strip():
+            paragraph = html.Element("p")
+            paragraph.text, root.text = root.text, None
+            root.insert(0, paragraph)
+        first = next((node for node in root if isinstance(node.tag, str)), None)
+        if first is not None and first.tag in {"h1", "h2", "h3", "h4", "h5", "h6"}:
+            first.tag = "h2"
+            first.text = title + " — " + (first.text or "")
+        else:
+            heading = html.Element("h2")
+            heading.text = title
+            root.insert(0, heading)
+        return Markup("".join(etree.tostring(node, encoding="unicode", method="html") for node in root))
 
     def _audit_fields(self):
         return super()._audit_fields() | {
