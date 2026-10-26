@@ -36,6 +36,7 @@ msgid "Allowed foreign sales currencies"
 msgstr "Devises autorisées pour les ventes à l’étranger"
 
 #. module: sale_invoice_address_fiscal
+#. odoo-python
 #: code:addons/sale_invoice_address_fiscal/models/fiscal_position.py:0
 msgid "Sales billed to %(country)s must use %(currencies)s. Change the pricelist or invoice currency."
 msgstr "Les ventes facturées en %(country)s doivent être en %(currencies)s. Modifiez la liste de prix ou la devise de la facture."
