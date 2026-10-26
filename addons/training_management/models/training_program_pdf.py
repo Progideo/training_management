@@ -42,6 +42,28 @@ class TrainingProgramPdf(models.Model):
             heading = html.Element("h2")
             heading.text = title
             root.insert(0, heading)
+        # Keep only the label and the first short item together. Keeping the
+        # entire outline together can create a blank page in the native engine.
+        intro = html.Element("div")
+        intro.append(root[0])
+        if len(root):
+            first_body = root[0]
+            if first_body.tag in {"ul", "ol"} and len(first_body):
+                lead = html.Element(first_body.tag, dict(first_body.attrib))
+                lead.append(first_body[0])
+                intro.append(lead)
+                if first_body.tag == "ol":
+                    try:
+                        first_body.set("start", str(int(first_body.get("start", "1")) + 1))
+                    except ValueError:
+                        first_body.set("start", "2")
+                if not len(first_body):
+                    root.remove(first_body)
+            else:
+                intro.append(first_body)
+        if len(intro.text_content()) < 1400:
+            intro.set("class", "programme-intro")
+        root.insert(0, intro)
         return Markup("".join(etree.tostring(node, encoding="unicode", method="html") for node in root))
 
     def _audit_fields(self):

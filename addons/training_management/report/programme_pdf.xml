@@ -26,6 +26,9 @@
                     .notice { padding: 10pt; border: 1pt solid #596e84; margin: 12pt 0; }
                     .section:not(.programme-content) { page-break-inside: avoid; }
                     .programme-content .text { white-space: normal; }
+                    .programme-intro { page-break-inside: avoid; }
+                    .programme-intro ul, .programme-intro ol { margin-bottom: 0; }
+                    .programme-intro + ul, .programme-intro + ol { margin-top: 0; }
                     .programme-content h3 { font-size: 12pt; margin-top: 12pt; page-break-after: avoid; }
                     .programme-content li { margin-bottom: 4pt; }
                     .programme-content ul, .programme-content ol { padding-left: 20pt; }
