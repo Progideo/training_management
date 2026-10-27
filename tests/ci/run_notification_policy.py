@@ -48,6 +48,11 @@ assert apply_notifications(env,profile)==first and company.write_date==stamp
 assert env['mail.mail'].search_count([])==before
 assert company.training_notification_address=='contact@example.invalid'
 assert company.training_alert_address=='alerts@example.invalid'
+env['res.lang']._activate_lang('fr_FR')
+env['ir.module.module']._load_module_terms(['training_management'],['fr_FR'],overwrite=True)
+localized=env['training.operator.notice'].new({'company_id':company.id,'role':'manager','recipient_language':'fr_FR','source_model':'training.complaint','source_id':0,'event_key':'translation-check'})
+assert localized._content()[0]=='Une action de formation nécessite votre attention'
+print('C06_NOTIFICATION_FRENCH_RENDER_OK')
 try:
     apply_notifications(env,dict(profile,database='wrong_database'))
 except ValueError:

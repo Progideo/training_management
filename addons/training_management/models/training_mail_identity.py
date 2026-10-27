@@ -10,7 +10,7 @@ from odoo.tools import email_normalize
 class Company(models.Model):
     _inherit = "res.company"
 
-    training_notification_address = fields.Char(string="Training Notification Address", groups="base.group_system")
+    training_notification_address = fields.Char(groups="base.group_system")
     training_alert_address = fields.Char(string="Training Manager Alert Address", groups="base.group_system")
     training_notification_manager_id = fields.Many2one(
         "res.users", string="Training Alert Manager", groups="base.group_system", ondelete="restrict"

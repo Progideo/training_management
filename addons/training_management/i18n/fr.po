@@ -11162,11 +11162,13 @@ msgid "Training Notifications"
 msgstr "Notifications de formation"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_operator_notice.py:0
 msgid "A training action needs your attention"
 msgstr "Une action de formation nécessite votre attention"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_operator_notice.py:0
 msgid "Sign in to review the information you are authorized to access."
 msgstr "Connectez-vous pour consulter les informations auxquelles vous êtes autorisé à accéder."
