@@ -55,12 +55,14 @@ class AttendancePortal(http.Controller):
             error = False
             if request.httprequest.method == "POST":
                 try:
-                    service._review(
+                    operation = service._invalidate if post.get("operation") == "invalidate" else service._review
+                    interval = () if post.get("operation") == "invalidate" else (post.get("start"), post.get("end"))
+                    options = {} if post.get("operation") == "invalidate" else {"absent": post.get("absent") == "yes"}
+                    operation(
                         session.id,
                         int(post.get("enrollment_id", 0)),
-                        post.get("start"),
-                        post.get("end"),
-                        absent=post.get("absent") == "yes",
+                        *interval,
+                        **options,
                         revision=int(post.get("revision", 0)),
                         definition=post.get("definition"),
                         reason=post.get("reason", ""),
@@ -133,7 +135,20 @@ class AttendancePortal(http.Controller):
                     if last and last.end_at
                     else (session.end_at - session.start_at).total_seconds() / 60,
                     "duration": (session.end_at - session.start_at).total_seconds() / 60,
-                    "declared": bool(events.filtered(lambda e: e.kind == "declaration")),
+                    "declared": bool(
+                        events.filtered(
+                            lambda e: (
+                                e.kind == "declaration"
+                                and e.id
+                                > (events.filtered(lambda item: item.kind == "invalidation").sorted("id")[-1:].id or 0)
+                            )
+                        )
+                    ),
+                    "can_invalidate": bool(
+                        events.filtered(lambda e: e.kind in ("declaration", "paper"))
+                        and last.kind != "invalidation"
+                        and enrollment.user_id != request.env.user
+                    ),
                     "validated": presence.state == "validated" if presence else False,
                     "history": [
                         {
