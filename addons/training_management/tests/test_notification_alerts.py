@@ -71,6 +71,10 @@ class TestNotificationAlerts(AttendanceCase):
         notice = self.env["training.learning.notice"].search([("entry_id", "=", entry.id)])
         self.assert_identity(notice.mail_id)
         self.assertNotIn("PRIVATE-CONTENT", notice.mail_id.body_html)
+        notice.mail_id.write({"state": "exception"})
+        self.assertFalse(
+            self.env["training.operator.notice"].search([]), "Private learning failures must stay with the tutor"
+        )
         self.assertEqual(notice.mail_id.email_to, self.portal_b.partner_id.email)
 
     def test_attendance_alert_replay_and_assignment_change(self):

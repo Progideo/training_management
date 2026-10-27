@@ -127,11 +127,17 @@ class RequestOperatorNotice(models.Model):
 
     @api.model
     def _source_models(self):
-        return (*super()._source_models(), "crm.lead")
+        return (*super()._source_models(), "crm.lead", "training.request.notice")
 
     @api.private
     def _authorized(self):
         source = self._source()
         if source and source._name == "crm.lead" and (not source.active or not source.training_request_kind):
+            return False
+        if (
+            source
+            and source._name == "training.request.notice"
+            and (source.mail_id.state != "exception" or not source._authorized())
+        ):
             return False
         return super()._authorized()

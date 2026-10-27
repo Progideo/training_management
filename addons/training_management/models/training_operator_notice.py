@@ -36,6 +36,7 @@ class OperatorNotice(models.Model):
             "training.notification",
             "training.invitation",
             "training.feedback.notice",
+            "training.learning.notice",
         )
 
     @api.private
@@ -59,6 +60,8 @@ class OperatorNotice(models.Model):
     def _authorized(self):
         self.ensure_one()
         source, user = self._source(), self.recipient_id
+        if source and source._name == "training.learning.notice" and source.entry_id:
+            return False
         if (
             not source
             or not user
@@ -70,7 +73,8 @@ class OperatorNotice(models.Model):
         if self._recipient(source, self.role) != user or self._recipient_email(source, self.role) != self.email:
             return False
         if (
-            source._name in ("training.notification", "training.invitation", "training.feedback.notice")
+            source._name
+            in ("training.notification", "training.invitation", "training.feedback.notice", "training.learning.notice")
             and source.mail_id.state != "exception"
         ):
             return False

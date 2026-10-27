@@ -46,8 +46,14 @@ class TestRequestAlerts(EnrollmentCase):
         self.assertEqual(self.env["training.operator.notice"]._queue(lead, "request"), alert)
         with self.assertRaises(AccessError):
             alert.with_user(self.portal).read(["source_id"])
+        ack.mail_id.write({"state": "exception"})
+        failure = self.env["training.operator.notice"].search(
+            [("source_model", "=", "training.request.notice"), ("source_id", "=", ack.id)]
+        )
+        self.assertEqual(len(failure), 1)
+        self.assertTrue(failure.mail_id._prepare_outgoing_list())
         lead.active = False
-        for mail in ack.mail_id | alert.mail_id:
+        for mail in ack.mail_id | alert.mail_id | failure.mail_id:
             with self.assertRaises(ValidationError):
                 mail._prepare_outgoing_list()
 

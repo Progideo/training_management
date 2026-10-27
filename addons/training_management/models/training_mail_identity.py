@@ -51,12 +51,16 @@ class Mail(models.Model):
                         "training.notification",
                         "training.session",
                         "training.feedback.notice",
+                        "training.request.notice",
+                        "training.learning.notice",
                     )
                 )
             ):
                 model = "training.invitation" if mail.model == "training.session" else mail.model
-                source = self.env[model].sudo().search([("mail_id", "=", mail.id)], limit=1)
-                if source:
+                source = (
+                    self.env[model].sudo().search([("mail_id", "=", mail.id)], limit=1) if model in self.env else False
+                )
+                if source and not (source._name == "training.learning.notice" and source.entry_id):
                     self.env["training.operator.notice"]._queue(source, "mail-failure")
         return result
 
