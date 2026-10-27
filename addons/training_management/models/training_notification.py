@@ -24,6 +24,8 @@ class TrainingNotification(models.Model):
             ("evaluation", "Evaluation Invitation"),
             ("deadline", "Evaluation Deadline"),
             ("document", "Certificate Available"),
+            ("access", "Learning Access Changed"),
+            ("change", "Enrollment Changed"),
         ],
         required=True,
     )
@@ -56,6 +58,8 @@ class TrainingNotification(models.Model):
             return bool(
                 self.document_id and self.env["training.document.policy"].with_user(user)._can_read(self.document_id)
             )
+        if self.kind in ("access", "change"):
+            return True
         if enrollment.state not in ("requested", "reserved", "waiting", "confirmed", "closed"):
             return False
         if self.assignment_id:
@@ -123,6 +127,7 @@ class TrainingNotification(models.Model):
                     "recipient_cc_ids": [],
                     "attachment_ids": [],
                     "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+                    **self.env["mail.mail"]._training_identity(enrollment.company_id),
                     "model": self._name,
                     "res_id": notice.id,
                     "auto_delete": False,
@@ -161,9 +166,31 @@ class NotificationEnrollment(models.Model):
     @api.private
     def _store(self, values, reason=False):
         previous = self.state
+        changed = any(
+            self[name] != values[name]
+            for name in ("access_state", "access_start", "access_end", "state")
+            if name in values
+        )
         result = super()._store(values, reason)
         if values.get("state") == "confirmed" and previous != "confirmed":
             self.env["training.notification"]._queue(self, "confirmation", "confirmation")
+        if changed and self.company_id.sudo().training_notification_address:
+            kind = "change" if values.get("state") and values["state"] != previous else "access"
+            if kind == "access" or values.get("state") != "confirmed":
+                operation = (
+                    self.env["training.operation"]
+                    .sudo()
+                    .search(
+                        [
+                            ("model_name", "=", self._name),
+                            ("record_id", "=", self.id),
+                            ("delivery_id", "=", self.delivery_id.id),
+                        ],
+                        order="id desc",
+                        limit=1,
+                    )
+                )
+                self.env["training.notification"]._queue(self, kind, "%s:%s" % (kind, operation.id))
         return result
 
 

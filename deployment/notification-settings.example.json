@@ -1,0 +1,8 @@
+{
+  "database": "tm_suite_test",
+  "company_xmlid": "base.main_company",
+  "expected_company_name": "Fictional Training Company",
+  "notification_address": "contact@example.invalid",
+  "manager_login": "fictional_manager",
+  "manager_alert_address": "manager@example.invalid"
+}

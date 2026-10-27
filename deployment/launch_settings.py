@@ -252,3 +252,29 @@ def apply_pedagogical(env, profile):
         for name, value in {"access_policy": "months", "access_months": months, "reservation_days": days}.items():
             _default(env, company, "training.delivery", name, value)
     return {"company_id": company.id, "access_months": months, "reservation_days": days}
+
+
+def apply_notifications(env, profile):
+    """Set only company identity/alert routing; no transport, queue rewrite or grants."""
+    if env.cr.dbname != profile["database"]:
+        raise ValueError("Wrong target database")
+    company = env.ref(profile["company_xmlid"])
+    if company._name != "res.company" or company.name != profile["expected_company_name"]:
+        raise ValueError("Wrong target company")
+    manager = env["res.users"].search([("login", "=", profile["manager_login"])], limit=1)
+    if not manager:
+        raise ValueError("Alert manager not found")
+    values = {
+        "training_notification_address": profile["notification_address"],
+        "training_notification_manager_id": manager.id,
+        "training_alert_address": profile["manager_alert_address"],
+    }
+    changed = {
+        key: value
+        for key, value in values.items()
+        if (company[key].id if key.endswith("_id") else company[key]) != value
+    }
+    with env.cr.savepoint():
+        if changed:
+            company.write(changed)
+    return {"company_id": company.id, "manager_id": manager.id, "transport_activated": False}

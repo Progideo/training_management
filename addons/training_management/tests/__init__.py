@@ -27,3 +27,4 @@ from . import test_public_catalogue
 from . import test_company_portal
 
 from . import test_pedagogical_launch
+from . import test_notification_alerts

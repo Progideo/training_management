@@ -181,3 +181,32 @@ Contrôle automatisé reproductible : `python3 tests/ci/run_launch_settings.py`.
 La CI exécute ce scénario natif avec des données fictives, puis son rejeu dans
 une nouvelle session. Les essais de devis et facture sont annulés par retour de
 transaction ; les réglages restent disponibles pour le second passage.
+
+
+## Notifications de formation
+
+La société configure une adresse commune d’expédition et de réponse, le
+responsable interne et, si nécessaire, sa boîte d’alerte distincte de son compte.
+Ces champs administrateur n’activent aucun transport ni tâche automatique.
+Appliquer `apply_notifications(env, profile)` depuis
+[launch_settings.py](../deployment/launch_settings.py), avec un profil privé
+fondé sur [l’exemple fictif](../deployment/notification-settings.example.json).
+Vérifier la cible et rejouer avant validation de la transaction.
+
+Les notifications d’accès suivent les opérations réellement enregistrées, sans
+rouvrir les accès. Les convocations restent une action explicite. Les alertes
+formateur suivent les déclarations à contrôler ; celles du responsable couvrent
+les demandes CRM, réclamations/améliorations autorisées, anomalies de présence
+et échecs de distribution non privés. Une question pédagogique privée reste
+adressée à son tuteur, sans alerte au responsable sur son contenu.
+
+Les journaux empêchent les doublons et revérifient les destinataires avant
+transport. Les messages ne contiennent ni résultat individuel ni support privé.
+Un changement d’affectation, de droit ou d’adresse peut bloquer une ancienne
+file : la revoir, sans réécrire ni réexpédier les historiques. Le journal des
+alertes est limité à son destinataire habilité. Les envois et automatismes restent
+neutralisés sur dev ; authentification et délivrabilité se vérifient séparément
+avant production.
+
+Recette : `python3 tests/ci/run_notification_policy.py` ; contrôler aussi sur la
+cible les adresses, liens, droits, absence de doublon et absence d’envoi réel.
