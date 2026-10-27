@@ -26,6 +26,22 @@ class TrainingEnrollmentOperation(models.TransientModel):
     source_allocation_id = fields.Many2one(related="enrollment_id.allocation_id")
     reason = fields.Text(required=True)
 
+    @api.model
+    def default_get(self, fields_list):
+        values = super().default_get(fields_list)
+        enrollment = self.env["training.enrollment"].browse(
+            values.get("enrollment_id") or self.env.context.get("default_enrollment_id")
+        )
+        if enrollment and "deadline" in fields_list and not values.get("deadline"):
+            operation = values.get("operation") or self.env.context.get("default_operation", "reserve")
+            if operation == "reserve":
+                values["deadline"] = (
+                    enrollment.reservation_end
+                    or enrollment.allocation_id.expires_at
+                    or enrollment.delivery_id._reservation_deadline()
+                )
+        return values
+
     @api.onchange("operation")
     def _onchange_operation(self):
         self.target_id = False

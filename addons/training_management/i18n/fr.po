@@ -11115,3 +11115,28 @@ msgstr "Aucune déclaration à invalider."
 #: code:addons/training_management/models/training_attendance.py:0
 msgid "A new declaration is required after invalidation."
 msgstr "Une nouvelle déclaration est nécessaire après invalidation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_delivery__access_policy__months
+msgid "Calendar Months from Explicit Activation"
+msgstr "Mois calendaires depuis l’ouverture effective"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__access_months
+msgid "Access Duration (Calendar Months)"
+msgstr "Durée d’accès (mois calendaires)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__reservation_days
+msgid "Default Reservation Duration (Days)"
+msgstr "Durée de réservation par défaut (jours)"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__reservation_days
+msgid "Zero keeps manual deadlines."
+msgstr "Zéro conserve les échéances manuelles."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_delivery_positive_launch_durations
+msgid "Durations cannot be negative."
+msgstr "Les durées ne peuvent pas être négatives."

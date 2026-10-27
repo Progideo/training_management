@@ -70,6 +70,8 @@
                         <field name="access_start" invisible="access_policy != 'fixed'"/>
                         <field name="access_end" invisible="access_policy != 'fixed'"/>
                         <field name="access_days" invisible="access_policy != 'duration'"/>
+                        <field name="access_months" invisible="access_policy != 'months'"/>
+                        <field name="reservation_days"/>
                     </group>
                     <notebook>
                         <page string="Places">
