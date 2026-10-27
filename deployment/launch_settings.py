@@ -236,3 +236,19 @@ def apply(env, profile):
     """Apply atomically; installing modules remains a separate deployment step."""
     with env.cr.savepoint():
         return _apply(env, profile)
+
+
+def apply_pedagogical(env, profile):
+    """Company defaults only: never recalculate existing periods or reservations."""
+    if env.cr.dbname != profile["database"]:
+        raise ValueError("Wrong target database")
+    company = env.ref(profile["company_xmlid"])
+    if company._name != "res.company" or company.name != profile["expected_company_name"]:
+        raise ValueError("Wrong target company")
+    months, days = profile["access_months"], profile["reservation_days"]
+    if type(months) is not int or type(days) is not int or months <= 0 or days <= 0:
+        raise ValueError("Use positive integer month and reservation durations")
+    with env.cr.savepoint():
+        for name, value in {"access_policy": "months", "access_months": months, "reservation_days": days}.items():
+            _default(env, company, "training.delivery", name, value)
+    return {"company_id": company.id, "access_months": months, "reservation_days": days}

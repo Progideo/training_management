@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -297,6 +299,12 @@ class TrainingEnrollment(models.Model):
     def action_reserve(self, expires_at=None, reason=None):
         def change(e):
             if e.state == "reserved" and e._occupies():
+                if expires_at and fields.Datetime.to_datetime(expires_at) != e.reservation_end:
+                    deadline = fields.Datetime.to_datetime(expires_at)
+                    if deadline <= fields.Datetime.now():
+                        raise ValidationError(self.env._("Set a future reservation deadline."))
+                    e._store({"reservation_end": deadline}, e._require_reason(reason))
+                    e._validate_seat()
                 return
             if e.state not in ("requested", "waiting", "reserved") or e.delivery_id.state in (
                 "closed",
@@ -305,7 +313,7 @@ class TrainingEnrollment(models.Model):
             ):
                 raise ValidationError(self.env._("This enrollment cannot reserve a place."))
             deadline = fields.Datetime.to_datetime(
-                expires_at or (e.allocation_id.expires_at if e.allocation_id else False)
+                expires_at or (e.allocation_id.expires_at if e.allocation_id else e.delivery_id._reservation_deadline())
             )
             if not deadline or deadline <= fields.Datetime.now():
                 raise ValidationError(self.env._("Set a future reservation deadline."))
@@ -390,9 +398,11 @@ class TrainingEnrollment(models.Model):
             values = {"access_state": "active"}
             if not e.access_start:
                 delivery = e.delivery_id
-                start = fields.Datetime.now() if delivery.access_policy == "duration" else delivery.access_start
+                start = fields.Datetime.now() if delivery.access_policy != "fixed" else delivery.access_start
                 end = (
-                    start + timedelta(days=delivery.access_days)
+                    start + relativedelta(months=delivery.access_months)
+                    if delivery.access_policy == "months"
+                    else start + timedelta(days=delivery.access_days)
                     if delivery.access_policy == "duration"
                     else delivery.access_end
                 )

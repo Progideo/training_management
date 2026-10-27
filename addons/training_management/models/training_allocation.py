@@ -77,6 +77,11 @@ class TrainingSeatAllocation(models.Model):
         # Integration override validates the commercial line before commitment.
         raise ValidationError(self.env._("A confirmed allocation requires a confirmed commercial line."))
 
+    @api.onchange("delivery_id")
+    def _onchange_delivery_deadline(self):
+        if self.delivery_id and not self.expires_at:
+            self.expires_at = self.delivery_id._reservation_deadline()
+
     @api.model_create_multi
     def create(self, vals_list):
         self._require_coordinator()
@@ -100,6 +105,8 @@ class TrainingSeatAllocation(models.Model):
                     values.get("delivery_id") or self.env.context.get("default_delivery_id")
                 )
                 values["company_id"] = delivery.company_id.id
+                if not values.get("expires_at") and delivery.reservation_days:
+                    values["expires_at"] = delivery._reservation_deadline()
             records = super(
                 TrainingSeatAllocation, self.with_context(mail_create_nolog=True, mail_create_nosubscribe=True)
             ).create(prepared)

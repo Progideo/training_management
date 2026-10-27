@@ -52,11 +52,23 @@ class TrainingDelivery(models.Model):
         copy=False,
     )
     access_policy = fields.Selection(
-        [("fixed", "Fixed Period"), ("duration", "Duration from Explicit Activation")], default="fixed", required=True
+        [
+            ("fixed", "Fixed Period"),
+            ("duration", "Duration from Explicit Activation"),
+            ("months", "Calendar Months from Explicit Activation"),
+        ],
+        default="fixed",
+        required=True,
     )
     access_start = fields.Datetime()
     access_end = fields.Datetime()
     access_days = fields.Integer()
+    access_months = fields.Integer(string="Access Duration (Calendar Months)")
+    reservation_days = fields.Integer(string="Default Reservation Duration (Days)", help="Zero keeps manual deadlines.")
+    _positive_launch_durations = models.Constraint(
+        "CHECK(access_months >= 0 AND reservation_days >= 0)",
+        "Durations cannot be negative.",
+    )
     allocation_ids = fields.One2many("training.seat.allocation", "delivery_id")
     enrollment_ids = fields.One2many("training.enrollment", "delivery_id")
     operation_ids = fields.One2many(
@@ -136,6 +148,8 @@ class TrainingDelivery(models.Model):
         "access_start",
         "access_end",
         "access_days",
+        "access_months",
+        "reservation_days",
         "capacity",
         "opening_threshold",
     )
@@ -153,11 +167,18 @@ class TrainingDelivery(models.Model):
                 not delivery.access_start or not delivery.access_end or delivery.access_end <= delivery.access_start
             ):
                 raise ValidationError(self.env._("Set an increasing access period."))
-            if delivery.access_policy == "duration" and delivery.access_days <= 0:
+            if (delivery.access_policy == "duration" and delivery.access_days <= 0) or (
+                delivery.access_policy == "months" and delivery.access_months <= 0
+            ):
                 raise ValidationError(self.env._("Set a positive access duration."))
             if delivery.capacity and delivery.opening_threshold > delivery.capacity:
                 raise ValidationError(self.env._("The opening threshold cannot exceed capacity."))
             delivery._check_capacity()
+
+    @api.private
+    def _reservation_deadline(self):
+        self.ensure_one()
+        return fields.Datetime.now() + timedelta(days=self.reservation_days) if self.reservation_days else False
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -237,6 +258,7 @@ class TrainingDelivery(models.Model):
                     "access_start",
                     "access_end",
                     "access_days",
+                    "access_months",
                     "start_at",
                     "end_at",
                 } and (delivery.enrollment_ids or delivery.allocation_ids):

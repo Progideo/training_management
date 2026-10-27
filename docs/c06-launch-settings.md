@@ -113,6 +113,49 @@ coordonnées exactes, complètes et lisibles, sans coupure. Conserver Odoo 19 co
 référence des coordonnées jusqu’à leur validation. Cette étape fait partie du
 déploiement ; elle n’est pas exécutée par `launch_settings.py`.
 
+## Accès et réservations
+
+Le socle propose une durée en mois calendaires depuis l’ouverture explicite,
+en complément des jours et périodes fixes existants. Le dernier jour du mois
+est retenu si le quantième n’existe pas à l’échéance. Les prolongations et
+révocations gardent leurs actions motivées et leurs droits ; aucun historique
+ni accès expiré/révoqué n’est effacé ou rouvert par le paramétrage.
+
+La durée de réservation de la réalisation fournit une échéance relative si
+aucune date ni échéance de lot n’est renseignée. Zéro conserve le fonctionnement
+manuel. Une échéance explicite reste prioritaire. L’assistant propose la date ;
+la modifier sur une réservation encore active exige un motif et conserve
+avant/après. Les lots gardent leur action dédiée de prolongation.
+À expiration, la place est immédiatement libre pour le calcul de capacité,
+même avant le traitement planifié qui met à jour l’état affiché.
+
+Depuis le même fichier `launch_settings.py`, appeler `apply_pedagogical(env, profile)`
+avec le profil privé suivant, puis vérifier avant de valider la transaction :
+
+```json
+{
+  "database": "fictional_pedagogical_test",
+  "company_xmlid": "base.main_company",
+  "expected_company_name": "Fictional Training Company",
+  "access_months": 12,
+  "reservation_days": 7
+}
+```
+
+Les défauts natifs sont limités à la société cible et aux nouvelles réalisations.
+Le rejeu réutilise les mêmes défauts ; les périodes, réservations, historiques
+et réalisations déjà enregistrés ne sont pas recalculés. L’expiration des accès
+ne supprime pas les données. Les annulations, reports et remplacements restent
+manuels et motivés ; aucun avoir ou remboursement automatique n’est créé.
+Le devis accepté porte les éventuels frais. La liste d’attente conserve son ordre
+d’arrivée ; la proposition et la confirmation restent manuelles.
+
+Recette reproductible : `python3 tests/ci/run_pedagogical_policy.py`.
+Contrôler 12 mois depuis l’activation, année bissextile, prolongation/révocation,
+7 jours modifiables, expiration/capacité, attente, droits, reports/remplacements
+et absence de mouvement financier automatique. La dev garde ses tâches et
+courriels neutralisés ; ne pas activer le cron global pour ces essais.
+
 ## Recette et passage en production
 
 - Nouveau client fictif marocain, service fictif à 1 000 MAD HT : vérifier
