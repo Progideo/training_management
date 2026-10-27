@@ -46,7 +46,7 @@ class TestPedagogicalLaunch(EnrollmentCase):
         with patch("odoo.fields.Datetime.now", return_value=now):
             action = first.with_context(operation="reserve").action_open_operation()
             with Form(
-                self.env[action["res_model"]].with_user(self.coordinator).with_context(action["context"])
+                self.env[action["res_model"]].with_user(self.coordinator).with_context(**action["context"])
             ) as form:
                 self.assertEqual(form.deadline, now + timedelta(days=7))
                 form.reason = "Fictional provisional reservation"
