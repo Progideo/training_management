@@ -71,6 +71,8 @@ print('C06_NOTIFICATION_CONFIG_REPLAY_OK')
             database.odoo("-u", "training_management,training_management_sale", "--stop-after-init"),
             folder / "second-update.log",
         )
+        with (ROOT / "tests/probes/c06_learning_concurrency.py").open() as stream:
+            checked(database.odoo("shell", "--no-http"), folder / "learning-concurrency.log", stdin=stream)
 
 
 if __name__ == "__main__":
