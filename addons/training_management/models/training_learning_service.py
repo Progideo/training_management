@@ -9,8 +9,9 @@ from markupsafe import Markup
 from psycopg2.errors import SerializationFailure
 
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, LockError, ValidationError
 from odoo.tools.binary import BinaryBytes
+from odoo.tools import SQL
 
 
 class LearningService(models.AbstractModel):
@@ -48,9 +49,23 @@ class LearningService(models.AbstractModel):
         if not enrollment or not check(enrollment):
             raise AccessError(self.env._("This private learning record is unavailable."))
         if lock:
-            # Same lock and write fence as S03 admission/revocation and S05 files.
-            # A stale Repeatable Read transaction must retry and recheck the grant.
-            enrollment.delivery_id._serialize()
+            # Parallel learners share the delivery lock; administrative changes
+            # still require its exclusive S03 lock. Lock order stays delivery,
+            # enrollment. SKIP LOCKED preserves native non-blocking conflicts.
+            delivery = enrollment.delivery_id
+            locked = self.env.execute_query(
+                SQL("SELECT id FROM training_delivery WHERE id = %s FOR SHARE SKIP LOCKED", delivery.id)
+            )
+            if not locked:
+                raise LockError(self.env._("Cannot grab a lock on records"))
+            enrollment.lock_for_update(allow_referencing=True)
+            # A no-op write is an MVCC fence for this enrollment only: stale
+            # snapshots must retry even after the previous lock was released.
+            # No business field, timestamp or operation history is rewritten.
+            self.env.cr.execute(
+                SQL("UPDATE training_enrollment SET write_date = write_date WHERE id = %s", enrollment.id)
+            )
+            delivery.invalidate_recordset()
             enrollment.invalidate_recordset()
             if not check(enrollment):
                 raise AccessError(self.env._("This private learning record is unavailable."))
