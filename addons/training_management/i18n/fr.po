@@ -11061,3 +11061,57 @@ msgid ""
 msgstr ""
 "Conservez la proposition transmise et renseignez uniquement la décision de "
 "coordination."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__invalidated
+msgid "Invalidated"
+msgstr "Invalidé"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_event__kind__invalidation
+msgid "Attendance Invalidation"
+msgstr "Invalidation de présence"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__operation__invalidation
+msgid "Invalidate Attendance"
+msgstr "Invalider la présence"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
+msgid "Paper / Correct / Invalidate"
+msgstr "Papier / Corriger / Invalider"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Reason for invalidation"
+msgstr "Motif de l’invalidation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Invalidate attendance"
+msgstr "Invalider la présence"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "You cannot review your own attendance."
+msgstr "Vous ne pouvez pas contrôler votre propre présence."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "Provide a reason for invalidating attendance."
+msgstr "Indiquez un motif pour invalider la présence."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "There is no declaration to invalidate."
+msgstr "Aucune déclaration à invalider."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+msgid "A new declaration is required after invalidation."
+msgstr "Une nouvelle déclaration est nécessaire après invalidation."

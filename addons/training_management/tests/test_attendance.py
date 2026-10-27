@@ -109,23 +109,128 @@ class TestAttendance(AttendanceCase):
                 self.review(presence)
 
     def test_window_anomaly_requires_explanation_and_keeps_server_time(self):
+        """C06 supersedes the old window: late signatures retain their real timestamp."""
         _, session, enrollment = self.scheduled()
         late = session.end_at + timedelta(hours=4)
         with patch("odoo.fields.Datetime.now", return_value=late):
             presence = self.declare(session, enrollment)
-            self.assertEqual(presence.state, "anomaly")
+            self.assertEqual(presence.state, "pending")
             self.assertEqual(presence.event_ids.occurred_at, late)
-            with self.assertRaises(ValidationError):
-                self.review(presence)
-            self.review(presence, reason="Fictional manual check of late declaration")
+            self.review(presence)
             self.assertEqual(presence.state, "validated")
-            self.assertTrue(presence.event_ids[:1].anomaly)
+            self.assertFalse(presence.event_ids[:1].anomaly)
         _, second, second_enrollment = self.scheduled()
         self.assertEqual(second.attendance_after, 30)
         with patch("odoo.fields.Datetime.now", return_value=second.end_at + timedelta(minutes=30)):
             timely = self.declare(second, second_enrollment)
             self.assertEqual(timely.state, "pending")
             self.assertFalse(timely.event_ids.anomaly)
+
+    def invalidate(self, presence, user=None, reason="Fictional wrong interval", **values):
+        return self.service(user or self.portal_b)._invalidate(
+            presence.session_id.id,
+            presence.enrollment_id.id,
+            reason=reason,
+            revision=presence.revision,
+            definition=self.service()._definition(presence.session_id),
+            **values,
+        )
+
+    def test_invalidation_keeps_history_and_requires_new_signature(self):
+        _, session, enrollment = self.scheduled()
+        presence = self.declare(session, enrollment)
+        self.review(presence)
+        original = presence.event_ids
+        original_values = original.read(["kind", "actor_id", "occurred_at", "start_at", "end_at", "after"])
+        old_revision = presence.revision
+        self.invalidate(presence)
+        self.assertEqual(presence.state, "invalidated")
+        self.assertEqual(presence.minutes, 0)
+        self.assertFalse(presence.absent)
+        decision = presence.event_ids[-1:]
+        self.assertEqual(decision.actor_id, self.portal_b)
+        self.assertEqual(decision.reason, "Fictional wrong interval")
+        self.assertEqual(decision.before, original[-1:].after)
+        self.assertEqual(
+            original.read(["kind", "actor_id", "occurred_at", "start_at", "end_at", "after"]), original_values
+        )
+        with self.assertRaises(ValidationError):
+            self.service(self.portal_b)._invalidate(
+                session.id,
+                enrollment.id,
+                reason="Stale",
+                revision=old_revision,
+                definition=self.service()._definition(session),
+            )
+        self.invalidate(presence)
+        self.assertEqual(len(presence.event_ids), 3)
+        with self.assertRaises(ValidationError):
+            self.review(presence)
+        self.declare(session, enrollment, 30, 110)
+        self.service(self.portal_b)._review(
+            session.id,
+            enrollment.id,
+            30,
+            110,
+            revision=presence.revision,
+            definition=self.service()._definition(session),
+        )
+        self.assertEqual(presence.minutes, 80)
+        self.assertEqual(len(presence.event_ids), 5)
+        self.assertEqual(presence.event_ids[:2], original)
+        with self.assertRaises(AccessError):
+            decision.write({"reason": "overwrite"})
+        with self.assertRaises(ValidationError):
+            decision.unlink()
+
+    def test_invalidation_permissions_reason_and_native_coordinator_assistant(self):
+        _, session, enrollment = self.scheduled()
+        presence = self.declare(session, enrollment)
+        for user in (self.portal, self.reader, self.internal):
+            with self.assertRaises(AccessError):
+                self.invalidate(presence, user=user)
+        with self.assertRaises(ValidationError):
+            self.invalidate(presence, reason="  ")
+        with Form(
+            self.env["training.attendance.edit"].with_user(self.coordinator).with_context(default_session_id=session.id)
+        ) as form:
+            form.enrollment_id = enrollment
+            form.operation = "invalidation"
+            form.reason = "Fictional organizer check"
+        form.record.action_apply()
+        self.assertEqual(presence.state, "invalidated")
+        self.assertEqual(presence.event_ids[-1:].actor_id, self.coordinator)
+        _, foreign_session, _ = self.scheduled(instructor=self.portal.partner_id)
+        with self.assertRaises(AccessError):
+            self.service(self.portal_b)._invalidate(
+                foreign_session.id,
+                enrollment.id,
+                reason="Wrong assignment",
+                definition=self.service()._definition(foreign_session),
+            )
+        self.coordinator.write(
+            {"company_id": self.other_company.id, "company_ids": [Command.set(self.other_company.ids)]}
+        )
+        with self.assertRaises(AccessError):
+            self.invalidate(presence, user=self.coordinator)
+
+    def test_late_signature_keeps_access_guards_and_closure_blocks_mutation(self):
+        delivery, session, enrollment = self.scheduled()
+        with patch("odoo.fields.Datetime.now", return_value=enrollment.access_end + timedelta(days=400)):
+            with self.assertRaises(AccessError):
+                self.declare(session, enrollment)
+        presence = self.declare(session, enrollment)
+        delivery.action_start()
+        delivery.action_deliver()
+        self.review(presence)
+        delivery.action_close(reason="Fictional final closure")
+        original = presence.event_ids
+        with self.assertRaises(AccessError):
+            self.declare(session, enrollment)
+        for user in (self.portal_b, self.coordinator):
+            with self.assertRaises(ValidationError):
+                self.invalidate(presence, user=user)
+        self.assertEqual(presence.event_ids, original)
 
     def test_interval_bounds_elapsed_time_nonfinite_and_acceptance(self):
         _, session, enrollment = self.scheduled()
@@ -268,7 +373,6 @@ class TestAttendance(AttendanceCase):
             form.start_date = "2027-01-04"
             form.end_date = "2027-01-04"
             form.attendance_mode = "mixed"
-            form.attendance_after = 30
         form.record.action_apply()
         self.assertEqual(delivery.session_ids.attendance_after, 30)
 
@@ -389,6 +493,31 @@ class TestAttendance(AttendanceCase):
 
 @tagged("post_install", "-at_install")
 class TestAttendanceHttp(AttendanceCase, HttpCase):
+    def test_http_invalidation_resigning_and_access_guards(self):
+        delivery, session, enrollment = self.scheduled()
+        presence = self.declare(session, enrollment)
+        self.review(presence)
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        path = f"/my/training-sessions/{session.id}/attendance"
+        page = html.fromstring(self.url_open(path).content)
+        form = page.xpath("//form[input[@name='operation'][@value='invalidate']]")[0]
+        payload = {item.get("name"): item.get("value", "") for item in form.xpath(".//input[@name]")}
+        self.assertEqual(self.url_open(path, data={**payload, "reason": "Fictional wrong attendance"}).status_code, 200)
+        self.env.invalidate_all()
+        self.assertEqual(presence.state, "invalidated")
+        self.assertEqual(presence.minutes, 0)
+        self.authenticate(self.portal.login, self.portal.login)
+        path = f"/my/trainings/{enrollment.id}/attendance"
+        page = html.fromstring(self.url_open(path).content)
+        payload = {item.get("name"): item.get("value", "") for item in page.xpath("//form//input[@name]")}
+        payload.update(start="30", end="110", accepted="yes")
+        self.assertEqual(self.url_open(path, data=payload).status_code, 200)
+        self.env.invalidate_all()
+        self.assertEqual(len(presence.event_ids.filtered(lambda e: e.kind == "declaration")), 2)
+        enrollment.action_suspend_access(reason="Fictional restricted access")
+        self.assertEqual(self.url_open(path).status_code, 404)
+        self.assertEqual(self.url_open(path, data=payload).status_code, 404)
+
     def test_confirmation_rejects_a_rescheduled_session(self):
         _, session, enrollment = self.scheduled()
         self.authenticate(self.portal.login, self.portal.login)
@@ -440,7 +569,10 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         response = self.url_open(path)
         page = html.fromstring(response.content)
         self.assertTrue(page.xpath("//input[@name='absent' and @checked]"))
-        payload = {item.get("name"): item.get("value", "") for item in page.xpath("//form//input[@type='hidden']")}
+        payload = {
+            item.get("name"): item.get("value", "")
+            for item in page.xpath("//form[not(input[@name='operation'])]//input[@type='hidden']")
+        }
         payload.update(absent="yes", start="0", end="120")
         self.assertEqual(self.url_open(path, data=payload).status_code, 200)
         self.env.invalidate_all()
@@ -499,14 +631,14 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
                 "enrollment_id": enrollment.id,
                 "revision": presence.revision,
                 "definition": page.xpath("//input[@name='definition']/@value")[0],
-                "start": "45",
-                "end": "110",
+                "start": "500",
+                "end": "501",
             }
             response = self.url_open(path, data=payload)
             self.assertIn("alert-danger", response.text)
             page = html.fromstring(response.content)
-            self.assertEqual(page.xpath("//input[@name='start']/@value"), ["45"])
-            self.assertEqual(page.xpath("//input[@name='end']/@value"), ["110"])
+            self.assertEqual(page.xpath("//input[@name='start']/@value"), ["500"])
+            self.assertEqual(page.xpath("//input[@name='end']/@value"), ["501"])
             payload.update(start="500", end="501", reason="Fictional review <private>")
             response = self.url_open(path, data=payload)
             page = html.fromstring(response.content)
