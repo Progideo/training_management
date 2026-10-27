@@ -118,6 +118,7 @@ class TrainingInvitation(models.Model):
                         "body_html": body,
                         "email_to": partner.email,
                         "email_from": self.env.user.email_formatted or delivery.company_id.partner_id.email_formatted,
+                        **self.env["mail.mail"]._training_identity(delivery.company_id),
                         "auto_delete": False,
                         "model": "training.session",
                         "res_id": session.id,

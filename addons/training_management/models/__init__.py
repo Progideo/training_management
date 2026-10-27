@@ -43,3 +43,6 @@ from . import training_public_catalogue
 
 from . import training_company_portal
 from . import training_intra_version
+
+from . import training_mail_identity
+from . import training_operator_notice

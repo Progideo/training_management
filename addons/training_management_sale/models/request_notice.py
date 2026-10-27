@@ -77,6 +77,7 @@ class TrainingRequestNotice(models.Model):
                     "attachment_ids": [],
                     "auto_delete": False,
                     "email_from": notice.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+                    **self.env["mail.mail"]._training_identity(notice.company_id),
                     "model": self._name,
                     "res_id": notice.id,
                 }
@@ -94,6 +95,7 @@ class RequestLead(models.Model):
         leads = super().create(vals_list)
         for lead in leads.filtered("training_request_kind"):
             self.env["training.request.notice"]._queue(lead)
+            self.env["training.operator.notice"]._queue(lead, "request")
         return leads
 
 
@@ -118,3 +120,18 @@ class RequestMail(models.Model):
             ):
                 raise ValidationError(self.env._("Request acknowledgements contain only their generic confirmation."))
         return super()._prepare_outgoing_list(mail_server=mail_server, doc_to_followers=doc_to_followers)
+
+
+class RequestOperatorNotice(models.Model):
+    _inherit = "training.operator.notice"
+
+    @api.model
+    def _source_models(self):
+        return (*super()._source_models(), "crm.lead")
+
+    @api.private
+    def _authorized(self):
+        source = self._source()
+        if source and source._name == "crm.lead" and (not source.active or not source.training_request_kind):
+            return False
+        return super()._authorized()

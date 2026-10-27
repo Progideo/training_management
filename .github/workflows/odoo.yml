@@ -44,6 +44,16 @@ jobs:
         run: python3 tests/ci/run_pedagogical_policy.py
         env:
           TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_pedagogy
+      - name: Vérifier les notifications et alertes C06 sans transport
+        run: python3 tests/ci/run_notification_policy.py
+        env:
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_notifications
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c06-notification-results
+          path: test-results/c06-notification-policy/
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:

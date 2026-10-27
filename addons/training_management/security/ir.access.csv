@@ -161,3 +161,6 @@ access_company_document,Authorized client PDFs,training.company.document,trainin
 rule_company_document,Client PDFs operator,training.company.document,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_intra_version,Client intra programme versions,training.intra.version,training_management.group_training_coordinator,cru,
 rule_intra_version,Intra versions operator,training.intra.version,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+
+access_operator_notice,Staff alert journal,training.operator.notice,training_management.group_training_coordinator,r,
+rule_operator_notice,Staff alert recipient,training.operator.notice,,crud,"[('company_id','in',company_ids),('recipient_id','=',user.id)] if user.active else [('id','=',0)]"

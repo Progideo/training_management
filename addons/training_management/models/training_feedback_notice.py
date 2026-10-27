@@ -80,6 +80,7 @@ class FeedbackNotice(models.Model):
                     "body_html": body,
                     "email_to": journal.email,
                     "email_from": recipient.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+                    **self.env["mail.mail"]._training_identity(recipient.company_id),
                     "email_cc": False,
                     "recipient_ids": [],
                     "recipient_cc_ids": [],

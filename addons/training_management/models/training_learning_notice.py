@@ -127,6 +127,7 @@ class LearningNotice(models.Model):
                 "body_html": body,
                 "email_to": record.recipient_email,
                 "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+                **self.env["mail.mail"]._training_identity(enrollment.company_id),
                 "email_cc": False,
                 "recipient_ids": [],
                 "recipient_cc_ids": [],
