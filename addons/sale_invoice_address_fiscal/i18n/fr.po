@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_fiscal_by_invoice_address
+msgid "Sales fiscal position by invoice address"
+msgstr "Fiscalité des ventes selon l’adresse de facturation"
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_export_fiscal_position_id
+msgid "Export sales fiscal position"
+msgstr "Position fiscale des ventes à l’exportation"
+
+#. module: sale_invoice_address_fiscal
+#: model_terms:ir.ui.view,arch_db:sale_invoice_address_fiscal.company_form_invoice_fiscal_policy
+msgid "Sales Fiscal Policy"
+msgstr "Fiscalité des ventes"
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_fiscal_by_invoice_address
+msgid "Use the billing country for domestic/export sales. Purchases keep native rules."
+msgstr "Utiliser le pays de facturation pour les ventes locales ou à l’exportation. Les achats conservent les règles natives."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_domestic_currency_ids
+msgid "Allowed domestic sales currencies"
+msgstr "Devises autorisées pour les ventes locales"
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_foreign_currency_ids
+msgid "Allowed foreign sales currencies"
+msgstr "Devises autorisées pour les ventes à l’étranger"
+
+#. module: sale_invoice_address_fiscal
+#. odoo-python
+#: code:addons/sale_invoice_address_fiscal/models/fiscal_position.py:0
+msgid "Sales billed to %(country)s must use %(currencies)s. Change the pricelist or invoice currency."
+msgstr "Les ventes facturées en %(country)s doivent être en %(currencies)s. Modifiez la liste de prix ou la devise de la facture."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_domestic_currency_ids
+msgid "An empty list keeps the native currency choices for domestic sales."
+msgstr "Une liste vide conserve les choix de devises natifs pour les ventes locales."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_foreign_currency_ids
+msgid "An empty list keeps the native currency choices for foreign sales."
+msgstr "Une liste vide conserve les choix de devises natifs pour les ventes à l’étranger."
