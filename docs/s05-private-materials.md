@@ -381,6 +381,12 @@ Une réalisation verrouillée ou modifiée depuis le début du traitement est re
 au passage suivant ; elle n’annule pas les relances des autres réalisations.
 
 Les nouvelles preuves privées et leurs fichiers ne sont pas exportables en masse.
+Les actions pédagogiques indépendantes partagent le verrou de la réalisation et
+verrouillent leur inscription séparément. Elles ne modifient pas la révision de
+toute la réalisation. Une suspension ou annulation conserve son verrou exclusif ;
+une transaction périmée doit recommencer et revérifier les droits. Le rejeu d'une
+même remise conserve une seule preuve et une seule notification.
+
 La conservation et le manifeste d'export restent rattachés à S11, sans durée de
 purge ajoutée ici. Les téléchargements autorisés sont privés et sans cache ; les
 fichiers remis sont téléchargés en pièce jointe pour éviter l'exécution d'un

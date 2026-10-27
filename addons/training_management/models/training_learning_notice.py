@@ -94,7 +94,7 @@ class LearningNotice(models.Model):
 
     @api.private
     def _queue(self, enrollment, event_key, recipient, *, entry=None):
-        # Caller holds the delivery's native write fence. No request context can
+        # Caller holds the learning enrollment fence or the S03 delivery fence. No request context can
         # add attachments, CC, followers or different recipients to elevated mail.
         existing = self.sudo().search([("enrollment_id", "=", enrollment.id), ("event_key", "=", event_key)], limit=1)
         if existing:
