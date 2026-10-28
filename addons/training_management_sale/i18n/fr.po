@@ -21,12 +21,14 @@ msgstr "Demande de formation"
 #. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_kind__individual
 #: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_request_kind__individual
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_path_quote__request_kind__individual
 msgid "Individual"
 msgstr "Individuelle"
 
 #. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_kind__group
 #: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_request_kind__group
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_path_quote__request_kind__group
 msgid "Group"
 msgstr "Groupe"
 
@@ -123,11 +125,13 @@ msgstr "Base tarifaire de la formation"
 
 #. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__product_template__training_price_basis__person
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_path_quote__price_basis__person
 msgid "Per person"
 msgstr "Par personne"
 
 #. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__product_template__training_price_basis__package
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_path_quote__price_basis__package
 msgid "Package"
 msgstr "Forfait"
 
@@ -212,6 +216,7 @@ msgstr ""
 #. module: training_management_sale
 #. odoo-python
 #: code:addons/training_management_sale/models/sale_order.py:0
+#: code:addons/training_management_sale/models/training_path_sale.py:0
 msgid "Choose a pricelist in the requested MAD or EUR currency."
 msgstr "Choisissez une liste de prix dans la devise MAD ou EUR demandée."
 
@@ -807,6 +812,10 @@ msgstr ""
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__company_id
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__company_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__company_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__company_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__company_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -857,17 +866,27 @@ msgstr "Créer une opportunité"
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__create_uid
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__create_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__create_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__create_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__create_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__create_date
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__create_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__create_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__create_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__create_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__create_date
 msgid "Created on"
 msgstr "Créé le"
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__currency_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__currency_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__currency_id
 msgid "Currency"
 msgstr "Devise"
 
@@ -898,6 +917,13 @@ msgstr "Devise"
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__display_name
 #: model:ir.model.fields,field_description:training_management_sale.field_training_seat_allocation__display_name
 #: model:ir.model.fields,field_description:training_management_sale.field_training_company_service__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_ir_attachment__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_enrollment__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_operator_notice__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__display_name
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -953,6 +979,13 @@ msgstr "Générer un lien de paiement de vente"
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__id
 #: model:ir.model.fields,field_description:training_management_sale.field_training_seat_allocation__id
 #: model:ir.model.fields,field_description:training_management_sale.field_training_company_service__id
+#: model:ir.model.fields,field_description:training_management_sale.field_ir_attachment__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_enrollment__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_operator_notice__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__id
 msgid "ID"
 msgstr "ID"
 
@@ -974,12 +1007,20 @@ msgstr "Écriture comptable"
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__write_uid
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__write_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__write_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__write_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__write_uid
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__write_date
 #: model:ir.model.fields,field_description:training_management_sale.field_training_request_notice__write_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__write_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__write_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__write_date
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -1073,6 +1114,7 @@ msgstr "Liste de prix"
 
 #. module: training_management_sale
 #: model:ir.model,name:training_management_sale.model_product_template
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__product_id
 msgid "Product"
 msgstr "Produit"
 
@@ -1763,3 +1805,520 @@ msgstr "Votre email"
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
 msgid "Votre nom"
 msgstr "Votre nom"
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.report_saleorder_path
+msgid "<strong>Training path:</strong>"
+msgstr "<strong>Parcours :</strong>"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "A complete path offer must contain every path course exactly once."
+msgstr "Une offre complète doit contenir chaque formation du parcours une seule fois."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "A training course cannot be disguised as a down-payment line."
+msgstr "Une formation ne peut pas être déclarée comme ligne d’acompte."
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_path
+msgid "Add Path Courses"
+msgstr "Ajouter un parcours"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,help:training_management_sale.field_sale_order__training_price_source
+msgid "An empty legacy value keeps the fixed catalogue price policy."
+msgstr "Une valeur historique vide conserve la règle du tarif catalogue fixe."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__attendee_count
+msgid "Attendee Count"
+msgstr "Bénéficiaires prévus"
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_quote_form
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_reuse_form
+msgid "Cancel"
+msgstr "Annuler"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Choose a current reference from this confirmed path contract."
+msgstr "Choisissez une référence courante de ce contrat de parcours confirmé."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Choose a path contract before setting a path step."
+msgstr "Choisissez un contrat de parcours avant d’indiquer une étape."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Choose a validated path from this operating company."
+msgstr "Choisissez un parcours validé de cette société exploitante."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid ""
+"Choose an existing service product with the course and price basis required "
+"by each selected line."
+msgstr "Choisissez un produit de service existant correspondant à la formation et à la base tarifaire de chaque ligne sélectionnée."
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_quote_form
+msgid ""
+"Choose the courses to sell and enter the agreed amounts in the quotation "
+"currency."
+msgstr "Sélectionnez les formations à vendre et saisissez les montants convenus dans la devise du devis."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Choose the enrollment already referenced by this path step."
+msgstr "Choisissez l’inscription déjà référencée pour cette étape du parcours."
+
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_path_sale_usage
+msgid "Commercial Reference to Existing Path Work"
+msgstr "Référence commerciale aux acquis du parcours"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Commercial path references are immutable; withdraw them with a reason."
+msgstr "Les références commerciales de parcours sont immuables ; retirez-les avec un motif."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Commercial reference metadata is generated by the server."
+msgstr "Les informations de traçabilité commerciale sont générées par le serveur."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_path_scope__complete
+msgid "Complete Path"
+msgstr "Parcours complet"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__delivery_id
+msgid "Delivery"
+msgstr "Réalisation"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Each path line must use its exact selected step and programme."
+msgstr "Chaque ligne de parcours doit correspondre exactement à l’étape et au programme sélectionnés."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__enrollment_id
+msgid "Enrollment"
+msgstr "Inscription"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Enter non-negative amounts in the quotation currency."
+msgstr "Saisissez des montants positifs ou nuls dans la devise du devis."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__equivalence_reason
+msgid "Equivalence Reason"
+msgstr "Motif de l’équivalence"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_price_source__pricelist
+msgid "Fixed Catalogue Price"
+msgstr "Tarif catalogue fixe"
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_path
+msgid "Fixed catalogue price"
+msgstr "Tarif catalogue fixe"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Keep accepted training lines and their history."
+msgstr "Conservez les lignes de formation acceptées et leur historique."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__line_ids
+msgid "Line"
+msgstr "Formations"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Only completed prior learning can replace a new contracted enrollment."
+msgstr "Seuls des acquis antérieurs complets peuvent remplacer une nouvelle inscription contractuelle."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__order_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__order_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__order_id
+msgid "Order"
+msgstr "Commande"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__path_id
+msgid "Path"
+msgstr "Parcours"
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_path
+msgid "Path Learning References"
+msgstr "Acquis du parcours"
+
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_path_quote
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_quote_form
+msgid "Prepare Path Quotation"
+msgstr "Préparer un devis de parcours"
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_quote_form
+msgid "Prepare Quotation"
+msgstr "Préparer le devis"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Prepare the path on a draft quotation without training lines."
+msgstr "Préparez le parcours sur un devis brouillon sans ligne de formation."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_price_source__quote
+msgid "Price Agreed on Quotation"
+msgstr "Prix convenu au devis"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__price_basis
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__price_basis
+msgid "Price Basis"
+msgstr "Base tarifaire"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__price_unit
+msgid "Price Unit"
+msgstr "Prix unitaire convenu"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Qualify the path request without a single requested programme."
+msgstr "Qualifiez la demande de parcours sans programme unique demandé."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__recorded_at
+msgid "Recorded At"
+msgstr "Enregistré le"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__recorded_by_id
+msgid "Recorded By"
+msgstr "Enregistré par"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__reference_id
+msgid "Reference"
+msgstr "Référence"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Remove draft path lines before choosing another path."
+msgstr "Retirez les lignes de parcours du brouillon avant de choisir un autre parcours."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote__request_kind
+msgid "Request Kind"
+msgstr "Type de demande"
+
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_reuse_form
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_path
+msgid "Reuse Prior Learning"
+msgstr "Réutiliser un acquis"
+
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_path_reuse
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_reuse_form
+msgid "Reuse Prior Path Learning"
+msgstr "Réutiliser un acquis du parcours"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Reuse acquired work on a confirmed path contract."
+msgstr "Réutilisez les acquis sur un contrat de parcours confirmé."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid ""
+"Reuse the existing path reference or withdraw it before a new enrollment."
+msgstr "Réutilisez la référence existante du parcours ou retirez-la avant une nouvelle inscription."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Revise the accepted offer before adding commercial lines."
+msgstr "Révisez l’offre acceptée avant d’ajouter des lignes commerciales."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Revise the accepted training offer instead of changing its lines."
+msgstr "Effectuez une révision de l’offre de formation acceptée pour modifier ses lignes."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Revise the accepted training offer instead of changing its terms."
+msgstr "Effectuez une révision de l’offre de formation acceptée pour modifier ses conditions."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Select at least one course and the path scope."
+msgstr "Sélectionnez au moins une formation et le périmètre du parcours."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Select distinct courses belonging to the chosen path."
+msgstr "Sélectionnez des formations distinctes appartenant au parcours choisi."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__selected
+msgid "Selected"
+msgstr "Inclure"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_path_scope__selection
+msgid "Selected Courses"
+msgstr "Sélection de formations"
+
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_path_quote_line
+msgid "Selected Path Quotation Course"
+msgstr "Formation sélectionnée au devis de parcours"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Set a positive group size or one individual beneficiary."
+msgstr "Indiquez un effectif positif pour le groupe ou un bénéficiaire individuel."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__course_id
+msgid "Standard Course"
+msgstr "Formation"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__step_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__step_id
+msgid "Step"
+msgstr "Étape"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "The acquired course must be included in the commercial offer."
+msgstr "La formation acquise doit figurer dans l’offre commerciale."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "The distinct beneficiaries exceed the contracted path group size."
+msgstr "Le nombre de bénéficiaires distincts dépasse l’effectif contractuel du parcours."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "The quoted path label is generated by the server."
+msgstr "Les informations du parcours accepté sont générées par le serveur."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: model:ir.model.constraint,message:training_management_sale.constraint_training_path_sale_usage_one_current_usage
+msgid "This path reference already belongs to the contract."
+msgstr "Cette référence du parcours appartient déjà au contrat."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_agreed_at
+msgid "Training Agreed At"
+msgstr "Offre acceptée le"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_path_id
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_reuse__path_id
+msgid "Training Path"
+msgstr "Parcours"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_path_label
+msgid "Training Path Label"
+msgstr "Libellé contractuel du parcours"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_path_scope
+msgid "Training Path Scope"
+msgstr "Périmètre du parcours"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order_line__training_path_step_id
+msgid "Training Path Step"
+msgstr "Étape du parcours"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_path_usage_ids
+msgid "Training Path Usage"
+msgstr "Références du parcours"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/wizard/training_path_quote.py:0
+msgid "Training Path: %s"
+msgstr "Parcours : %s"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_price_source
+msgid "Training Price Source"
+msgstr "Mode de tarification"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid ""
+"Use the contracted quantity, a non-negative agreed price and a discount from"
+" 0 to 100."
+msgstr "Utilisez la quantité contractuelle, un prix convenu positif ou nul et une remise de 0 à 100."
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_sale_usage_form
+msgid "Withdraw Commercial Path Reference"
+msgstr "Retirer la référence commerciale"
+
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
+msgid "Withdraw commercial path references before cancelling the order."
+msgstr "Retirez les références commerciales du parcours avant d’annuler la commande."
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__withdrawal_reason
+msgid "Withdrawal Reason"
+msgstr "Motif du retrait"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__withdrawn_at
+msgid "Withdrawn At"
+msgstr "Retiré le"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_sale_usage__withdrawn_by_id
+msgid "Withdrawn By"
+msgstr "Retiré par"
+
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__wizard_id
+msgid "Wizard"
+msgstr "Assistant"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_allocation.py:0
+msgid "A path allocation requires an exact commercial step."
+msgstr "Une attribution de places de parcours exige une étape commerciale précise."

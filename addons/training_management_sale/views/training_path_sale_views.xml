@@ -1,0 +1,125 @@
+<odoo>
+    <record id="view_sale_order_path" model="ir.ui.view">
+        <field name="name">sale.order.training.path</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="training_management_sale.view_sale_order_form_training"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_prepare_training_path" type="object" string="Add Path Courses" invisible="state != 'draft'" groups="sales_team.group_sale_salesman"/>
+            </xpath>
+            <field name="training_requested_program_id" position="before">
+                <field name="training_path_id" readonly="state in ['sale','cancel']" options="{'no_create': True}"/>
+                <field name="training_path_scope" invisible="not training_path_id" readonly="state in ['sale','cancel']"/>
+                <field name="training_price_source" readonly="state in ['sale','cancel']" placeholder="Fixed catalogue price"/>
+            </field>
+            <field name="training_requested_program_id" position="attributes">
+                <attribute name="invisible">training_path_id</attribute>
+            </field>
+            <xpath expr="//list[@name='sol_list']/field[@name='training_program_id']" position="after">
+                <field name="training_path_step_id" optional="show" readonly="parent.state in ['sale','cancel']" options="{'no_create': True}" domain="[('path_id', '=', parent.training_path_id)]"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='training_program_id']" position="after">
+                <field name="training_path_step_id" invisible="display_type" readonly="parent.state in ['sale','cancel']" options="{'no_create': True}"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="training_path_references" string="Path Learning References" groups="training_management.group_training_coordinator" invisible="not training_path_id">
+                    <button name="action_reuse_path_achievement" type="object" string="Reuse Prior Learning" invisible="state != 'sale'"/>
+                    <field name="training_path_usage_ids">
+                        <list create="0" delete="0">
+                            <field name="reference_id"/>
+                            <field name="recorded_by_id"/>
+                            <field name="recorded_at"/>
+                            <field name="withdrawn_at"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_path_sale_usage_form" model="ir.ui.view">
+        <field name="name">training.path.sale.usage.form</field>
+        <field name="model">training.path.sale.usage</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_reason" type="object" string="Withdraw Commercial Path Reference" context="{'reason_action':'action_withdraw'}" invisible="withdrawn_at"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="order_id"/>
+                        <field name="reference_id"/>
+                        <field name="recorded_by_id"/>
+                        <field name="recorded_at"/>
+                        <field name="withdrawn_at"/>
+                        <field name="withdrawn_by_id"/>
+                        <field name="withdrawal_reason"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_path_quote_form" model="ir.ui.view">
+        <field name="name">training.path.quote.form</field>
+        <field name="model">training.path.quote</field>
+        <field name="arch" type="xml">
+            <form string="Prepare Path Quotation">
+                <group>
+                    <field name="order_id" readonly="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="currency_id" readonly="1"/>
+                    <field name="path_id" options="{'no_create': True}"/>
+                    <field name="request_kind"/>
+                    <field name="attendee_count"/>
+                    <field name="price_basis"/>
+                </group>
+                <p>Choose the courses to sell and enter the agreed amounts in the quotation currency.</p>
+                <field name="line_ids">
+                    <list editable="bottom" create="0" delete="0">
+                        <field name="selected"/>
+                        <field name="step_id" readonly="1" force_save="1"/>
+                        <field name="course_id" column_invisible="True"/>
+                        <field name="company_id" column_invisible="True"/>
+                        <field name="price_basis" column_invisible="True"/>
+                        <field name="currency_id" column_invisible="True"/>
+                        <field name="product_id" options="{'no_create': True}"/>
+                        <field name="price_unit"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_apply" type="object" string="Prepare Quotation" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_path_reuse_form" model="ir.ui.view">
+        <field name="name">training.path.reuse.form</field>
+        <field name="model">training.path.reuse</field>
+        <field name="arch" type="xml">
+            <form string="Reuse Prior Path Learning">
+                <group>
+                    <field name="order_id" readonly="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="path_id" invisible="1"/>
+                    <field name="step_id" options="{'no_create': True}"/>
+                    <field name="enrollment_id" options="{'no_create': True}"/>
+                    <field name="equivalence_reason"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Reuse Prior Learning" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <template id="report_saleorder_path" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@id='informations']" position="after">
+            <p t-if="doc.training_path_label">
+                <strong>Training path:</strong>
+                <span t-field="doc.training_path_label"/>
+                ·
+                <span t-field="doc.training_path_scope"/>
+            </p>
+        </xpath>
+    </template>
+</odoo>

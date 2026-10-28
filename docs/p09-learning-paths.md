@@ -67,10 +67,10 @@ résultats originaux sont conservés.
 ## Limites de cet incrément
 
 Interface interne native ; la synthèse participant est décrite dans
-[P09.2](p09-participant-portal.md). La vente d'un parcours reste à réaliser. Aucun prix global ni produit commercial de parcours
-n'est introduit. Avant vente : fixer contenu de l'offre, tarif global ou par
-formation, devise unique, reports, annulations et traitement des acquis déjà
-obtenus. Les ventes de formations existantes conservent leur fonctionnement.
+[P09.2](p09-participant-portal.md). La commercialisation détaillée est définie
+dans [P09.3](p09-commercial-paths.md) : composition complète ou partielle,
+prix par formation et traitement explicite des acquis. Aucun produit commercial
+de parcours distinct des formations n'est introduit.
 Les données historiques non qualifiées restent des archives ; aucune équivalence
 n'en est déduite automatiquement. L01 reste une validation de lancement.
 

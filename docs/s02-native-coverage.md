@@ -9,6 +9,10 @@ navigateur des relevés et des imports (non validés, hors critères bloquants d
 la recette de lancement), voir le
 [périmètre confirmé le 22 octobre 2026](s02-crm-quotation.md#périmètre-de-lancement-confirmé-le-22-octobre-2026).
 
+Le mode « Prix convenu au devis » et les offres de parcours complètes ou
+partielles sont définis dans [P09.3](p09-commercial-paths.md). Les règles de
+prix fixe décrites ici restent applicables aux offres conservant ce mode.
+
 ## Reprise vérifiée
 
 - Dépôt local propre à la reprise, tête S01 `7cb4e4c`.
