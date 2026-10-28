@@ -338,6 +338,8 @@ class TestPathSale(PathSaleCase):
             order.with_user(self.seller).action_prepare_training_path()
         with self.assertRaises(AccessError), self.cr.savepoint():
             self.env["training.path.quote"].with_user(self.seller).create({"order_id": order.id, "path_id": path.id})
+        with self.assertRaises(AccessError):
+            self.env["training.path.quote"].with_user(self.seller).new({"order_id": order.id}).currency_id
         wizard = (
             self.env["training.path.quote"]
             .with_user(self.coordinator)

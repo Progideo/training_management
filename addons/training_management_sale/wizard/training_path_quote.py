@@ -16,8 +16,8 @@ class TrainingPathQuote(models.TransientModel):
     _check_company_auto = True
 
     order_id = fields.Many2one("sale.order", required=True, ondelete="cascade")
-    company_id = fields.Many2one(related="order_id.company_id")
-    currency_id = fields.Many2one(related="order_id.currency_id")
+    company_id = fields.Many2one(related="order_id.company_id", compute_sudo=False)
+    currency_id = fields.Many2one(related="order_id.currency_id", compute_sudo=False)
     path_id = fields.Many2one(
         "training.path", required=True, check_company=True, domain="[('state', '=', 'validated')]"
     )
@@ -150,16 +150,16 @@ class TrainingPathQuoteLine(models.TransientModel):
 
     wizard_id = fields.Many2one("training.path.quote", required=True, ondelete="cascade")
     step_id = fields.Many2one("training.path.step", required=True, check_company=True)
-    course_id = fields.Many2one(related="step_id.course_id")
-    company_id = fields.Many2one(related="wizard_id.company_id")
-    price_basis = fields.Selection(related="wizard_id.price_basis")
+    course_id = fields.Many2one(related="step_id.course_id", compute_sudo=False)
+    company_id = fields.Many2one(related="wizard_id.company_id", compute_sudo=False)
+    price_basis = fields.Selection(related="wizard_id.price_basis", compute_sudo=False)
     selected = fields.Boolean(default=True)
     product_id = fields.Many2one(
         "product.product",
         check_company=True,
         domain="[('training_course_id', '=', course_id), ('training_price_basis', '=', price_basis), ('company_id', '=', company_id)]",
     )
-    currency_id = fields.Many2one(related="wizard_id.currency_id")
+    currency_id = fields.Many2one(related="wizard_id.currency_id", compute_sudo=False)
     price_unit = fields.Monetary()
 
     @api.model_create_multi
@@ -188,8 +188,8 @@ class TrainingPathReuse(models.TransientModel):
     _check_company_auto = True
 
     order_id = fields.Many2one("sale.order", required=True)
-    company_id = fields.Many2one(related="order_id.company_id")
-    path_id = fields.Many2one(related="order_id.training_path_id")
+    company_id = fields.Many2one(related="order_id.company_id", compute_sudo=False)
+    path_id = fields.Many2one(related="order_id.training_path_id", compute_sudo=False)
     step_id = fields.Many2one(
         "training.path.step", required=True, check_company=True, domain="[('path_id', '=', path_id)]"
     )
