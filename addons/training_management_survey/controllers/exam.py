@@ -16,13 +16,15 @@ from odoo.tools.mimetypes import guess_mimetype
 class NativeSurveyBoundary(Survey):
     def _fetch_from_access_token(self, survey_token, answer_token):
         survey, answer = super()._fetch_from_access_token(survey_token, answer_token)
-        if survey.training_program_id:
+        if survey.training_program_id or survey.orientation_company_id:
             raise request.not_found()
         return survey, answer
 
     @http.route()
     def survey_get_question_image(self, survey_token, answer_token, question_id, suggested_answer_id):
         survey = request.env["survey.survey"].sudo().search([("access_token", "=", survey_token)], limit=1)
+        if survey.orientation_company_id:
+            raise request.not_found()
         if not survey.training_program_id:
             return super().survey_get_question_image(survey_token, answer_token, question_id, suggested_answer_id)
         attempt = (
@@ -64,19 +66,19 @@ class NativeSurveyBoundary(Survey):
 
     @http.route()
     def survey_report(self, survey, answer_token=None, **post):
-        if survey.sudo().training_program_id:
+        if survey.sudo().training_program_id or survey.sudo().orientation_company_id:
             raise request.not_found()
         return super().survey_report(survey, answer_token=answer_token, **post)
 
     @http.route()
     def show_certification_pdf(self, survey, **kwargs):
-        if survey.sudo().training_program_id:
+        if survey.sudo().training_program_id or survey.sudo().orientation_company_id:
             raise request.not_found()
         return super().show_certification_pdf(survey, **kwargs)
 
     @http.route()
     def survey_get_certification_preview(self, survey, **kwargs):
-        if survey.sudo().training_program_id:
+        if survey.sudo().training_program_id or survey.sudo().orientation_company_id:
             raise request.not_found()
         return super().survey_get_certification_preview(survey, **kwargs)
 

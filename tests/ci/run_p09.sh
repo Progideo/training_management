@@ -73,3 +73,6 @@ P09_PHASE=commerce_pdf step commerce_pdf run_odoo shell --no-http < "$repo/tests
 docker cp "$pdf_container:/var/lib/odoo/p093-quotation.pdf" "$results/p093-quotation.pdf"
 docker rm -f "$pdf_container" > "$results/pdf-server-stop.log"
 P09_PHASE=commerce_concurrency step commerce_concurrency run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
+P09_PHASE=orientation_prepare step orientation_baseline run_odoo shell --no-http < "$repo/tests/probes/p10_orientation.py"
+step orientation_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=orientation_verify step orientation_preserved run_odoo shell --no-http < "$repo/tests/probes/p10_orientation.py"

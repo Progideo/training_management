@@ -233,6 +233,8 @@ class Choice(models.Model):
 
     def write(self, vals):
         (self.question_id | self.matrix_question_id).survey_id._training_edit()
+        if vals.get("matrix_question_id"):
+            self.env["survey.question"].browse(vals["matrix_question_id"]).survey_id._training_edit()
         if vals.get("question_id"):
             self.env["survey.question"].browse(vals["question_id"]).survey_id._training_edit()
         return super().write(vals)

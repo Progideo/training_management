@@ -87,6 +87,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | P09.1 — composition et suivi interne des parcours | [p09-learning-paths.md](p09-learning-paths.md) |
 | P09.2 — portail participant des parcours | [p09-participant-portal.md](p09-participant-portal.md) |
 | P09.3 — commercialisation complète ou partielle | [p09-commercial-paths.md](p09-commercial-paths.md) |
+| P10 — diagnostic d’orientation avant achat | [p10-orientation.md](p10-orientation.md) |
 | C06 — paramètres natifs au déploiement | [c06-launch-settings.md](c06-launch-settings.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
 | L01 — recette intégrée de lancement | [l01-launch-acceptance.md](l01-launch-acceptance.md) |

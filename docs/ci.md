@@ -45,7 +45,9 @@ protection documentaire, préparation, supports, activités, examens, présences
 attestations, évaluations, retours, qualité S09.3, intervenants S09.4 et mise à jour S10. Le parcours P09 part du candidat V1 `99c079a`, compare toutes les lignes
 historiques Training/Surveys, puis conserve les références de parcours après
 une nouvelle mise à jour, teste deux rattachements concurrents et vérifie la
-lecture du portail sans modification des historiques.
+lecture du portail sans modification des historiques. Il conserve aussi les
+définitions et règles P10 après mise à jour et vérifie qu’un calcul d’orientation
+ne persiste aucune réponse.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.
