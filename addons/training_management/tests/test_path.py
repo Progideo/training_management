@@ -206,3 +206,23 @@ class TestTrainingPath(LearningCase):
         self.assertNotEqual(ref, replacement)
         self.assertTrue(ref.exists())
         self.assertTrue(enrollment._path_blocked())
+
+    def test_acquired_later_step_keeps_existing_access_without_prior_step(self):
+        path = self.path()
+        path.action_validate()
+        second = path.step_ids[1]
+        delivery = self.delivery(program_id=second.program_id.id)
+        activity = self.activity(delivery, criterion="declaration")
+        enrollment = self.opened(delivery)
+        self.service()._declare(enrollment.id, activity.id)
+        ref = self.reference(second, enrollment)
+        self.assertTrue(ref.completed)
+        self.assertFalse(ref.blocked)
+        self.assertEqual(enrollment._effective_state(), "active")
+        self.assertFalse(
+            self.env["training.path.assignment"].search(
+                [
+                    ("step_id", "=", path.step_ids[0].id),
+                ]
+            )
+        )

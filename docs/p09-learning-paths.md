@@ -45,6 +45,8 @@ aucune adhésion eLearning ni inscription supplémentaire n'est créée.
   explicites s'appliquent aussi à l'ordre conseillé. Une référence manquante
   bloque l'étape. Le contrôle d'accès serveur réévalue ces conditions.
   Si une inscription appartient à plusieurs parcours, leurs contraintes se cumulent.
+  Une étape déjà complète avant son rattachement est réutilisée sans révoquer
+  l'accès existant, même si une étape antérieure du parcours reste à suivre.
 - Aucun rattachement bloquant à une inscription déjà active n'est accepté.
   Les références validées et leurs motifs sont immuables. Les créations et
   ouvertures utilisent les verrous natifs et les unicités en base.

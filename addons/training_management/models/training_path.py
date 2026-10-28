@@ -190,6 +190,10 @@ class TrainingPathAssignment(models.Model):
     @api.private
     def _is_blocked(self):
         self.ensure_one()
+        # A validated reference to already-completed work reuses that acquisition;
+        # it must not revoke the participant's pre-existing access to this course.
+        if self._is_completed():
+            return False
         required = self.step_id.prerequisite_ids
         if self.path_id.order_policy == "mandatory":
             required |= self.path_id.step_ids.filtered(lambda s: s.sequence < self.step_id.sequence)
