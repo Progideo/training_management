@@ -3,15 +3,19 @@
         <field name="name">survey.survey.orientation.form</field><field name="model">survey.survey</field>
         <field name="arch" type="xml">
             <form string="Orientation Diagnostic">
-                <header><button name="action_orientation_publish" type="object" string="Publish Diagnostic" class="btn-primary" invisible="orientation_published"/></header>
+                <header>
+                    <button name="action_orientation_recommendations" type="object" string="Define Recommendations" invisible="orientation_published"/>
+                    <button name="action_orientation_open" type="object" string="Open Diagnostic" invisible="not orientation_published or not active"/>
+                    <button name="action_orientation_publish" type="object" string="Publish Diagnostic" class="btn-primary" invisible="orientation_published"/></header>
                 <sheet>
                     <group><field name="title" readonly="orientation_published"/><field name="orientation_company_id" readonly="id"/><field name="orientation_published"/><field name="active"/><field name="orientation_contact" readonly="orientation_published"/></group>
                     <p>Optional advice before purchase. Responses are processed only to display a recommendation and are never recorded. Use fixed single-choice questions without personal data.</p>
                     <p>Each rule describes a coherent profile with one answer per question. Missing answers, no matching rule or several matching rules lead to human advice. Publication freezes the diagnostic; duplicate it to revise.</p>
-                    <field name="question_and_page_ids" readonly="orientation_published" context="{'default_question_type': 'simple_choice'}">
+                    <field name="question_and_page_ids" readonly="orientation_published" context="{'default_question_type': 'simple_choice', 'form_view_ref': 'training_management_survey.orientation_question_form'}">
                         <list><field name="sequence" widget="handle"/><field name="title"/><field name="question_type"/></list>
                     </field>
-                    <field name="orientation_rule_ids" readonly="orientation_published">
+                    <p invisible="orientation_published">After adding or changing questions, click Define Recommendations to save them before selecting answers.</p>
+                    <field name="orientation_rule_ids" readonly="orientation_published" invisible="not id">
                         <list><field name="level"/><field name="program_id"/><field name="path_id"/><field name="explanation"/></list>
                         <form string="Orientation Recommendation"><group>
                             <field name="survey_id" invisible="1"/>
@@ -23,6 +27,18 @@
                     </field>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="orientation_question_form" model="ir.ui.view">
+        <field name="name">survey.question.orientation.form</field><field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/><field name="mode">primary</field><field name="priority">90</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='question_type']" position="attributes"><attribute name="invisible">True</attribute></xpath>
+            <xpath expr="//field[@name='description']" position="attributes"><attribute name="invisible">True</attribute></xpath>
+            <xpath expr="//page[@name='options']" position="attributes"><attribute name="invisible">True</attribute></xpath>
+            <xpath expr="//field[@name='suggested_answer_ids']/list" position="replace">
+                <list editable="bottom"><field name="sequence" widget="handle"/><field name="value" string="Choices" required="True"/></list>
+            </xpath>
         </field>
     </record>
     <record id="orientation_list_view" model="ir.ui.view"><field name="name">survey.survey.orientation.list</field><field name="model">survey.survey</field><field name="arch" type="xml"><list><field name="title"/><field name="orientation_company_id"/><field name="orientation_published"/><field name="active"/></list></field></record>

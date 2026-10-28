@@ -28,8 +28,11 @@ une page. Il peut consulter directement le catalogue ou demander conseil avant
 toute réponse. Le résultat affiche la cible, l’explication du coordinateur et
 les réponses déterminantes. Le questionnaire reste disponible pour recommencer.
 
-Le coordinateur prépare des questions fixes à choix unique, sans commentaire ni
-identité, puis des règles : toutes les réponses sélectionnées dans une règle
+Le coordinateur prépare des questions textuelles à choix unique dans l’éditeur
+Surveys simplifié. « Définir les recommandations » enregistre les questions et
+leurs choix avant leur sélection dans les règles. Les réglages d’examen, images,
+commentaires et génération de pistes ne sont pas proposés dans cette vue.
+Il prépare ensuite les règles : toutes les réponses sélectionnées dans une règle
 sont nécessaires, avec une réponse par question pour décrire un profil cohérent ;
 chaque règle vise exactement un niveau, une version de
 formation ou un parcours. Toutes les questions doivent être renseignées.
@@ -42,7 +45,8 @@ peuvent être recommandées. Un parcours doit être actif, validé et composé
 uniquement de telles formations ; le résultat donne son nom et les fiches de ses
 formations, sans exposer inscriptions, prérequis privés ni participants.
 Ces conditions sont revérifiées au calcul. Le diagnostic publié est figé ;
-sa duplication recrée questions et règles en brouillon. L’archivage le retire.
+sa duplication recrée questions et règles en brouillon. « Ouvrir le diagnostic »
+permet de vérifier la page publique. L’archivage le retire.
 
 Le diagnostic ne vaut ni positionnement pédagogique, ni validation des
 prérequis, ni admission, ni ouverture d’accès, ni promesse de résultat.
@@ -65,13 +69,17 @@ Le public et le portail n’ont aucun accès ORM supplémentaire. La publication
 accorde uniquement la projection publique bornée à la société du site Website,
 ou à la société courante sans Website. Les réponses ne sont accessibles ni
 à l’employeur, ni à un autre participant, ni à un conseiller.
-Aucune purge ou migration des historiques existants n’est nécessaire.
+La société des règles est imposée par le diagnostic, y compris pour les appels
+ORM et valeurs par défaut. Les questions et choix existants ne peuvent pas être
+déplacés vers un diagnostic : les dupliquer permet de réutiliser leur définition
+sans importer de réponses enregistrées, même lors d’accès concurrents. Les
+historiques ordinaires restent inchangés.
 
 ## Recette courte
 
-1. Dans Formations → Diagnostics d’orientation, créer deux questions Surveys à
-   choix unique et une règle vers un niveau avec explication et contact public.
-   Publier ; vérifier le lien depuis le catalogue, sans obligation de compte.
+1. Dans Formations → Diagnostics d’orientation, créer deux questions textuelles à
+   choix unique et un contact public. Cliquer « Définir les recommandations »,
+   puis ajouter une règle vers un niveau avec explication. Publier ; vérifier le lien depuis le catalogue, sans obligation de compte.
 2. Répondre complètement : lire la cible, l’explication et les critères.
    Vérifier le contact humain et l’absence de prétention d’admission.
 3. Omettre une réponse, choisir une combinaison sans règle, puis configurer deux

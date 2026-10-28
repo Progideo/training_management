@@ -1,6 +1,10 @@
 """P10: explainable, optional pre-purchase advice without retaining answers."""
 
 from urllib.parse import urlencode
+from io import BytesIO
+
+from PIL import Image
+from odoo.tools.binary import BinaryBytes
 
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
@@ -160,6 +164,115 @@ class TestOrientation(CatalogueCase, HttpCase):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             self.env["survey.survey"].with_context(default_orientation_published=True).create({"title": "Forged"})
 
+    def test_reparenting_cannot_import_recorded_answers(self):
+        diagnostic, questions, _, _ = self.diagnostic()
+        ordinary = self.env["survey.survey"].with_user(self.coordinator).create({"title": "Ordinary history"})
+        question = (
+            self.env["survey.question"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "survey_id": ordinary.id,
+                    "title": "Answered native question",
+                    "question_type": "simple_choice",
+                    "suggested_answer_ids": [Command.create({"value": "Yes"}), Command.create({"value": "No"})],
+                }
+            )
+        )
+        attempt = self.env["survey.user_input"].create({"survey_id": ordinary.id})
+        choice = question.suggested_answer_ids[0]
+        line = self.env["survey.user_input.line"].create(
+            {
+                "user_input_id": attempt.id,
+                "question_id": question.id,
+                "answer_type": "suggestion",
+                "suggested_answer_id": choice.id,
+            }
+        )
+        for record, vals in (
+            (question, {"survey_id": diagnostic.id}),
+            (choice, {"question_id": questions[0].id}),
+            (choice, {"matrix_question_id": questions[0].id}),
+        ):
+            with self.subTest(model=record._name, field=next(iter(vals))):
+                with self.env.cr.savepoint():
+                    with self.assertRaises(ValidationError):
+                        record.with_user(self.coordinator).write(vals)
+        self.assertEqual(line.question_id.survey_id, ordinary)
+        self.assertEqual(line.suggested_answer_id.question_id, question)
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            self.env["survey.question.answer"].with_user(self.coordinator).create(
+                {
+                    "question_id": question.id,
+                    "matrix_question_id": questions[0].id,
+                    "value": "Ambiguous parent",
+                }
+            )
+        # Reusing a template by duplication creates new definitions, with no history.
+        clone = question.with_user(self.coordinator).copy({"survey_id": diagnostic.id})
+        self.assertEqual(clone.survey_id, diagnostic)
+        self.assertFalse(self.env["survey.user_input.line"].search_count([("question_id", "=", clone.id)]))
+
+    def test_rule_company_cannot_be_forged(self):
+        diagnostic, _, rule, _ = self.diagnostic()
+        actor = self.coordinator
+        actor.company_ids = [Command.link(self.other_company.id)]
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            rule.with_user(actor).write({"company_id": self.other_company.id})
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            self.env["training.orientation.rule"].with_user(actor).create(
+                {
+                    "survey_id": diagnostic.id,
+                    "company_id": self.other_company.id,
+                    "answer_ids": [Command.set(rule.answer_ids.ids)],
+                    "level": "Forged scope",
+                    "explanation": "Wrong company",
+                }
+            )
+
+        copied = (
+            self.env["training.orientation.rule"]
+            .with_user(actor)
+            .with_context(default_company_id=self.other_company.id)
+            .create(
+                {
+                    "survey_id": diagnostic.id,
+                    "answer_ids": [Command.set(rule.answer_ids.ids)],
+                    "level": "Correct scope",
+                    "explanation": "Derived company",
+                }
+            )
+        )
+        self.assertEqual(copied.company_id, diagnostic.orientation_company_id)
+
+    def test_native_editor_and_text_only_public_choices(self):
+        survey, questions, _, _ = self.diagnostic()
+        action = survey.action_orientation_recommendations()
+        self.assertEqual(action["res_id"], survey.id)
+        self.assertEqual(action["views"][0][0], self.env.ref("training_management_survey.orientation_form_view").id)
+        view = questions.get_view(
+            view_id=self.env.ref("training_management_survey.orientation_question_form").id, view_type="form"
+        )
+        # The specialized native editor does not advertise ignored answer features.
+        from lxml import etree
+
+        arch = etree.fromstring(view["arch"])
+        answer_list = arch.xpath("//field[@name='suggested_answer_ids']/list")[0]
+        self.assertEqual(answer_list.xpath("./field/@name"), ["sequence", "value"])
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            survey.action_orientation_open()
+        image = BytesIO()
+        Image.new("RGB", (2, 2), "blue").save(image, "PNG")
+        questions[0].suggested_answer_ids[0].write({"value": " ", "value_image": BinaryBytes(image.getvalue())})
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            survey.action_orientation_publish()
+        questions[0].suggested_answer_ids[0].value = "Readable choice"
+        survey.action_orientation_publish()
+        self.assertEqual(survey.action_orientation_open()["url"], f"/formations/orientation/{survey.id}")
+        survey.active = False
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            survey.action_orientation_open()
+
     def test_permissions_and_no_native_persistence(self):
         survey, questions, rule, _ = self.diagnostic()
         survey.action_orientation_publish()
@@ -167,8 +280,13 @@ class TestOrientation(CatalogueCase, HttpCase):
             for record in (survey, questions[0], questions[0].suggested_answer_ids[0], rule):
                 with self.assertRaises(AccessError), self.env.cr.savepoint():
                     record.with_user(user).read()
-            with self.assertRaises(AccessError), self.env.cr.savepoint():
-                survey.with_user(user).action_orientation_publish()
+            for action in (
+                "action_orientation_publish",
+                "action_orientation_recommendations",
+                "action_orientation_open",
+            ):
+                with self.assertRaises(AccessError), self.env.cr.savepoint():
+                    getattr(survey.with_user(user), action)()
         with self.assertRaises(AccessError), self.env.cr.savepoint():
             survey.with_context(allowed_company_ids=[self.other_company.id]).with_user(self.coordinator).read()
         for values in ({"survey_id": survey.id}, {"survey_id": survey.id, "test_entry": True}):

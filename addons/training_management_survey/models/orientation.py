@@ -9,7 +9,7 @@ COORDINATOR = "training_management.group_training_coordinator"
 class OrientationSurvey(models.Model):
     _inherit = "survey.survey"  # pylint: disable=consider-merging-classes-inherited  # separate pre-purchase purpose
 
-    orientation_company_id = fields.Many2one("res.company", copy=True)
+    orientation_company_id = fields.Many2one("res.company", ondelete="restrict", copy=True)
     orientation_published = fields.Boolean(readonly=True, copy=False)
     orientation_revision = fields.Integer(default=0, readonly=True, copy=False)
     orientation_rule_ids = fields.One2many(
@@ -91,6 +91,26 @@ class OrientationSurvey(models.Model):
         if any(s.orientation_company_id and s.training_program_id for s in self):
             raise ValidationError(self.env._("Keep orientation separate from pedagogical evaluations and exams."))
 
+    def action_orientation_recommendations(self):
+        self.ensure_one()
+        self._training_editor()
+        # Native object buttons save the pending questions before this action,
+        # giving the recommendation selector persisted question/answer ids.
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "survey.survey",
+            "res_id": self.id,
+            "views": [(self.env.ref("training_management_survey.orientation_form_view").id, "form")],
+            "target": "current",
+        }
+
+    def action_orientation_open(self):
+        self.ensure_one()
+        self.check_access("read")
+        if not self.orientation_company_id or not self.orientation_published or not self.active:
+            raise ValidationError(self.env._("Publish and activate the diagnostic before opening its public page."))
+        return {"type": "ir.actions.act_url", "url": f"/formations/orientation/{self.id}", "target": "new"}
+
     def action_orientation_publish(self):
         self.ensure_one()
         self._orientation_edit()
@@ -104,7 +124,9 @@ class OrientationSurvey(models.Model):
             or any(set(r.answer_ids.question_id.ids) != set(questions.ids) for r in self.orientation_rule_ids)
             or any(
                 q.question_type != "simple_choice"
+                or not (q.title or "").strip()
                 or len(q.suggested_answer_ids) < 2
+                or any(not (a.value or "").strip() for a in q.suggested_answer_ids)
                 or q.comments_allowed
                 or q.triggering_answer_ids
                 or q.save_as_email
@@ -181,11 +203,12 @@ class OrientationRule(models.Model):
     path_id = fields.Many2one("training.path", string="Recommended Path", ondelete="restrict")
     explanation = fields.Text(string="Recommendation Explanation", required=True, translate=True)
 
-    @api.constrains("survey_id", "answer_ids", "level", "program_id", "path_id", "explanation")
+    @api.constrains("survey_id", "company_id", "answer_ids", "level", "program_id", "path_id", "explanation")
     def _check_definition(self):
         for rule in self:
             if (
                 not rule.company_id
+                or rule.company_id != rule.survey_id.orientation_company_id
                 or not rule.answer_ids
                 or any(a.question_id.survey_id != rule.survey_id or a.question_id.is_page for a in rule.answer_ids)
                 or len(rule.answer_ids.question_id) != len(rule.answer_ids)
@@ -225,7 +248,18 @@ class OrientationRule(models.Model):
             [v.get("survey_id") or self.env.context.get("default_survey_id") for v in vals_list]
         )
         surveys._orientation_edit()
-        return super().create(vals_list)
+        prepared = []
+        for vals in vals_list:
+            survey = self.env["survey.survey"].browse(
+                vals.get("survey_id") or self.env.context.get("default_survey_id")
+            )
+            company_id = survey.orientation_company_id.id
+            if "company_id" in vals and vals["company_id"] != company_id:
+                raise ValidationError(self.env._("The recommendation company is derived from its diagnostic."))
+            # Override caller defaults too: stored readonly related fields are not
+            # an authorization boundary and can receive explicit ORM values.
+            prepared.append({**vals, "company_id": company_id})
+        return super().create(prepared)
 
     def write(self, vals):
         (self.survey_id | self.env["survey.survey"].browse(vals.get("survey_id")))._orientation_edit()

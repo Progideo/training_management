@@ -1635,3 +1635,49 @@ msgstr "Réponses nécessaires"
 #: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
 msgid "Voir mon orientation"
 msgstr "Voir mon orientation"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid ""
+"After adding or changing questions, click Define Recommendations to save "
+"them before selecting answers."
+msgstr ""
+"Après avoir ajouté ou modifié des questions, cliquez sur Définir les "
+"recommandations pour les enregistrer avant de sélectionner les réponses."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_question_form
+msgid "Choices"
+msgstr "Choix"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid ""
+"Create or duplicate questions in the diagnostic; do not move existing "
+"definitions."
+msgstr ""
+"Créez ou dupliquez les questions dans le diagnostic ; ne déplacez pas les "
+"définitions existantes."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Define Recommendations"
+msgstr "Définir les recommandations"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Open Diagnostic"
+msgstr "Ouvrir le diagnostic"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Publish and activate the diagnostic before opening its public page."
+msgstr "Publiez et activez le diagnostic avant d’ouvrir sa page publique."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "The recommendation company is derived from its diagnostic."
+msgstr "La société de la recommandation est déterminée par son diagnostic."
