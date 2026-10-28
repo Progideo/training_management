@@ -255,3 +255,49 @@ class OrientationAttempt(models.Model):
         if self.env["survey.survey"].sudo().browse(vals.get("survey_id")).orientation_company_id:
             raise AccessError(self.env._("Orientation responses are not recorded. Use the training catalogue."))
         return super().write(vals)
+
+
+class OrientationAnswerLine(models.Model):
+    _inherit = "survey.user_input.line"  # pylint: disable=consider-merging-classes-inherited  # orientation never persists response evidence
+
+    @api.private
+    def _orientation_check_values(self, vals):
+        # Classify foreign keys even under sudo: an ordinary native response must
+        # not be used to store an orientation question or one of its choices.
+        question = self.env["survey.question"].sudo().browse(vals.get("question_id"))
+        choices = (
+            self.env["survey.question.answer"]
+            .sudo()
+            .browse(list(filter(None, [vals.get("suggested_answer_id"), vals.get("matrix_row_id")])))
+        )
+        surveys = (
+            question.survey_id
+            | (choices.question_id | choices.matrix_question_id).survey_id
+            | self.env["survey.user_input"].sudo().browse(vals.get("user_input_id")).survey_id
+        )
+        if surveys.filtered("orientation_company_id"):
+            raise AccessError(self.env._("Orientation responses are not recorded. Use the training catalogue."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._orientation_check_values(
+                {
+                    key: vals.get(key, self.env.context.get("default_" + key))
+                    for key in ("question_id", "suggested_answer_id", "matrix_row_id", "user_input_id")
+                }
+            )
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self._orientation_check_values(vals)
+        for line in self:
+            self._orientation_check_values(
+                {
+                    "question_id": line.question_id.id,
+                    "suggested_answer_id": line.suggested_answer_id.id,
+                    "matrix_row_id": line.matrix_row_id.id,
+                    "user_input_id": line.user_input_id.id,
+                }
+            )
+        return super().write(vals)

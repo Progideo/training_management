@@ -180,6 +180,38 @@ class TestOrientation(CatalogueCase, HttpCase):
         attempt = self.env["survey.user_input"].create({"survey_id": ordinary.id})
         with self.assertRaises(AccessError), self.env.cr.savepoint():
             attempt.sudo().write({"survey_id": survey.id})
+        native_question = self.env["survey.question"].create(
+            {"survey_id": ordinary.id, "title": "Ordinary question", "question_type": "char_box"}
+        )
+        line = self.env["survey.user_input.line"].create(
+            {
+                "user_input_id": attempt.id,
+                "question_id": native_question.id,
+                "answer_type": "char_box",
+                "value_char_box": "ordinary",
+            }
+        )
+        for values in (
+            {"question_id": questions[0].id},
+            {"suggested_answer_id": questions[0].suggested_answer_ids[0].id},
+            {"matrix_row_id": questions[0].suggested_answer_ids[0].id},
+        ):
+            with self.assertRaises(AccessError), self.env.cr.savepoint():
+                line.sudo().write(values)
+            with self.assertRaises(AccessError), self.env.cr.savepoint():
+                self.env["survey.user_input.line"].sudo().create(
+                    {
+                        "user_input_id": attempt.id,
+                        "question_id": native_question.id,
+                        "answer_type": "char_box",
+                        "value_char_box": "forged orientation response",
+                        **values,
+                    }
+                )
+        with self.assertRaises(AccessError), self.env.cr.savepoint():
+            self.env["survey.user_input.line"].sudo().with_context(default_question_id=questions[0].id).create(
+                {"user_input_id": attempt.id, "answer_type": "char_box", "value_char_box": "forged default"}
+            )
 
     def test_http_public_privacy_native_boundaries_and_no_effects(self):
         survey, _, rule, answers = self.diagnostic()
