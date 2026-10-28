@@ -116,6 +116,15 @@ class PracticeAction(models.Model):
                 action._set_state("closed")
         return True
 
+    def action_withdraw_access(self):
+        self._coordinator()
+        for action in self:
+            action._lock()
+            if not action.access_withdrawn:
+                action._append("withdrawn", self.env._("Practice access withdrawn by coordination"))
+                super(PracticeAction, action).write({"access_withdrawn": True})  # pylint: disable=super-method-mismatch  # checked irreversible withdrawal
+        return True
+
     @api.private
     def _lock(self):
         # Same delivery fence as enrollment lifecycle, then this action. The
@@ -139,6 +148,8 @@ class PracticeAction(models.Model):
             not user.active
             or user._is_public()
             or e.company_id not in user.company_ids
+            or not e.commercially_authorized
+            or e.prerequisites == "pending"
             or self.sudo().access_withdrawn
             or e.state not in ("confirmed", "closed")
             or e.access_state == "suspended"

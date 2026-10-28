@@ -11943,3 +11943,14 @@ msgstr "Zéro désactive les rappels. Premier rappel à l’échéance."
 #: code:addons/training_management/models/training_dashboard.py:0
 msgid "Practice Reminder"
 msgstr "Rappel de mise en pratique"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Practice access withdrawn by coordination"
+msgstr "Accès à la mise en pratique retiré par la coordination"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_action_form
+msgid "Withdraw Practice Access"
+msgstr "Retirer les accès de mise en pratique"

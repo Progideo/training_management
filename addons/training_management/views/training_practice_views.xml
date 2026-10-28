@@ -6,8 +6,8 @@
     <record id="practice_action_form" model="ir.ui.view">
         <field name="name">training.practice.action.form</field><field name="model">training.practice.action</field>
         <field name="arch" type="xml">
-            <form><header><button name="action_close" type="object" string="Close" invisible="state == 'closed'"/><field name="state" widget="statusbar"/></header>
-                <sheet><group><field name="name" readonly="id"/><field name="enrollment_id" readonly="id"/><field name="completed_on" readonly="id"/><field name="horizon" readonly="id"/><field name="due_date"/><field name="service_reference" readonly="id"/><field name="trainer_feedback" readonly="id"/><field name="reminder_days" readonly="id"/><field name="retention_id" readonly="id"/></group>
+            <form><header><button name="action_close" type="object" string="Close" invisible="state == 'closed'"/><button name="action_withdraw_access" type="object" string="Withdraw Practice Access" invisible="access_withdrawn"/><field name="state" widget="statusbar"/></header>
+                <sheet><field name="access_withdrawn" invisible="1"/><group><field name="name" readonly="id"/><field name="enrollment_id" readonly="id"/><field name="completed_on" readonly="id"/><field name="horizon" readonly="id"/><field name="due_date"/><field name="service_reference" readonly="id"/><field name="trainer_feedback" readonly="id"/><field name="reminder_days" readonly="id"/><field name="retention_id" readonly="id"/></group>
                     <p>Agreed actions are preserved. Close an action and create a replacement to correct its definition. Private evidence is never included in client summaries.</p>
                     <field name="entry_ids"><list create="0" delete="0"><field name="kind"/><field name="body"/><field name="create_uid"/><field name="create_date"/><field name="filename"/><field name="data" filename="filename" widget="binary"/></list></field>
                 </sheet>

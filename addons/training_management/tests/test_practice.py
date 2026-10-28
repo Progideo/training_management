@@ -1,6 +1,6 @@
 """P11: real identities, post-training lifecycle and private evidence boundaries."""
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from unittest.mock import patch
 
 from odoo import Command, fields
@@ -15,7 +15,7 @@ from .test_material import PDF
 
 class PracticeCase(ClosureCase):
     def plan(self, **values):
-        delivery = self.delivery(learning_tutor_id=self.portal_b.id)
+        delivery = self.delivery(learning_tutor_id=self.portal_b.id, timezone=values.pop("timezone", "UTC"))
         self.lot(delivery, quantity=1)
         enrollment = self.opened(delivery)
         delivery.action_confirm()
@@ -109,6 +109,13 @@ class TestPractice(PracticeCase):
         self.assertEqual(action.enrollment_id.state, "closed")
         self.assertTrue(self.as_user(action)._eligible("participant"))
         self.as_user(action)._submit("participant")
+        action.action_withdraw_access()
+        action.action_withdraw_access()
+        self.assertEqual(len(action.entry_ids), 2)
+        self.assertFalse(self.as_user(action)._eligible("participant"))
+        withdrawn = self.plan()
+        withdrawn.enrollment_id.action_revoke_authorization(reason="Fictional commercial withdrawal")
+        self.assertFalse(self.as_user(withdrawn)._eligible("participant"))
         denied = self.plan()
         denied.enrollment_id.action_revoke_access(reason="Fictional explicit revocation")
         denied.delivery_id.action_close(reason="Fictional normal closure")
@@ -178,7 +185,17 @@ class TestPractice(PracticeCase):
         self.assertFalse(self.env["training.practice.notice"].search([("action_id", "=", no_reminder.id)]))
 
     def test_intervals_timezone_and_suspended_closure(self):
-        action = self.plan()
+        action = self.plan(timezone="Pacific/Auckland")
+        instant = datetime(2026, 10, 28, 12, 30)
+        self.assertEqual(
+            fields.Date.context_today(
+                action.with_context(tz=action.delivery_id.timezone), timestamp=instant
+            ).isoformat(),
+            "2026-10-29",
+        )
+        self.assertEqual(
+            fields.Date.context_today(action.with_context(tz="UTC"), timestamp=instant).isoformat(), "2026-10-28"
+        )
         model = self.env["training.practice.action"]
         with patch.object(fields.Date, "context_today", return_value=action.due_date - timedelta(days=1)):
             model._cron_reminders()
@@ -196,6 +213,32 @@ class TestPractice(PracticeCase):
         suspended.delivery_id.action_close(reason="Fictional closure")
         self.assertTrue(suspended.access_withdrawn)
         self.assertFalse(self.as_user(suspended)._eligible("participant"))
+
+    def test_native_sender_identity_and_failure_alert(self):
+        self.company.write(
+            {
+                "training_notification_address": "notify@example.invalid",
+                "training_notification_manager_id": self.coordinator.id,
+            }
+        )
+        action = self.plan()
+        self.env["training.practice.action"]._cron_reminders()
+        notice = self.env["training.practice.notice"].sudo().search([("action_id", "=", action.id)])
+        notice.mail_id._prepare_outgoing_list()
+        notice.mail_id.write({"email_from": "forged@example.invalid"})
+        with self.assertRaises(ValidationError):
+            notice.mail_id._prepare_outgoing_list()
+        notice.mail_id.write(self.env["mail.mail"]._training_identity(self.company))
+        notice.mail_id.write({"state": "exception"})
+        notices = (
+            self.env["training.operator.notice"]
+            .sudo()
+            .search([("source_model", "=", notice._name), ("source_id", "=", notice.id)])
+        )
+        self.assertEqual(len(notices), 1)
+        self.assertTrue(notices._authorized())
+        self.assertNotIn("PRIVATE", notices.mail_id.body_html)
+        self.assertFalse(notices.mail_id.attachment_ids)
 
     def test_summary_is_explicit_and_never_projects_private_content(self):
         action = self.plan()

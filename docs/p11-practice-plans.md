@@ -48,7 +48,9 @@ identité, société, inscription, rôle, prestation et état à chaque opérati
 puis ne projettent que les valeurs autorisées. Révocation explicite/annulation,
 compte archivé, suspension et retrait du tuteur bloquent les accès correspondants,
 y compris les anciens liens et jetons. Une suspension/révocation antérieure à la
-clôture normale n’est pas réactivée par cette clôture. La coordination conserve
+clôture normale n’est pas réactivée par cette clôture. **Retirer les accès de mise
+en pratique** retire aussi le suivi et ses anciens fichiers après clôture normale.
+La révocation commerciale bloque le suivi tant qu’elle s’applique. La coordination conserve
 les preuves dans ses seules sociétés ; aucun droit pédagogique n’est donné au
 commanditaire par son rattachement employeur.
 
