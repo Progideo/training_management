@@ -22,6 +22,10 @@ Sources inspectées dans cette image, sous `odoo/addons/website_slides/` :
 L'extension ciblée du socle ajoute donc une composition pédagogique et des
 références aux inscriptions existantes. Aucun module standard n'est copié,
 aucune adhésion eLearning ni inscription supplémentaire n'est créée.
+Le score de progression Surveys est lu sans construire les liens du corrigé :
+ces liens contrôlent eux-mêmes les accès, ce qui créerait une boucle avec les
+prérequis du parcours. Les révisions de score restent prises en compte et les
+résultats originaux sont conservés.
 
 ## Règles
 
