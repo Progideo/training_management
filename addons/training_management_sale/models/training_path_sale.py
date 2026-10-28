@@ -285,10 +285,13 @@ class SaleOrderLine(models.Model):
         }
         with self.env.cr.savepoint():
             self.check_access("write")
-            orders = self.order_id.filtered(
-                lambda order: order.training_path_id or order.training_price_source == "quote"
-            )
-            orders.lock_for_update()
+            orders = self.order_id
+            if vals.get("order_id"):
+                destination = self.env["sale.order"].browse(vals["order_id"])
+                destination.check_access("read")
+                orders |= destination
+            orders = orders.filtered(lambda order: order.training_path_id or order.training_price_source == "quote")
+            orders.sorted("id").lock_for_update()
             orders.invalidate_recordset()
             downpayment_identity = {
                 "order_id",
@@ -298,7 +301,7 @@ class SaleOrderLine(models.Model):
                 "is_downpayment",
                 "display_type",
             }
-            if downpayment_identity & vals.keys() and any(item.order_id.training_agreed_at for item in self):
+            if downpayment_identity & vals.keys() and any(order.training_agreed_at for order in orders):
                 raise ValidationError(self.env._("Revise the accepted training offer instead of changing its lines."))
             if commercial & vals.keys() and any(
                 item.order_id.training_agreed_at and (not item.is_downpayment or item.training_program_id)

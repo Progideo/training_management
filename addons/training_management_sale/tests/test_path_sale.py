@@ -173,6 +173,40 @@ class TestPathSale(PathSaleCase):
         with self.assertRaises(ValidationError), self.cr.savepoint():
             lines[0].copy({"order_id": order.id, "is_downpayment": True})
 
+    def test_draft_line_cannot_be_moved_into_an_accepted_contract(self):
+        accepted, _ = self.offer()
+        accepted.action_confirm()
+        draft = (
+            self.env["sale.order"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "partner_id": self.customer.id,
+                    "user_id": self.coordinator.id,
+                    "pricelist_id": self.pricelist.id,
+                }
+            )
+        )
+        product = self.env["product.product"].create(
+            {"name": "Fictional additional service", "type": "service", "taxes_id": [Command.clear()]}
+        )
+        line = (
+            self.env["sale.order.line"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "order_id": draft.id,
+                    "product_id": product.id,
+                    "product_uom_qty": 1,
+                    "price_unit": 45,
+                }
+            )
+        )
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            line.write({"order_id": accepted.id})
+        self.assertEqual(line.order_id, draft)
+        self.assertEqual(accepted.amount_untaxed, 250)
+
     def test_native_down_payment_final_invoice_credit_and_quotation_report(self):
         order, path = self.offer()
         order = order.with_user(self.env.user)
