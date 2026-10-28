@@ -55,6 +55,7 @@ class TestPathExam(ExamCase):
             )
         )
         self.assertTrue(reference.completed)
+        self.assertEqual(self.env["training.path.portal"].with_user(self.portal)._rows(path.id)[0]["completed"], 1)
         self.assertEqual(enrollment.with_user(self.portal).sudo()._effective_state(), "active")
         self.assertTrue(self.env["training.document.policy"].with_user(self.portal)._can_read(material))
         self.assertEqual(service._result(attempt)["percentage"], 100)
@@ -85,3 +86,4 @@ class TestPathExam(ExamCase):
         self.assertEqual(service._result(attempt)["percentage"], 25)
         self.assertEqual(attempt.scoring_percentage, 100)
         self.assertFalse(reference._is_completed())
+        self.assertEqual(self.env["training.path.portal"].with_user(self.portal)._rows(path.id)[0]["completed"], 0)

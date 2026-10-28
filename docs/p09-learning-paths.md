@@ -66,8 +66,8 @@ résultats originaux sont conservés.
 
 ## Limites de cet incrément
 
-Interface interne native ; la synthèse participant au portail et la vente d'un
-parcours restent à réaliser. Aucun prix global ni produit commercial de parcours
+Interface interne native ; la synthèse participant est décrite dans
+[P09.2](p09-participant-portal.md). La vente d'un parcours reste à réaliser. Aucun prix global ni produit commercial de parcours
 n'est introduit. Avant vente : fixer contenu de l'offre, tarif global ou par
 formation, devise unique, reports, annulations et traitement des acquis déjà
 obtenus. Les ventes de formations existantes conservent leur fonctionnement.

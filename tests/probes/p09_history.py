@@ -227,5 +227,15 @@ elif phase == "concurrency":
         else:
             raise AssertionError("A replay must not create another path reference")
     print("P09_REAL_CONCURRENT_REFERENCE_SINGLE_SOURCE_NO_DUPLICATE")
+elif phase == "portal":
+    saved = json.loads(params.get_str(key))
+    tables = list(saved["snapshot"]) + list(saved["path_snapshot"])
+    before = snapshot(tables)
+    enrollment = env["training.enrollment"].browse(saved["enrollment"])
+    rows = env["training.path.portal"].with_user(enrollment.user_id)._rows()
+    assert len(rows) == 2 and all(r["completed"] == r["total"] == 1 for r in rows)
+    assert all(r["steps"][0]["url"] == f"/my/trainings/{enrollment.id}" for r in rows)
+    assert snapshot(tables) == before
+    print("P09_PORTAL_SHARED_ENROLLMENT_READONLY_HISTORY_IDENTICAL")
 else:
     raise RuntimeError("Unknown P09 probe phase")

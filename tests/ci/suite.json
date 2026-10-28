@@ -448,7 +448,8 @@
         "path_baseline",
         "path_update",
         "path_preserved",
-        "concurrency"
+        "concurrency",
+        "portal_readonly"
       ]
     }
   ],

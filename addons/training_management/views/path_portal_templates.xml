@@ -1,0 +1,43 @@
+<odoo>
+    <template id="portal_path_home" inherit_id="portal.portal_my_home" name="Participant Learning Paths">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="card p-3 my-2"><a href="/my/training-paths">My learning paths</a></div>
+        </xpath>
+    </template>
+    <template id="portal_paths_from_trainings" inherit_id="portal_trainings" name="Learning Paths Navigation">
+        <xpath expr="//h1" position="after"><p><a href="/my/training-paths">My learning paths</a></p></xpath>
+    </template>
+    <template id="portal_training_paths" name="My Learning Paths">
+        <t t-call="portal.portal_layout">
+            <a href="/my/trainings">My training</a><h1>My learning paths</h1>
+            <p t-if="not paths">No learning path is currently assigned.</p>
+            <ul class="list-group">
+                <li t-foreach="paths" t-as="path" class="list-group-item">
+                    <h2 class="h5"><a t-att-href="'/my/training-paths/%s' % path['id']" t-out="path['name']"/></h2>
+                    <p><t t-out="path['completed']"/> / <t t-out="path['total']"/> completed steps</p>
+                    <p><t t-out="path['hours']"/> estimated learning hours</p>
+                </li>
+            </ul>
+            <t t-call="portal.pager"/>
+        </t>
+    </template>
+    <template id="portal_training_path" name="My Learning Path">
+        <t t-call="portal.portal_layout">
+            <a href="/my/training-paths">My learning paths</a><h1 t-out="path['name']"/>
+            <p><t t-out="path['completed']"/> / <t t-out="path['total']"/> completed steps</p>
+            <progress t-att-value="str(path['completed'])" t-att-max="str(path['total'])" t-att-aria-label="path['name']" class="w-100"/>
+            <p><t t-out="path['hours']"/> estimated learning hours</p>
+            <p t-if="path['mandatory']">Follow the required order below.</p>
+            <p t-else="">The order below is recommended. Explicit prerequisites still apply.</p>
+            <ol class="list-group list-group-numbered">
+                <li t-foreach="path['steps']" t-as="step" class="list-group-item">
+                    <h2 class="h5" t-out="step['name']"/>
+                    <p><strong t-out="step['status']"/> · <t t-out="step['hours']"/> estimated learning hours</p>
+                    <p t-if="step['equivalent']">Validated equivalence</p>
+                    <p t-if="step['prerequisites']">Prerequisites: <t t-out="', '.join(step['prerequisites'])"/></p>
+                    <a t-if="step['url']" t-att-href="step['url']" class="btn btn-primary">Open training</a>
+                </li>
+            </ol>
+        </t>
+    </template>
+</odoo>

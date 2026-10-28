@@ -14,3 +14,5 @@ from . import dashboard_portal
 from . import public_catalogue
 
 from . import company_portal
+
+from . import path_portal

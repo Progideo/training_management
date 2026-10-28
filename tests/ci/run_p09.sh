@@ -47,3 +47,4 @@ P09_PHASE=prepare_path step path_baseline run_odoo shell --no-http < "$repo/test
 step path_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=verify_path step path_preserved run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=concurrency step concurrency run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
+P09_PHASE=portal step portal_readonly run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
