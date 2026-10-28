@@ -96,13 +96,7 @@ class OrientationSurvey(models.Model):
         self._training_editor()
         # Native object buttons save the pending questions before this action,
         # giving the recommendation selector persisted question/answer ids.
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": "survey.survey",
-            "res_id": self.id,
-            "views": [(self.env.ref("training_management_survey.orientation_form_view").id, "form")],
-            "target": "current",
-        }
+        return True
 
     def action_orientation_open(self):
         self.ensure_one()
