@@ -22,7 +22,9 @@ class TrainingPath(models.Model):
         [("recommended", "Recommended Order"), ("mandatory", "Mandatory Order")], default="recommended", required=True
     )
     step_ids = fields.One2many("training.path.step", "path_id", copy=True)
-    assignment_ids = fields.One2many("training.path.assignment", "path_id", readonly=True, copy=False)
+    assignment_ids = fields.One2many(
+        "training.path.assignment", "path_id", readonly=True, copy=False, groups=COORDINATOR
+    )
     duration_hours = fields.Float(compute="_compute_duration")
 
     @api.depends("step_ids.program_id.duration_hours")
@@ -141,6 +143,7 @@ class TrainingPathStep(models.Model):
 
 class TrainingPathAssignment(models.Model):
     _name = "training.path.assignment"
+    _inherit = "training.controlled"
     _description = "Training Path Enrollment Reference"
     _check_company_auto = True
     _rec_name = "enrollment_id"
@@ -156,11 +159,20 @@ class TrainingPathAssignment(models.Model):
     equivalence_reason = fields.Text()
     validated_by = fields.Many2one("res.users", readonly=True, required=True, default=lambda self: self.env.user)
     validated_at = fields.Datetime(readonly=True, required=True, default=fields.Datetime.now)
+    delivery_id = fields.Many2one(related="enrollment_id.delivery_id", store=True)
+    withdrawn_at = fields.Datetime(readonly=True, copy=False)
+    withdrawn_by = fields.Many2one("res.users", readonly=True, copy=False)
+    withdrawal_reason = fields.Text(readonly=True, copy=False)
+    _reason_actions = ("action_withdraw",)
+
     completed = fields.Boolean(compute="_compute_status")
     blocked = fields.Boolean(compute="_compute_status")
-    _one_step = models.Constraint("UNIQUE(step_id, participant_id)", "This participant already has this path step.")
-    _one_source = models.Constraint(
-        "UNIQUE(path_id, participant_id, enrollment_id)", "Do not count an enrollment twice in the same path."
+    _one_step = models.UniqueIndex(
+        "(step_id, participant_id) WHERE withdrawn_at IS NULL", "This participant already has this path step."
+    )
+    _one_source = models.UniqueIndex(
+        "(path_id, participant_id, enrollment_id) WHERE withdrawn_at IS NULL",
+        "Do not count an enrollment twice in the same path.",
     )
 
     @api.private
@@ -181,7 +193,13 @@ class TrainingPathAssignment(models.Model):
         required = self.step_id.prerequisite_ids
         if self.path_id.order_policy == "mandatory":
             required |= self.path_id.step_ids.filtered(lambda s: s.sequence < self.step_id.sequence)
-        references = self.search([("step_id", "in", required.ids), ("participant_id", "=", self.participant_id.id)])
+        references = self.search(
+            [
+                ("step_id", "in", required.ids),
+                ("participant_id", "=", self.participant_id.id),
+                ("withdrawn_at", "=", False),
+            ]
+        )
         return len(references) != len(required) or any(not r._is_completed() for r in references)
 
     @api.depends(
@@ -229,6 +247,7 @@ class TrainingPathAssignment(models.Model):
                         [
                             ("path_id", "=", step.path_id.id),
                             ("participant_id", "=", enrollment.participant_id.id),
+                            ("withdrawn_at", "=", False),
                             "|",
                             ("step_id", "=", step.id),
                             ("enrollment_id", "=", enrollment.id),
@@ -244,6 +263,9 @@ class TrainingPathAssignment(models.Model):
                         company_id=step.company_id.id,
                         validated_by=self.env.uid,
                         validated_at=fields.Datetime.now(),
+                        withdrawn_at=False,
+                        withdrawn_by=False,
+                        withdrawal_reason=False,
                     )
                 )
             records = super().create(prepared)
@@ -251,6 +273,28 @@ class TrainingPathAssignment(models.Model):
                 if record.enrollment_id.access_state == "active" and record._is_blocked():
                     raise ValidationError(self.env._("Resolve path prerequisites before linking an active enrollment."))
             return records
+
+    @api.private
+    def _reason_labels(self):
+        return {"action_withdraw": self.env._("Withdraw Path Reference")}
+
+    def action_withdraw(self, reason=None):
+        with self.env.cr.savepoint():
+            self._require_coordinator()
+            self.delivery_id._serialize()
+            self.invalidate_recordset()
+            for reference in self:
+                if reference.withdrawn_at:
+                    continue
+                reference._store(
+                    {
+                        "withdrawn_at": fields.Datetime.now(),
+                        "withdrawn_by": self.env.uid,
+                        "withdrawal_reason": self._require_reason(reason),
+                    },
+                    reason,
+                )
+        return True
 
     def write(self, vals):  # pylint: disable=method-required-super
         raise AccessError(self.env._("Keep validated path references and their history unchanged."))
@@ -267,7 +311,11 @@ class TrainingEnrollment(models.Model):
     def _path_blocked(self):
         # Called only by the existing admission/access policy on an identified
         # enrollment. Narrow sudo reads restrictions; no private data is returned.
-        references = self.env["training.path.assignment"].sudo().search([("enrollment_id", "=", self.id)])
+        references = (
+            self.env["training.path.assignment"]
+            .sudo()
+            .search([("enrollment_id", "=", self.id), ("withdrawn_at", "=", False)])
+        )
         return any(r._is_blocked() for r in references)
 
     def action_open_access(self, reason=None):

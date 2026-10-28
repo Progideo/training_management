@@ -151,6 +151,8 @@ class TestTrainingPath(LearningCase):
                 ref.with_user(user).read(["participant_id"])
         self.assertEqual(path.with_user(self.reader).name, path.name)
         with self.assertRaises(AccessError):
+            path.with_user(self.reader).read(["assignment_ids"])
+        with self.assertRaises(AccessError):
             path.with_user(self.reader).action_validate()
         foreign = self.env["training.path"].create({"name": "Other company", "company_id": self.other_company.id})
         with self.assertRaises(AccessError):
@@ -167,3 +169,40 @@ class TestTrainingPath(LearningCase):
         )
         with self.assertRaisesRegex(ValidationError, "Conserver les parcours validés"):
             path.write({"name": "Changed"})
+
+    def test_withdrawal_is_audited_repeatable_and_releases_only_its_constraint(self):
+        path = self.path()
+        path.action_validate()
+        enrollment = self.admitted(self.delivery(program_id=path.step_ids[1].program_id.id))
+        ref = self.reference(path.step_ids[1], enrollment)
+        self.assertTrue(enrollment._path_blocked())
+        with self.assertRaises(ValidationError):
+            ref.action_withdraw()
+        with self.assertRaises(AccessError):
+            ref.with_user(self.reader).action_withdraw(reason="Forbidden")
+        reason_action = ref.with_context(reason_action="action_withdraw").action_open_reason()
+        wizard = (
+            self.env["training.action.reason"]
+            .with_user(self.coordinator)
+            .with_context(**reason_action["context"])
+            .create({"reason": "Fictional erroneous assignment"})
+        )
+        wizard.action_apply()
+        timestamp = ref.withdrawn_at
+        ref.action_withdraw(reason="Replay")
+        self.assertEqual(ref.withdrawn_at, timestamp)
+        self.assertEqual(ref.withdrawn_by, self.coordinator)
+        self.assertFalse(enrollment._path_blocked())
+        self.assertEqual(
+            self.env["training.operation"].search_count(
+                [
+                    ("model_name", "=", ref._name),
+                    ("record_id", "=", ref.id),
+                ]
+            ),
+            1,
+        )
+        replacement = self.reference(path.step_ids[1], enrollment)
+        self.assertNotEqual(ref, replacement)
+        self.assertTrue(ref.exists())
+        self.assertTrue(enrollment._path_blocked())

@@ -53,6 +53,9 @@
         <field name="model">training.path.assignment</field>
         <field name="arch" type="xml">
             <form edit="0" delete="0">
+                <header>
+                    <button name="action_open_reason" type="object" string="Withdraw Path Reference" context="{'reason_action': 'action_withdraw'}" invisible="withdrawn_at"/>
+                </header>
                 <sheet>
                     <group>
                         <field name="step_id"/>
@@ -60,6 +63,9 @@
                         <field name="equivalence_reason"/>
                         <field name="validated_by"/>
                         <field name="validated_at"/>
+                        <field name="withdrawn_at"/>
+                        <field name="withdrawn_by"/>
+                        <field name="withdrawal_reason"/>
                         <field name="completed"/>
                         <field name="blocked"/>
                     </group>
@@ -78,6 +84,7 @@
                 <field name="enrollment_id"/>
                 <field name="completed"/>
                 <field name="blocked"/>
+                <field name="withdrawn_at"/>
             </list>
         </field>
     </record>

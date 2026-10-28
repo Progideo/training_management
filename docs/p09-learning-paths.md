@@ -34,7 +34,7 @@ aucune adhésion eLearning ni inscription supplémentaire n'est créée.
   et la société viennent de cette inscription. Un programme différent nécessite
   une équivalence motivée, validée par ce coordinateur et datée par le serveur.
   L'équivalence est individuelle, sans validité générale implicite.
-- Une inscription ne compte qu'une fois par parcours et une étape une fois par
+- Une inscription ne compte qu'une fois parmi les rattachements courants du parcours et une étape une fois par
   participant. La même inscription peut servir dans plusieurs parcours : ses
   droits, places, preuves et progressions restent uniques.
 - Une étape est complète si l'inscription est confirmée ou clôturée et si toutes
@@ -48,6 +48,12 @@ aucune adhésion eLearning ni inscription supplémentaire n'est créée.
 - Aucun rattachement bloquant à une inscription déjà active n'est accepté.
   Les références validées et leurs motifs sont immuables. Les créations et
   ouvertures utilisent les verrous natifs et les unicités en base.
+- Un rattachement erroné peut être retiré avec un motif obligatoire via
+  l'assistant natif existant. Auteur, date et motif sont journalisés ; le retrait
+  répété garde sa trace initiale. La référence reste conservée mais ne participe
+  plus au blocage ni aux unicités des références courantes. Une nouvelle
+  référence peut la remplacer. Retirer un prérequis peut bloquer les étapes qui
+  en dépendent ; les accès sont toujours réévalués, sans ouverture automatique.
 - Lecteur : composition seulement. Coordinateur : composition et suivi individuel
   dans ses sociétés autorisées. Aucun accès aux nouveaux objets pour le public,
   le portail, les représentants clients ou l'interne sans rôle.
@@ -72,6 +78,8 @@ n'en est déduite automatiquement. L01 reste une validation de lancement.
    disponible, sans création de place, droit ou progression supplémentaire.
 4. Tester une autre version avec motif d'équivalence et un acquis antérieur,
    puis refuser motif vide, doublon, écriture et suppression des références.
+   Retirer un mauvais rattachement avec motif, rejouer, vérifier le journal et
+   créer son remplacement sans effacer l'ancienne référence.
 5. Lire avec un lecteur, un portail et un coordinateur d'une autre société :
    composition seule pour le lecteur, refus des suivis individuels et hors société.
 6. Mettre à jour une copie fictive V1, comparer inscriptions/progressions et

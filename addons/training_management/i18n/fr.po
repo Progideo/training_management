@@ -11400,3 +11400,25 @@ msgstr "Ce participant possède déjà cette étape du parcours."
 #: model:ir.model.constraint,message:training_management.constraint_training_path_assignment_one_source
 msgid "Do not count an enrollment twice in the same path."
 msgstr "Ne pas compter une inscription deux fois dans le même parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_path_assignment_form
+msgid "Withdraw Path Reference"
+msgstr "Retirer le rattachement au parcours"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawn_at
+msgid "Withdrawn At"
+msgstr "Retiré le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawn_by
+msgid "Withdrawn By"
+msgstr "Retiré par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawal_reason
+msgid "Withdrawal Reason"
+msgstr "Motif du retrait"
