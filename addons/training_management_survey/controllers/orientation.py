@@ -39,7 +39,9 @@ class TrainingOrientation(http.Controller):
         if not survey:
             raise request.not_found()
         submitted = request.httprequest.method == "POST"
-        answers = {key: value for key, value in post.items() if key != "csrf_token"} if submitted else {}
+        answers = (
+            {key: value for key, value in request.httprequest.form.items() if key != "csrf_token"} if submitted else {}
+        )
         # Reject duplicate parameters as well as foreign question/answer ids.
         duplicate = any(len(v) != 1 for _, v in request.httprequest.form.lists())
         result = survey._orientation_result(answers) if submitted and not duplicate else False

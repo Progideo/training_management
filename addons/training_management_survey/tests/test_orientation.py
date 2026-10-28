@@ -1,5 +1,7 @@
 """P10: explainable, optional pre-purchase advice without retaining answers."""
 
+from urllib.parse import urlencode
+
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
@@ -269,6 +271,13 @@ class TestOrientation(CatalogueCase, HttpCase):
         self.assertIn("Demandons conseil", response.text)
         self.assertNotIn(rule.explanation, response.text)
         response = self.url_open(url, data={"csrf_token": self.csrf_token(), **answers, "forged": "1"})
+        self.assertNotIn(rule.explanation, response.text)
+        response = self.url_open(url + "?" + urlencode(answers), data={"csrf_token": self.csrf_token()})
+        self.assertNotIn(rule.explanation, response.text)
+        self.assertIn("Demandons conseil", response.text)
+        response = self.url_open(
+            url, data=[("csrf_token", self.csrf_token()), *answers.items(), next(iter(answers.items()))]
+        )
         self.assertNotIn(rule.explanation, response.text)
         self.assertEqual(self.url_open(url, data=answers).status_code, 400)
         for private_url in (
