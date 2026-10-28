@@ -1661,6 +1661,8 @@ msgstr "Clôturer"
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__closed
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_campaign__state__closed
 #: model:ir.model.fields.selection,name:training_management.selection__training_dashboard_line__state__closed
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
 msgid "Closed"
 msgstr "Clôturée"
 
@@ -4210,6 +4212,10 @@ msgstr "Affectation de support"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_participant_home
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
 msgid "My training"
 msgstr "Mes formations"
 
@@ -4543,6 +4549,8 @@ msgstr "Réalisez d’abord les activités préalables."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__completed
 #: model:ir.model.fields,field_description:training_management.field_training_path_assignment__completed
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
 msgid "Completed"
 msgstr "Réalisé"
 
@@ -11422,3 +11430,112 @@ msgstr "Retiré par"
 #: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawal_reason
 msgid "Withdrawal Reason"
 msgstr "Motif du retrait"
+
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "My learning paths"
+msgstr "Mes parcours"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "No learning path is currently assigned."
+msgstr "Aucun parcours n’est actuellement attribué."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "completed steps"
+msgstr "étapes terminées"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "estimated learning hours"
+msgstr "heures pédagogiques estimées"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "Follow the required order below."
+msgstr "Suivez l’ordre obligatoire ci-dessous."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "The order below is recommended. Explicit prerequisites still apply."
+msgstr "L’ordre ci-dessous est conseillé. Les prérequis explicites restent applicables."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "Validated equivalence"
+msgstr "Équivalence validée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "Prerequisites:"
+msgstr "Prérequis :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_path_home
+#: model_terms:ir.ui.view,arch_db:training_management.portal_paths_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
+#: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
+msgid "Open training"
+msgstr "Ouvrir la formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
+msgid "Not available"
+msgstr "Indisponible"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
+msgid "Prerequisites pending"
+msgstr "Prérequis en attente"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
+msgid "Available"
+msgstr "Disponible"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
+msgid "Access starts later"
+msgstr "Accès prévu ultérieurement"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
+msgid "Access ended"
+msgstr "Accès terminé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path_portal.py:0
+msgid "Access pending"
+msgstr "Accès en attente"

@@ -8,8 +8,7 @@ from odoo.tools.translate import load_language
 from .test_learning import LearningCase
 
 
-@tagged("post_install", "-at_install")
-class TestTrainingPath(LearningCase):
+class PathCase(LearningCase):
     def path(self, mandatory=True):
         course = (
             self.env["training.course"]
@@ -47,6 +46,9 @@ class TestTrainingPath(LearningCase):
             )
         )
 
+
+@tagged("post_install", "-at_install")
+class TestTrainingPath(PathCase):
     def test_native_form_and_frozen_definition(self):
         with Form(self.env["training.path"].with_user(self.coordinator)) as form:
             form.name = "Fictional native path"

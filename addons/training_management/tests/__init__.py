@@ -30,3 +30,5 @@ from . import test_pedagogical_launch
 from . import test_notification_alerts
 
 from . import test_path
+
+from . import test_path_portal
