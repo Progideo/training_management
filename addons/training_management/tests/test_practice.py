@@ -328,6 +328,11 @@ class TestPracticeHTTP(PracticeCase, HttpCase):
         load_language(self.cr, "fr_FR")
         self.env["ir.module.module"].search([("name", "=", "training_management")])._update_translations(["fr_FR"])
         self.portal.lang = "fr_FR"
+        if "website" in self.env and "language_ids" in self.env["website"]._fields:
+            french = self.env.ref("base.lang_fr")
+            self.env["website"].search([]).write(
+                {"language_ids": [Command.set(french.ids)], "default_lang_id": french.id}
+            )
         action = self.plan(name="<script>PRIVATE action</script>")
         self.authenticate(self.portal.login, self.portal.login)
         page = self.url_open("/my/training-practice")
