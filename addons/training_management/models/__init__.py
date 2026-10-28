@@ -46,3 +46,5 @@ from . import training_intra_version
 
 from . import training_mail_identity
 from . import training_operator_notice
+
+from . import training_path

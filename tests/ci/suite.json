@@ -433,6 +433,23 @@
         "repeated_history_preserved",
         "concurrency"
       ]
+    },
+    {
+      "id": "p09",
+      "script": "tests/ci/run_p09.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "second_update",
+        "repeated_history_preserved",
+        "path_baseline",
+        "path_update",
+        "path_preserved",
+        "concurrency"
+      ]
     }
   ],
   "relocated_steps": {
