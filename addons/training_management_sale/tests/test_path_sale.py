@@ -1,5 +1,7 @@
 """P09.3: native detailed quotations, common beneficiaries and prior work reuse."""
 
+from lxml import html as html_parser
+
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import Form, new_test_user, tagged
@@ -262,6 +264,10 @@ class TestPathSale(PathSaleCase):
         html = html.decode() if isinstance(html, bytes) else html
         self.assertIn("Parcours complet", html)
         self.assertIn("<strong>Parcours :</strong>", html)
+        self.assertIn("<strong>Bénéficiaires :</strong>", html)
+        self.assertEqual(
+            html_parser.fromstring(html).xpath('string(//*[@name="training_path_beneficiaries"])').strip(), "2"
+        )
 
     def test_completed_prior_work_reused_and_counted_without_new_enrollment(self):
         order, path = self.offer(count=1)
@@ -330,6 +336,19 @@ class TestPathSale(PathSaleCase):
         order, path = self.offer()
         with self.assertRaises(AccessError):
             order.with_user(self.seller).action_prepare_training_path()
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.env["training.path.quote"].with_user(self.seller).create({"order_id": order.id, "path_id": path.id})
+        wizard = (
+            self.env["training.path.quote"]
+            .with_user(self.coordinator)
+            .create({"order_id": order.id, "path_id": path.id})
+        )
+        with self.assertRaises(AccessError):
+            wizard.with_user(self.seller).read(["path_id", "company_id"])
+        with self.assertRaises(AccessError), self.cr.savepoint():
+            self.env["training.path.quote.line"].with_user(self.seller).create(
+                {"wizard_id": wizard.id, "step_id": path.step_ids[0].id}
+            )
         with self.assertRaises(AccessError):
             path.with_user(self.portal).read(["name"])
         self.assertEqual(path.with_user(self.seller).name, path.name)

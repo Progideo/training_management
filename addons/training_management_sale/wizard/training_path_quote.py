@@ -4,6 +4,12 @@ from odoo import Command, api, fields, models
 from odoo.exceptions import ValidationError
 
 
+def _check_order_access(model, values):
+    """Check before related fields can compute with elevated read rights."""
+    order_id = values.get("order_id", model.env.context.get("default_order_id"))
+    model.env["sale.order"].browse(order_id).check_access("read")
+
+
 class TrainingPathQuote(models.TransientModel):
     _name = "training.path.quote"
     _description = "Prepare Path Quotation"
@@ -19,6 +25,17 @@ class TrainingPathQuote(models.TransientModel):
     attendee_count = fields.Integer(required=True, default=1)
     price_basis = fields.Selection([("person", "Per person"), ("package", "Package")], required=True, default="package")
     line_ids = fields.One2many("training.path.quote.line", "wizard_id")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            _check_order_access(self, vals)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if "order_id" in vals:
+            _check_order_access(self, vals)
+        return super().write(vals)
 
     @api.model
     def default_get(self, names):
@@ -129,19 +146,40 @@ class TrainingPathQuote(models.TransientModel):
 class TrainingPathQuoteLine(models.TransientModel):
     _name = "training.path.quote.line"
     _description = "Selected Path Quotation Course"
+    _check_company_auto = True
 
     wizard_id = fields.Many2one("training.path.quote", required=True, ondelete="cascade")
-    step_id = fields.Many2one("training.path.step", required=True)
+    step_id = fields.Many2one("training.path.step", required=True, check_company=True)
     course_id = fields.Many2one(related="step_id.course_id")
     company_id = fields.Many2one(related="wizard_id.company_id")
     price_basis = fields.Selection(related="wizard_id.price_basis")
     selected = fields.Boolean(default=True)
     product_id = fields.Many2one(
         "product.product",
+        check_company=True,
         domain="[('training_course_id', '=', course_id), ('training_price_basis', '=', price_basis), ('company_id', '=', company_id)]",
     )
     currency_id = fields.Many2one(related="wizard_id.currency_id")
     price_unit = fields.Monetary()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self.env["training.path.quote"].browse(
+                vals.get("wizard_id", self.env.context.get("default_wizard_id"))
+            ).check_access("write")
+            self.env["training.path.step"].browse(
+                vals.get("step_id", self.env.context.get("default_step_id"))
+            ).check_access("read")
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self.wizard_id.check_access("write")
+        if "wizard_id" in vals:
+            self.env["training.path.quote"].browse(vals["wizard_id"]).check_access("write")
+        if "step_id" in vals:
+            self.env["training.path.step"].browse(vals["step_id"]).check_access("read")
+        return super().write(vals)
 
 
 class TrainingPathReuse(models.TransientModel):
@@ -157,6 +195,17 @@ class TrainingPathReuse(models.TransientModel):
     )
     enrollment_id = fields.Many2one("training.enrollment", required=True, check_company=True)
     equivalence_reason = fields.Text()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            _check_order_access(self, vals)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if "order_id" in vals:
+            _check_order_access(self, vals)
+        return super().write(vals)
 
     def action_apply(self):
         self.ensure_one()

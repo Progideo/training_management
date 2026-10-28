@@ -19,3 +19,6 @@ access_training_path_quote_line,Path quotation assistant,training.path.quote.lin
 access_path_usage_coordinator,Commercial path references,training.path.sale.usage,training_management.group_training_coordinator,cru,"[('order_id', 'access', 'read')]"
 rule_path_usage_company,Path references allowed companies,training.path.sale.usage,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_path_reuse_coordinator,Reuse prior path learning,training.path.reuse,training_management.group_training_coordinator,crud,
+rule_path_quote_owner,Path quotation assistant owner,training.path.quote,,crud,"[('create_uid', '=', user.id), ('order_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
+rule_path_quote_line_owner,Path quotation line owner,training.path.quote.line,,crud,"[('create_uid', '=', user.id), ('wizard_id', 'access', 'write'), ('step_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
+rule_path_reuse_owner,Prior learning assistant owner,training.path.reuse,,crud,"[('create_uid', '=', user.id), ('order_id', 'access', 'read')] if user.active else [('id', '=', 0)]"

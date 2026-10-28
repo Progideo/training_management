@@ -33,7 +33,9 @@ Le plafond du contrat porte sur les bénéficiaires distincts du parcours. Chaqu
 formation achetée dispose de son propre quota de places, répartissable entre
 ses réalisations, sans multiplier le groupe. Dix bénéficiaires sur trois
 formations peuvent donc avoir dix places par formation, sans devenir trente
-bénéficiaires. Les personnes déjà engagées sur une formation ne peuvent pas
+bénéficiaires. Le groupe reste le même ; un bénéficiaire peut être dispensé
+d’une formation sur la base d’acquis validés, sans y être réinscrit.
+Les personnes déjà engagées sur une formation ne peuvent pas
 être remplacées silencieusement pour recycler le quota du parcours.
 
 Une nomination commerciale rattache l'inscription existante à l'étape du
@@ -51,6 +53,8 @@ prérequis, capacité et autorisation commerciale restent applicables.
 
 Après confirmation, la composition, l'effectif et les prix de l'offre sont
 figés ; une modification contractuelle nécessite une révision explicite.
+La copie native prépare un nouveau devis sans transférer les inscriptions
+ni les droits. La régularisation du contrat antérieur reste manuelle.
 Annulation, report et remplacement restent manuels et motivés. Les frais
 éventuels suivent le devis accepté ; aucun avoir ni remboursement automatique.
 Un remplaçant ne reçoit pas les résultats du participant précédent.

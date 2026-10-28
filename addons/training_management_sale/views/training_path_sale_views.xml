@@ -114,12 +114,18 @@
     </record>
     <template id="report_saleorder_path" inherit_id="sale.report_saleorder_document">
         <xpath expr="//div[@id='informations']" position="after">
-            <p t-if="doc.training_path_label">
-                <strong>Training path:</strong>
-                <span t-field="doc.training_path_label"/>
-                ·
-                <span t-field="doc.training_path_scope"/>
-            </p>
+            <div t-if="doc.training_path_label">
+                <p class="mb-1">
+                    <strong>Training path:</strong>
+                    <span t-field="doc.training_path_label"/>
+                    <span class="mx-1" t-translation="off">·</span>
+                    <span t-field="doc.training_path_scope"/>
+                </p>
+                <p>
+                    <strong>Beneficiaries:</strong>
+                    <span name="training_path_beneficiaries" t-field="doc.training_attendee_count"/>
+                </p>
+            </div>
         </xpath>
     </template>
 </odoo>

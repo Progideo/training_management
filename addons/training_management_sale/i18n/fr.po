@@ -2322,3 +2322,8 @@ msgstr "Assistant"
 #: code:addons/training_management_sale/models/training_allocation.py:0
 msgid "A path allocation requires an exact commercial step."
 msgstr "Une attribution de places de parcours exige une étape commerciale précise."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.report_saleorder_path
+msgid "<strong>Beneficiaries:</strong>"
+msgstr "<strong>Bénéficiaires :</strong>"
