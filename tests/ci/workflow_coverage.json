@@ -344,7 +344,10 @@
         "commerce_update",
         "commerce_preserved",
         "commerce_pdf",
-        "commerce_concurrency"
+        "commerce_concurrency",
+        "orientation_baseline",
+        "orientation_update",
+        "orientation_preserved"
       ]
     }
   }

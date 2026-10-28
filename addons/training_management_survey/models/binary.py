@@ -22,7 +22,7 @@ def _training_exam(record):
         survey = target.survey_id
     elif target._name == "survey.question.answer":
         survey = (target.question_id or target.matrix_question_id).survey_id
-    return survey.filtered("training_program_id").with_env(record.env)
+    return survey.filtered(lambda s: s.training_program_id or s.orientation_company_id).with_env(record.env)
 
 
 class IrBinary(models.AbstractModel):
@@ -44,7 +44,7 @@ class IrBinary(models.AbstractModel):
             # Recheck under the original identity even if native token resolution
             # returned a privileged record. Portal images use an explicit route.
             if not self.env.user.has_group("training_management.group_training_coordinator") or (
-                survey.training_company_id not in self.env.user.company_ids
+                (survey.training_company_id or survey.orientation_company_id) not in self.env.user.company_ids
             ):
                 raise AccessError(self.env._("This private exam file is unavailable."))
 

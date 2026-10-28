@@ -60,7 +60,7 @@ class SurveySecurityPolicy(models.AbstractModel):
             return bool(
                 self.env.user.active
                 and self.env.user.has_group("training_management.group_training_coordinator")
-                and exam.training_company_id in self.env.companies
+                and (exam.training_company_id or exam.orientation_company_id) in self.env.companies
                 # Classification and coordinator membership never replace the
                 # native parent rules, especially for S09 evaluation answers.
                 and source.with_env(self.env(su=False)).has_access("read")
@@ -92,4 +92,4 @@ class SurveyExportScope(models.AbstractModel):
     @api.private
     def _training_export_company(self):
         exam = _training_exam(self)
-        return exam.training_company_id if exam else super()._training_export_company()
+        return (exam.training_company_id or exam.orientation_company_id) if exam else super()._training_export_company()

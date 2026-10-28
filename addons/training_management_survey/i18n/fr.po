@@ -144,6 +144,7 @@ msgstr "Créer un examen blanc"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__create_uid
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__create_uid
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__create_uid
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -151,6 +152,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__create_date
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__create_date
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__create_date
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -182,6 +184,8 @@ msgstr "Critère"
 #: model:ir.model.fields,field_description:training_management_survey.field_ir_attachment__display_name
 #: model:ir.model.fields,field_description:training_management_survey.field_report_survey_certification_report_view__display_name
 #: model:ir.model.fields,field_description:training_management_survey.field_training_dashboard_service__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_document_policy__display_name
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -250,6 +254,8 @@ msgstr "Routage HTTP"
 #: model:ir.model.fields,field_description:training_management_survey.field_ir_attachment__id
 #: model:ir.model.fields,field_description:training_management_survey.field_report_survey_certification_report_view__id
 #: model:ir.model.fields,field_description:training_management_survey.field_training_dashboard_service__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_document_policy__id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__id
 msgid "ID"
 msgstr "ID"
 
@@ -287,6 +293,7 @@ msgstr "Conservez le programme de l’examen et l’historique de publication."
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__write_uid
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__write_uid
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__write_uid
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -294,6 +301,7 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise__write_date
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revise_line__write_date
 #: model:ir.model.fields,field_description:training_management_survey.field_training_exam_revision__write_date
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -679,6 +687,7 @@ msgstr "La remise termine cette tentative. Ses réponses ne pourront plus être 
 #: model:ir.model,name:training_management_survey.model_survey_survey
 #: model:ir.model.fields,field_description:training_management_survey.field_training_evaluation__survey_id
 #: model:ir.model.fields,field_description:training_management_survey.field_training_feedback__survey_id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__survey_id
 msgid "Survey"
 msgstr "Sondage"
 
@@ -1358,3 +1367,317 @@ msgstr "Ne diffusez pas les fichiers privés d’examen ou de réponse par courr
 #: code:addons/training_management_survey/models/security.py:0
 msgid "This private training record is unavailable."
 msgstr "Cet enregistrement privé de formation est indisponible."
+
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__orientation_contact
+msgid "Advice Contact"
+msgstr "Contact pour un conseil humain"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_list
+msgid ""
+"Aucun questionnaire disponible. Consultez les fiches formation pour demander"
+" conseil."
+msgstr ""
+"Aucun questionnaire disponible. Consultez les fiches formation pour demander"
+" conseil."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_catalogue
+msgid "Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif"
+msgstr "Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_list
+msgid "Catalogue"
+msgstr "Catalogue"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid ""
+"Ce diagnostic ne vaut ni positionnement pédagogique, ni validation des "
+"prérequis, ni admission, ni ouverture d’accès. Il ne garantit aucun "
+"résultat."
+msgstr ""
+"Ce diagnostic ne vaut ni positionnement pédagogique, ni validation des "
+"prérequis, ni admission, ni ouverture d’accès. Il ne garantit aucun "
+"résultat."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_list
+msgid ""
+"Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez "
+"aussi consulter directement le catalogue."
+msgstr ""
+"Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez "
+"aussi consulter directement le catalogue."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid "Cette recommandation s’appuie sur :"
+msgstr "Cette recommandation s’appuie sur :"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid ""
+"Choose answers from this diagnostic, one target and an explanation in the "
+"same company."
+msgstr ""
+"Choisissez les réponses de ce diagnostic, une seule cible et une explication"
+" dans la même société."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Create a new diagnostic instead of converting an existing survey."
+msgstr ""
+"Créez un nouveau diagnostic au lieu de convertir un questionnaire existant."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid ""
+"Define fixed single-choice questions, recommendations and an advice contact."
+msgstr ""
+"Définissez des questions fixes à choix unique, des profils complets de "
+"recommandation et un contact pour demander conseil."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid "Demander conseil"
+msgstr "Demander conseil"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid "Demandons conseil à une personne"
+msgstr "Demandons conseil à une personne"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_list
+msgid "Diagnostic d’orientation"
+msgstr "Diagnostic d’orientation"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid ""
+"Each rule describes a coherent profile with one answer per question. Missing"
+" answers, no matching rule or several matching rules lead to human advice. "
+"Publication freezes the diagnostic; duplicate it to revise."
+msgstr ""
+"Chaque règle décrit un profil cohérent avec une réponse par question. Les "
+"réponses manquantes, l’absence de règle correspondante ou plusieurs règles "
+"correspondantes conduisent à un conseil humain. La publication fige le "
+"diagnostic ; dupliquez-le pour le réviser."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid ""
+"Facultatif, avant achat. Finalité : vous proposer une orientation expliquée."
+" Vos réponses sont traitées pour afficher ce résultat uniquement, sans "
+"enregistrement, sans conservation ni transmission à un conseiller."
+msgstr ""
+"Facultatif, avant achat. Finalité : vous proposer une orientation expliquée."
+" Vos réponses sont traitées pour afficher ce résultat uniquement, sans "
+"enregistrement, sans conservation ni transmission à un conseiller."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Keep orientation separate from pedagogical evaluations and exams."
+msgstr "Séparez l’orientation des évaluations pédagogiques et des examens."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Keep published diagnostics unchanged; duplicate to revise."
+msgstr ""
+"Conservez les diagnostics publiés en l’état ; dupliquez-les pour les "
+"réviser."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Keep the diagnostic company unchanged."
+msgstr "Conservez la société du diagnostic."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid ""
+"Les réponses sont insuffisantes, contradictoires ou ne permettent pas de "
+"proposer une orientation disponible sans ambiguïté. Un échange humain vous "
+"aidera à choisir."
+msgstr ""
+"Les réponses sont insuffisantes, contradictoires ou ne permettent pas de "
+"proposer une orientation disponible sans ambiguïté. Un échange humain vous "
+"aidera à choisir."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid ""
+"Optional advice before purchase. Responses are processed only to display a "
+"recommendation and are never recorded. Use fixed single-choice questions "
+"without personal data."
+msgstr ""
+"Conseil facultatif avant achat. Les réponses servent uniquement à afficher "
+"une recommandation et ne sont jamais enregistrées. Utilisez des questions "
+"fixes à choix unique sans données personnelles."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__orientation_company_id
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__company_id
+msgid "Orientation Company"
+msgstr "Société du diagnostic"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Orientation Diagnostic"
+msgstr "Diagnostic d’orientation"
+
+#. module: training_management_survey
+#: model:ir.actions.act_window,name:training_management_survey.orientation_action
+#: model:ir.ui.menu,name:training_management_survey.orientation_menu
+msgid "Orientation Diagnostics"
+msgstr "Diagnostics d’orientation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__orientation_published
+msgid "Orientation Published"
+msgstr "Diagnostic publié"
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_orientation_rule
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Orientation Recommendation"
+msgstr "Recommandation d’orientation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__orientation_revision
+msgid "Orientation Revision"
+msgstr "Révision du diagnostic"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid "Orientation conseillée :"
+msgstr "Orientation conseillée :"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Orientation responses are not recorded. Use the training catalogue."
+msgstr ""
+"Les réponses d’orientation ne sont pas enregistrées. Utilisez le catalogue "
+"des formations."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid "Pour un conseil humain :"
+msgstr "Pour un conseil humain :"
+
+#. module: training_management_survey
+#: model:ir.model.fields,help:training_management_survey.field_survey_survey__orientation_contact
+msgid "Public contact email or telephone."
+msgstr "Adresse de courriel ou téléphone public pour demander conseil."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Publish Diagnostic"
+msgstr "Publier le diagnostic"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Publish diagnostics through the checked action."
+msgstr "Publiez les diagnostics avec l’action prévue."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid ""
+"Recommend only published programmes or validated paths with public steps."
+msgstr ""
+"Recommandez uniquement des programmes publiés ou des parcours validés dont "
+"les formations sont publiques."
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__explanation
+msgid "Recommendation Explanation"
+msgstr "Explication de la recommandation"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__orientation_rule_ids
+msgid "Recommendations"
+msgstr "Recommandations"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__level
+msgid "Recommended Level"
+msgstr "Niveau conseillé"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__path_id
+msgid "Recommended Path"
+msgstr "Parcours conseillé"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__program_id
+msgid "Recommended Programme"
+msgstr "Programme conseillé"
+
+#. module: training_management_survey
+#: model:ir.model.fields,field_description:training_management_survey.field_training_orientation_rule__answer_ids
+msgid "Required Answers"
+msgstr "Réponses nécessaires"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form
+msgid "Voir mon orientation"
+msgstr "Voir mon orientation"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid ""
+"After adding or changing questions, click Define Recommendations to save "
+"them before selecting answers."
+msgstr ""
+"Après avoir ajouté ou modifié des questions, cliquez sur Définir les "
+"recommandations pour les enregistrer avant de sélectionner les réponses."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_question_form
+msgid "Choices"
+msgstr "Choix"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/survey.py:0
+msgid ""
+"Create or duplicate questions in the diagnostic; do not move existing "
+"definitions."
+msgstr ""
+"Créez ou dupliquez les questions dans le diagnostic ; ne déplacez pas les "
+"définitions existantes."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Define Recommendations"
+msgstr "Définir les recommandations"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_form_view
+msgid "Open Diagnostic"
+msgstr "Ouvrir le diagnostic"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "Publish and activate the diagnostic before opening its public page."
+msgstr "Publiez et activez le diagnostic avant d’ouvrir sa page publique."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/orientation.py:0
+msgid "The recommendation company is derived from its diagnostic."
+msgstr "La société de la recommandation est déterminée par son diagnostic."
