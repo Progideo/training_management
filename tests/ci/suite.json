@@ -449,7 +449,12 @@
         "path_update",
         "path_preserved",
         "concurrency",
-        "portal_readonly"
+        "portal_readonly",
+        "commerce_baseline",
+        "commerce_update",
+        "commerce_preserved",
+        "commerce_pdf",
+        "commerce_concurrency"
       ]
     }
   ],

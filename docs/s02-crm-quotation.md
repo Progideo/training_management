@@ -5,6 +5,10 @@ Incréments demande/devis, tarifs et rôles commerciaux de [#12](https://github.
 Ce document décrit S02 livré par les PR #43 et #44 et son périmètre de recette.
 L'installation en développement et l'ouverture aux clients restent des étapes séparées.
 
+Le mode « Prix convenu au devis » et les offres de parcours complètes ou
+partielles sont définis dans [P09.3](p09-commercial-paths.md). Les règles de
+prix fixe décrites ici restent applicables aux offres conservant ce mode.
+
 ## Parcours interne livré
 
 L'addon optionnel `training_management_sale` dépend de `training_management`,

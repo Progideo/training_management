@@ -40,7 +40,7 @@ global de formations distinctes.
 
 Les vues, l'authentification, la pagination et les styles sont ceux du portail
 Community déjà utilisé par S05. Aucun frontend ni compte supplémentaire.
-La commercialisation des parcours reste à définir avant réalisation.
+La commercialisation détaillée est définie dans [P09.3](p09-commercial-paths.md).
 
 ## Recette courte
 

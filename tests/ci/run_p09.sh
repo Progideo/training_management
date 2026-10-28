@@ -10,11 +10,15 @@ mkdir -p "$results"
 results=$(cd "$results" && pwd)
 work_dir=$(mktemp -d)
 container=tm_p09_${run_id}_odoo
+pdf_container=tm_p09_${run_id}_pdf
 volume=tm_p09_${run_id}_data
+report_url="http://$pdf_container:8069"
+if [[ "${TM_P09_NETWORK:-host}" == host ]]; then report_url=http://127.0.0.1:8069; fi
 cleanup() {
   rc=$?
   trap - EXIT
   docker rm -f "$container" > "$results/container-cleanup.log" 2>&1 || true
+  docker rm -f "$pdf_container" > "$results/pdf-container-cleanup.log" 2>&1 || true
   if ! docker volume rm "$volume" > "$results/volume-cleanup.log" 2>&1; then
     if docker volume inspect "$volume" > /dev/null 2>&1; then rc=1; fi
   fi
@@ -26,6 +30,7 @@ run_odoo() {
   docker run --rm -i --name "$container" --network "${TM_P09_NETWORK:-host}" \
     -e HOST="${TM_P09_DB_HOST:-127.0.0.1}" -e USER=odoo -e PASSWORD=fictional_ci_password \
     -e P09_PHASE="${P09_PHASE:-}" \
+    -e P09_REPORT_URL="$report_url" \
     -v "${TM_ADDONS_DIR:-$repo/addons}:/mnt/extra-addons:ro" -v "$volume:/var/lib/odoo" \
     "$ODOO_IMAGE" odoo "$@" -d "${TM_P09_DATABASE:-tm_s01_test_p09}" --workers=0 --max-cron-threads=0 --http-interface=127.0.0.1 --http-port=0
 }
@@ -48,3 +53,23 @@ step path_update run_odoo -u training_management,training_management_sale,traini
 P09_PHASE=verify_path step path_preserved run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=concurrency step concurrency run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=portal step portal_readonly run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
+P09_PHASE=commerce_prepare step commerce_baseline run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
+step commerce_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=commerce_verify step commerce_preserved run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
+# The PDF engine fetches native report assets from a real disposable HTTP
+# process, rather than forcing network rendering inside a TransactionCase.
+docker run -d --name "$pdf_container" --network "${TM_P09_NETWORK:-host}" \
+  -e HOST="${TM_P09_DB_HOST:-127.0.0.1}" -e USER=odoo -e PASSWORD=fictional_ci_password \
+  -v "$repo/addons:/mnt/extra-addons:ro" -v "$volume:/var/lib/odoo" \
+  "$ODOO_IMAGE" odoo -d "${TM_P09_DATABASE:-tm_s01_test_p09}" --workers=0 --max-cron-threads=0 \
+  --http-interface=0.0.0.0 --http-port=8069 > "$results/pdf-server.log"
+pdf_ready=false
+for _ in $(seq 1 60); do
+  if docker exec "$pdf_container" python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login', timeout=2)" > /dev/null 2>&1; then pdf_ready=true; break; fi
+  sleep 1
+done
+[[ "$pdf_ready" == true ]] || { docker logs "$pdf_container"; exit 1; }
+P09_PHASE=commerce_pdf step commerce_pdf run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
+docker cp "$pdf_container:/var/lib/odoo/p093-quotation.pdf" "$results/p093-quotation.pdf"
+docker rm -f "$pdf_container" > "$results/pdf-server-stop.log"
+P09_PHASE=commerce_concurrency step commerce_concurrency run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
