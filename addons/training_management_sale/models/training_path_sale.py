@@ -202,6 +202,7 @@ class SaleOrder(models.Model):
             raise ValidationError(self.env._("Prepare the path on a draft quotation without training lines."))
         return {
             "type": "ir.actions.act_window",
+            "name": self.env._("Prepare Path Quotation"),
             "res_model": "training.path.quote",
             "view_mode": "form",
             "target": "new",
@@ -216,6 +217,7 @@ class SaleOrder(models.Model):
             raise ValidationError(self.env._("Reuse acquired work on a confirmed path contract."))
         return {
             "type": "ir.actions.act_window",
+            "name": self.env._("Reuse Prior Learning"),
             "res_model": "training.path.reuse",
             "view_mode": "form",
             "target": "new",

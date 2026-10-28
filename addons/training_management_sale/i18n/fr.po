@@ -2012,6 +2012,8 @@ msgstr "Acquis du parcours"
 #. module: training_management_sale
 #: model:ir.model,name:training_management_sale.model_training_path_quote
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_quote_form
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
 msgid "Prepare Path Quotation"
 msgstr "Préparer un devis de parcours"
 
@@ -2046,7 +2048,7 @@ msgstr "Base tarifaire"
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_training_path_quote_line__price_unit
 msgid "Price Unit"
-msgstr "Prix unitaire convenu"
+msgstr "Prix unitaire"
 
 
 #. module: training_management_sale
@@ -2090,6 +2092,8 @@ msgstr "Type de demande"
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_reuse_form
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_path
+#. odoo-python
+#: code:addons/training_management_sale/models/training_path_sale.py:0
 msgid "Reuse Prior Learning"
 msgstr "Réutiliser un acquis"
 

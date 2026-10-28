@@ -16,7 +16,7 @@
                 <attribute name="invisible">training_path_id</attribute>
             </field>
             <xpath expr="//list[@name='sol_list']/field[@name='training_program_id']" position="after">
-                <field name="training_path_step_id" optional="show" readonly="parent.state in ['sale','cancel']" options="{'no_create': True}" domain="[('path_id', '=', parent.training_path_id)]"/>
+                <field name="training_path_step_id" optional="hide" readonly="parent.state in ['sale','cancel']" options="{'no_create': True}" domain="[('path_id', '=', parent.training_path_id)]"/>
             </xpath>
             <xpath expr="//field[@name='order_line']/form//field[@name='training_program_id']" position="after">
                 <field name="training_path_step_id" invisible="display_type" readonly="parent.state in ['sale','cancel']" options="{'no_create': True}"/>
