@@ -322,6 +322,24 @@
         "repeated_history_preserved",
         "concurrency"
       ]
+    },
+    "learning_paths": {
+      "script": "tests/ci/run_p09.sh",
+      "artifacts": [
+        "p09-results"
+      ],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "second_update",
+        "repeated_history_preserved",
+        "path_baseline",
+        "path_update",
+        "path_preserved",
+        "concurrency"
+      ]
     }
   }
 }

@@ -164,3 +164,11 @@ rule_intra_version,Intra versions operator,training.intra.version,,crud,"[('comp
 
 access_operator_notice,Staff alert journal,training.operator.notice,training_management.group_training_coordinator,r,
 rule_operator_notice,Staff alert recipient,training.operator.notice,,crud,"[('company_id','in',company_ids),('recipient_id','=',user.id)] if user.active else [('id','=',0)]"
+access_path_coordinator,training.path coordinator,training.path,training_management.group_training_coordinator,crud,
+access_path_reader,training.path reader,training.path,training_management.group_training_reader,r,
+rule_path_company,training.path allowed companies,training.path,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_path_step_coordinator,training.path.step coordinator,training.path.step,training_management.group_training_coordinator,crud,
+access_path_step_reader,training.path.step reader,training.path.step,training_management.group_training_reader,r,
+rule_path_step_company,training.path.step allowed companies,training.path.step,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_path_assignment_coordinator,training.path.assignment coordinator,training.path.assignment,training_management.group_training_coordinator,cru,
+rule_path_assignment_company,training.path.assignment allowed companies,training.path.assignment,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

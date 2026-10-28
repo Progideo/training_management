@@ -1,0 +1,103 @@
+<odoo>
+    <record id="view_training_path_list" model="ir.ui.view">
+        <field name="name">training.path.list</field>
+        <field name="model">training.path</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="order_policy"/>
+                <field name="duration_hours"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_path_form" model="ir.ui.view">
+        <field name="name">training.path.form</field>
+        <field name="model">training.path</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_validate" type="object" string="Validate" invisible="state != 'draft'" groups="training_management.group_training_coordinator"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state != 'draft'"/>
+                        <field name="company_id" readonly="state != 'draft'" groups="base.group_multi_company"/>
+                        <field name="order_policy" readonly="state != 'draft'"/>
+                        <field name="duration_hours"/>
+                    </group>
+                    <field name="step_ids" readonly="state != 'draft'">
+                        <list editable="bottom">
+                            <field name="sequence"/>
+                            <field name="program_id"/>
+                            <field name="prerequisite_ids" widget="many2many_tags"/>
+                        </list>
+                    </field>
+                    <field name="assignment_ids" groups="training_management.group_training_coordinator">
+                        <list create="0" delete="0">
+                            <field name="participant_id"/>
+                            <field name="step_id"/>
+                            <field name="enrollment_id"/>
+                            <field name="completed"/>
+                            <field name="blocked"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_path_assignment_form" model="ir.ui.view">
+        <field name="name">training.path.assignment.form</field>
+        <field name="model">training.path.assignment</field>
+        <field name="arch" type="xml">
+            <form edit="0" delete="0">
+                <header>
+                    <button name="action_open_reason" type="object" string="Withdraw Path Reference" context="{'reason_action': 'action_withdraw'}" invisible="withdrawn_at"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="step_id"/>
+                        <field name="enrollment_id"/>
+                        <field name="equivalence_reason"/>
+                        <field name="validated_by"/>
+                        <field name="validated_at"/>
+                        <field name="withdrawn_at"/>
+                        <field name="withdrawn_by"/>
+                        <field name="withdrawal_reason"/>
+                        <field name="completed"/>
+                        <field name="blocked"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_path_assignment_list" model="ir.ui.view">
+        <field name="name">training.path.assignment.list</field>
+        <field name="model">training.path.assignment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="path_id"/>
+                <field name="step_id"/>
+                <field name="participant_id"/>
+                <field name="enrollment_id"/>
+                <field name="completed"/>
+                <field name="blocked"/>
+                <field name="withdrawn_at"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_training_paths" model="ir.actions.act_window">
+        <field name="name">Training Paths</field>
+        <field name="res_model">training.path</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_training_path_assignments" model="ir.actions.act_window">
+        <field name="name">Path Enrollment References</field>
+        <field name="res_model">training.path.assignment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_training_paths" name="Training Paths" parent="menu_training_root" action="action_training_paths" sequence="21"/>
+    <menuitem id="menu_training_path_assignments" name="Path Enrollment References" parent="menu_training_root" action="action_training_path_assignments" sequence="22" groups="training_management.group_training_coordinator"/>
+</odoo>

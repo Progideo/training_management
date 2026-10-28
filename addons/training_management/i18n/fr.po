@@ -111,6 +111,7 @@ msgstr "Méthode de l’action"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__active
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__active
 #: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__active
+#: model:ir.model.fields,field_description:training_management.field_training_path__active
 msgid "Active"
 msgstr "Actif"
 
@@ -232,6 +233,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_path__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_path_step__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -511,6 +515,7 @@ msgstr "Nom affiché"
 #: model:ir.model.fields.selection,name:training_management.selection__training_provider_dossier__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_path__state__draft
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -804,6 +809,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__name
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__name
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__name
+#: model:ir.model.fields,field_description:training_management.field_training_path__name
 msgid "Name"
 msgstr "Nom"
 
@@ -908,6 +914,7 @@ msgstr "Reportée"
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment__prerequisites
 #: model_terms:ir.ui.view,arch_db:training_management.programme_pdf_document
 #: code:addons/training_management/models/training_public_catalogue.py:0
+#: model:ir.model.fields,field_description:training_management.field_training_path_step__prerequisite_ids
 msgid "Prerequisites"
 msgstr "Prérequis"
 
@@ -1109,6 +1116,7 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_company_authorization__state
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__state
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__state
+#: model:ir.model.fields,field_description:training_management.field_training_path__state
 msgid "State"
 msgstr "État"
 
@@ -1230,6 +1238,7 @@ msgstr ""
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_path_form
 msgid "Validate"
 msgstr "Valider"
 
@@ -1239,18 +1248,21 @@ msgstr "Valider"
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__validated
+#: model:ir.model.fields.selection,name:training_management.selection__training_path__state__validated
 msgid "Validated"
 msgstr "Validé"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_proof__validated_at
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_at
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__validated_at
 msgid "Validated At"
 msgstr "Validé le"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_proof__validated_by_id
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__validated_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__validated_by
 msgid "Validated By"
 msgstr "Validé par"
 
@@ -1551,6 +1563,7 @@ msgstr "Avant"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__effective_access__blocked
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__blocked
 msgid "Blocked"
 msgstr "Bloqué"
 
@@ -1830,6 +1843,7 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -2031,6 +2045,7 @@ msgstr "L’historique des opérations est immuable."
 #: model:ir.model.fields,field_description:training_management.field_training_enrollment_operation__source_participant_id
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__role__participant
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__name
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__participant_id
 msgid "Participant"
 msgstr "Participant"
 
@@ -2059,6 +2074,7 @@ msgstr "Préparation"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__program_id
+#: model:ir.model.fields,field_description:training_management.field_training_path_step__program_id
 msgid "Program"
 msgstr "Programme"
 
@@ -4301,6 +4317,7 @@ msgstr "Agenda"
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__sequence
 #: model:ir.model.fields,field_description:training_management.field_training_learning_activity__sequence
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__sequence
+#: model:ir.model.fields,field_description:training_management.field_training_path_step__sequence
 msgid "Sequence"
 msgstr "Ordre"
 
@@ -4525,6 +4542,7 @@ msgstr "Réalisez d’abord les activités préalables."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_progress__completed
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__completed
 msgid "Completed"
 msgstr "Réalisé"
 
@@ -11187,3 +11205,220 @@ msgstr "Inscription modifiée"
 #: model:ir.model,name:training_management.model_training_operator_notice
 msgid "Training Staff Alert Journal"
 msgstr "Journal des alertes de formation"
+
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Keep validated path references and their history unchanged."
+msgstr "Conserver les rattachements validés et leur historique sans modification."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Keep validated paths unchanged; create a new path version."
+msgstr "Conserver les parcours validés ; créer une nouvelle version du parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Create a draft path."
+msgstr "Créer un parcours en brouillon."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Only a training coordinator may validate path references."
+msgstr "Seul un coordinateur de formation peut valider les rattachements aux parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Use the validation action."
+msgstr "Utiliser l’action de validation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Choose a standard programme from the path company."
+msgstr "Choisir un programme standard de la société du parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Prerequisites must be earlier steps of this path."
+msgstr "Les prérequis doivent être des étapes antérieures de ce parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Prerequisites must precede their dependants."
+msgstr "Les prérequis doivent précéder les étapes qui en dépendent."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Keep a step in its original path."
+msgstr "Conserver l’étape dans son parcours d’origine."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Complete the blocking path prerequisites before opening access."
+msgstr "Satisfaire les prérequis bloquants du parcours avant d’ouvrir les accès."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Choose at least one validated programme."
+msgstr "Choisir au moins un programme validé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Validation metadata is generated by the server."
+msgstr "Les données de validation sont générées par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Use a validated path in the enrollment company."
+msgstr "Utiliser un parcours validé de la société de l’inscription."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Explain and validate the equivalence between programmes."
+msgstr "Expliquer et valider l’équivalence entre les programmes."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "This step or enrollment is already counted in this path."
+msgstr "Cette étape ou inscription est déjà comptée dans ce parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+msgid "Resolve path prerequisites before linking an active enrollment."
+msgstr "Satisfaire les prérequis du parcours avant de rattacher une inscription active."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path__order_policy
+msgid "Order Policy"
+msgstr "Politique d’ordre"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path__step_ids
+msgid "Steps"
+msgstr "Étapes"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path__assignment_ids
+msgid "Assignments"
+msgstr "Rattachements"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path__duration_hours
+msgid "Duration Hours"
+msgstr "Durée pédagogique (heures)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_step__path_id
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__path_id
+msgid "Path"
+msgstr "Parcours"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_step__course_id
+msgid "Course"
+msgstr "Formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__step_id
+msgid "Step"
+msgstr "Étape"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__equivalence_reason
+msgid "Equivalence Reason"
+msgstr "Motif de l’équivalence"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_paths
+#: model:ir.actions.act_window,name:training_management.action_training_paths
+msgid "Training Paths"
+msgstr "Parcours de formation"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_path_assignments
+#: model:ir.actions.act_window,name:training_management.action_training_path_assignments
+msgid "Path Enrollment References"
+msgstr "Rattachements aux parcours"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_path__order_policy__recommended
+msgid "Recommended Order"
+msgstr "Ordre conseillé"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_path__order_policy__mandatory
+msgid "Mandatory Order"
+msgstr "Ordre obligatoire"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_path
+msgid "Training Path"
+msgstr "Parcours de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_path_step
+msgid "Training Path Step"
+msgstr "Étape de parcours"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_path_assignment
+msgid "Training Path Enrollment Reference"
+msgstr "Rattachement d’inscription au parcours"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_path_step_unique_program
+msgid "Use each course once in a path."
+msgstr "Utiliser chaque formation une seule fois dans un parcours."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_path_step_unique_sequence
+msgid "Use distinct step positions."
+msgstr "Utiliser des positions distinctes pour les étapes."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_path_assignment_one_step
+msgid "This participant already has this path step."
+msgstr "Ce participant possède déjà cette étape du parcours."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_path_assignment_one_source
+msgid "Do not count an enrollment twice in the same path."
+msgstr "Ne pas compter une inscription deux fois dans le même parcours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_path.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_path_assignment_form
+msgid "Withdraw Path Reference"
+msgstr "Retirer le rattachement au parcours"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawn_at
+msgid "Withdrawn At"
+msgstr "Retiré le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawn_by
+msgid "Withdrawn By"
+msgstr "Retiré par"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_path_assignment__withdrawal_reason
+msgid "Withdrawal Reason"
+msgstr "Motif du retrait"
