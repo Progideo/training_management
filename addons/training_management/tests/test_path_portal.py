@@ -156,7 +156,7 @@ class TestPathPortalHTTP(PathPortalCase, HttpCase):
         self.assertNotIn(f"/my/trainings/{second.enrollment_id.id}", detail.text)
         self.assertEqual(tree.xpath("//progress/@max"), ["2"])
         self.assertEqual(tree.xpath("//progress/@value"), ["0"])
-        self.assertIn("Prerequisites pending", detail.text)
+        self.assertTrue(any(label in detail.text for label in ("Prerequisites pending", "Prérequis en attente")))
         self.assertIn("/my/training-paths", self.url_open("/my/trainings").text)
         self.assertEqual(self.url_open(f"/my/training-paths/{path.id}", data={"attempt": "1"}).status_code, 405)
 
@@ -184,6 +184,14 @@ class TestPathPortalHTTP(PathPortalCase, HttpCase):
         load_language(self.cr, "fr_FR")
         path, _, _, _ = self.assigned_path(name="Fictional <script>private</script> path")
         self.portal.lang = "fr_FR"
+        if "website" in self.env and "language_ids" in self.env["website"]._fields:
+            french = self.env.ref("base.lang_fr")
+            self.env["website"].search([]).write(
+                {
+                    "language_ids": [Command.set(french.ids)],
+                    "default_lang_id": french.id,
+                }
+            )
         self.authenticate(self.portal.login, self.portal.login)
         response = self.url_open(f"/my/training-paths/{path.id}")
         self.assertEqual(response.status_code, 200)

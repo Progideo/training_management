@@ -8,7 +8,9 @@ spécification §21. Ce volet complète [P09.1](p09-learning-paths.md).
 « Mes parcours » est accessible depuis l'accueil du portail et « Mes formations ».
 Le participant voit les étapes dans leur ordre, leurs prérequis, la durée
 pédagogique estimée et le nombre d'étapes terminées. Chaque lien ouvre l'espace
-formation existant, uniquement lorsque son accès effectif est actif.
+formation existant, uniquement lorsque son accès effectif est actif. La langue
+et les formats suivent le portail et les langues configurées sur Website,
+s’il est installé.
 
 La synthèse relit les références P09.1, les inscriptions et les activités S05/S06.
 Elle ne crée aucun droit, inscription, progression ou preuve. Une équivalence
