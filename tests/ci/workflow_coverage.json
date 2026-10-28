@@ -347,7 +347,13 @@
         "commerce_concurrency",
         "orientation_baseline",
         "orientation_update",
-        "orientation_preserved"
+        "orientation_preserved",
+        "practice_baseline",
+        "practice_update",
+        "practice_preserved",
+        "practice_second_update",
+        "practice_repeated_preserved",
+        "practice_concurrency"
       ]
     }
   }

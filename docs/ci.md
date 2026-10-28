@@ -47,7 +47,9 @@ historiques Training/Surveys, puis conserve les références de parcours après
 une nouvelle mise à jour, teste deux rattachements concurrents et vérifie la
 lecture du portail sans modification des historiques. Il conserve aussi les
 définitions et règles P10 après mise à jour et vérifie qu’un calcul d’orientation
-ne persiste aucune réponse.
+ne persiste aucune réponse. Le même parcours conserve ensuite actions P11, preuves
+privées, retours et politiques après deux mises à jour ; deux transactions
+concurrentes produisent une seule réalisation d’action et un seul rappel natif.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.

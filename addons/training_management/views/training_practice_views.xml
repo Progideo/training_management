@@ -1,0 +1,28 @@
+<odoo>
+    <record id="practice_action_list" model="ir.ui.view">
+        <field name="name">training.practice.action.list</field><field name="model">training.practice.action</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="enrollment_id" readonly="id"/><field name="horizon" readonly="id"/><field name="due_date"/><field name="state"/></list></field>
+    </record>
+    <record id="practice_action_form" model="ir.ui.view">
+        <field name="name">training.practice.action.form</field><field name="model">training.practice.action</field>
+        <field name="arch" type="xml">
+            <form><header><button name="action_close" type="object" string="Close" invisible="state == 'closed'"/><field name="state" widget="statusbar"/></header>
+                <sheet><group><field name="name" readonly="id"/><field name="enrollment_id" readonly="id"/><field name="completed_on" readonly="id"/><field name="horizon" readonly="id"/><field name="due_date"/><field name="service_reference" readonly="id"/><field name="trainer_feedback" readonly="id"/><field name="reminder_days" readonly="id"/><field name="retention_id" readonly="id"/></group>
+                    <p>Agreed actions are preserved. Close an action and create a replacement to correct its definition. Private evidence is never included in client summaries.</p>
+                    <field name="entry_ids"><list create="0" delete="0"><field name="kind"/><field name="body"/><field name="create_uid"/><field name="create_date"/><field name="filename"/><field name="data" filename="filename" widget="binary"/></list></field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="practice_actions" model="ir.actions.act_window"><field name="name">Practice Plans</field><field name="res_model">training.practice.action</field><field name="view_mode">list,form</field></record>
+    <menuitem id="menu_practice_actions" name="Practice Plans" parent="menu_training_root" action="practice_actions" groups="training_management.group_training_coordinator" sequence="80"/>
+    <record id="practice_summary_list" model="ir.ui.view"><field name="name">training.practice.summary.list</field><field name="model">training.practice.summary</field><field name="arch" type="xml"><list><field name="allocation_id"/><field name="authorization_id"/><field name="published_at"/><field name="withdrawn"/></list></field></record>
+    <record id="practice_summary_form" model="ir.ui.view"><field name="name">training.practice.summary.form</field><field name="model">training.practice.summary</field><field name="arch" type="xml">
+        <form><header><button name="action_publish" type="object" string="Publish Agreed Summary" invisible="published_at or withdrawn"/><button name="action_withdraw" type="object" string="Withdraw" invisible="not published_at or withdrawn"/></header><sheet>
+            <p>Enter only the agreed and authorized summary. No private action, proof or trainer comment is copied automatically.</p>
+            <group><field name="allocation_id" readonly="published_at"/><field name="authorization_id" readonly="published_at"/><field name="authorization_reference" readonly="published_at"/><field name="retention_id" readonly="published_at"/><field name="body" readonly="published_at"/><field name="published_at"/><field name="published_by_id"/><field name="withdrawn"/></group>
+        </sheet></form>
+    </field></record>
+    <record id="practice_summaries" model="ir.actions.act_window"><field name="name">Authorized Practice Summaries</field><field name="res_model">training.practice.summary</field><field name="view_mode">list,form</field></record>
+    <menuitem id="menu_practice_summaries" name="Authorized Practice Summaries" parent="menu_training_root" action="practice_summaries" groups="training_management.group_training_coordinator" sequence="81"/>
+</odoo>

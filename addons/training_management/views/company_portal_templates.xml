@@ -54,6 +54,10 @@
                         <t t-out="n['name']" /> · <t t-out="n['state']" />
                     </li>
                 </ul>
+                <h2>Synthèses de mise en pratique autorisées</h2>
+                <section t-foreach="practice_summaries" t-as="summary" class="border rounded p-3 my-3">
+                    <p class="text-break" style="white-space:pre-wrap" t-out="summary['body']"/>
+                </section>
                 <h2>Documents autorisés</h2>
                 <ul>
                     <li t-foreach="documents" t-as="d">

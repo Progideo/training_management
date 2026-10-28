@@ -61,6 +61,7 @@ class TrainingCompanyPortal(http.Controller):
             request.render(
                 "training_management.company_training",
                 {
+                    "practice_summaries": request.env["training.practice.summary"]._client_rows(allocation),
                     "allocation_id": allocation.id,
                     "name": delivery.name,
                     "program": delivery.program_id.title,

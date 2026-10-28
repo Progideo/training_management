@@ -50,3 +50,7 @@ from . import training_operator_notice
 from . import training_path
 
 from . import training_path_portal
+
+from . import training_practice
+from . import training_practice_notice
+from . import training_practice_summary

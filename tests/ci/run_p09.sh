@@ -76,3 +76,9 @@ P09_PHASE=commerce_concurrency step commerce_concurrency run_odoo shell --no-htt
 P09_PHASE=orientation_prepare step orientation_baseline run_odoo shell --no-http < "$repo/tests/probes/p10_orientation.py"
 step orientation_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=orientation_verify step orientation_preserved run_odoo shell --no-http < "$repo/tests/probes/p10_orientation.py"
+P09_PHASE=practice_prepare step practice_baseline run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
+step practice_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=practice_verify step practice_preserved run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
+step practice_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=practice_verify step practice_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
+P09_PHASE=practice_concurrency step practice_concurrency run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"

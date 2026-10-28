@@ -42,9 +42,9 @@ class IrAttachment(models.Model):
         vals_list = [dict(vals) for vals in vals_list]
         for vals in vals_list:
             source_model = vals.get("res_model") or self.env.context.get("default_res_model")
-            if source_model == "training.learning.entry":
+            if source_model in ("training.learning.entry", "training.practice.entry"):
                 vals.update(self._add_missing_default_values(vals))
-                entry = self.env["training.learning.entry"].sudo().browse(vals.get("res_id")).exists()
+                entry = self.env[source_model].sudo().browse(vals.get("res_id")).exists()
                 if not entry:
                     raise ValidationError(self.env._("Use the private learning form to upload a file."))
                 self.env["training.document.policy"]._check_read(entry)
@@ -125,8 +125,8 @@ class IrAttachment(models.Model):
             raise ValidationError(
                 self.env._("Attendance evidence is stored only through the controlled attendance action.")
             )
-        if vals.get("res_model") == "training.learning.entry" or any(
-            a.res_model == "training.learning.entry" for a in self.sudo()
+        if vals.get("res_model") in ("training.learning.entry", "training.practice.entry") or any(
+            a.res_model in ("training.learning.entry", "training.practice.entry") for a in self.sudo()
         ):
             raise ValidationError(self.env._("Private learning files cannot be changed, shared or reassigned."))
         protected = self.sudo().filtered(lambda item: item.res_model == "training.material")
@@ -152,7 +152,10 @@ class IrAttachment(models.Model):
         return super().write(vals)
 
     def _export_rows(self, fields, *, _is_toplevel_call=True):
-        if any(item.res_model in ("training.material", "training.learning.entry") for item in self.sudo()):
+        if any(
+            item.res_model in ("training.material", "training.learning.entry", "training.practice.entry")
+            for item in self.sudo()
+        ):
             self.check_access("read")
             raise UserError(
                 self.env._("Bulk export of private support records is unavailable. Download an authorized PDF instead.")
@@ -160,13 +163,19 @@ class IrAttachment(models.Model):
         return super()._export_rows(fields, _is_toplevel_call=_is_toplevel_call)
 
     def copy_data(self, default=None):
-        if any(item.res_model in ("training.material", "training.learning.entry") for item in self.sudo()):
+        if any(
+            item.res_model in ("training.material", "training.learning.entry", "training.practice.entry")
+            for item in self.sudo()
+        ):
             raise ValidationError(self.env._("Private support files cannot be copied."))
         return super().copy_data(default)
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_material(self):
-        if any(item.res_model in ("training.material", "training.learning.entry") for item in self.sudo()):
+        if any(
+            item.res_model in ("training.material", "training.learning.entry", "training.practice.entry")
+            for item in self.sudo()
+        ):
             raise ValidationError(self.env._("Keep private support files and their history."))
 
     @api.ondelete(at_uninstall=False)
