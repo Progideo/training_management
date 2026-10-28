@@ -25,7 +25,7 @@
         <t t-call="portal.portal_layout">
             <a href="/my/training-paths">My learning paths</a><h1 t-out="path['name']"/>
             <p><t t-out="path['completed']"/> / <t t-out="path['total']"/> completed steps</p>
-            <progress t-att-value="path['completed']" t-att-max="path['total']" t-att-aria-label="path['name']" class="w-100"/>
+            <progress t-att-value="str(path['completed'])" t-att-max="str(path['total'])" t-att-aria-label="path['name']" class="w-100"/>
             <p><t t-out="path['hours']"/> estimated learning hours</p>
             <p t-if="path['mandatory']">Follow the required order below.</p>
             <p t-else="">The order below is recommended. Explicit prerequisites still apply.</p>

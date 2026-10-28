@@ -155,6 +155,7 @@ class TestPathPortalHTTP(PathPortalCase, HttpCase):
         self.assertEqual(links, [f"/my/trainings/{first.enrollment_id.id}"])
         self.assertNotIn(f"/my/trainings/{second.enrollment_id.id}", detail.text)
         self.assertEqual(tree.xpath("//progress/@max"), ["2"])
+        self.assertEqual(tree.xpath("//progress/@value"), ["0"])
         self.assertIn("Prerequisites pending", detail.text)
         self.assertIn("/my/training-paths", self.url_open("/my/trainings").text)
         self.assertEqual(self.url_open(f"/my/training-paths/{path.id}", data={"attempt": "1"}).status_code, 405)
@@ -192,4 +193,5 @@ class TestPathPortalHTTP(PathPortalCase, HttpCase):
         self.assertIn("Prérequis en attente", response.text)
         self.assertIn("Ouvrir la formation", response.text)
         self.assertIn("heures pédagogiques estimées", response.text)
+        self.assertIn("7,0", response.text)
         self.assertIn("étapes terminées", response.text)

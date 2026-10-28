@@ -1,6 +1,7 @@
 """Personal path summaries, projected through the existing enrollment identity."""
 
 from odoo import api, models
+from odoo.tools.misc import formatLang
 
 
 class TrainingPathPortal(models.AbstractModel):
@@ -65,7 +66,7 @@ class TrainingPathPortal(models.AbstractModel):
                 steps.append(
                     {
                         "name": step.program_id.title,
-                        "hours": step.program_id.duration_hours,
+                        "hours": formatLang(self.env, step.program_id.duration_hours, digits=1),
                         "status": status,
                         "completed": completed,
                         "equivalent": bool(reference and enrollment.program_id != step.program_id),
@@ -77,7 +78,7 @@ class TrainingPathPortal(models.AbstractModel):
                 {
                     "id": path.id,
                     "name": path.name,
-                    "hours": path.duration_hours,
+                    "hours": formatLang(self.env, path.duration_hours, digits=1),
                     "mandatory": path.order_policy == "mandatory",
                     "steps": steps,
                     "completed": sum(s["completed"] for s in steps),
