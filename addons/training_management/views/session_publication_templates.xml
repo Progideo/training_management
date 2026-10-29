@@ -24,7 +24,7 @@
         <t t-call="portal.frontend_layout"><main class="container py-4">
             <h1>Nouvelles dates : <t t-out="title"/></h1>
             <p t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
-            <p t-if="policy">Finalité : <t t-out="policy['purpose']"/>. Conservation : <t t-out="policy['days']"/> jours. Archivage : <t t-out="policy['archive']"/>. Suppression : <t t-out="policy['deletion']"/>.</p>
+            <p t-if="policy">Finalité : vous prévenir des nouvelles dates de cette formation. Conservation des preuves prévue par la politique approuvée : <t t-out="policy['days']"/> jours. Pour une demande de suppression, contactez l’organisme. Le désabonnement est immédiat et ne supprime pas les preuves de votre choix.</p>
             <p t-else="">Les alertes ne sont pas encore disponibles pour cette formation. Contactez l’organisme.</p>
             <form t-if="policy" method="post">
                 <input type="hidden" name="definition" t-att-value="definition"/>

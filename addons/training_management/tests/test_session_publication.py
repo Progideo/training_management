@@ -496,6 +496,8 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         tree = html.fromstring(response.content)
         self.assertFalse(tree.xpath("//input[@name='accepted']/@checked"))
+        for private_text in (self.policy.purpose, self.policy.archive_policy, self.policy.deletion_policy):
+            self.assertNotIn(private_text, response.text)
         token = tree.xpath("//input[@name='csrf_token']/@value")[0]
         definition = tree.xpath("//input[@name='definition']/@value")[0]
         response = self.url_open(consent_url, data={"csrf_token": token, "definition": definition})
