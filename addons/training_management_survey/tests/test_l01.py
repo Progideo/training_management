@@ -36,7 +36,7 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
     review_project = ProjectCase.review_project
 
     def test_v2_french_website_page_titles_follow_the_visible_language(self):
-        if "website" not in self.env:
+        if not self.env["ir.module.module"].search_count([("name", "=", "website"), ("state", "=", "installed")]):
             self.skipTest("Website owns the additional page title")
         load_language(self.cr, "fr_FR")
         french = self.env.ref("base.lang_fr")
