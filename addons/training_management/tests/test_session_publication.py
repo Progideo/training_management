@@ -525,6 +525,11 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         self.env["res.lang"]._activate_lang("fr_FR")
         self.env["ir.module.module"]._load_module_terms(["training_management"], ["fr_FR"])
         self.portal.partner_id.lang = "fr_FR"
+        if "website" in self.env:
+            french = self.env.ref("base.lang_fr")
+            self.env["website"].search([]).write(
+                {"language_ids": [Command.set(french.ids)], "default_lang_id": french.id}
+            )
         self.authenticate(self.portal.login, self.portal.login)
         response = self.url_open("/formations/%s/date-alert" % self.public_program.id)
         self.assertEqual(response.status_code, 200)
