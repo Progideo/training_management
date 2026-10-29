@@ -43,3 +43,16 @@ from . import training_public_catalogue
 
 from . import training_company_portal
 from . import training_intra_version
+
+from . import training_mail_identity
+from . import training_operator_notice
+
+from . import training_path
+
+from . import training_path_portal
+
+from . import training_practice
+from . import training_practice_notice
+from . import training_practice_summary
+
+from . import training_project

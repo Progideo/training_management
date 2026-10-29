@@ -84,6 +84,13 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | P01–P02 — parcours et demande guidée | [p01-p02-guided-requests.md](p01-p02-guided-requests.md) |
 | P03–P04 — catalogue public et aperçu | [p03-p04-public-catalogue.md](p03-p04-public-catalogue.md) |
 | P05–P06 — portail entreprise et versions intra | [p05-p06-company-dossiers.md](p05-p06-company-dossiers.md) |
+| P09.1 — composition et suivi interne des parcours | [p09-learning-paths.md](p09-learning-paths.md) |
+| P09.2 — portail participant des parcours | [p09-participant-portal.md](p09-participant-portal.md) |
+| P09.3 — commercialisation complète ou partielle | [p09-commercial-paths.md](p09-commercial-paths.md) |
+| P10 — diagnostic d’orientation avant achat | [p10-orientation.md](p10-orientation.md) |
+| P11 — plan de mise en pratique | [p11-practice-plans.md](p11-practice-plans.md) |
+| P12 — projet pratique évalué | [p12-assessed-projects.md](p12-assessed-projects.md) |
+| C06 — paramètres natifs au déploiement | [c06-launch-settings.md](c06-launch-settings.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
 | L01 — recette intégrée de lancement | [l01-launch-acceptance.md](l01-launch-acceptance.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |

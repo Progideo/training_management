@@ -25,3 +25,14 @@ from . import test_migration
 from . import test_public_catalogue
 
 from . import test_company_portal
+
+from . import test_pedagogical_launch
+from . import test_notification_alerts
+
+from . import test_path
+
+from . import test_path_portal
+
+from . import test_practice
+
+from . import test_project

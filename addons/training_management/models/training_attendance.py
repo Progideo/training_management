@@ -109,7 +109,13 @@ class Attendance(models.Model):
     company_id = fields.Many2one(related="session_id.company_id", store=True)
     event_ids = fields.One2many("training.attendance.event", "attendance_id", readonly=True)
     state = fields.Selection(
-        [("pending", "Pending Review"), ("anomaly", "Anomaly"), ("validated", "Validated")], compute="_compute_result"
+        [
+            ("pending", "Pending Review"),
+            ("anomaly", "Anomaly"),
+            ("validated", "Validated"),
+            ("invalidated", "Invalidated"),
+        ],
+        compute="_compute_result",
     )
     minutes = fields.Float(string="Validated Minutes", compute="_compute_result")
     late_minutes = fields.Float(compute="_compute_result")
@@ -123,17 +129,24 @@ class Attendance(models.Model):
     def _compute_result(self):
         for record in self:
             events = record.event_ids.sorted("id")
-            decisions = events.filtered(lambda e: e.kind in ("validation", "correction"))
+            decisions = events.filtered(lambda e: e.kind in ("validation", "correction", "invalidation"))
             last = decisions[-1:] or events[-1:]
             record.revision = events[-1:].id or 0
-            record.state = "validated" if decisions else "anomaly" if events.filtered("anomaly") else "pending"
-            record.minutes = (
-                max(0, (last.end_at - last.start_at).total_seconds() / 60) if decisions and not last.absent else 0
+            record.state = (
+                ("invalidated" if last.kind == "invalidation" else "validated")
+                if decisions
+                else "anomaly"
+                if events.filtered("anomaly")
+                else "pending"
             )
-            record.absent = bool(decisions and last.absent)
+            retained = bool(decisions and last.kind != "invalidation")
+            record.minutes = (
+                max(0, (last.end_at - last.start_at).total_seconds() / 60) if retained and not last.absent else 0
+            )
+            record.absent = bool(retained and last.absent)
             record.late_minutes = (
                 max(0, (last.start_at - record.session_id.start_at).total_seconds() / 60)
-                if decisions and not last.absent
+                if retained and not last.absent
                 else 0
             )
 
@@ -153,6 +166,7 @@ class AttendanceEvent(models.Model):
             ("paper", "Signed Paper"),
             ("validation", "Trainer Validation"),
             ("correction", "Coordinator Correction"),
+            ("invalidation", "Attendance Invalidation"),
         ],
         required=True,
     )
@@ -205,12 +219,36 @@ class AttendanceService(models.AbstractModel):
         else:
             if session.instructor_id != user.partner_id:
                 raise AccessError(self.env._("Only the assigned session trainer may validate attendance."))
-        if session.cancelled or session.delivery_id.state not in ("confirmed", "ongoing"):
+        if session.cancelled or session.delivery_id.state not in ("confirmed", "ongoing", "delivered"):
             raise ValidationError(self.env._("Attendance requires an active, non-cancelled scheduled session."))
         if lock:
             session.delivery_id._serialize()
             session.invalidate_recordset()
+            return self._session(session_id, coordinator=coordinator)
         return session
+
+    @api.private
+    def _invalidate(self, session_id, enrollment_id, *, reason="", revision=0, definition=None):
+        with self.env.cr.savepoint():
+            session = self._session(
+                session_id,
+                coordinator=self.env.user.has_group(COORDINATOR),
+                lock=True,
+            )
+            self._check_definition(session, definition)
+            presence = self._presence(session, enrollment_id)
+            if presence.enrollment_id.user_id == self.env.user:
+                raise AccessError(self.env._("You cannot review your own attendance."))
+            if not reason.strip():
+                raise ValidationError(self.env._("Provide a reason for invalidating attendance."))
+            if presence.revision != revision:
+                raise ValidationError(self.env._("Attendance changed. Reload before recording your decision."))
+            if not presence.event_ids.filtered(lambda e: e.kind in ("declaration", "paper")):
+                raise ValidationError(self.env._("There is no declaration to invalidate."))
+            if presence.event_ids.sorted("id")[-1:].kind == "invalidation":
+                return presence
+            self._event(presence, "invalidation", False, False, reason=reason.strip())
+            return presence
 
     @api.private
     def _presence(self, session, enrollment_id):
@@ -245,8 +283,13 @@ class AttendanceService(models.AbstractModel):
     @api.private
     def _event(self, presence, kind, first, last, *, absent=False, anomaly=False, reason=False, data=b"", filename=""):
         before = presence.event_ids.sorted("id")[-1:]
-        if kind == "correction":
-            before = presence.event_ids.filtered(lambda e: e.kind in ("validation", "correction")).sorted("id")[-1:]
+        if kind in ("correction", "invalidation"):
+            before = (
+                presence.event_ids.filtered(lambda e: e.kind in ("validation", "correction", "invalidation")).sorted(
+                    "id"
+                )[-1:]
+                or before
+            )
         after = json.dumps(
             {"start": str(first) if first else None, "end": str(last) if last else None, "absent": bool(absent)},
             sort_keys=True,
@@ -280,7 +323,7 @@ class AttendanceService(models.AbstractModel):
                 or session.delivery_id != enrollment.delivery_id
                 or session.cancelled
                 or session.attendance_mode == "paper"
-                or session.delivery_id.state not in ("confirmed", "ongoing")
+                or session.delivery_id.state not in ("confirmed", "ongoing", "delivered")
             ):
                 raise AccessError(self.env._("This attendance record is unavailable."))
             if not accepted:
@@ -288,20 +331,15 @@ class AttendanceService(models.AbstractModel):
             self._check_definition(session, definition)
             first, last = self._interval(session, start, end)
             presence = self._presence(session, enrollment_id)
-            previous = presence.event_ids.filtered(lambda e: e.kind == "declaration")
+            invalidation = presence.event_ids.filtered(lambda e: e.kind == "invalidation").sorted("id")[-1:]
+            previous = presence.event_ids.filtered(lambda e: e.kind == "declaration" and e.id > (invalidation.id or 0))
             if previous:
                 if previous.start_at != first or previous.end_at != last:
                     raise ValidationError(
                         self.env._("Your declaration is recorded. Ask the coordinator for a correction.")
                     )
                 return presence
-            now = fields.Datetime.now()
-            anomaly = not (
-                session.start_at - timedelta(minutes=session.attendance_before)
-                <= now
-                <= session.end_at + timedelta(minutes=session.attendance_after)
-            )
-            self._event(presence, "declaration", first, last, anomaly=anomaly)
+            self._event(presence, "declaration", first, last)
             return presence
 
     @api.private
@@ -335,8 +373,15 @@ class AttendanceService(models.AbstractModel):
                 raise ValidationError(self.env._("Provide a reason and a named evidence file."))
             if len(data) > 10 * 1024 * 1024:
                 raise ValidationError(self.env._("The evidence file must not exceed 10 MB."))
-            decisions = presence.event_ids.filtered(lambda e: e.kind in ("validation", "correction"))
-            if decisions and not correction and not paper:
+            decisions = presence.event_ids.filtered(lambda e: e.kind in ("validation", "correction", "invalidation"))
+            latest_decision = decisions.sorted("id")[-1:]
+            if latest_decision.kind == "invalidation" and not correction and not paper:
+                sources = presence.event_ids.filtered(
+                    lambda e: e.kind in ("declaration", "paper") and e.id > latest_decision.id
+                )
+                if not sources:
+                    raise ValidationError(self.env._("A new declaration is required after invalidation."))
+            if decisions and latest_decision.kind != "invalidation" and not correction and not paper:
                 raise ValidationError(self.env._("An existing validation requires a coordinator correction."))
             if correction and not decisions:
                 raise ValidationError(self.env._("The trainer must first validate the attendance."))

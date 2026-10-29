@@ -12,3 +12,6 @@ from . import test_dashboard
 from . import test_public_request
 
 from . import test_company_requests
+from . import test_notification_alerts
+
+from . import test_path_sale

@@ -17,9 +17,11 @@ class IrAttachment(models.Model):
             return domain
         # Native attachment permissions also accept public=True. Exclude files
         # whose private parent is forbidden, including pre-existing public files.
-        blocked = Domain("training_program_id", "!=", False)
+        blocked = Domain("training_program_id", "!=", False) | Domain("orientation_company_id", "!=", False)
         if self.env.user.has_group("training_management.group_training_coordinator"):
-            blocked &= Domain("training_company_id", "not in", self.env.companies.ids)
+            blocked &= Domain("training_company_id", "not in", self.env.companies.ids) & Domain(
+                "orientation_company_id", "not in", self.env.companies.ids
+            )
         exams = self.env["survey.survey"].sudo()._search(blocked, active_test=False)
         for model in (
             "survey.survey",
@@ -63,7 +65,7 @@ class IrAttachment(models.Model):
                     or values.get("type", "binary") != "binary"
                 ):
                     raise ValidationError(self.env._("Private exam files cannot be detached, shared or copied."))
-                vals["company_id"] = exam.training_company_id.id
+                vals["company_id"] = (exam.training_company_id or exam.orientation_company_id).id
         return super().create(vals_list)
 
     def write(self, vals):

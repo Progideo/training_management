@@ -5,15 +5,15 @@ Référence : [#17](https://github.com/Progideo/training_management/issues/17), 
 ## Parcours
 
 Le coordinateur configure la collecte papier, électronique ou mixte dans la séance
-existante. La fenêtre électronique va du début de séance à 30 minutes après sa fin par
-défaut, pour laisser confirmer un intervalle entièrement écoulé. Les marges
-avant/après sont configurables. Le texte de confirmation est configurable. Les anciennes
-séances ne reçoivent aucune présence inventée à la mise à jour.
+existante. La déclaration peut être régularisée sans date limite après la séance,
+mais uniquement avant la clôture de la formation et avec les accès existants encore
+valides. Aucun accès expiré, suspendu ou révoqué n’est rouvert. Le texte de
+confirmation est configurable. Les anciennes séances ne reçoivent aucune présence inventée à la mise à jour.
 
 Depuis « Mes formations », le participant authentifié déclare son propre intervalle
 écoulé et accepte le texte affiché. Le serveur conserve identité, séance, texte,
-méthode et date réelle de déclaration. Une déclaration tardive reste une anomalie
-à expliquer au contrôle ; les intervalles futurs ou hors séance sont refusés.
+méthode et date réelle de déclaration. Une déclaration tardive conserve son
+horodatage réel, sans antidatage ; les intervalles futurs ou hors séance sont refusés.
 Un lien collectif ne porte aucun droit de signature. Les accès S03 doivent être
 actifs ; suspension, révocation, expiration ou annulation empêchent une déclaration.
 Un formulaire devenu périmé après modification du planning ou du texte est refusé :
@@ -25,13 +25,20 @@ de séance, valide séparément et peut constater une absence sans déclaration.
 Il ne valide ni sa propre présence ni une déclaration dont il est l'auteur.
 Une absence papier reste cochée au contrôle. En cas d'erreur, l'intervalle et le
 commentaire saisis sont conservés sur le seul formulaire concerné.
+Le formateur affecté ou un coordinateur habilité peut invalider une déclaration
+erronée avec un motif obligatoire. Une décision immuable conserve auteur, date,
+état précédent et motif ; les minutes validées deviennent nulles sans supprimer
+la déclaration ni les justificatifs. Une nouvelle déclaration puis une validation
+distincte peuvent régulariser la présence. Les décisions périmées sont refusées.
+La clôture de la formation bloque déclaration, validation et invalidation.
+
 Le coordinateur importe un papier signé depuis la séance en indiquant la personne,
 l'intervalle et la provenance ; ce dépôt attend le contrôle du formateur.
 Un fichier collectif reste réservé aux coordinateurs de la société exploitante :
 aucune diffusion aux autres participants ni au client.
 
 Une ligne unique par inscription et séance porte la durée retenue. La dernière
-validation ou correction fait autorité : les sources ne s'additionnent jamais.
+validation, correction ou invalidation fait autorité : les sources ne s'additionnent jamais.
 90 minutes sur 120 donnent 90 minutes ; retard et absence restent distincts.
 Une correction exige un motif et un justificatif, conserve avant/après, auteur,
 date serveur et toutes les déclarations et pièces initiales. Aucun antidatage.
@@ -73,11 +80,13 @@ les activités S05, sans séance fictive ; les attestations relèvent de S08.
 
 ## Recette courte
 
-1. Créer une séance mixte de 120 minutes et régler la fenêtre et le texte.
+1. Créer une séance mixte de 120 minutes et régler le texte.
 2. Participant : déclarer 30 → 120, puis rejouer ; une déclaration, zéro minute
    validée avant le contrôle. Refuser accès d'un autre participant ou d'une autre société.
 3. Formateur affecté : valider ; vérifier 90 minutes et 30 de retard. Tester
-   absence, déclaration tardive avec explication, décision périmée et auto-validation.
+   absence, déclaration tardive, décision périmée et auto-validation.
+   Invalider avec motif sous formateur puis coordinateur ; contrôler les historiques,
+   le refus des autres profils et la nouvelle signature. Tester accès expiré et clôture.
 4. Coordinateur : importer le papier de la même personne ; aucun cumul.
    Corriger avec justificatif ; vérifier les anciens fichiers et le journal inchangés.
 5. Vérifier formulaire mobile, parcours clavier, CSRF, liens directs et jetons,
@@ -89,3 +98,6 @@ les activités S05, sans séance fictive ; les attestations relèvent de S08.
    deuxième mise à jour avec présences et deux transactions concurrentes.
 
 Les résultats réellement exécutés sont consignés dans la PR et ses artefacts CI.
+
+Contrôle C06 ciblé (droits, HTTP, mise à jour et concurrence) :
+`python3 tests/ci/run_attendance_policy.py`.

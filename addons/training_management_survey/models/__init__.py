@@ -11,3 +11,4 @@ from . import feedback
 
 from . import dashboard
 from . import security
+from . import orientation

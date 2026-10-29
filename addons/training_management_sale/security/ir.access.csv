@@ -12,3 +12,13 @@ access_enrollment_sales,Training enrollment states for sales,training.enrollment
 access_category_sales,Training categories for sales,training.category,sales_team.group_sale_salesman,r,
 access_s10_request_notice,S10 authorized request journal,training.request.notice,sales_team.group_sale_salesman,r,"[('lead_id','access','read')]"
 rule_s10_request_notice,S10 request company,training.request.notice,,crud,"[('company_id','in',company_ids)] if user.active else [('id', '=', 0)]"
+access_path_sales,Validated paths for sales,training.path,sales_team.group_sale_salesman,r,"[('state', '=', 'validated')]"
+access_path_step_sales,Validated path steps for sales,training.path.step,sales_team.group_sale_salesman,r,"[('path_id.state', '=', 'validated')]"
+access_training_path_quote,Path quotation assistant,training.path.quote,sales_team.group_sale_salesman,crud,
+access_training_path_quote_line,Path quotation assistant,training.path.quote.line,sales_team.group_sale_salesman,crud,
+access_path_usage_coordinator,Commercial path references,training.path.sale.usage,training_management.group_training_coordinator,cru,"[('order_id', 'access', 'read')]"
+rule_path_usage_company,Path references allowed companies,training.path.sale.usage,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_path_reuse_coordinator,Reuse prior path learning,training.path.reuse,training_management.group_training_coordinator,crud,
+rule_path_quote_owner,Path quotation assistant owner,training.path.quote,,crud,"[('create_uid', '=', user.id), ('order_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
+rule_path_quote_line_owner,Path quotation line owner,training.path.quote.line,,crud,"[('create_uid', '=', user.id), ('wizard_id', 'access', 'write'), ('step_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
+rule_path_reuse_owner,Prior learning assistant owner,training.path.reuse,,crud,"[('create_uid', '=', user.id), ('order_id', 'access', 'read')] if user.active else [('id', '=', 0)]"

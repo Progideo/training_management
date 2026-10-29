@@ -14,7 +14,11 @@ class AttendanceEdit(models.TransientModel):
     company_id = fields.Many2one(related="session_id.company_id")
     enrollment_id = fields.Many2one("training.enrollment", required=True, check_company=True)
     operation = fields.Selection(
-        [("paper", "Import Signed Paper"), ("correction", "Correct Validated Attendance")],
+        [
+            ("paper", "Import Signed Paper"),
+            ("correction", "Correct Validated Attendance"),
+            ("invalidation", "Invalidate Attendance"),
+        ],
         required=True,
         default="paper",
     )
@@ -22,8 +26,8 @@ class AttendanceEdit(models.TransientModel):
     end_minutes = fields.Float(string="Departure (Minutes After Scheduled Start)")
     absent = fields.Boolean()
     reason = fields.Text(required=True)
-    data = fields.Binary(attachment=False, required=True)
-    filename = fields.Char(required=True)
+    data = fields.Binary(attachment=False)
+    filename = fields.Char()
     revision = fields.Integer(readonly=True)
     definition = fields.Char(readonly=True)
 
@@ -51,6 +55,15 @@ class AttendanceEdit(models.TransientModel):
         self.ensure_one()
         if not self.env.user.has_group("training_management.group_training_coordinator"):
             raise AccessError(self.env._("Only a training coordinator may import or correct attendance."))
+        if self.operation == "invalidation":
+            self.env["training.attendance.service"]._invalidate(
+                self.session_id.id,
+                self.enrollment_id.id,
+                revision=self.revision,
+                reason=self.reason,
+                definition=self.definition,
+            )
+            return {"type": "ir.actions.act_window_close"}
         self.env["training.attendance.service"]._review(
             self.session_id.id,
             self.enrollment_id.id,

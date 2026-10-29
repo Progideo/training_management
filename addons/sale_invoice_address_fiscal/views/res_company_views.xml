@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="company_form_invoice_fiscal_policy" model="ir.ui.view">
+        <field name="name">res.company.form.invoice.fiscal.policy</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Sales Fiscal Policy" groups="base.group_system">
+                    <group>
+                        <field name="sale_fiscal_by_invoice_address"/>
+                        <field name="sale_domestic_currency_ids" widget="many2many_tags"/>
+                        <field name="sale_foreign_currency_ids" widget="many2many_tags"/>
+                        <field name="sale_export_fiscal_position_id" domain="[('company_id', '=', id)]"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

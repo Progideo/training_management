@@ -183,6 +183,8 @@ class TestAllocationCommerce(EnrollmentCase):
         self.assertEqual(order.state, "sale")
 
     def test_cancelled_lot_no_longer_freezes_line_or_order(self):
+        moves = self.env["account.move"].search([])
+        payments = self.env["account.payment"].search([])
         order = self.order(count=1)
         lot = self.lot(self.delivery(), quantity=1, sale_line_id=order.order_line.id)
         lot.action_confirm()
@@ -193,6 +195,8 @@ class TestAllocationCommerce(EnrollmentCase):
         self.assertEqual(order.order_line.product_uom_qty, 2)
         order.action_cancel()
         self.assertEqual(order.state, "cancel")
+        self.assertEqual(self.env["account.move"].search([]), moves)
+        self.assertEqual(self.env["account.payment"].search([]), payments)
 
     def test_expired_lot_binds_the_order_only_while_an_enrollment_stays_open(self):
         order = self.order(count=1)

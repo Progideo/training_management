@@ -45,6 +45,7 @@ def learning_values(enrollment):
         "key": str(uuid4()),
         "error": False,
         "draft": "",
+        "draft_ratings": {},
         "draft_activity": False,
         "draft_kind": False,
     }
@@ -127,6 +128,12 @@ class LearningPortal(http.Controller):
                     body=body,
                     request_key=values.get("request_key", ""),
                     decision=values.get("decision", False),
+                    project_ratings={
+                        k.removeprefix("project_rating_"): v
+                        for k, v in values.items()
+                        if k.startswith("project_rating_")
+                    }
+                    or None,
                     data=uploaded.read() if uploaded else b"",
                     filename=uploaded.filename if uploaded else "",
                 )
@@ -137,7 +144,13 @@ class LearningPortal(http.Controller):
                 self.tutoring_detail(enrollment_id) if tutor else TrainingParticipantPortal().training(enrollment_id)
             )
             response.qcontext["learning"].update(
-                error=str(error), draft=body, draft_activity=activity_id, draft_kind=kind
+                error=str(error),
+                draft=body,
+                draft_activity=activity_id,
+                draft_kind=kind,
+                draft_ratings={
+                    k.removeprefix("project_rating_"): v for k, v in values.items() if k.startswith("project_rating_")
+                },
             )
             response.status_code = 400
             return response

@@ -61,7 +61,11 @@ class LearningNotice(models.Model):
             return False
         service = self.env["training.learning.service"].with_user(recipient)
         if self.entry_id and self.entry_id.kind in ("submission", "question"):
-            return service._is_tutor(self.enrollment_id)
+            return (
+                service._project_evaluator(self.enrollment_id)
+                if self.entry_id.activity_id.project_rubric_id
+                else service._is_tutor(self.enrollment_id)
+            )
         if not service._is_participant(self.enrollment_id):
             return False
         if not self.entry_id:
@@ -94,7 +98,7 @@ class LearningNotice(models.Model):
 
     @api.private
     def _queue(self, enrollment, event_key, recipient, *, entry=None):
-        # Caller holds the delivery's native write fence. No request context can
+        # Caller holds the learning enrollment fence or the S03 delivery fence. No request context can
         # add attachments, CC, followers or different recipients to elevated mail.
         existing = self.sudo().search([("enrollment_id", "=", enrollment.id), ("event_key", "=", event_key)], limit=1)
         if existing:
@@ -127,6 +131,7 @@ class LearningNotice(models.Model):
                 "body_html": body,
                 "email_to": record.recipient_email,
                 "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+                **self.env["mail.mail"]._training_identity(enrollment.company_id),
                 "email_cc": False,
                 "recipient_ids": [],
                 "recipient_cc_ids": [],

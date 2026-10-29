@@ -15,7 +15,11 @@ class MailMessage(models.Model):
         service = self.env["training.learning.service"]
         participant = self.env["training.document.policy"]._enrollments().filtered(lambda e: service._is_participant(e))
         enrollments = participant | service._tutored_enrollments()
-        query = self.env[ENTRY_MODEL].sudo()._search([("enrollment_id", "in", enrollments.ids)])
+        query = (
+            self.env[ENTRY_MODEL]
+            .sudo()
+            ._search(Domain("enrollment_id", "in", enrollments.ids) & service._project_entry_domain())
+        )
         return Domain("model", "!=", ENTRY_MODEL) | Domain("res_id", "any!", query)
 
     def _access_domain(self, operation):

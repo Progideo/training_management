@@ -91,6 +91,40 @@ class CatalogueCase(TransactionCase):
 
 @tagged("post_install", "-at_install")
 class TestCatalogue(CatalogueCase):
+    def test_menu_folders_and_restricted_navigation(self):
+        expected = {
+            "menu_training_courses": "catalogue",
+            "menu_training_programs": "catalogue",
+            "menu_training_paths": "catalogue",
+            "menu_training_deliveries": "organisation",
+            "menu_training_path_assignments": "pedagogy",
+            "menu_practice_actions": "pedagogy",
+            "menu_practice_summaries": "pedagogy",
+            "menu_project_rubrics": "pedagogy",
+            "menu_complaint": "quality",
+            "menu_training_categories": "configuration",
+        }
+        for xmlid, folder in expected.items():
+            menu = self.env.ref("training_management." + xmlid)
+            self.assertEqual(menu.parent_id, self.env.ref("training_management.menu_training_" + folder))
+            self.assertTrue(menu.action)
+        for xmlid, folder in (("exam_menu", "pedagogy"), ("orientation_menu", "catalogue")):
+            menu = self.env.ref("training_management_survey." + xmlid, raise_if_not_found=False)
+            if menu:
+                self.assertEqual(menu.parent_id, self.env.ref("training_management.menu_training_" + folder))
+        with self.assertRaises(AccessError):
+            self.env["ir.ui.menu"].with_user(self.portal)._visible_menu_ids()
+        for user in (self.coordinator, self.reader, self.internal):
+            visible = self.env["ir.ui.menu"].with_user(user)._visible_menu_ids()
+            course = self.env.ref("training_management.menu_training_courses")
+            self.assertEqual(course.id in visible, user in (self.coordinator, self.reader))
+            projects = self.env.ref("training_management.menu_project_rubrics")
+            self.assertEqual(projects.id in visible, user == self.coordinator)
+            for model in ("training.course", "training.program.version"):
+                if user in (self.internal, self.portal):
+                    with self.assertRaises(AccessError):
+                        self.env[model].with_user(user).search([])
+
     def test_version_lifecycle_preserves_v1(self):
         v1 = self.new_program()
         v1.action_validate()

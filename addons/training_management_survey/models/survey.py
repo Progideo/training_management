@@ -200,6 +200,13 @@ class Question(models.Model):
             self.env["survey.survey"]._training_editor()
         if vals.get("training_material_id"):
             self.env["training.material"].browse(vals["training_material_id"]).check_access("read")
+        if vals.get("survey_id"):
+            target = self.env["survey.survey"].browse(vals["survey_id"])
+            target.check_access("read")
+            if target.sudo().orientation_company_id and any(q.survey_id != target for q in self):
+                raise ValidationError(
+                    self.env._("Create or duplicate questions in the diagnostic; do not move existing definitions.")
+                )
         self.survey_id._training_edit()
         if vals.get("survey_id"):
             self.env["survey.survey"].browse(vals["survey_id"])._training_edit()
@@ -217,25 +224,46 @@ class Choice(models.Model):
     def create(self, vals_list):
         self.env["survey.question"].browse(
             list(
-                filter(
-                    None,
-                    [
-                        vals.get("question_id")
-                        or self.env.context.get("default_question_id")
-                        or vals.get("matrix_question_id")
-                        or self.env.context.get("default_matrix_question_id")
-                        for vals in vals_list
-                    ],
-                )
+                {
+                    vals.get(field, self.env.context.get("default_" + field))
+                    for vals in vals_list
+                    for field in ("question_id", "matrix_question_id")
+                    if vals.get(field, self.env.context.get("default_" + field))
+                }
             )
         ).survey_id._training_edit()
         return super().create(vals_list)
 
     def write(self, vals):
+        for field in ("question_id", "matrix_question_id"):
+            if vals.get(field):
+                target = self.env["survey.question"].browse(vals[field])
+                target.check_access("read")
+                if target.sudo().survey_id.orientation_company_id and any(choice[field] != target for choice in self):
+                    raise ValidationError(
+                        self.env._("Create or duplicate questions in the diagnostic; do not move existing definitions.")
+                    )
         (self.question_id | self.matrix_question_id).survey_id._training_edit()
+        if vals.get("matrix_question_id"):
+            self.env["survey.question"].browse(vals["matrix_question_id"]).survey_id._training_edit()
         if vals.get("question_id"):
             self.env["survey.question"].browse(vals["question_id"]).survey_id._training_edit()
         return super().write(vals)
+
+    @api.constrains("question_id", "matrix_question_id")
+    def _check_orientation_choice_parent(self):
+        for choice in self:
+            if (
+                choice.question_id
+                and choice.matrix_question_id
+                and (
+                    choice.sudo().question_id.survey_id.orientation_company_id
+                    or choice.sudo().matrix_question_id.survey_id.orientation_company_id
+                )
+            ):
+                raise ValidationError(
+                    self.env._("Create or duplicate questions in the diagnostic; do not move existing definitions.")
+                )
 
     @api.ondelete(at_uninstall=False)
     def _training_keep_choices(self):

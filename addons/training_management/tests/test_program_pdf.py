@@ -54,6 +54,43 @@ class TestProgrammePdf(CatalogueCase):
         with self.assertRaises(ValidationError):
             program.action_validate()
 
+    def test_pdf_keeps_heading_levels_nested_lists_and_numbering(self):
+        from lxml import html
+
+        program = self.new_program(
+            content="<h3>Chapter</h3><ol start='4'><li>Fourth<ul><li>Detail</li></ul></li>"
+            "<li>Fifth</li></ol><h4>Subchapter</h4><p>End</p>"
+        )
+        tree = html.fragment_fromstring(program._pdf_content_html("Content"), create_parent="div")
+        self.assertEqual(tree.xpath(".//h3/text()"), ["Chapter"])
+        self.assertEqual(tree.xpath(".//h4/text()"), ["Subchapter"])
+        self.assertEqual(tree.xpath(".//ol/@start"), ["4", "5"])
+        self.assertEqual(tree.xpath(".//li/ul/li/text()"), ["Detail"])
+        self.assertEqual(tree.text_content().count("Fourth"), 1)
+        self.assertEqual(tree.text_content().count("Fifth"), 1)
+        program.action_validate()
+        text = self.text(program._reference_pdf().raw)
+        for value in ("Chapter", "Fourth", "Detail", "Fifth", "Subchapter", "End"):
+            self.assertIn(value, text)
+
+    def test_formatted_content_translations_keep_one_source(self):
+        self.env["res.lang"]._activate_lang("fr_FR")
+        program = self.new_program(content="English legacy\nSecond line", language_id=self.env.ref("base.lang_fr").id)
+        original = program.content
+        french = program.with_context(lang="fr_FR")
+        french.write({"content_formatted": "<h3>Chapitre français</h3><ol><li>Premier</li></ol>"})
+        program.invalidate_recordset()
+        self.assertEqual(program.with_context(lang="en_US").content, original)
+        self.assertIn("Chapitre français", french.content)
+        self.assertIn("<ol>", french.content_formatted)
+        self.assertIn("English legacy", program.with_context(lang="en_US").content_formatted)
+        french.action_validate()
+        raw = bytes(french._reference_pdf().raw)
+        self.assertIn("Chapitre français", self.text(raw))
+        with self.assertRaises(ValidationError):
+            french.write({"content_formatted": "<p>Réécriture interdite</p>"})
+        self.assertEqual(bytes(french._reference_pdf().raw), raw)
+
     def test_one_validation_real_pdf_and_stable_v1(self):
         program = self.new_program(content="\n".join(["Detailed fictional programme content"] * 130))
         with Form(program) as form:

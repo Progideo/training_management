@@ -161,3 +161,26 @@ access_company_document,Authorized client PDFs,training.company.document,trainin
 rule_company_document,Client PDFs operator,training.company.document,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_intra_version,Client intra programme versions,training.intra.version,training_management.group_training_coordinator,cru,
 rule_intra_version,Intra versions operator,training.intra.version,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+
+access_operator_notice,Staff alert journal,training.operator.notice,training_management.group_training_coordinator,r,
+rule_operator_notice,Staff alert recipient,training.operator.notice,,crud,"[('company_id','in',company_ids),('recipient_id','=',user.id)] if user.active else [('id','=',0)]"
+access_path_coordinator,training.path coordinator,training.path,training_management.group_training_coordinator,crud,
+access_path_reader,training.path reader,training.path,training_management.group_training_reader,r,
+rule_path_company,training.path allowed companies,training.path,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_path_step_coordinator,training.path.step coordinator,training.path.step,training_management.group_training_coordinator,crud,
+access_path_step_reader,training.path.step reader,training.path.step,training_management.group_training_reader,r,
+rule_path_step_company,training.path.step allowed companies,training.path.step,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_path_assignment_coordinator,training.path.assignment coordinator,training.path.assignment,training_management.group_training_coordinator,cru,
+rule_path_assignment_company,training.path.assignment allowed companies,training.path.assignment,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_practice_action_coordinator,Practice plans,training.practice.action,training_management.group_training_coordinator,crud,
+access_practice_summary_coordinator,Authorized practice summaries,training.practice.summary,training_management.group_training_coordinator,crud,
+access_practice_entry_coordinator,Private practice evidence,training.practice.entry,training_management.group_training_coordinator,r,
+access_practice_notice_coordinator,Practice reminder journal,training.practice.notice,training_management.group_training_coordinator,r,
+rule_practice_action_company,Practice company,training.practice.action,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_practice_entry_company,Practice company,training.practice.entry,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_practice_notice_company,Practice company,training.practice.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_practice_summary_company,Practice company,training.practice.summary,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_project_rubric_coordinator,Project rubrics coordinator,training.project.rubric,training_management.group_training_coordinator,crud,
+rule_project_rubric_company,Project rubric company,training.project.rubric,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_project_criterion_coordinator,Project criteria coordinator,training.project.criterion,training_management.group_training_coordinator,crud,
+rule_project_criterion_company,Project criterion company,training.project.criterion,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

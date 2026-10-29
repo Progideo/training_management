@@ -9,8 +9,10 @@ from markupsafe import Markup
 from psycopg2.errors import SerializationFailure
 
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, LockError, ValidationError
+from odoo.fields import Domain
 from odoo.tools.binary import BinaryBytes
+from odoo.tools import SQL
 
 
 class LearningService(models.AbstractModel):
@@ -48,9 +50,23 @@ class LearningService(models.AbstractModel):
         if not enrollment or not check(enrollment):
             raise AccessError(self.env._("This private learning record is unavailable."))
         if lock:
-            # Same lock and write fence as S03 admission/revocation and S05 files.
-            # A stale Repeatable Read transaction must retry and recheck the grant.
-            enrollment.delivery_id._serialize()
+            # Parallel learners share the delivery lock; administrative changes
+            # still require its exclusive S03 lock. Lock order stays delivery,
+            # enrollment. SKIP LOCKED preserves native non-blocking conflicts.
+            delivery = enrollment.delivery_id
+            locked = self.env.execute_query(
+                SQL("SELECT id FROM training_delivery WHERE id = %s FOR SHARE SKIP LOCKED", delivery.id)
+            )
+            if not locked:
+                raise LockError(self.env._("Cannot grab a lock on records"))
+            enrollment.lock_for_update(allow_referencing=True)
+            # A no-op write is an MVCC fence for this enrollment only: stale
+            # snapshots must retry even after the previous lock was released.
+            # No business field, timestamp or operation history is rewritten.
+            self.env.cr.execute(
+                SQL("UPDATE training_enrollment SET write_date = write_date WHERE id = %s", enrollment.id)
+            )
+            delivery.invalidate_recordset()
             enrollment.invalidate_recordset()
             if not check(enrollment):
                 raise AccessError(self.env._("This private learning record is unavailable."))
@@ -146,6 +162,7 @@ class LearningService(models.AbstractModel):
         parent_id=False,
         revision=0,
         decision=False,
+        project_ratings=None,
     ):
         tutor = kind in ("correction", "answer")
         if kind not in ("submission", "correction", "question", "answer"):
@@ -169,6 +186,8 @@ class LearningService(models.AbstractModel):
             "parent": parent_id,
             "decision": decision,
         }
+        if project_ratings is not None:
+            payload["project_ratings"] = project_ratings
         fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         with self.env.cr.savepoint():
             enrollment = self._enrollment(enrollment_id, tutor=tutor, lock=True)
@@ -179,10 +198,17 @@ class LearningService(models.AbstractModel):
             if previous:
                 if previous.fingerprint != fingerprint or previous.create_uid != self.env.user:
                     raise ValidationError(self.env._("This submission identifier already belongs to different work."))
+                if previous.activity_id.project_rubric_id:
+                    self._project_snapshot(enrollment, previous.activity_id, kind, project_ratings, body)
                 return previous
             activity = (
                 self._activity(enrollment, activity_id) if activity_id else self.env["training.learning.activity"]
             )
+            project_snapshot = (
+                self._project_snapshot(enrollment, activity, kind, project_ratings, body) if activity else False
+            )
+            if project_snapshot and len(data) > 20 * 1024 * 1024:
+                raise ValidationError(self.env._("Le fichier du projet est limité à 20 Mo."))
             parent = entries.browse(parent_id).exists() if parent_id else entries.browse()
             if parent_id and (not parent or parent.enrollment_id != enrollment or parent.activity_id != activity):
                 raise AccessError(self.env._("This private learning record is unavailable."))
@@ -207,6 +233,12 @@ class LearningService(models.AbstractModel):
                     "enrollment_id": enrollment.id,
                     "activity_id": activity.id,
                     "kind": kind,
+                    "project_snapshot": project_snapshot,
+                    "project_digest": hashlib.sha256(
+                        json.dumps(project_snapshot, sort_keys=True, ensure_ascii=False).encode()
+                    ).hexdigest()
+                    if project_snapshot
+                    else False,
                     "parent_id": parent.id,
                     "request_key": request_key,
                     "fingerprint": fingerprint,
@@ -284,6 +316,7 @@ class LearningService(models.AbstractModel):
     def _entries(self, enrollment):
         return [
             {
+                "project_snapshot": e.project_snapshot,
                 "id": e.id,
                 "kind": e.kind,
                 "author": e.create_uid.name,
@@ -299,7 +332,9 @@ class LearningService(models.AbstractModel):
                 if e.filename
                 else False,
             }
-            for e in self.env["training.learning.entry"].sudo().search([("enrollment_id", "=", enrollment.id)])
+            for e in self.env["training.learning.entry"]
+            .sudo()
+            .search(Domain("enrollment_id", "=", enrollment.id) & self._project_entry_domain())
         ]
 
     @api.private

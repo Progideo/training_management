@@ -6,6 +6,7 @@ on:
       - "addons/**"
       - "tests/**"
       - "migration/**"
+      - "deployment/**"
       - "docs/ci.md"
       - ".github/workflows/**"
       - ".pre-commit-config.yaml"
@@ -31,6 +32,46 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Style et règles Odoo
         run: pre-commit run --all-files --show-diff-on-failure
+      - name: Vérifier la localisation et les paramètres de lancement natifs
+        run: python3 tests/ci/run_launch_settings.py
+        env:
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_launch
+      - name: Vérifier la politique d’émargement C06
+        run: python3 tests/ci/run_attendance_policy.py
+        env:
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_attendance
+      - name: Vérifier les accès et réservations C06
+        run: python3 tests/ci/run_pedagogical_policy.py
+        env:
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_pedagogy
+      - name: Vérifier les notifications et alertes C06 sans transport
+        run: python3 tests/ci/run_notification_policy.py
+        env:
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_notifications
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c06-notification-results
+          path: test-results/c06-notification-policy/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c06-pedagogy-results
+          path: test-results/c06-pedagogy/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c06-attendance-results
+          path: test-results/c06-attendance/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launch-settings-results
+          path: test-results/launch-settings/
+          if-no-files-found: error
 
   suite:
     name: Suite cumulative — ${{ matrix.label }}

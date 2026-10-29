@@ -239,8 +239,20 @@ class LearningService(models.AbstractModel):
                 ]
             )
         )
-        scores = [self.env["training.exam.service"]._result(a)["percentage"] for a in attempts]
-        return max(scores) if scores else None
+        # Progression needs a scalar score, not the correction and its resource
+        # links. Building those links calls the access policy, which itself
+        # evaluates path progression. Keep this read independent of access.
+        scores = []
+        for attempt in attempts:
+            rows = attempt._training_scores()
+            latest = attempt.training_adjustment_ids[:1]
+            maximum = sum(row["maximum"] for row in rows)
+            if maximum:
+                obtained = sum(
+                    latest.points_by_question[str(row["question"].id)] if latest else row["points"] for row in rows
+                )
+                scores.append(100 * obtained / maximum)
+        return max(scores, default=None)
 
     @api.private
     def _rows(self, enrollment):

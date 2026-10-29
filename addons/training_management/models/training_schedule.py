@@ -34,7 +34,7 @@ def local_instant(day, hour, zone, occurrence=None):
 
 
 class ResCompany(models.Model):
-    _inherit = "res.company"
+    _inherit = "res.company"  # pylint: disable=consider-merging-classes-inherited  # resource locking and mail identity have separate responsibilities
 
     training_schedule_revision = fields.Integer(default=0, readonly=True, copy=False, groups=COORDINATOR)
 

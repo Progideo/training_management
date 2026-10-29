@@ -35,17 +35,14 @@ class TrainingProgramPdf(models.Model):
             paragraph.text, root.text = root.text, None
             root.insert(0, paragraph)
         first = next((node for node in root if isinstance(node.tag, str)), None)
-        if first is not None and first.tag in {"h1", "h2", "h3", "h4", "h5", "h6"}:
-            first.tag = "h2"
-            first.text = title + " — " + (first.text or "")
-        else:
-            heading = html.Element("h2")
-            heading.text = title
-            root.insert(0, heading)
+        heading = html.Element("h2")
+        heading.text = title
         # Keep only the label and the first short item together. Keeping the
         # entire outline together can create a blank page in the native engine.
         intro = html.Element("div")
-        intro.append(root[0])
+        intro.append(heading)
+        if first is not None and first.tag in {"h1", "h2", "h3", "h4", "h5", "h6"}:
+            intro.append(first)
         if len(root):
             first_body = root[0]
             if first_body.tag in {"ul", "ol"} and len(first_body):

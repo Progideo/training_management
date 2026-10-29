@@ -47,7 +47,12 @@ class TrainingSeatAllocation(models.Model):
                     "The allocation must match a readable commercial line, customer, company and programme; commitment requires a confirmed order."
                 )
             )
-        lots = self.search([("sale_line_id.order_id", "=", order.id)])
+        domain = [("sale_line_id.order_id", "=", order.id)]
+        if order.training_path_id:
+            if not line.training_path_step_id:
+                raise ValidationError(self.env._("A path allocation requires an exact commercial step."))
+            domain.append(("sale_line_id.training_path_step_id", "=", line.training_path_step_id.id))
+        lots = self.search(domain)
         committed = sum(lot.quantity for lot in lots if lot._available())
         # S02 fixes the explicit contractual participant count on the order.
         # A later catalogue price-basis change must not rewrite this entitlement.

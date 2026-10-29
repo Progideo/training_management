@@ -180,14 +180,15 @@ ce changement de schéma ; un défaut SQL préexistant est conservé.
 Le préparateur historique S02 reste limité aux anciennes vues S03/S04. Il ne
 prépare aucune vue catégories/PDF ; les 21 étapes historiques sont conservées.
 
-
 ## Navigation et contenu structuré
 
 Le menu Formations regroupe les entrées par Catalogue, Organisation, Suivi
 pédagogique, Qualité et Configuration ; le tableau de bord reste directement
 accessible. Les groupes parents ne changent ni les habilitations des actions ni
 les règles des enregistrements. Les examens blancs restent une intégration
-optionnelle dans Suivi pédagogique.
+optionnelle dans Suivi pédagogique. Les parcours et diagnostics d’orientation
+sont dans Catalogue ; les références d’inscription aux parcours, plans de mise en
+pratique et grilles de projets sont dans Suivi pédagogique (P09–P12).
 
 Le contenu détaillé s’édite dans le champ HTML natif `content_formatted`, calculé
 et inversé sur le stockage traduit `content` existant. Il n’existe qu’une source

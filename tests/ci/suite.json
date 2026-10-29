@@ -433,6 +433,44 @@
         "repeated_history_preserved",
         "concurrency"
       ]
+    },
+    {
+      "id": "p09",
+      "script": "tests/ci/run_p09.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "history_baseline",
+        "upgrade",
+        "history_preserved",
+        "second_update",
+        "repeated_history_preserved",
+        "path_baseline",
+        "path_update",
+        "path_preserved",
+        "concurrency",
+        "portal_readonly",
+        "commerce_baseline",
+        "commerce_update",
+        "commerce_preserved",
+        "commerce_pdf",
+        "commerce_concurrency",
+        "orientation_baseline",
+        "orientation_update",
+        "orientation_preserved",
+        "practice_baseline",
+        "practice_update",
+        "practice_preserved",
+        "practice_second_update",
+        "practice_repeated_preserved",
+        "practice_concurrency",
+        "project_baseline",
+        "project_update",
+        "project_preserved",
+        "project_second_update",
+        "project_repeated_preserved",
+        "project_concurrency"
+      ]
     }
   ],
   "relocated_steps": {
