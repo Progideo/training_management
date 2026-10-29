@@ -332,7 +332,7 @@ class Testimonial(models.Model):
                 "state": "submitted",
                 "owner_id": owner.id,
                 "owner_partner_id": owner.partner_id.id,
-                "public_identity": self.customer_id.name if self.identify_client else False,
+                "public_identity": self.customer_id.commercial_partner_id.name if self.identify_client else False,
             }
         wording = self.with_context(lang=owner.partner_id.lang or self.env.lang)._terms()
         self._store(dict(values, consent_wording=wording), self.env._("Authorization requested"))

@@ -76,10 +76,10 @@ class PublicationCase(ClosureCase):
         )
         row.with_user(self.moderator).action_publish()
 
-    def case_request(self, **values):
+    def case_request(self, customer=None, **values):
         delivery = self.delivery()
         delivery.action_confirm()
-        allocation = self.lot(delivery)
+        allocation = self.lot(delivery, customer_id=(customer or self.customer).id)
         grant = (
             self.env["training.company.authorization"]
             .with_user(self.coordinator)
@@ -299,6 +299,19 @@ class TestTestimonial(PublicationCase):
         with self.assertRaises(AccessError):
             self.consent(row)
         self.assertFalse(row._public_row())
+
+    def test_case_uses_company_name_even_for_a_contact_allocation(self):
+        self.customer.is_company = True
+        contact = self.env["res.partner"].create(
+            {"name": "Fictional private buyer contact", "parent_id": self.customer.id}
+        )
+        row, _ = self.case_request(customer=contact, identify_client=True)
+        row.action_request_authorization()
+        self.assertEqual(row.public_identity, self.customer.name)
+        self.consent(row, identity="name", identity_accepted=True)
+        self.publish(row)
+        self.assertEqual(row._public_row()["identity"], self.customer.name)
+        self.assertNotIn(contact.name, str(row._public_row()))
 
 
 @tagged("post_install", "-at_install")
