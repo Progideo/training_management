@@ -16,7 +16,7 @@
         <t t-call="portal.frontend_layout"><main class="container py-4">
             <a href="/formations">Catalogue</a><h1 t-out="program['title']"/>
             <p>Version <t t-out="program['version']"/> · <t t-out="program['duration']"/> h · <t t-out="program['mode']"/></p>
-            <p>Prix sur devis. Un examen blanc ne constitue pas une certification officielle.</p>
+            <p>Prix sur devis.</p>
             <div id="training_request_actions"/>
             <a class="btn btn-outline-primary" t-att-href="'/formations/%s/pdf' % program['id']">Programme PDF de cette version</a>
             <section t-foreach="program['sections']" t-as="s" class="my-4"><h2 t-out="s[0]"/><div t-att-style="'white-space:normal' if s_index == 3 else 'white-space:pre-wrap'" t-out="s[1]"/></section>

@@ -10,6 +10,8 @@ l’approbation publique. Validation puis publication figent le contenu, l’ext
 PDF et les questions de démonstration. Les informations manquantes sont affichées
 comme non confirmées dans la fiche et le PDF. Les versions déjà validées gardent
 leur PDF historique ; créer une nouvelle version pour enrichir leur programme.
+La distinction entre examen blanc et certification officielle figure dans les
+rubriques consacrées aux examens, sans avertissement générique en tête de fiche.
 
 Le PDF du programme est servi par une route publique dédiée qui vérifie la
 publication, la société et l’empreinte. La pièce jointe reste privée dans Odoo.
