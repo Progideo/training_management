@@ -50,6 +50,9 @@ définitions et règles P10 après mise à jour et vérifie qu’un calcul d’o
 ne persiste aucune réponse. Le même parcours conserve ensuite actions P11, preuves
 privées, retours et politiques après deux mises à jour ; deux transactions
 concurrentes produisent une seule réalisation d’action et un seul rappel natif.
+Le même parcours conserve ensuite les grilles P12 V1/V2, remises et décisions par
+critère après deux mises à jour ; des transactions concurrentes déposent puis
+valident une seule version avec une notification par opération.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.

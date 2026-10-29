@@ -61,7 +61,11 @@ class LearningNotice(models.Model):
             return False
         service = self.env["training.learning.service"].with_user(recipient)
         if self.entry_id and self.entry_id.kind in ("submission", "question"):
-            return service._is_tutor(self.enrollment_id)
+            return (
+                service._project_evaluator(self.enrollment_id)
+                if self.entry_id.activity_id.project_rubric_id
+                else service._is_tutor(self.enrollment_id)
+            )
         if not service._is_participant(self.enrollment_id):
             return False
         if not self.entry_id:

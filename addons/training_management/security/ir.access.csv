@@ -180,3 +180,7 @@ rule_practice_action_company,Practice company,training.practice.action,,crud,"[(
 rule_practice_entry_company,Practice company,training.practice.entry,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_practice_notice_company,Practice company,training.practice.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_practice_summary_company,Practice company,training.practice.summary,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_project_rubric_coordinator,Project rubrics coordinator,training.project.rubric,training_management.group_training_coordinator,crud,
+rule_project_rubric_company,Project rubric company,training.project.rubric,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_project_criterion_coordinator,Project criteria coordinator,training.project.criterion,training_management.group_training_coordinator,crud,
+rule_project_criterion_company,Project criterion company,training.project.criterion,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

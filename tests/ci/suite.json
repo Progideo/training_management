@@ -463,7 +463,13 @@
         "practice_preserved",
         "practice_second_update",
         "practice_repeated_preserved",
-        "practice_concurrency"
+        "practice_concurrency",
+        "project_baseline",
+        "project_update",
+        "project_preserved",
+        "project_second_update",
+        "project_repeated_preserved",
+        "project_concurrency"
       ]
     }
   ],
