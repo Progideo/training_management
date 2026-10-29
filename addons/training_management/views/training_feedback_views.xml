@@ -21,6 +21,6 @@
     </field></record>
     <record id="action_feedback" model="ir.actions.act_window"><field name="name">Feedback Versions</field><field name="res_model">training.feedback</field><field name="view_mode">list,form</field></record>
     <record id="action_feedback_campaign" model="ir.actions.act_window"><field name="name">Feedback Campaigns</field><field name="res_model">training.feedback.campaign</field><field name="view_mode">list,form</field></record>
-    <menuitem id="menu_feedback" name="Feedback Versions" parent="menu_training_root" action="action_feedback" sequence="65" groups="training_management.group_training_coordinator"/>
-    <menuitem id="menu_feedback_campaign" name="Feedback Campaigns" parent="menu_training_root" action="action_feedback_campaign" sequence="66" groups="training_management.group_training_coordinator,training_management.group_training_supervisor,training_management.group_training_quality"/>
+    <menuitem id="menu_feedback" name="Feedback Versions" parent="menu_training_pedagogy" action="action_feedback" groups="training_management.group_training_coordinator" sequence="30"/>
+    <menuitem id="menu_feedback_campaign" name="Feedback Campaigns" parent="menu_training_pedagogy" action="action_feedback_campaign" groups="training_management.group_training_coordinator,training_management.group_training_supervisor,training_management.group_training_quality" sequence="40"/>
 </odoo>

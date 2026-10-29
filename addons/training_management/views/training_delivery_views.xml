@@ -263,7 +263,7 @@
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_training_enrollment_search"/>
     </record>
-    <menuitem id="menu_training_deliveries" name="Deliveries" parent="menu_training_root" action="action_training_deliveries" sequence="30" groups="training_management.group_training_coordinator"/>
-    <menuitem id="menu_training_allocations" name="Seat Allocations" parent="menu_training_root" action="action_training_allocations" sequence="40" groups="training_management.group_training_coordinator"/>
-    <menuitem id="menu_training_enrollments" name="Enrollments" parent="menu_training_root" action="action_training_enrollments" sequence="50" groups="training_management.group_training_coordinator"/>
+    <menuitem id="menu_training_deliveries" name="Deliveries" parent="menu_training_organisation" action="action_training_deliveries" groups="training_management.group_training_coordinator" sequence="10"/>
+    <menuitem id="menu_training_allocations" name="Seat Allocations" parent="menu_training_organisation" action="action_training_allocations" groups="training_management.group_training_coordinator" sequence="40"/>
+    <menuitem id="menu_training_enrollments" name="Enrollments" parent="menu_training_organisation" action="action_training_enrollments" groups="training_management.group_training_coordinator" sequence="30"/>
 </odoo>

@@ -12,7 +12,7 @@
     </record>
     <record id="view_project_rubric_list" model="ir.ui.view"><field name="name">training.project.rubric.list</field><field name="model">training.project.rubric</field><field name="arch" type="xml"><list><field name="name"/><field name="state"/><field name="previous_id"/><field name="company_id" groups="base.group_multi_company"/></list></field></record>
     <record id="action_project_rubrics" model="ir.actions.act_window"><field name="name">Grilles de projets pratiques</field><field name="res_model">training.project.rubric</field><field name="view_mode">list,form</field></record>
-    <menuitem id="menu_project_rubrics" name="Grilles de projets pratiques" parent="menu_training_root" action="action_project_rubrics" groups="training_management.group_training_coordinator" sequence="65"/>
+    <menuitem id="menu_project_rubrics" name="Grilles de projets pratiques" parent="menu_training_pedagogy" action="action_project_rubrics" groups="training_management.group_training_coordinator" sequence="65"/>
     <record id="view_learning_project" model="ir.ui.view">
         <field name="name">training.learning.activity.project</field><field name="model">training.learning.activity</field><field name="inherit_id" ref="view_learning_activity_form"/>
         <field name="arch" type="xml"><xpath expr="//label[@for='instructions']" position="before">

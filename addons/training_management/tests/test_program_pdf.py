@@ -14,6 +14,92 @@ class TestProgrammePdf(CatalogueCase):
     def text(self, raw):
         return "\n".join(page.extract_text() for page in PdfFileReader(io.BytesIO(bytes(raw))).pages)
 
+    def test_formatted_content_round_trip_pdf_and_immutable_version(self):
+        from lxml import html
+
+        program = self.new_program(content="Legacy chapter\nLegacy detail")
+        self.assertIn("Legacy chapter", program.content_formatted)
+        self.assertIn("<br", program.content_formatted)
+        legacy = self.new_program(version="LITERAL", content="Use <placeholder> & compare 2 < 5\nNext line")
+        self.assertIn("&lt;placeholder&gt;", legacy.content_formatted)
+        self.assertEqual(legacy.content, "Use <placeholder> & compare 2 < 5\nNext line")
+        rich = "<h3>Chapter one</h3><ul><li>Topic<ul><li>Detail</li></ul></li></ul>"
+        program.write({"content_formatted": rich})
+        program.invalidate_recordset()
+        tree = html.fragment_fromstring(program.content_formatted, create_parent="div")
+        self.assertEqual(tree.xpath(".//h3/text()"), ["Chapter one"])
+        self.assertEqual(tree.xpath(".//li/ul/li/text()"), ["Detail"])
+        section = program._catalogue_sections()[3][1]
+        self.assertIn("<h3>", section.__html__())
+        program.action_validate()
+        raw = bytes(program._reference_pdf().raw)
+        for text in ("Chapter one", "Topic", "Detail"):
+            self.assertIn(text, self.text(raw))
+        with self.assertRaises(ValidationError):
+            program.write({"content_formatted": "<p>Changed</p>"})
+        self.assertEqual(bytes(program._reference_pdf().raw), raw)
+        clone = program.copy({"version": "Rich V2"})
+        self.assertIn("<h3>", clone.content_formatted)
+        self.assertFalse(clone.pdf_attachment_id)
+
+    def test_html_content_sanitized_for_editor_and_public_projection(self):
+        from lxml import html
+
+        program = self.new_program(content='<h3 onclick="alert(1)">Safe</h3><script>alert(2)</script>')
+        for value in (program.content_formatted, program._catalogue_sections()[3][1]):
+            tree = html.fragment_fromstring(value, create_parent="div")
+            self.assertFalse(tree.xpath(".//script|.//*[@onclick]"))
+        program.write({"content_formatted": '<p onclick="alert(1)">Still safe</p>'})
+        self.assertNotIn("onclick", program.content)
+        with self.assertRaises(AccessError):
+            program.with_user(self.reader).write({"content_formatted": "<p>Forbidden</p>"})
+        program.write({"content_formatted": "<p><br></p>"})
+        with self.assertRaises(ValidationError):
+            program.action_validate()
+
+    def test_pdf_keeps_heading_levels_nested_lists_and_numbering(self):
+        from lxml import html
+
+        program = self.new_program(
+            content="<h3>Chapter</h3><ol start='4'><li>Fourth<ul><li>Detail</li></ul></li>"
+            "<li>Fifth</li></ol><h4>Subchapter</h4><p>End</p>"
+        )
+        tree = html.fragment_fromstring(program._pdf_content_html("Content"), create_parent="div")
+        self.assertEqual(tree.xpath(".//h3/text()"), ["Chapter"])
+        self.assertEqual(tree.xpath(".//h4/text()"), ["Subchapter"])
+        self.assertEqual(tree.xpath(".//ol/@start"), ["4", "5"])
+        self.assertEqual(tree.xpath(".//li/ul/li/text()"), ["Detail"])
+        self.assertEqual(tree.text_content().count("Fourth"), 1)
+        self.assertEqual(tree.text_content().count("Fifth"), 1)
+        numbered_program = self.new_program(
+            version="NUMBERED",
+            content='<h3>Numbered</h3><ol><li value="9">Nine</li><li>Ten</li></ol>',
+        )
+        numbered_tree = html.fragment_fromstring(numbered_program._pdf_content_html("Content"), create_parent="div")
+        self.assertEqual(numbered_tree.xpath(".//ol/@start"), ["9", "10"])
+        program.action_validate()
+        text = self.text(program._reference_pdf().raw)
+        for value in ("Chapter", "Fourth", "Detail", "Fifth", "Subchapter", "End"):
+            self.assertIn(value, text)
+
+    def test_formatted_content_translations_keep_one_source(self):
+        self.env["res.lang"]._activate_lang("fr_FR")
+        program = self.new_program(content="English legacy\nSecond line", language_id=self.env.ref("base.lang_fr").id)
+        original = program.content
+        french = program.with_context(lang="fr_FR")
+        french.write({"content_formatted": "<h3>Chapitre français</h3><ol><li>Premier</li></ol>"})
+        program.invalidate_recordset()
+        self.assertEqual(program.with_context(lang="en_US").content, original)
+        self.assertIn("Chapitre français", french.content)
+        self.assertIn("<ol>", french.content_formatted)
+        self.assertIn("English legacy", program.with_context(lang="en_US").content_formatted)
+        french.action_validate()
+        raw = bytes(french._reference_pdf().raw)
+        self.assertIn("Chapitre français", self.text(raw))
+        with self.assertRaises(ValidationError):
+            french.write({"content_formatted": "<p>Réécriture interdite</p>"})
+        self.assertEqual(bytes(french._reference_pdf().raw), raw)
+
     def test_one_validation_real_pdf_and_stable_v1(self):
         program = self.new_program(content="\n".join(["Detailed fictional programme content"] * 130))
         with Form(program) as form:

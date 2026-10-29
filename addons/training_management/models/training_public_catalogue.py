@@ -1,5 +1,7 @@
 """Public projection of a published programme; no participant or evaluation data."""
 
+from markupsafe import Markup
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -53,7 +55,15 @@ class TrainingPublicProgramme(models.Model):
             ("official_exam_details", self.env._("Official exam and inclusion")),
         ]
         pending = [label for name, label in labels[8:] if not self[name]]
-        sections = [(label, self[name] or self.env._("Not confirmed")) for name, label in labels]
+        sections = [
+            (
+                label,
+                Markup(self.content_formatted)
+                if name == "content" and self.content_formatted
+                else self[name] or self.env._("Not confirmed"),
+            )
+            for name, label in labels
+        ]
         if pending or self.unconfirmed_information:
             sections.append(
                 (

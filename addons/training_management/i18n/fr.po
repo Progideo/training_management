@@ -10452,6 +10452,7 @@ msgstr "B"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.public_programme
+#: model:ir.ui.menu,name:training_management.menu_training_catalogue
 msgid "Catalogue"
 msgstr "Catalogue"
 
@@ -11156,6 +11157,36 @@ msgstr ""
 "Conservez la proposition transmise et renseignez uniquement la décision de "
 "coordination."
 
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_organisation
+msgid "Organisation"
+msgstr "Organisation"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_pedagogy
+msgid "Learning Follow-up"
+msgstr "Suivi pédagogique"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_configuration
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__content_formatted
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Programme Content"
+msgstr "Contenu du programme"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_program_version__content_formatted
+msgid "Headings and nested lists are preserved in the programme and its PDF."
+msgstr "Les titres et les listes imbriquées sont conservés dans le programme et son PDF."
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_quality
+msgid "Quality Management"
+msgstr "Qualité"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__invalidated
 msgid "Invalidated"

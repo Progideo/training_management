@@ -1,6 +1,11 @@
 <odoo>
     <menuitem id="menu_training_root" name="Formations" sequence="25" groups="base.group_user"/>
-    <menuitem id="menu_training_courses" name="Standard Courses" parent="menu_training_root" action="action_training_courses" sequence="10"/>
-    <menuitem id="menu_training_programs" name="Programme Versions" parent="menu_training_root" action="action_training_programs" sequence="20"/>
-    <menuitem id="menu_training_categories" name="Training Categories" parent="menu_training_root" action="action_training_categories" sequence="90" groups="training_management.group_training_coordinator"/>
+    <menuitem id="menu_training_catalogue" name="Catalogue" parent="menu_training_root" sequence="10"/>
+    <menuitem id="menu_training_organisation" name="Organisation" parent="menu_training_root" sequence="20"/>
+    <menuitem id="menu_training_pedagogy" name="Learning Follow-up" parent="menu_training_root" sequence="30"/>
+    <menuitem id="menu_training_quality" name="Quality Management" parent="menu_training_root" sequence="40"/>
+    <menuitem id="menu_training_configuration" name="Configuration" parent="menu_training_root" sequence="90"/>
+    <menuitem id="menu_training_courses" name="Standard Courses" parent="menu_training_catalogue" action="action_training_courses" sequence="10"/>
+    <menuitem id="menu_training_programs" name="Programme Versions" parent="menu_training_catalogue" action="action_training_programs" sequence="20"/>
+    <menuitem id="menu_training_categories" name="Training Categories" parent="menu_training_configuration" action="action_training_categories" groups="training_management.group_training_coordinator" sequence="10"/>
 </odoo>

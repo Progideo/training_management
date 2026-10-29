@@ -98,6 +98,6 @@
         <field name="res_model">training.path.assignment</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_training_paths" name="Training Paths" parent="menu_training_root" action="action_training_paths" sequence="21"/>
-    <menuitem id="menu_training_path_assignments" name="Path Enrollment References" parent="menu_training_root" action="action_training_path_assignments" sequence="22" groups="training_management.group_training_coordinator"/>
+    <menuitem id="menu_training_paths" name="Training Paths" parent="menu_training_catalogue" action="action_training_paths" sequence="21"/>
+    <menuitem id="menu_training_path_assignments" name="Path Enrollment References" parent="menu_training_pedagogy" action="action_training_path_assignments" sequence="22" groups="training_management.group_training_coordinator"/>
 </odoo>

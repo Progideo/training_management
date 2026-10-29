@@ -79,6 +79,15 @@ if phase == "baseline":
         }
     )
     program.action_validate()
+    # PR84: preserve an old PDF verbatim even when its source already held HTML.
+    formatted = program.copy(
+        {
+            "version": "Historical HTML",
+            "content": "<h3>Historical chapter</h3><ul><li>Topic<ul><li>Detail</li></ul></li></ul>",
+        }
+    )
+    formatted.action_validate()
+    formatted_pdf = hashlib.sha256(formatted._reference_pdf().raw).hexdigest()
     delivery = (
         env["training.delivery"]
         .with_user(coord)
@@ -128,6 +137,8 @@ if phase == "baseline":
     saved = {
         "coord": coord.id,
         "program": program.id,
+        "formatted_program": formatted.id,
+        "formatted_pdf": formatted_pdf,
         "enrollment": enrollment.id,
         "snapshot": snapshot(tables),
         "business_snapshot": snapshot(tables, business=True),
@@ -139,6 +150,12 @@ elif phase == "verify":
     saved = json.loads(params.get_str(key))
     actual = snapshot(saved["snapshot"])
     assert actual == saved["snapshot"], [t for t in actual if actual[t] != saved["snapshot"][t]]
+    formatted = env["training.program.version"].browse(saved["formatted_program"])
+    original_content = formatted.content
+    assert "<h3>Historical chapter</h3>" in formatted.content_formatted
+    assert "<ul>" in formatted.content_formatted
+    assert formatted.content == original_content
+    assert hashlib.sha256(formatted._reference_pdf().raw).hexdigest() == saved["formatted_pdf"]
     assert not env["training.path.assignment"].search_count([])
     print("P09_ALL_V1_TRAINING_SURVEY_ROWS_IDENTICAL")
 elif phase == "prepare_path":
@@ -191,6 +208,12 @@ elif phase == "verify_path":
     saved = json.loads(params.get_str(key))
     actual = snapshot(saved["snapshot"])
     assert actual == saved["snapshot"], [t for t in actual if actual[t] != saved["snapshot"][t]]
+    formatted = env["training.program.version"].browse(saved["formatted_program"])
+    original_content = formatted.content
+    assert "<h3>Historical chapter</h3>" in formatted.content_formatted
+    assert "<ul>" in formatted.content_formatted
+    assert formatted.content == original_content
+    assert hashlib.sha256(formatted._reference_pdf().raw).hexdigest() == saved["formatted_pdf"]
     assert snapshot(saved["path_snapshot"]) == saved["path_snapshot"]
     assert env["training.path.assignment"].search([]).completed
     print("P09_PATH_AND_V1_PROGRESS_IDENTICAL_AFTER_UPDATE")

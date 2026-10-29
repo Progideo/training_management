@@ -1,6 +1,9 @@
 import hashlib
 import io
 
+from lxml import etree, html
+from markupsafe import Markup
+
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
@@ -20,6 +23,53 @@ class TrainingProgramPdf(models.Model):
     pdf_language_code = fields.Char(string="PDF Language", readonly=True, copy=False)
     pdf_reconstructed = fields.Boolean(string="Reconstructed PDF", readonly=True, copy=False)
     pdf_legacy = fields.Boolean(string="Historical Programme", readonly=True, copy=False)
+
+    @api.private
+    def _pdf_content_html(self, title):
+        """Keep the section label with the first chapter, without a page-sized box."""
+        self.ensure_one()
+        self.check_access("read")
+        root = html.fragment_fromstring(self.content_formatted or "<p></p>", create_parent="div")
+        if root.text and root.text.strip():
+            paragraph = html.Element("p")
+            paragraph.text, root.text = root.text, None
+            root.insert(0, paragraph)
+        heading_tags = {"h1", "h2", "h3", "h4", "h5", "h6"}
+        heading = html.Element("h2")
+        heading.text = title
+        root.insert(0, heading)
+        for heading in list(root):
+            if heading.getparent() is not root or heading.tag not in heading_tags:
+                continue
+            index = root.index(heading)
+            group = html.Element("div")
+            group.append(heading)
+            # Keep the section label with the original first chapter heading.
+            if index < len(root) and root[index].tag in heading_tags:
+                group.append(root[index])
+            if index < len(root):
+                body = root[index]
+                if body.tag in {"ul", "ol"} and len(body):
+                    lead = html.Element(body.tag, dict(body.attrib))
+                    if body.tag == "ol":
+                        # Splitting must preserve explicit numbering.
+                        try:
+                            start = int(body[0].get("value", body.get("start", "1")))
+                        except ValueError:
+                            start = 1
+                        lead.set("start", str(start))
+                        body.set("start", str(start + 1))
+                    lead.append(body[0])
+                    group.append(lead)
+                    if not len(body):
+                        root.remove(body)
+                else:
+                    group.append(body)
+            # Never keep a whole long outline in one page-sized block.
+            if len(group.text_content()) < 1400:
+                group.set("class", "programme-intro")
+            root.insert(index, group)
+        return Markup("".join(etree.tostring(node, encoding="unicode", method="html") for node in root))
 
     def _audit_fields(self):
         return super()._audit_fields() | {

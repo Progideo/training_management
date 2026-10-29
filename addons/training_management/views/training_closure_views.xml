@@ -89,8 +89,8 @@
     </record>
     <record id="action_training_closure" model="ir.actions.act_window"><field name="name">Closure Dossiers</field><field name="res_model">training.closure</field><field name="view_mode">list,form</field></record>
     <record id="action_training_retention" model="ir.actions.act_window"><field name="name">Retention Policies</field><field name="res_model">training.retention.category</field><field name="view_mode">list,form</field></record>
-    <menuitem id="menu_training_closure" name="Closure Dossiers" parent="menu_training_root" action="action_training_closure" sequence="75" groups="training_management.group_training_coordinator,training_management.group_training_quality"/>
-    <menuitem id="menu_training_retention" name="Retention Policies" parent="menu_training_root" action="action_training_retention" sequence="95" groups="training_management.group_training_quality"/>
+    <menuitem id="menu_training_closure" name="Closure Dossiers" parent="menu_training_pedagogy" action="action_training_closure" groups="training_management.group_training_coordinator,training_management.group_training_quality" sequence="50"/>
+    <menuitem id="menu_training_retention" name="Retention Policies" parent="menu_training_configuration" action="action_training_retention" groups="training_management.group_training_quality" sequence="70"/>
     <template id="portal_documents" name="My Training Documents">
         <t t-call="portal.portal_layout">
             <h2>My training documents</h2>

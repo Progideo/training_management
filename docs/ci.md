@@ -43,7 +43,7 @@ Un contrôle commun conserve les vingt parcours historiques et ajoute P09 : inst
 installation Ventes, reprises S02/S03, Website, catalogue avec/sans Website,
 protection documentaire, préparation, supports, activités, examens, présences,
 attestations, évaluations, retours, qualité S09.3, intervenants S09.4 et mise à jour S10. Le parcours P09 part du candidat V1 `99c079a`, compare toutes les lignes
-historiques Training/Surveys, puis conserve les références de parcours après
+historiques Training/Surveys (dont un programme HTML et les octets de son PDF antérieur), puis conserve les références de parcours après
 une nouvelle mise à jour, teste deux rattachements concurrents et vérifie la
 lecture du portail sans modification des historiques. Il conserve aussi les
 définitions et règles P10 après mise à jour et vérifie qu’un calcul d’orientation
