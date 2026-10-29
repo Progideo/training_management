@@ -12604,4 +12604,3 @@ msgstr "· <span>Consommées :</span>"
 #: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
 msgid "· <span>Hours:</span>"
 msgstr "· <span>Heures :</span>"
-

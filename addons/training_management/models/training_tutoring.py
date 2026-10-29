@@ -285,9 +285,9 @@ class TutoringSlot(models.Model):
                 raise ValidationError(self.env._("Publish a future draft slot for an open delivery."))
             slot._check_definition()
             slot._check_conflicts()
-            super(TutoringSlot, slot).write(
+            super(TutoringSlot, slot).write(  # pylint: disable=super-method-mismatch  # checked publication
                 {"state": "published", "published_at": fields.Datetime.now(), "published_by_id": self.env.uid}
-            )  # pylint: disable=super-method-mismatch
+            )
         return True
 
     def action_cancel(self):
@@ -297,9 +297,9 @@ class TutoringSlot(models.Model):
         for slot in self:
             if slot.state == "cancelled":
                 continue
-            super(TutoringSlot, slot).write(
+            super(TutoringSlot, slot).write(  # pylint: disable=super-method-mismatch  # checked cancellation
                 {"state": "cancelled", "cancelled_at": fields.Datetime.now(), "cancelled_by_id": self.env.uid}
-            )  # pylint: disable=super-method-mismatch
+            )
             for booking in slot.sudo().booking_ids.filtered(lambda b: b.state == "confirmed"):
                 booking._cancel(refund=True)
         return True
