@@ -46,19 +46,8 @@
                     <button class="btn btn-primary" type="submit">Declare consultation</button>
                 </form>
                 <p t-if="is_tutor and a['state'] == 'submitted'">Latest work submitted.</p><p t-if="a['state'] == 'changes'">Changes requested: consult the private feedback below.</p><p t-if="a['state'] == 'validated'">Validated by the assigned tutor.</p>
-                <form t-if="a['available'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="mt-3">
-                    <details t-att-open="is_tutor or not a['latest_submission'] or (learning['error'] and learning['draft_activity'] == a['id']) or None">
-                    <summary class="mb-3"><t t-if="is_tutor">Correction or validation</t><t t-elif="a['latest_submission']">Submit a new version</t><t t-else="">Exercise submission</t></summary>
-                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" t-att-value="'correction' if is_tutor else 'submission'"/>
-                    <input type="hidden" name="activity_id" t-att-value="a['id']"/><input type="hidden" name="parent_id" t-att-value="a['latest_submission'] or ''"/>
-                    <input type="hidden" name="revision" t-att-value="a['revision']"/><input type="hidden" name="request_key" t-att-value="a['key']"/>
-                    <label class="form-label" t-att-for="'work-%s' % a['id']"><t t-if="is_tutor">Correction or validation</t><t t-else="">Exercise submission</t></label>
-                    <textarea class="form-control" name="body" t-att-id="'work-%s' % a['id']" rows="3"><t t-out="learning['draft'] if learning['draft_activity'] == a['id'] else ''"/></textarea>
-                    <label class="form-label mt-2" t-att-for="'file-%s' % a['id']">Private file (optional)</label><input type="file" name="file" class="form-control" t-att-id="'file-%s' % a['id']"/>
-                    <t t-if="is_tutor"><label class="form-label mt-2" t-att-for="'decision-%s' % a['id']">Review status</label><select required="required" class="form-select" name="decision" t-att-id="'decision-%s' % a['id']"><option value="">Choose a status</option><option value="accepted">Accepted</option><option value="changes">Changes Requested</option></select></t>
-                    <button class="btn btn-primary mt-2" type="submit"><t t-if="is_tutor">Save correction</t><t t-elif="a['latest_submission']">Submit a new version</t><t t-else="">Exercise submission</t></button>
-                    </details>
-                </form>
+                <a t-if="is_tutor and a['available'] and a['latest_submission']" t-att-href="'#learning-entry-%s' % a['latest_submission']">View and assess the latest submission</a>
+                <t t-if="not is_tutor" t-call="training_management.portal_learning_work_form" a="a" learning="learning" learning_action="learning_action" is_tutor="is_tutor"/>
             </div>
         </section>
         <section class="mt-4" aria-label="Private work and help">
@@ -70,6 +59,7 @@
                 <div class="text-break" t-out="entry['body']"/>
                 <p t-if="entry['decision'] == 'accepted'">Accepted</p><p t-if="entry['decision'] == 'changes'">Changes Requested</p>
                 <a t-if="entry['file_url']" t-att-href="entry['file_url']" t-out="entry['filename']"/>
+                <t t-if="is_tutor and entry['review_activity']" t-call="training_management.portal_learning_work_form" a="entry['review_activity']" learning="learning" learning_action="learning_action" is_tutor="is_tutor"/>
                 <form t-if="is_tutor and entry['kind'] == 'question'" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="mt-2">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" value="answer"/>
                     <input type="hidden" name="activity_id" t-att-value="entry['activity_id'] or ''"/><input type="hidden" name="parent_id" t-att-value="entry['id']"/><input type="hidden" name="request_key" t-att-value="entry['key']"/>
@@ -85,5 +75,20 @@
                 <button class="btn btn-primary mt-2" type="submit">Send private request</button>
             </form>
         </section>
+    </template>
+    <template id="portal_learning_work_form" name="Private Submission or Assessment Form">
+        <form t-if="a['available'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="mt-3">
+            <details t-att-open="is_tutor or not a['latest_submission'] or (learning['error'] and learning['draft_activity'] == a['id']) or None">
+            <summary class="mb-3"><t t-if="is_tutor">Correction or validation</t><t t-elif="a['latest_submission']">Submit a new version</t><t t-else="">Exercise submission</t></summary>
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" t-att-value="'correction' if is_tutor else 'submission'"/>
+            <input type="hidden" name="activity_id" t-att-value="a['id']"/><input type="hidden" name="parent_id" t-att-value="a['latest_submission'] or ''"/>
+            <input type="hidden" name="revision" t-att-value="a['revision']"/><input type="hidden" name="request_key" t-att-value="a['key']"/>
+            <label class="form-label" t-att-for="'work-%s' % a['id']"><t t-if="is_tutor">Correction or validation</t><t t-else="">Exercise submission</t></label>
+            <textarea class="form-control" name="body" t-att-id="'work-%s' % a['id']" rows="3"><t t-out="learning['draft'] if learning['draft_activity'] == a['id'] else ''"/></textarea>
+            <label class="form-label mt-2" t-att-for="'file-%s' % a['id']">Private file (optional)</label><input type="file" name="file" class="form-control" t-att-id="'file-%s' % a['id']"/>
+            <t t-if="is_tutor"><label class="form-label mt-2" t-att-for="'decision-%s' % a['id']">Review status</label><select required="required" class="form-select" name="decision" t-att-id="'decision-%s' % a['id']"><option value="">Choose a status</option><option value="accepted">Accepted</option><option value="changes">Changes Requested</option></select></t>
+            <button class="btn btn-primary mt-2" type="submit"><t t-if="is_tutor">Save correction</t><t t-elif="a['latest_submission']">Submit a new version</t><t t-else="">Exercise submission</t></button>
+            </details>
+        </form>
     </template>
 </odoo>

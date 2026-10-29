@@ -36,8 +36,18 @@
                 <p t-if="is_tutor and not a['project_allowed']" role="status">Une habilitation Projet pratique en cours est requise pour consulter et évaluer les travaux.</p>
             </t>
         </xpath>
-        <xpath expr="//form[contains(@t-if, &quot;a['criterion'] in&quot;)]" position="attributes"><attribute name="t-if">a['available'] and a['project_allowed'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])</attribute></xpath>
         <xpath expr="//div[@t-if=&quot;learning['error']&quot;]" position="attributes"><attribute name="id">learning-feedback</attribute><attribute name="tabindex">-1</attribute><attribute name="autofocus">autofocus</attribute></xpath>
+        <xpath expr="//div[@t-out=&quot;entry['body']&quot;]" position="after">
+            <t t-if="entry['project_snapshot']">
+                <p>Grille conservée : <t t-out="entry['project_snapshot']['rubric']['name']"/> · version <t t-out="entry['project_snapshot']['rubric']['id']"/></p>
+                <ul t-if="entry['project_snapshot']['ratings']"><li t-foreach="entry['project_snapshot']['rubric']['criteria']" t-as="c">
+                    <strong t-out="c['name']"/> : <t t-out="entry['project_snapshot']['rubric']['level_labels'][int(entry['project_snapshot']['ratings'][str(c['id'])])]"/> — <t t-out="c['levels'][int(entry['project_snapshot']['ratings'][str(c['id'])])]"/>
+                </li></ul>
+            </t>
+        </xpath>
+    </template>
+    <template id="portal_project_work_form" inherit_id="portal_learning_work_form" name="Private Project Assessment Form">
+        <xpath expr="//form[contains(@t-if, &quot;a['criterion'] in&quot;)]" position="attributes"><attribute name="t-if">a['available'] and a['project_allowed'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])</attribute></xpath>
         <xpath expr="//textarea[@name='body'][contains(@t-att-id, 'work-')]" position="attributes"><attribute name="t-att-required">is_tutor and a['project']</attribute></xpath>
         <xpath expr="//textarea[@name='body'][contains(@t-att-id, 'work-')]" position="after">
             <fieldset t-if="is_tutor and a['project']" class="my-3"><legend>Évaluation par critère</legend>
@@ -49,14 +59,6 @@
                 </div>
                 <p>Le retour motivé est obligatoire. Une correction ajoute une décision et conserve les précédentes.</p>
             </fieldset>
-        </xpath>
-        <xpath expr="//div[@t-out=&quot;entry['body']&quot;]" position="after">
-            <t t-if="entry['project_snapshot']">
-                <p>Grille conservée : <t t-out="entry['project_snapshot']['rubric']['name']"/> · version <t t-out="entry['project_snapshot']['rubric']['id']"/></p>
-                <ul t-if="entry['project_snapshot']['ratings']"><li t-foreach="entry['project_snapshot']['rubric']['criteria']" t-as="c">
-                    <strong t-out="c['name']"/> : <t t-out="entry['project_snapshot']['rubric']['level_labels'][int(entry['project_snapshot']['ratings'][str(c['id'])])]"/> — <t t-out="c['levels'][int(entry['project_snapshot']['ratings'][str(c['id'])])]"/>
-                </li></ul>
-            </t>
         </xpath>
     </template>
 </odoo>

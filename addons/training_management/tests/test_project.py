@@ -352,6 +352,36 @@ class TestProjectHTTP(ProjectCase, HttpCase):
         response = self.url_open(f"/my/training-tutoring/{enrollment.id}")
         self.assertEqual(response.status_code, 200)
         self.assertIn("project_rating_", response.text)
+        tree = html.fromstring(response.content)
+        self.assertFalse(tree.xpath(f"//*[@id='learning-activity-{activity.id}']//form"))
+        self.assertTrue(
+            tree.xpath(f"//*[@id='learning-entry-{entry.id}']//select[starts-with(@name, 'project_rating_')]")
+        )
+        self.assertTrue(tree.xpath(f"//*[@id='learning-entry-{entry.id}']//a[contains(@href, '/data')]"))
+        latest = self.submit_project(activity, enrollment)
+        response = self.url_open(f"/my/training-tutoring/{enrollment.id}")
+        tree = html.fromstring(response.content)
+        self.assertFalse(tree.xpath(f"//*[@id='learning-entry-{entry.id}']//form"))
+        self.assertEqual(
+            tree.xpath(f"//*[@id='learning-entry-{latest.id}']//input[@name='parent_id']/@value"), [str(latest.id)]
+        )
+        progress = self.project_service()._progress(enrollment, activity)
+        stale = {
+            "csrf_token": self.csrf_token(),
+            "kind": "correction",
+            "activity_id": activity.id,
+            "parent_id": entry.id,
+            "revision": progress.revision,
+            "request_key": str(uuid4()),
+            "body": "Correction périmée",
+            "decision": "accepted",
+            **{f"project_rating_{c.id}": "2" for c in activity.project_rubric_id.criterion_ids},
+        }
+        count = self.env["training.learning.entry"].search_count([("enrollment_id", "=", enrollment.id)])
+        self.assertEqual(self.url_open(f"/my/training-tutoring/{enrollment.id}/learning", data=stale).status_code, 400)
+        self.assertEqual(
+            count, self.env["training.learning.entry"].search_count([("enrollment_id", "=", enrollment.id)])
+        )
         token = limited_field_access_token(entry, "data", scope="binary")
         url = f"/web/content/{entry._name}/{entry.id}/data?access_token={token}&download=true"
         self.assertEqual(self.url_open(url).content, PDF)
@@ -423,6 +453,12 @@ class TestProjectHTTP(ProjectCase, HttpCase):
         response = self.url_open(path, data=values)
         self.assertEqual(response.status_code, 400)
         self.assertIn("Retour motivé conservé", response.text)
+        tree = html.fromstring(response.content)
+        self.assertTrue(
+            tree.xpath(
+                f"//*[@id='learning-entry-{progress.latest_submission_id.id}']//textarea[@name='body'][text()='Retour motivé conservé']"
+            )
+        )
         self.assertEqual(
             html.fromstring(response.content).xpath(
                 "//select[@name='project_rating_%s']/option[@selected]/@value" % criteria[0].id
@@ -430,7 +466,12 @@ class TestProjectHTTP(ProjectCase, HttpCase):
             ["2"],
         )
         values[f"project_rating_{criteria[1].id}"] = "3"
-        self.assertEqual(self.url_open(path, data=values, allow_redirects=False).status_code, 303)
+        response = self.url_open(path, data=values, allow_redirects=False)
+        self.assertEqual(response.status_code, 303)
+        correction = self.env["training.learning.entry"].search(
+            [("enrollment_id", "=", enrollment.id), ("kind", "=", "correction")]
+        )
+        self.assertTrue(response.headers["Location"].endswith(f"#learning-entry-{correction.id}"))
         self.assertTrue(self.project_service()._complete(enrollment, activity))
         self.assertEqual(self.url_open(path, data=values, allow_redirects=False).status_code, 303)
         self.authenticate(self.portal.login, self.portal.login)
