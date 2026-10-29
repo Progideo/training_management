@@ -1,6 +1,6 @@
 <odoo>
     <template id="public_catalogue" name="Training catalogue">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout" additional_title.translate="Formations"><main class="container py-4">
             <h1>Formations</h1>
             <form method="get" action="/formations" class="row g-3 mb-4">
                 <div class="col-md-4"><label for="search">Rechercher</label><input id="search" name="search" class="form-control" t-att-value="search"/></div>

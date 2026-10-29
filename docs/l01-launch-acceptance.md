@@ -41,7 +41,30 @@ financières fictifs. Ne pas recopier une base active ni ses secrets.
   persistant, demande guidée, habilitations explicites et accord client sur chaque
   version intra, historique et programme standard conservés.
 
-## Preuves et limites
+## Extension de recette V2
+
+La phase 2 couvre P09 à P14 et P16 ; P15 est annulé par décision
+[#38](https://github.com/Progideo/training_management/issues/38), sans retirer
+le catalogue, les demandes ou les devis de parcours existants.
+Les parcours `test_v2_*` prolongent la même classe L01 et ses fixtures ; ils
+ne créent ni lot de tests ni configuration supplémentaires.
+
+| Exigences | Enchaînement et preuve automatisée | Complément de recette |
+| --- | --- | --- |
+| P10, COM01–02, INS01, P16 | Orientation sans réponse persistée → devis MAD → capacité S03 → alerte volontaire → dates/fuseau révisés → désabonnement contrôlé dans le transport natif | Réception réelle, conditions et identité d’envoi de lancement |
+| P09, PED01–02, P12–P13 | Projet révisé et évalué → prérequis acquis → ouverture manuelle de l’étape → tutorat sans doublon → révocation et conservation des preuves | Lecture et manipulation mobile/clavier des trois espaces |
+| PRE01–03, P11, P14, SEC01–02 | Présence partielle validée → mise en pratique privée → accord sur l’avis exact → modération explicite → retrait sans perte des preuves privées | Accord métier, contenu et présentation publique |
+| R01–R09, P01–P08 | Parcours L01 existants et régressions cumulatives : MAD/EUR, supports/examens, présences, attestations, qualité et portail entreprise | Contrôle humain indépendant, PDF et validations de lancement |
+| UX01, français | Titres Website dans la langue des pages et durée du tutorat au format local ; paramètres QWeb et formatage natifs | Clavier, petits écrans et lecture visuelle des contenus réels |
+
+Réutiliser les preuves CI du même arbre fonctionnel pour les cas unitaires,
+HTTP, droits, dates/DST, migrations et courses. Ne relancer que les parcours
+affectés ou un risque nouvellement identifié. Les résultats, écarts et limites
+de chaque exécution restent dans la PR, avec commit, profils et journaux.
+La recette de développement ne clôture pas C06, M01 ou L01 et n’autorise aucune
+fusion, ouverture, migration réelle ni activation d’envoi.
+
+## Qualification des preuves
 
 Consigner commit, configuration, profil, attendu, constat et journal/capture par
 scénario. Les contrôles automatisés HTTP ne démontrent pas à eux seuls le

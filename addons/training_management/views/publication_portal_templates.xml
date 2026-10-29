@@ -1,6 +1,6 @@
 <odoo>
     <template id="publication_home" name="Publication requests">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout" additional_title.translate="Publication requests"><main class="container py-4">
             <h1>Publication requests</h1>
             <p>Giving an opinion or authorizing a customer case is optional. Private satisfaction surveys remain separate.</p>
             <p t-if="not rows">No publication request.</p>
@@ -8,7 +8,7 @@
         </main></t>
     </template>
     <template id="publication_form" name="Exact publication authorization">
-        <t t-call="portal.frontend_layout"><main class="container py-4" style="max-width:50rem">
+        <t t-call="portal.frontend_layout" additional_title.translate="Publication authorization"><main class="container py-4" style="max-width:50rem">
             <a href="/my/training-publications">Publication requests</a>
             <h1>Publication authorization</h1>
             <p t-out="row['state']"/>

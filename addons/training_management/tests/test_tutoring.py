@@ -475,6 +475,7 @@ class TestTutoringHttp(TutoringCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Créneaux de tutorat disponibles", response.text)
         self.assertIn("Confirmer la réservation — une unité", response.text)
+        self.assertIn("1,0", response.text)
         self.assertIn("&lt;script&gt;Fictional P13&lt;/script&gt;", response.text)
         self.assertNotIn("<script>Fictional P13</script>", response.text)
         booking = self.reserve(entitlement, slot)
