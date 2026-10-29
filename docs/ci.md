@@ -63,6 +63,10 @@ P14 prolonge ce même parcours : avis nommé, avis retiré, cas client autorisé
 consentements, décisions, invitations et fichiers privés sont comparés exactement
 après deux mises à jour. Les courses portent sur deux invitations d’une inscription,
 la double soumission d’un accord, publication contre retrait et double retrait.
+P16 prolonge ce parcours par deux mises à jour comparant exactement les décisions
+publiques, consentements, journaux, courriels en file et fichiers antérieurs. Les
+courses couvrent double abonnement, double publication, dernière place et
+désabonnement face à la préparation du transport, puis double désabonnement.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.

@@ -12,3 +12,4 @@ from . import training_quality_export
 from . import training_provider_session
 
 from . import training_publication_inspection
+from . import training_session_publication_inspection

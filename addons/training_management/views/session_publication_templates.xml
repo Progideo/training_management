@@ -1,0 +1,53 @@
+<odoo>
+    <template id="public_session_link" inherit_id="training_management.public_programme">
+        <xpath expr="//div[@id='training_request_actions']" position="after">
+            <p><a t-att-href="'/formations/%s/sessions' % program['id']">Dates et disponibilités des sessions</a></p>
+        </xpath>
+    </template>
+    <template id="public_session_dates" name="Public session dates">
+        <t t-call="portal.frontend_layout"><main class="container py-4">
+            <a t-att-href="'/formations/%s' % program_id">Fiche formation</a>
+            <h1>Sessions : <t t-out="title"/></h1><p t-out="mode"/>
+            <p>Les disponibilités sont vérifiées à la consultation. Une demande ne réserve pas de place et n’ouvre aucun accès pédagogique.</p>
+            <p t-if="not rows">Aucune session publique à venir.</p>
+            <ul class="list-group my-3"><li t-foreach="rows" t-as="row" class="list-group-item">
+                <p><t t-out="row['start']"/> — <t t-out="row['end']"/> · Fuseau : <t t-out="row['timezone']"/></p>
+                <p><strong t-if="row['status'] == 'full'">Complète</strong><strong t-elif="row['status'] == 'confirmed'">Confirmée</strong><strong t-else="">Ouverte</strong>
+                    <span t-if="row['guaranteed']"> · Départ garanti sur décision de l’organisme</span></p>
+            </li></ul>
+            <a class="btn btn-outline-primary" t-att-href="'/formations/%s/date-alert' % program_id">M’alerter des nouvelles dates</a>
+            <p class="mt-2">Abonnement volontaire depuis votre compte existant.</p>
+            <a href="/my/training-date-alerts">Gérer mes alertes ou me désabonner</a>
+        </main></t>
+    </template>
+    <template id="session_date_consent" name="New date alert consent">
+        <t t-call="portal.frontend_layout"><main class="container py-4">
+            <h1>Nouvelles dates : <t t-out="title"/></h1>
+            <p t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+            <p t-if="policy">Finalité : vous prévenir des nouvelles dates de cette formation. Conservation des preuves prévue par la politique approuvée : <t t-out="policy['days']"/> jours. Pour une demande de suppression, contactez l’organisme. Le désabonnement est immédiat et ne supprime pas les preuves de votre choix.</p>
+            <p t-else="">Les alertes ne sont pas encore disponibles pour cette formation. Contactez l’organisme.</p>
+            <form t-if="policy" method="post">
+                <input type="hidden" name="definition" t-att-value="definition"/>
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="form-check my-3"><input type="checkbox" id="date-alert-consent" name="accepted" value="yes" required="required" class="form-check-input"/>
+                    <label for="date-alert-consent" class="form-check-label" t-out="wording"/></div>
+                <button class="btn btn-primary">Activer mon alerte</button>
+            </form>
+            <a class="d-inline-block mt-3" href="/my/training-date-alerts">Mes alertes et désabonnement</a>
+        </main></t>
+    </template>
+    <template id="session_date_subscriptions" name="My new date subscriptions">
+        <t t-call="portal.frontend_layout"><main class="container py-4">
+            <h1>Mes alertes de nouvelles dates</h1>
+            <p>Ces alertes sont indépendantes de vos inscriptions et convocations. Le désabonnement prend effet aussi sur les courriels encore en attente d’envoi.</p>
+            <p t-if="not rows">Vous n’avez aucun abonnement aux nouvelles dates.</p>
+            <ul class="list-group"><li t-foreach="rows" t-as="row" class="list-group-item">
+                <p><strong t-out="row['title']"/> · <t t-out="row['operator']"/> · <t t-if="row['active']">Alerte active</t><t t-else="">Désabonné</t></p>
+                <form t-if="row['active']" method="post" t-att-action="'/my/training-date-alerts/%s/unsubscribe' % row['id']">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><button class="btn btn-outline-secondary">Me désabonner</button>
+                </form>
+            </li></ul>
+            <a class="d-inline-block mt-3" href="/formations">Catalogue</a>
+        </main></t>
+    </template>
+</odoo>

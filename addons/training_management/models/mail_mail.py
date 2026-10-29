@@ -13,8 +13,16 @@ class MailMail(models.Model):
             "training.practice.notice",
             "training.tutoring.notice",
             "training.publication.notice",
+            "training.session.alert.notice",
         ):
             notice = self.env[self.model].sudo().search([("mail_id", "=", self.id)], limit=1)
+            if notice and self.model == "training.session.alert.notice":
+                # Serialize opt-out/withdrawal against actual transport and reject
+                # stale REPEATABLE READ snapshots through existing S03 fences.
+                notice.company_id.sudo()._lock_training_schedule()
+                notice.delivery_id.sudo()._serialize()
+                notice.subscription_id.invalidate_recordset()
+                notice.delivery_id.invalidate_recordset()
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This learning notification no longer has an authorized recipient."))
             subject, body = notice._content()
