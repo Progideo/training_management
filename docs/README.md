@@ -59,6 +59,23 @@ fonctionnelle. Toute évolution approuvée passe par une issue et une PR qui
 précisent la décision, les exigences affectées et la nouvelle référence ; conserver
 la traçabilité de l’import et ajouter les informations de révision correspondantes.
 
+## Révision du périmètre — 29 octobre 2026
+
+[P15 est entièrement annulé](https://github.com/Progideo/training_management/issues/38).
+Le périmètre courant de la phase 2 est P09 à P14 et P16, sans renumérotation.
+Le catalogue, les demandes de devis et les parcours déjà livrés sont conservés.
+Les consignes du dépôt et la copie de la spécification intègrent cette décision.
+Le prompt maître reste la référence de méthode d’origine ; ses plages historiques
+P09–P16 se lisent avec cette annulation. Les fichiers synchronisés sous `sources/`
+ne sont pas modifiés : la divergence avec l’import d’origine est volontaire et tracée.
+
+Les empreintes ci-dessus restent celles de l’import initial. Empreinte courante
+SHA-256 de la spécification amendée :
+
+```text
+cdd7c3c72273c382205950912a8fa34310183c17101efb5dacc808bcac72da82  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+```
+
 ## Incréments
 
 | Incrément | Page |
@@ -100,7 +117,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;
-2 = P09 à P16 ; P17 à P20 exigent une validation complémentaire explicite. La cible vérifiée est
+2 = P09 à P14 et P16 (P15 annulé) ; P17 à P20 exigent une validation complémentaire explicite. La cible vérifiée est
 Odoo Community `20.0-20261015` ([couverture native](native-coverage.md)). Les réserves sur les
 références Odoo 19, Qualiopi et l'émargement sont conservées. L'audit historique
 `MASTER_PROMPT_AUDIT_ODOO_19_NEOPRO_ACADEMY.md` n'est pas importé.
