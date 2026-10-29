@@ -106,11 +106,23 @@ class PublicSessionDelivery(models.Model):
             raise ValidationError(self.env._("Use the explicit public session actions."))
         with self.env.cr.savepoint():
             # Keep the company -> delivery lock order shared with consent and transport.
-            if {"company_id", "program_id", "kind", "start_at", "end_at"} & vals.keys():
+            definition = {"company_id", "program_id", "kind", "start_at", "end_at", "timezone"} & vals.keys()
+            if definition:
                 self._require_coordinator()
                 self.company_id.sudo()._lock_training_schedule()
                 self._serialize()
-                self._reset_session_publication()
+                changed = self.filtered(
+                    lambda row: any(
+                        (row[key].id if row._fields[key].type == "many2one" else row[key])
+                        != (
+                            (fields.Datetime.to_datetime(vals[key]) or False)
+                            if key in ("start_at", "end_at")
+                            else vals[key]
+                        )
+                        for key in definition
+                    )
+                )
+                changed._reset_session_publication()
             return super().write(vals)
 
     @api.private

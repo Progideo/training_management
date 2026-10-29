@@ -282,6 +282,11 @@ class TestPublicSessionRules(SessionAlertCase):
         delivery.action_publish_session(reason="Reviewed new dates")
         self.assertEqual(delivery.session_first_published_at, first)
         self.assertEqual(len(self.notices(delivery)), 1)
+        delivery.write({"timezone": delivery.timezone, "program_id": delivery.program_id.id})
+        self.assertTrue(delivery._session_public_row())
+        delivery.write({"timezone": "America/Montreal"})
+        self.assertFalse(delivery._session_public_row())
+        self.assertFalse(delivery.session_guaranteed)
 
     def test_retirement_cancellation_start_and_sales_close_hide_session(self):
         delivery = self.dated_delivery()
@@ -346,6 +351,13 @@ class TestSessionDateAlerts(SessionAlertCase):
             self.subscribe()
         with self.assertRaises(AccessError):
             self.subscribe(self.env.ref("base.public_user"))
+
+    def test_single_recipient_address_required(self):
+        for address in (False, "invalid", "p16@example.invalid, second@example.invalid"):
+            self.portal.partner_id.email = address
+            with self.subTest(address=address), self.assertRaises(ValidationError):
+                self.subscribe()
+        self.assertFalse(self.env["training.session.alert.subscription"].search([("owner_id", "=", self.portal.id)]))
 
     def test_stale_terms_and_operator_membership_are_refused(self):
         model = self.env["training.session.alert.subscription"].with_user(self.portal)
@@ -524,3 +536,25 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         delivery.action_publish_session(reason="Publication fictive")
         notice = self.notices(delivery)
         self.assertEqual(notice.mail_id.subject, "De nouvelles dates de formation sont disponibles")
+
+    def test_public_dates_disambiguate_daylight_saving_offsets(self):
+        import calendar
+        from datetime import datetime
+
+        year = fields.Datetime.now().year + 1
+        day = max(week[calendar.SUNDAY] for week in calendar.monthcalendar(year, 10))
+        start = datetime(year, 10, day, 0, 30)
+        delivery = self.delivery(
+            program_id=self.public_program.id,
+            kind="session",
+            start_at=start,
+            end_at=start + timedelta(hours=1),
+            timezone="Europe/Paris",
+        )
+        delivery.action_publish_session(reason="Fictional DST session")
+        self.authenticate(None, None)
+        response = self.url_open("/formations/%s/sessions" % self.public_program.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("+02:00", response.text)
+        self.assertIn("+01:00", response.text)
+        self.assertIn("Europe/Paris", response.text)

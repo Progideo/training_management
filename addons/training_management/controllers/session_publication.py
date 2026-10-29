@@ -41,8 +41,12 @@ class SessionPublicationPortal(http.Controller):
                 rows.append(
                     {
                         **row,
-                        "start": format_datetime(request.env, row["start_at"], tz=row["timezone"]),
-                        "end": format_datetime(request.env, row["end_at"], tz=row["timezone"]),
+                        "start": format_datetime(
+                            request.env, row["start_at"], tz=row["timezone"], dt_format="d MMMM y HH:mm XXX"
+                        ),
+                        "end": format_datetime(
+                            request.env, row["end_at"], tz=row["timezone"], dt_format="d MMMM y HH:mm XXX"
+                        ),
                     }
                 )
         return self._private(

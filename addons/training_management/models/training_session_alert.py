@@ -6,6 +6,7 @@ from markupsafe import Markup
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.tools import email_normalize, email_split
 
 
 class SessionAlertCompany(models.Model):
@@ -73,6 +74,9 @@ class SessionAlertSubscription(models.Model):
         user = self.env.user
         if not user.active or user._is_public() or program.company_id not in user.company_ids:
             raise AccessError(self.env._("Sign in with an account authorized for this operator."))
+        address = user.partner_id.email or ""
+        if len(email_split(address)) != 1 or not email_normalize(address):
+            raise ValidationError(self.env._("Your account needs a single valid email address for date alerts."))
         if accepted is not True:
             raise ValidationError(self.env._("Explicitly accept the new date alerts."))
         with self.env.cr.savepoint():
@@ -195,6 +199,8 @@ class SessionAlertNotice(models.Model):
             and self.company_id in user.company_ids
             and user.partner_id.email == self.recipient_email
             and self.recipient_email
+            and len(email_split(self.recipient_email)) == 1
+            and email_normalize(self.recipient_email)
             and sub.company_id == delivery.company_id
             and sub.course_id == delivery.program_id.course_id
             and sub.subscribed_at <= delivery.session_first_published_at

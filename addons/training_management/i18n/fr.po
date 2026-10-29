@@ -13645,3 +13645,9 @@ msgstr "Notifications de nouvelles dates"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__distribution_state
 msgid "Distribution State"
 msgstr "État de distribution"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "Your account needs a single valid email address for date alerts."
+msgstr "Votre compte doit comporter une seule adresse électronique valide pour les alertes de dates."
