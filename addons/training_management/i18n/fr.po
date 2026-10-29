@@ -13651,3 +13651,18 @@ msgstr "État de distribution"
 #: code:addons/training_management/models/training_session_alert.py:0
 msgid "Your account needs a single valid email address for date alerts."
 msgstr "Votre compte doit comporter une seule adresse électronique valide pour les alertes de dates."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Your submission has been saved."
+msgstr "Votre remise a bien été enregistrée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Awaiting the tutor's assessment."
+msgstr "En attente d’évaluation par le formateur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "View my submission"
+msgstr "Consulter ma remise"

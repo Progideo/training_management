@@ -155,4 +155,7 @@ class LearningPortal(http.Controller):
             response.status_code = 400
             return response
         path = "/my/training-tutoring/%s" if tutor else "/my/trainings/%s"
-        return request.redirect(path % enrollment_id, code=303)
+        target = path % enrollment_id
+        if kind == "submission":
+            target += "#learning-activity-%s" % activity_id
+        return request.redirect(target, code=303)

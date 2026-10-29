@@ -398,6 +398,11 @@ historiques et fichiers, exerce les transactions concurrentes de remise, révoca
 et relance puis le portail français. `test_learning.py` couvre les critères, rôles restreints, fichiers,
 notifications, relances et doubles soumissions.
 
+Après une remise, le portail revient sur l’activité et confirme l’enregistrement
+avec un lien vers la version remise. Le formulaire de nouvelle version est replié ;
+une erreur conserve la saisie et laisse le formulaire ouvert, sans confirmation
+de succès. La confirmation d’enregistrement ne vaut pas validation pédagogique.
+
 ### Recette du complément
 
 1. Configurer une consultation obligatoire puis un exercice dépendant avec validation
