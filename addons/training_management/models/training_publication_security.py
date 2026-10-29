@@ -3,8 +3,18 @@
 from odoo import api, models
 from odoo.exceptions import AccessError, ValidationError
 
-DOCUMENTS = ("training.publication", "training.publication.event")
-FILES = DOCUMENTS + ("training.publication.notice", "training.publication.inspection")
+DOCUMENTS = (
+    "training.publication",
+    "training.publication.event",
+    "training.session.alert.subscription",
+    "training.session.alert.event",
+)
+FILES = DOCUMENTS + (
+    "training.publication.notice",
+    "training.publication.inspection",
+    "training.session.alert.notice",
+    "training.session.publication.inspection",
+)
 
 
 class PublicationPolicy(models.AbstractModel):

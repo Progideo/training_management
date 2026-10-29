@@ -100,3 +100,9 @@ P09_PHASE=publication_verify step publication_preserved run_odoo shell --no-http
 step publication_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=publication_verify step publication_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p14_publication.py"
 P09_PHASE=publication_concurrency step publication_concurrency run_odoo shell --no-http < "$repo/tests/probes/p14_publication.py"
+P09_PHASE=sessions_prepare step sessions_baseline run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
+step sessions_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=sessions_verify step sessions_preserved run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
+step sessions_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=sessions_verify step sessions_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
+P09_PHASE=sessions_concurrency step sessions_concurrency run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"

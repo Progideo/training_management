@@ -92,6 +92,7 @@ la traçabilité de l’import et ajouter les informations de révision correspo
 | P12 — projet pratique évalué | [p12-assessed-projects.md](p12-assessed-projects.md) |
 | P13 — réservation de tutorat | [p13-tutoring-booking.md](p13-tutoring-booking.md) |
 | P14 — avis vérifiés et cas clients | [p14-verified-reviews.md](p14-verified-reviews.md) |
+| P16 — préparation des statuts et alertes | [p16-session-status-alerts.md](p16-session-status-alerts.md) |
 | C06 — paramètres natifs au déploiement | [c06-launch-settings.md](c06-launch-settings.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
 | L01 — recette intégrée de lancement | [l01-launch-acceptance.md](l01-launch-acceptance.md) |

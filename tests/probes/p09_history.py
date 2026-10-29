@@ -30,9 +30,15 @@ def snapshot(tables, *, business=False, database_env=None):
             if business and table == "training_delivery"
             else SQL("to_jsonb(t)")
         )
-        # P12 only adds nullable opt-in fields to existing S05 rows. Prove
-        # they remain NULL before comparing every original column byte-for-byte.
+        # Opt-in additions must remain empty on historical rows. Compare every
+        # original column byte-for-byte after explicitly checking the new fields.
         added = {
+            "training_delivery": [
+                "session_public",
+                "session_sales_open",
+                "session_first_published_at",
+                "session_guaranteed",
+            ],
             "training_learning_activity": [
                 "project_rubric_id",
                 "project_deliverable",
@@ -45,7 +51,10 @@ def snapshot(tables, *, business=False, database_env=None):
             database_env.cr.execute(SQL("SELECT to_jsonb(t) FROM %s t", SQL.identifier(table)))
             for (row,) in database_env.cr.fetchall():
                 for column in added:
-                    assert row.get(column) is None, (table, row["id"], column)
+                    if table == "training_delivery" and column != "session_first_published_at":
+                        assert row.get(column) is None or row.get(column) is False, (table, row["id"], column)
+                    else:
+                        assert row.get(column) is None, (table, row["id"], column)
             expression = SQL("(%s - %s::text[])", expression, added)
         database_env.cr.execute(
             SQL("SELECT (%s)::text FROM %s t ORDER BY (%s)::text", expression, SQL.identifier(table), expression)

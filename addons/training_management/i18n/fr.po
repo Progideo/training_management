@@ -1740,6 +1740,7 @@ msgstr "Annulée"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__capacity
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__capacity
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__capacity
 msgid "Capacity"
 msgstr "Capacité"
 
@@ -1888,6 +1889,7 @@ msgstr "Client"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__kind__session
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__dated_session
 msgid "Dated Session"
 msgstr "Session datée"
 
@@ -1963,6 +1965,7 @@ msgstr "Accès effectif"
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__end_at
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__end_at
 msgid "End At"
 msgstr "Fin"
 
@@ -2108,6 +2111,7 @@ msgstr "Nouvelle inscription demandée"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__occupied_seats
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__occupied_seats
 msgid "Occupied Seats"
 msgstr "Places occupées"
 
@@ -2436,6 +2440,7 @@ msgstr "Démarrer"
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__start_at
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__start_at
 msgid "Start At"
 msgstr "Début"
 
@@ -2541,6 +2546,7 @@ msgstr "Cette référence de réservation existe déjà pour cette réalisation.
 #: model:ir.model.fields,field_description:training_management.field_training_session__timezone
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__reference_timezone
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__timezone
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__timezone
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
@@ -9020,6 +9026,7 @@ msgstr "Un membre autorisé de l’équipe formation est requis."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__checked_at
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__checked_at
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__checked_at
 msgid "Checked At"
 msgstr "Contrôlé le"
 
@@ -13359,3 +13366,254 @@ msgstr "Votre avis public exact"
 #: model_terms:ir.ui.view,arch_db:training_management.publication_public
 msgid "— <span>Authorized on:</span>"
 msgstr "— <span>Autorisé le (UTC) :</span>"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_training_quality
+msgid "Quality Management"
+msgstr "Qualité"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__invalidated
+msgid "Invalidated"
+msgstr "Invalidé"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#: model:ir.actions.server,name:training_management.action_inspect_session_availability
+#. odoo-python
+msgid "Session State and Availability"
+msgstr "Session : état et disponibilité"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+#. odoo-python
+msgid "Publish and Open Session"
+msgstr "Publier et ouvrir la session"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+#. odoo-python
+msgid "Withdraw Public Session"
+msgstr "Retirer la session publique"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+#. odoo-python
+msgid "Guarantee Departure"
+msgstr "Garantir le départ"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+#. odoo-python
+msgid "Revoke Departure Guarantee"
+msgstr "Retirer la garantie de départ"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+#. odoo-python
+msgid "Close Session Sales"
+msgstr "Fermer la commercialisation"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#. odoo-python
+msgid "Only a training coordinator may inspect session availability."
+msgstr "Seul un coordinateur peut consulter la disponibilité des sessions."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#. odoo-python
+msgid "This delivery is outside the allowed companies."
+msgstr "Cette réalisation est hors des sociétés autorisées."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#. odoo-python
+msgid "Use the explicit public session actions."
+msgstr "Utilisez les actions explicites de session publique."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#. odoo-python
+msgid "Session definition changed; review public decisions."
+msgstr ""
+"Définition de la session modifiée ; réexaminez les décisions publiques."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_publication.py:0
+#. odoo-python
+msgid "Choose a future dated session and a currently public programme."
+msgstr ""
+"Choisissez une session datée à venir et un programme actuellement public."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid ""
+"I wish to receive an email when new dates are published for this training by"
+" this operator. I can unsubscribe from my account at any time. This does not"
+" enroll me in a session."
+msgstr ""
+"Je souhaite recevoir un courriel lorsque cet organisme publie de nouvelles "
+"dates pour cette formation. Je peux me désabonner à tout moment depuis mon "
+"compte. Cet accord ne constitue pas une inscription à une session."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "New training session dates are available"
+msgstr "De nouvelles dates de formation sont disponibles"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "This date subscription is unavailable."
+msgstr "Cet abonnement aux nouvelles dates est indisponible."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "Sign in with an account authorized for this operator."
+msgstr "Connectez-vous avec un compte autorisé pour cet organisme."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "Explicitly accept the new date alerts."
+msgstr "Acceptez explicitement les alertes de nouvelles dates."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "Choose an approved retention policy of this operator company."
+msgstr ""
+"Choisissez une politique de conservation approuvée de cette société "
+"exploitante."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "This programme is no longer public."
+msgstr "Ce programme n’est plus public."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "The date alert terms changed. Review and accept them again."
+msgstr ""
+"Les conditions de l’alerte ont changé. Relisez-les et acceptez-les à "
+"nouveau."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "Date alerts require an approved retention policy."
+msgstr ""
+"Les alertes de dates nécessitent une politique de conservation approuvée."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid ""
+"New session dates have been published for a training you follow. Consult the"
+" current public information before requesting a place."
+msgstr ""
+"De nouvelles dates sont publiées pour une formation que vous suivez. "
+"Consultez les informations publiques actuelles avant de demander une place."
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "View session dates"
+msgstr "Voir les dates des sessions"
+
+#. module: training_management
+#: code:addons/training_management/models/training_session_alert.py:0
+#. odoo-python
+msgid "Manage or unsubscribe from date alerts"
+msgstr "Gérer mes alertes de dates ou me désabonner"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_publication_inspection_form
+msgid ""
+"This private diagnostic does not publish the session, open registration or "
+"guarantee departure. Availability is checked at the server time shown below."
+msgstr ""
+"Ce diagnostic privé ne publie pas la session, n’ouvre pas les inscriptions "
+"et ne garantit pas le départ. La disponibilité est constatée à l’heure "
+"serveur indiquée ci-dessous."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+msgid "Public Session"
+msgstr "Session publique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
+msgid ""
+"Publication, commercial opening and guaranteed departure require explicit "
+"decisions. No private client or participant information is published."
+msgstr ""
+"La publication, l’ouverture commerciale et le départ garanti nécessitent des"
+" décisions explicites. Aucune information privée sur les clients ou "
+"participants n’est publiée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__internal_state
+msgid "Internal State"
+msgstr "État interne"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__program_state
+msgid "Program State"
+msgstr "État du programme"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__catalogue_approved
+msgid "Catalogue Approved"
+msgstr "Catalogue public approuvé"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__course_active
+msgid "Course Active"
+msgstr "Formation active"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__remaining_seats
+msgid "Remaining Seats"
+msgstr "Places disponibles"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__unlimited
+msgid "Unlimited"
+msgstr "Capacité illimitée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__session_public
+msgid "Session Public"
+msgstr "Session publiée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__session_sales_open
+msgid "Session Sales Open"
+msgstr "Commercialisation ouverte"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__session_first_published_at
+msgid "Session First Published At"
+msgstr "Première publication le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__session_guaranteed
+msgid "Guaranteed Departure"
+msgstr "Départ garanti"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_res_company__training_session_alert_retention_id
+msgid "Date Alert Retention Policy"
+msgstr "Politique de conservation des alertes de dates"

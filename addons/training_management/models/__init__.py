@@ -64,3 +64,5 @@ from . import training_publication
 from . import training_testimonial
 from . import training_publication_notice
 from . import training_publication_security
+from . import training_session_publication
+from . import training_session_alert

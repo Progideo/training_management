@@ -481,7 +481,13 @@
         "publication_preserved",
         "publication_second_update",
         "publication_repeated_preserved",
-        "publication_concurrency"
+        "publication_concurrency",
+        "sessions_baseline",
+        "sessions_update",
+        "sessions_preserved",
+        "sessions_second_update",
+        "sessions_repeated_preserved",
+        "sessions_concurrency"
       ]
     }
   ],
