@@ -6,7 +6,7 @@ from lxml import html
 
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tests import HttpCase, new_test_user, tagged
+from odoo.tests import Form, HttpCase, new_test_user, tagged
 from odoo.tools.translate import load_language
 
 from .test_closure import ClosureCase
@@ -110,6 +110,18 @@ class PublicationCase(ClosureCase):
 
 @tagged("post_install", "-at_install")
 class TestTestimonial(PublicationCase):
+    def test_native_moderator_form_and_visible_actions(self):
+        row, _ = self.review_request()
+        self.consent(row)
+        with Form(row.with_user(self.moderator)) as form:
+            form.moderation_reason = "Fictional native moderation decision"
+        arch = row.with_user(self.moderator).get_view(view_type="form")["arch"]
+        tree = html.fromstring(arch)
+        self.assertTrue(tree.xpath("//button[@name='action_publish']"))
+        self.assertTrue(tree.xpath("//field[@name='moderation_reason']"))
+        row.with_user(self.moderator).action_publish()
+        self.assertTrue(row._public_row())
+
     def test_review_exact_consent_moderation_public_projection_and_withdrawal(self):
         row, _ = self.review_request()
         self.assertEqual(row.state, "invited")
@@ -297,7 +309,7 @@ class TestPublicationHttp(PublicationCase, HttpCase):
             ["fr_FR"], overwrite=True
         )
         self.portal.lang = "fr_FR"
-        if "website" in self.env:
+        if "website" in self.env and "language_ids" in self.env["website"]._fields:
             french = self.env.ref("base.lang_fr")
             self.env["website"].search([]).write(
                 {"language_ids": [Command.set(french.ids)], "default_lang_id": french.id}

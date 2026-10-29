@@ -94,7 +94,7 @@ class Testimonial(models.Model):
         self.invalidate_recordset()
 
     @api.private
-    def _owner(self, *, grant=False):
+    def _owner(self, *, grant=False, lock_grant=False):
         self.ensure_one()
         user = self.env.user
         if (
@@ -110,8 +110,31 @@ class Testimonial(models.Model):
                 if not self.env["training.learning.service"]._is_participant(self.enrollment_id.sudo()):
                     raise AccessError(self.env._("The participant training access is no longer active."))
             else:
-                self.env["training.company.service"]._allocation(self.allocation_id.id)
+                self._client_scope(user, lock=lock_grant)
         return True
+
+    @api.private
+    def _client_scope(self, user, *, lock=False):
+        if lock:
+            # P05 revocation locks its grant row. Lock the matching immutable
+            # scope too so a stale snapshot cannot authorize a new case after
+            # revocation. These locks follow the company/delivery/publication
+            # locks and never grant access by themselves.
+            grants = (
+                self.env["training.company.authorization"]
+                .sudo()
+                .search(
+                    [
+                        ("user_id", "=", user.id),
+                        ("company_id", "=", self.company_id.id),
+                        ("customer_id", "=", self.customer_id.commercial_partner_id.id),
+                        ("allocation_ids", "in", self.allocation_id.ids),
+                    ]
+                )
+            )
+            grants.sorted("id").lock_for_update()
+            grants.invalidate_recordset()
+        return self.env["training.company.service"].with_user(user)._allocation(self.allocation_id.id)
 
     @api.private
     def _attendance(self):
@@ -292,7 +315,7 @@ class Testimonial(models.Model):
             }
         else:
             owner = self.representative_id
-            self.env["training.company.service"].with_user(owner)._allocation(self.allocation_id.id)
+            self._client_scope(owner, lock=True)
             if (
                 self.confidential
                 or not (self.authority_reference or "").strip()
@@ -320,7 +343,7 @@ class Testimonial(models.Model):
     def _consent(self, *, definition, body="", identity="anonymous", accepted=False, identity_accepted=False):
         self._owner(grant=True)
         self._lock()
-        self._owner(grant=True)
+        self._owner(grant=True, lock_grant=True)
         body = (body or "").strip()
         request_digest = hashlib.sha256(
             json.dumps([definition, body, identity, bool(accepted), bool(identity_accepted)]).encode()
@@ -381,7 +404,7 @@ class Testimonial(models.Model):
         if self.kind == "review" and not self._valid_participation():
             raise ValidationError(self.env._("Participation must still be verified before publication."))
         if self.kind == "case":
-            self.env["training.company.service"].with_user(self.owner_id)._allocation(self.allocation_id.id)
+            self._client_scope(self.owner_id, lock=True)
             if self.confidential:
                 raise ValidationError(self.env._("A confidential customer case must remain private."))
         self._store(
