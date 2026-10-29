@@ -1,15 +1,15 @@
 # P13 — Réservation de tutorat
 
 Référence : [#36](https://github.com/Progideo/training_management/issues/36),
-PED02 et P13 (§22) de la spécification v2. **Proposition de cadrage à valider** ;
+PED02 et P13 (§22) de la spécification v2. **Cadrage validé** ;
 le tutorat privé PED02 déjà livré reste disponible.
 
-## Standard exact et choix proposé
+## Standard exact et choix retenu
 
 Sources lues dans l’image Community `20.0-20261015`, paquet `20.0.20261015`,
 digest [figé par la CI](ci.md). Calendar et Resource sont LGPL-3.
 
-| Besoin | Couverture vérifiée et proposition |
+| Besoin | Couverture vérifiée et réalisation |
 | --- | --- |
 | Événements et invitations | `calendar.event` existe ; `appointment` est absent de l’image. Le standard ne relie pas une réservation au quota d’une inscription Training Management. |
 | Disponibilités | `resource.calendar._work_intervals_batch` calcule horaires moins absences pour les ressources ; il ne confirme pas une réservation pédagogique. S04 possède déjà les séances, salles et indisponibilités des contacts formateurs. Réutiliser ce planning et son verrou société. |
@@ -30,16 +30,19 @@ Le lanceur utilise l’image figée, un PostgreSQL séparé et des identités fi
 sans transport ; il annule les écritures puis supprime ses propres ressources.
 Cette sonde d’architecture ne remplace pas la suite cumulative métier.
 
-## Règles proposées
+## Règles
 
-La coordination définit un droit pour une inscription : nombre de réservations
+La coordination définit un droit pour une inscription : nombre positif de réservations
 incluses, référence de prestation et politique de conservation approuvée.
 Aucune valeur commerciale n’est préremplie. Une confirmation consomme une unité,
-quelle que soit la durée du créneau, annoncée avant réservation.
+quelle que soit la durée du créneau, annoncée avant réservation. Le droit convenu
+est conservé sans modification ; sans droit, aucune réservation autonome.
 
 Le créneau porte réalisation, tuteur existant, début et fin, mode individuel ou
 collectif, capacité et conditions d’annulation. Le participant ne voit que les
-créneaux de sa réalisation pour son tuteur affecté ; il ne voit aucun autre inscrit.
+créneaux de sa réalisation pour son tuteur affecté, compris dans sa période d’accès
+autorisée ; il ne voit aucun autre inscrit. Le tuteur consulte ses rendez-vous dans
+le même portail, avec les seuls participants actuellement affectés.
 Individuel signifie capacité un. Les instants UTC et les heures locales suivent
 les conventions et contrôles de fuseau S04. Une réservation ne constitue ni une
 présence ni une progression pédagogique.
@@ -59,12 +62,15 @@ ni le quota ni la capacité. Rejouer une confirmation ou une annulation conserve
 une seule opération et ses notifications. Une réservation annulée reste consultable ;
 une nouvelle réservation exige une nouvelle intention explicite.
 
-Les créneaux publiés et leur historique sont conservés. Un horaire déjà réservé
+Les créneaux publiés, leurs auteurs et dates de publication/annulation sont conservés.
+Un horaire déjà réservé
 ne se déplace pas silencieusement : annuler puis proposer un remplacement.
 Une suspension ou réaffectation retire les accès selon S05, sans effacement
-ni restitution commerciale inventée. Aucun accès au commanditaire par défaut.
+ni restitution commerciale inventée. Le participant annule avant le début du
+créneau ; après le début, il contacte la coordination. Aucun accès au commanditaire
+par défaut. Les réservations ne portent aucune pièce jointe partageable.
 
-## Recette attendue de l’incrément métier
+## Recette courte
 
 1. Configurer explicitement quota, restitution et délai sur données fictives.
    Publier un créneau individuel et un collectif ; contrôler durée, fuseau,

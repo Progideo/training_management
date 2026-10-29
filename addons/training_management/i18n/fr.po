@@ -242,6 +242,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_path__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_path_step__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_path_assignment__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -338,6 +342,10 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -407,6 +415,10 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -519,6 +531,11 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_company_service__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -534,6 +551,7 @@ msgstr "Nom affiché"
 #: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_path__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__state__draft
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -670,6 +688,11 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__id
 #: model:ir.model.fields,field_description:training_management.field_training_company_service__id
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_service__id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__id
 msgid "ID"
 msgstr "ID"
 
@@ -744,6 +767,10 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -813,6 +840,10 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -841,6 +872,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__name
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__name
 #: model:ir.model.fields,field_description:training_management.field_training_path__name
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__name
 msgid "Name"
 msgstr "Nom"
 
@@ -902,6 +934,7 @@ msgstr "Sur devis"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__onsite
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__onsite
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__onsite
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__mode__onsite
 msgid "On site"
 msgstr "Présentiel"
 
@@ -990,6 +1023,7 @@ msgstr "Publier le programme"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__state__published
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__published
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__state__published
 msgid "Published"
 msgstr "Publié"
 
@@ -997,6 +1031,7 @@ msgstr "Publié"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__published_at
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__published_at
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__published_at
 msgid "Published At"
 msgstr "Publié le"
 
@@ -1004,6 +1039,7 @@ msgstr "Publié le"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__published_by_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__published_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__published_by_id
 msgid "Published By"
 msgstr "Publié par"
 
@@ -1031,6 +1067,7 @@ msgstr "Référence"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__remote
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__remote
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__remote
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__mode__remote
 msgid "Remote"
 msgstr "Distanciel"
 
@@ -1151,6 +1188,8 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__state
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__state
 #: model:ir.model.fields,field_description:training_management.field_training_path__state
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__state
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__state
 msgid "State"
 msgstr "État"
 
@@ -1161,6 +1200,7 @@ msgstr "État"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__distribution_state
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__distribution_state
 #: model:ir.model.fields,field_description:training_management.field_training_notification__distribution_state
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__distribution_state
 msgid "Status"
 msgstr "État"
 
@@ -1649,11 +1689,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_session__cancelled
 #: model:ir.model.fields.selection,name:training_management.selection__training_dashboard_line__state__cancelled
 #: model_terms:ir.ui.view,arch_db:training_management.view_dashboard_search
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_booking__state__cancelled
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__notice_state__cancelled
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__state__cancelled
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
 msgid "Cancelled"
 msgstr "Annulée"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__capacity
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__capacity
 msgid "Capacity"
 msgstr "Capacité"
 
@@ -1760,6 +1806,9 @@ msgstr "Confirmez l’inscription avant l’autorisation commerciale."
 #: model:ir.model.fields.selection,name:training_management.selection__training_dashboard_line__state__confirmed
 #: model_terms:ir.ui.view,arch_db:training_management.view_dashboard_search
 #: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__confirmed
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_booking__state__confirmed
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__notice_state__confirmed
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
 msgid "Confirmed"
 msgstr "Confirmée"
 
@@ -1847,6 +1896,10 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__delivery_id
 #: model_terms:ir.ui.view,arch_db:training_management.view_dashboard_search
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1866,6 +1919,7 @@ msgstr "Accès effectif"
 #: model:ir.model.fields,field_description:training_management.field_training_session__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__end_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__end_at
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__end_at
 msgid "End At"
 msgstr "Fin"
 
@@ -1889,6 +1943,9 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_path_assignment__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -1977,6 +2034,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_document__kind
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__kind
 #: model:ir.model.fields,field_description:training_management.field_training_notification__kind
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -2327,6 +2385,7 @@ msgstr "Démarrer"
 #: model:ir.model.fields,field_description:training_management.field_training_session__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__start_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__start_at
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__start_at
 msgid "Start At"
 msgstr "Début"
 
@@ -2431,6 +2490,7 @@ msgstr "Cette référence de réservation existe déjà pour cette réalisation.
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__timezone
 #: model:ir.model.fields,field_description:training_management.field_training_session__timezone
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__reference_timezone
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__timezone
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
@@ -3015,18 +3075,21 @@ msgstr "L’historique de diffusion ne peut pas être modifié."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__end_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__end_date
 msgid "End Date"
 msgstr "Date de fin"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__end_hour
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_hour
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__end_hour
 msgid "End Hour"
 msgstr "Heure de fin"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__end_occurrence
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__end_occurrence
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__end_occurrence
 msgid "End Occurrence"
 msgstr "Occurrence de fin"
 
@@ -3074,6 +3137,8 @@ msgstr "Empreinte"
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__start_occurrence__first
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__end_occurrence__first
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__start_occurrence__first
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__end_occurrence__first
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__start_occurrence__first
 msgid "First occurrence"
 msgstr "Première occurrence"
 
@@ -3153,6 +3218,7 @@ msgstr "Rejoindre la séance à distance"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__location
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__location
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__location
 msgid "Location"
 msgstr "Lieu"
 
@@ -3162,6 +3228,7 @@ msgstr "Lieu"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__mail_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__mail_id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__mail_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__mail_id
 msgid "Mail"
 msgstr "Courriel"
 
@@ -3179,12 +3246,14 @@ msgstr "Lien de connexion"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__meeting_url
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__meeting_url
 msgid "Meeting Url"
 msgstr "Lien de connexion"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__mode
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__mode
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__mode
 msgid "Mode"
 msgstr "Modalité"
 
@@ -3347,6 +3416,7 @@ msgstr "Vérifier et envoyer les convocations"
 #: model:ir.model.fields,field_description:training_management.field_training_session__room_id
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__room_id
 #: model:ir.model.fields,field_description:training_management.field_training_unavailability__room_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__room_id
 msgid "Room"
 msgstr "Salle"
 
@@ -3379,6 +3449,8 @@ msgstr "Horaires dans le fuseau de référence"
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__start_occurrence__second
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__end_occurrence__second
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__start_occurrence__second
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__end_occurrence__second
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__start_occurrence__second
 msgid "Second occurrence"
 msgstr "Deuxième occurrence"
 
@@ -3463,18 +3535,21 @@ msgstr "Besoins du commanditaire"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__start_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_date
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__start_date
 msgid "Start Date"
 msgstr "Date de début"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__start_hour
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_hour
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__start_hour
 msgid "Start Hour"
 msgstr "Heure de début"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session__start_occurrence
 #: model:ir.model.fields,field_description:training_management.field_training_session_edit__start_occurrence
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__start_occurrence
 msgid "Start Occurrence"
 msgstr "Occurrence de début"
 
@@ -4671,6 +4746,7 @@ msgstr "Saisissez un message ou choisissez un fichier nommé."
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__entry_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__entry_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__entry_id
 msgid "Entry"
 msgstr "Échange"
 
@@ -4698,6 +4774,7 @@ msgstr ""
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__event_key
 #: model:ir.model.fields,field_description:training_management.field_training_notification__event_key
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__event_key
 msgid "Event Key"
 msgstr "Référence technique de notification"
 
@@ -4878,6 +4955,7 @@ msgstr "Aucune activité obligatoire n’est configurée."
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__not_queued_reason
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__not_queued_reason
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__not_queued_reason
 msgid "Not Queued Reason"
 msgstr "Motif d’absence d’envoi"
 
@@ -5001,12 +5079,14 @@ msgstr "Progression"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__recipient_id
 #: model:ir.model.fields,field_description:training_management.field_training_document__recipient_ids
 #: model:ir.model.fields,field_description:training_management.field_training_notification__recipient_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_id
 msgid "Recipient"
 msgstr "Destinataire"
 
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__recipient_email
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_email
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_email
 msgid "Recipient Email"
 msgstr "Adresse du destinataire"
 
@@ -5015,6 +5095,7 @@ msgstr "Adresse du destinataire"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_language
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__recipient_language
 #: model:ir.model.fields,field_description:training_management.field_training_notification__recipient_language
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_language
 msgid "Recipient Language"
 msgstr "Langue du destinataire"
 
@@ -5044,6 +5125,7 @@ msgstr "Répondez à la demande d’aide privée concernée."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__request_key
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__request_key
 msgid "Request Key"
 msgstr "Référence de soumission"
 
@@ -5121,6 +5203,7 @@ msgstr "Cette activité n’accepte pas de remise d’exercice ni de correction.
 #: model:ir.model.constraint,message:training_management.constraint_training_practice_notice_one_event
 #. module: training_management
 #: model:ir.model.constraint,message:training_management.constraint_training_learning_notice_one_event
+#: model:ir.model.constraint,message:training_management.constraint_training_tutoring_notice_one_event
 msgid "This learning notification is already journaled."
 msgstr "Cette notification pédagogique est déjà journalisée."
 
@@ -5249,18 +5332,21 @@ msgstr ""
 #: model:ir.model.fields.selection,name:training_management.selection__training_practice_notice__event_kind__reminder
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__reminder
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__event_kind__reminder
 msgid "Inactivity Reminder"
 msgstr "Relance d’inactivité"
 
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__event_kind
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__event_kind
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__event_kind
 msgid "Notification"
 msgstr "Notification"
 
 #: model:ir.model.fields.selection,name:training_management.selection__training_practice_notice__event_kind__entry
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__entry
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__event_kind__entry
 msgid "Private Learning Update"
 msgstr "Mise à jour pédagogique privée"
 
@@ -6347,6 +6433,8 @@ msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
 #: model:ir.model.fields,field_description:training_management.field_training_closure__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__retention_id
 msgid "Retention"
 msgstr "Conservation"
 
@@ -10746,6 +10834,7 @@ msgstr "Confirmez uniquement la dernière version client après son accord."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_company_authorization__confirmed_at
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__confirmed_at
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__confirmed_at
 msgid "Confirmed At"
 msgstr "Confirmé le"
 
@@ -11427,6 +11516,7 @@ msgstr "Rattachements"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_path__duration_hours
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__duration_hours
 msgid "Duration Hours"
 msgstr "Durée pédagogique (heures)"
 
@@ -11985,3 +12075,533 @@ msgstr "Accès à la mise en pratique retiré par la coordination"
 #: model_terms:ir.ui.view,arch_db:training_management.practice_action_form
 msgid "Withdraw Practice Access"
 msgstr "Retirer les accès de mise en pratique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "<span>Included reservations:</span>"
+msgstr "<span>Réservations incluses :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "<span>Quota refunded when cancelled no later than:</span>"
+msgstr "<span>Unité restituée si annulation au plus tard le :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "<span>Timezone:</span>"
+msgstr "<span>Fuseau horaire :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Already booked"
+msgstr "Déjà réservé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Available tutoring slots"
+msgstr "Créneaux de tutorat disponibles"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__booking_ids
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__booking_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__booking_ids
+msgid "Booking"
+msgstr "Réservation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_tutoring_slot_form
+msgid "Cancel Slot and Refund"
+msgstr "Annuler le créneau et restituer les unités"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Cancel reservation"
+msgstr "Annuler la réservation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_schedule.py:0
+msgid ""
+"Cancel the conflicting tutoring slot before recording this unavailability."
+msgstr ""
+"Annulez le créneau de tutorat en conflit avant de saisir cette "
+"indisponibilité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_schedule.py:0
+msgid "Cancel the conflicting tutoring slot before reserving this session."
+msgstr ""
+"Annulez le créneau de tutorat en conflit avant de réserver cette séance."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_tutoring_slot_form
+msgid "Cancel this slot and refund all its confirmed reservations?"
+msgstr ""
+"Annuler ce créneau et restituer les unités de toutes ses réservations "
+"confirmées ?"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_tutoring_slot_form
+msgid "Cancellation Conditions"
+msgstr "Conditions d’annulation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__cancellation_hours
+msgid "Cancellation Hours"
+msgstr "Délai d’annulation (heures)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__cancellation_terms
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__cancellation_terms
+msgid "Cancellation Terms"
+msgstr "Conditions d’annulation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Cancellation does not refund the consumed unit."
+msgstr "L’annulation ne restitue pas l’unité consommée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__cancelled_at
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__cancelled_at
+msgid "Cancelled At"
+msgstr "Date d’annulation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__cancelled_by_id
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__cancelled_by_id
+msgid "Cancelled By"
+msgstr "Annulé par"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_tutoring_service
+msgid "Checked Tutoring Reservation Operations"
+msgstr "Opérations contrôlées de réservation de tutorat"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Choose a tutoring slot within your authorized access period."
+msgstr ""
+"Choisissez un créneau de tutorat compris dans votre période d’accès "
+"autorisée."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__kind__collective
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Collective"
+msgstr "Collectif"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid ""
+"Complete a valid tutoring period, tutor, capacity, location and cancellation"
+" conditions."
+msgstr ""
+"Renseignez une période, un tuteur, une capacité, un lieu et des conditions "
+"d’annulation valides."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Confirm reservation — one unit"
+msgstr "Confirmer la réservation — une unité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid ""
+"Create a draft slot; booking state and UTC instants are server-managed."
+msgstr ""
+"Créez un créneau brouillon ; l’état et les instants UTC sont gérés par le "
+"serveur."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__entitlement_id
+msgid "Entitlement"
+msgstr "Droit de réservation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Explicitly set the included count, service and retention policy."
+msgstr ""
+"Renseignez explicitement le nombre inclus, la prestation et la politique de "
+"conservation."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Full"
+msgstr "Complet"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_tutoring_slot__cancellation_hours
+msgid "Hours before the start. Zero allows cancellation until the start."
+msgstr "Heures avant le début. Zéro autorise l’annulation jusqu’au début."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__included_count
+msgid "Included Count"
+msgstr "Nombre de réservations incluses"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_tutoring_entitlements
+#: model:ir.model,name:training_management.model_training_tutoring_entitlement
+#: model:ir.ui.menu,name:training_management.menu_tutoring_entitlements
+msgid "Included Tutoring Reservations"
+msgstr "Réservations de tutorat incluses"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__kind__individual
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Individual"
+msgstr "Individuel"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid ""
+"Invalid local schedule: choose an existing time and specify its occurrence "
+"if ambiguous."
+msgstr ""
+"Horaire local invalide : choisissez une heure existante et précisez son "
+"occurrence si elle est ambiguë."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/tutoring_portal.py:0
+msgid "Invalid reservation request."
+msgstr "Demande de réservation invalide."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Join tutoring"
+msgstr "Rejoindre le tutorat"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Keep published slots and their history."
+msgstr "Conservez les créneaux publiés et leur historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Keep published slots unchanged; cancel and replace them."
+msgstr ""
+"Conservez les créneaux publiés sans modification ; annulez-les puis "
+"remplacez-les."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Keep the agreed tutoring entitlement unchanged."
+msgstr "Conservez le droit de réservation convenu sans modification."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Keep tutoring entitlements and their history."
+msgstr "Conservez les droits de réservation et leur historique."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "My reservations"
+msgstr "Mes réservations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home
+msgid "My tutoring appointments"
+msgstr "Mes rendez-vous de tutorat"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "No available tutoring slot."
+msgstr "Aucun créneau de tutorat disponible."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home
+msgid "No current tutoring reservation."
+msgstr "Aucune réservation de tutorat en cours."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "No included tutoring reservation remains."
+msgstr "Aucune réservation de tutorat incluse ne reste disponible."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_booking__refund_policy__never
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__refund_policy__never
+msgid "No refund"
+msgstr "Sans restitution"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__notice_state
+msgid "Notice State"
+msgstr "État notifié"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__occupied_count
+msgid "Occupied Count"
+msgstr "Places réservées"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid ""
+"One confirmed reservation consumes one unit, regardless of its duration."
+msgstr ""
+"Une réservation confirmée consomme une unité, quelle que soit sa durée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_tutoring_entitlement_form
+msgid ""
+"One confirmed reservation consumes one unit. Cancelled reservations remain "
+"consumed unless the announced refund applies."
+msgstr ""
+"Une réservation confirmée consomme une unité. Une réservation annulée reste "
+"consommée sauf si la restitution annoncée s’applique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Only a training coordinator may configure tutoring."
+msgstr "Seule la coordination peut configurer le tutorat."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_notice.py:0
+msgid "Open tutoring reservations"
+msgstr "Ouvrir les réservations de tutorat"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_tutoring_booking
+msgid "Private Tutoring Reservation"
+msgstr "Réservation privée de tutorat"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_tutoring_slot_form
+msgid "Publish"
+msgstr "Publier"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Publish a future draft slot for an open delivery."
+msgstr "Publiez un créneau brouillon à venir pour une réalisation ouverte."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__refund_deadline
+msgid "Refund Deadline"
+msgstr "Échéance de restitution"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__refund_policy
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__refund_policy
+msgid "Refund Policy"
+msgstr "Règle de restitution"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_booking__refund_policy__before
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__refund_policy__before
+msgid "Refund before deadline"
+msgstr "Restitution avant l’échéance"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__refunded
+msgid "Refunded"
+msgstr "Unité restituée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Reload the reservation form and try again."
+msgstr "Rechargez le formulaire de réservation et réessayez."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_training_link
+msgid "Reserve tutoring"
+msgstr "Réserver un tutorat"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__service_reference
+msgid "Service Reference"
+msgstr "Référence de la prestation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_notice.py:0
+msgid "Sign in to view the current reservation information."
+msgstr ""
+"Connectez-vous pour consulter les informations à jour de la réservation."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__slot_id
+msgid "Slot"
+msgstr "Créneau"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_schedule.py:0
+msgid "The reference timezone is preserved once tutoring slots exist."
+msgstr ""
+"Le fuseau de référence est conservé dès que des créneaux de tutorat "
+"existent."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_tutoring_entitlement_one_entitlement
+msgid "This enrollment already has a tutoring entitlement."
+msgstr "Cette inscription possède déjà un droit de réservation de tutorat."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_tutoring_booking_one_active
+msgid "This participant already booked the slot."
+msgstr "Ce participant a déjà réservé le créneau."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This private reservation is unavailable."
+msgstr "Cette réservation privée est indisponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_security.py:0
+msgid "This private tutoring record is unavailable."
+msgstr "Ce dossier privé de tutorat est indisponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This request already refers to another slot."
+msgstr "Cette demande concerne déjà un autre créneau."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_tutoring_booking_request_unique
+msgid "This reservation request was already processed."
+msgstr "Cette demande de réservation a déjà été traitée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This slot is no longer available."
+msgstr "Ce créneau n’est plus disponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This tutor or room is unavailable during the proposed period."
+msgstr ""
+"Ce tuteur ou cette salle est indisponible pendant la période proposée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This tutoring slot has already started."
+msgstr "Ce créneau de tutorat a déjà commencé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This tutoring slot is full."
+msgstr "Ce créneau de tutorat est complet."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "This tutoring slot is unavailable."
+msgstr "Ce créneau de tutorat est indisponible."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__tutor_id
+msgid "Tutor"
+msgstr "Tuteur"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_tutoring_slot
+msgid "Tutoring Availability"
+msgstr "Disponibilité de tutorat"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_tutoring_notice
+msgid "Tutoring Reservation Notification Journal"
+msgstr "Journal des notifications de réservation de tutorat"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_tutoring_slots
+#: model:ir.ui.menu,name:training_management.menu_tutoring_slots
+msgid "Tutoring Slots"
+msgstr "Créneaux de tutorat"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_home_link
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Tutoring reservations"
+msgstr "Réservations de tutorat"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_security.py:0
+msgid "Tutoring reservations are available through authenticated forms only."
+msgstr ""
+"Les réservations de tutorat sont accessibles uniquement par les formulaires "
+"authentifiés."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_security.py:0
+msgid "Tutoring reservations do not accept shared attachments."
+msgstr ""
+"Les réservations de tutorat n’acceptent pas de pièces jointes partagées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Unit refunded"
+msgstr "Unité restituée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid ""
+"Use a confirmed enrollment, a positive quota and an approved retention "
+"policy."
+msgstr ""
+"Utilisez une inscription confirmée, un quota positif et une politique de "
+"conservation approuvée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Use the controlled slot actions."
+msgstr "Utilisez les actions contrôlées du créneau."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__used_count
+msgid "Used Count"
+msgstr "Nombre consommé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring_notice.py:0
+msgid "Your tutoring reservation has changed"
+msgstr "Votre réservation de tutorat a changé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "· <span>Capacity:</span>"
+msgstr "· <span>Capacité :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "· <span>Consumed:</span>"
+msgstr "· <span>Consommées :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "· <span>Hours:</span>"
+msgstr "· <span>Heures :</span>"
+

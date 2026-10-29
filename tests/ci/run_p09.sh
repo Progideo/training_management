@@ -88,3 +88,9 @@ P09_PHASE=project_verify step project_preserved run_odoo shell --no-http < "$rep
 step project_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=project_verify step project_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p12_project.py"
 P09_PHASE=project_concurrency step project_concurrency run_odoo shell --no-http < "$repo/tests/probes/p12_project.py"
+P09_PHASE=tutoring_prepare step tutoring_baseline run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
+step tutoring_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=tutoring_verify step tutoring_preserved run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
+step tutoring_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+P09_PHASE=tutoring_verify step tutoring_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
+P09_PHASE=tutoring_concurrency step tutoring_concurrency run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"

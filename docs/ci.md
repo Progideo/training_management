@@ -55,6 +55,10 @@ la comparaison exacte de toutes leurs colonnes historiques.
 Le même parcours conserve ensuite les grilles P12 V1/V2, remises et décisions par
 critère après deux mises à jour ; des transactions concurrentes déposent puis
 valident une seule version avec une notification par opération.
+Il conserve aussi les droits P13, créneaux publiés, réservations et annulations,
+conditions figées, notifications et fichiers après deux mises à jour. Les courses
+P13 portent sur la dernière place, le dernier quota et les doubles confirmations
+et restitutions, sans nouveau parcours général ni configuration supplémentaire.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.

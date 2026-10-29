@@ -184,3 +184,11 @@ access_project_rubric_coordinator,Project rubrics coordinator,training.project.r
 rule_project_rubric_company,Project rubric company,training.project.rubric,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_project_criterion_coordinator,Project criteria coordinator,training.project.criterion,training_management.group_training_coordinator,crud,
 rule_project_criterion_company,Project criterion company,training.project.criterion,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_tutoring_entitlement_coordinator,Tutoring entitlements,training.tutoring.entitlement,training_management.group_training_coordinator,crud,
+access_tutoring_slot_coordinator,Tutoring slots,training.tutoring.slot,training_management.group_training_coordinator,crud,
+access_tutoring_booking_coordinator,Tutoring reservations,training.tutoring.booking,training_management.group_training_coordinator,r,
+access_tutoring_notice_coordinator,Tutoring notifications,training.tutoring.notice,training_management.group_training_coordinator,r,
+rule_tutoring_entitlement_company,Tutoring entitlement company,training.tutoring.entitlement,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_tutoring_slot_company,Tutoring slot company,training.tutoring.slot,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_tutoring_booking_company,Tutoring reservation company,training.tutoring.booking,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_tutoring_notice_company,Tutoring notification company,training.tutoring.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

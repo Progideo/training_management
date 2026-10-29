@@ -18,3 +18,4 @@ from . import company_portal
 from . import path_portal
 
 from . import practice_portal
+from . import tutoring_portal
