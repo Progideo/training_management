@@ -4,6 +4,8 @@ Spécification fonctionnelle
 
 Version 2.0 • 15 octobre 2026 • Périmètre et séquencement validés
 
+Amendement du 29 octobre 2026 : P15 est entièrement annulé sur décision du mainteneur ([#38](https://github.com/Progideo/training_management/issues/38)). Le périmètre courant de la phase 2 est P09 à P14 et P16 ; les identifiants sont conservés. Cet amendement prévaut sur les mentions historiques du séquencement initial.
+
 Ce document décrit le fonctionnement attendu de la future plateforme de formation. Il sert à valider les parcours, les règles métier, les droits et les preuves qualité avant de choisir les modules et de figer l'architecture Odoo 20 Community.
 
 ## Décisions validées
@@ -504,7 +506,7 @@ Limites documentaires : le PDF intégral du guide V9 et la version consolidée d
 
 # 18 Séquencement et périmètre de livraison
 
-Décision du 15 octobre 2026. Les propositions P01 à P20 sont intégrées aux spécifications avec le séquencement ci-dessous. Le lancement comprend le socle MVP des chapitres 1 à 17 et P01 à P08. Les ajouts ultérieurs ne reportent aucune obligation déjà prévue au lancement.
+Décision initiale du 15 octobre 2026, révisée le 29 octobre 2026 par l’annulation de P15. Le séquencement applicable figure ci-dessous. Le lancement comprend le socle MVP des chapitres 1 à 17 et P01 à P08. Les ajouts ultérieurs ne reportent aucune obligation déjà prévue au lancement.
 
 ## Phase 1 au lancement
 
@@ -512,7 +514,7 @@ P01 Double parcours commercial ; P02 Demande intra guidée ; P03 Fiche formation
 
 ## Phase 2 après la phase 1
 
-P09 Parcours de plusieurs formations ; P10 Diagnostic d'orientation ; P11 Plan de mise en pratique ; P12 Projet pratique évalué ; P13 Réservation de tutorat ; P14 Avis vérifiés et cas clients ; P15 Comparaison et sélection ; P16 Statuts publics des sessions et alertes.
+P09 Parcours de plusieurs formations ; P10 Diagnostic d'orientation ; P11 Plan de mise en pratique ; P12 Projet pratique évalué ; P13 Réservation de tutorat ; P14 Avis vérifiés et cas clients ; P16 Statuts publics des sessions et alertes.
 
 ## Suite conditionnée à une validation
 
@@ -616,11 +618,11 @@ Inviter des participants dont la participation est vérifiée à publier un avis
 
 Acceptation — Nominal : un avis autorisé est publié avec son rattachement vérifié. Erreur : un avis non validé, une identité non autorisée ou un cas client confidentiel restent privés ; les retraits sont traités et tracés.
 
-## P15 Sélection et comparaison
+## P15 Sélection et comparaison — annulé
 
-Permettre de sélectionner et comparer plusieurs formations selon objectifs, niveau, durée, modalités et prix disponibles, puis de demander un devis sur cette sélection. Afficher clairement les offres sur devis et la devise de chaque prix. Aucun paiement en ligne n'est ajouté. Rattachement : CAT01, COM01, COM02.
+P15 est entièrement retiré du périmètre le 29 octobre 2026 ([#38](https://github.com/Progideo/training_management/issues/38)). Aucun comparateur, aucune sélection de formations propre à P15 ni aucun devis issu de ce comparateur ne doit être développé. Les anciens critères de recette P15 ne sont plus applicables.
 
-Acceptation — Nominal : la demande reprend les formations choisies et la devise commerciale retenue. Erreur : aucun total ne mélange MAD et EUR et aucun prix manquant n'est assimilé à zéro ; une formation retirée est signalée.
+Le catalogue, les demandes de devis et les parcours P09 déjà livrés sont conservés. P16 conserve son identifiant et ne dépend pas de P15. La description antérieure reste consultable dans l’issue et l’historique Git.
 
 ## P16 Statuts publics et alertes de session
 
@@ -678,6 +680,6 @@ En architecture, démontrer sur la version cible Community le choix fixe des que
 
 Phase 1 : réussir la recette du socle R01 à R09 et les cas nominaux et limites de P01 à P08 ; prouver l'isolation du portail entreprise, le parcours complet de demande intra, la confidentialité des variantes et la fiabilité des examens. La reprise et l'émargement électronique restent des conditions de lancement. Tout écart bloquant est corrigé ou fait l'objet d'un arbitrage explicite avant mise en service.
 
-Phase 2 : réussir P09 à P16 et les régressions ciblées sur accès, inscription, facturation, planning, évaluations et notifications. Tester en particulier capacités et quotas concurrents, consentements, désabonnement et cohérence des devises. La livraison de la phase 2 ne déclenche pas automatiquement P17 à P20.
+Phase 2 : réussir P09 à P14 et P16 (P15 annulé) et les régressions ciblées sur accès, inscription, facturation, planning, évaluations et notifications. Tester en particulier capacités et quotas concurrents, consentements, désabonnement et cohérence des devises. La livraison de la phase 2 ne déclenche pas automatiquement P17 à P20.
 
 Suite : consigner la décision de validation de chaque fonctionnalité P17 à P20, puis finaliser sa conception et sa recette avant réalisation. Les tests décrits dans cette spécification restent à exécuter sur la solution retenue.

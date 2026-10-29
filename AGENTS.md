@@ -34,7 +34,8 @@ Ne pas supposer que les fichiers joints et le dépôt sont synchronisés. Signal
 ## Périmètre validé
 
 - Phase 1 : socle MVP et P01 à P08.
-- Phase 2 : P09 à P16.
+- Phase 2 : P09 à P14 et P16.
+- P15 : entièrement annulé le 29 octobre 2026 (#38), hors périmètre ; ne pas le réintroduire dans P16.
 - P17 à P20 : après validation complémentaire explicite.
 
 Préserver les exigences suivantes :
