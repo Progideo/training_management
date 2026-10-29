@@ -10,3 +10,5 @@ from . import training_quality_operation
 from . import training_quality_export
 
 from . import training_provider_session
+
+from . import training_publication_inspection

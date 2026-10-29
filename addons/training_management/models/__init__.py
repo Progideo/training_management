@@ -60,3 +60,7 @@ from . import training_tutoring
 from . import training_tutoring_notice
 from . import training_tutoring_schedule
 from . import training_tutoring_security
+from . import training_publication
+from . import training_testimonial
+from . import training_publication_notice
+from . import training_publication_security

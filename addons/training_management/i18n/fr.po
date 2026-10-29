@@ -246,6 +246,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -346,6 +350,10 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -419,6 +427,10 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -536,6 +548,11 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_service__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_publication__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_publication_service__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -552,6 +569,8 @@ msgstr "Nom affiché"
 #: model:ir.model.fields.selection,name:training_management.selection__training_intra_version__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_path__state__draft
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__draft
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__draft
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -693,6 +712,11 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_service__id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_service__id
 msgid "ID"
 msgstr "ID"
 
@@ -771,6 +795,10 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -844,6 +872,10 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -873,6 +905,7 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__name
 #: model:ir.model.fields,field_description:training_management.field_training_path__name
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__name
+#: model:ir.model.fields,field_description:training_management.field_training_publication__name
 msgid "Name"
 msgstr "Nom"
 
@@ -1024,6 +1057,8 @@ msgstr "Publier le programme"
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation__state__published
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback__state__published
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__state__published
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__published
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__published
 msgid "Published"
 msgstr "Publié"
 
@@ -1032,6 +1067,7 @@ msgstr "Publié"
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__published_at
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__published_at
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__published_at
+#: model:ir.model.fields,field_description:training_management.field_training_publication__published_at
 msgid "Published At"
 msgstr "Publié le"
 
@@ -1190,6 +1226,8 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_path__state
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__state
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__state
+#: model:ir.model.fields,field_description:training_management.field_training_publication__state
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__state
 msgid "State"
 msgstr "État"
 
@@ -1544,6 +1582,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_provider_event__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_export__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_export_audit__actor_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__actor_id
 msgid "Actor"
 msgstr "Auteur"
 
@@ -1576,6 +1615,7 @@ msgstr "Le nombre de places doit être strictement positif."
 #: model:ir.model.fields,field_description:training_management.field_training_company_authorization__allocation_ids
 #: model:ir.model.fields,field_description:training_management.field_training_company_document__allocation_id
 #: model:ir.model.fields,field_description:training_management.field_training_company_nomination__allocation_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__allocation_id
 msgid "Allocation"
 msgstr "Lot de places"
 
@@ -1733,6 +1773,7 @@ msgstr "Sélectionnez un lot disponible pour cette réalisation."
 #: code:addons/training_management/models/training_enrollment.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_inspection_form
 msgid "Close"
 msgstr "Clôturer"
 
@@ -1841,6 +1882,7 @@ msgstr "Créez une réservation avant de confirmer ses places."
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_search
 #: model:ir.model.fields,field_description:training_management.field_training_company_authorization__customer_id
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__customer_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__customer_id
 msgid "Customer"
 msgstr "Client"
 
@@ -1900,6 +1942,7 @@ msgstr "Réalisations"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__delivery_id
 msgid "Delivery"
 msgstr "Réalisation"
 
@@ -1946,6 +1989,8 @@ msgstr "Fin"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__enrollment_id
 msgid "Enrollment"
 msgstr "Inscription"
 
@@ -2035,6 +2080,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__kind
 #: model:ir.model.fields,field_description:training_management.field_training_notification__kind
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__kind
+#: model:ir.model.fields,field_description:training_management.field_training_publication__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -2071,6 +2117,7 @@ msgstr "Places occupées"
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_provider_event__occurred_at
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__occurred_at
 msgid "Occurred At"
 msgstr "Date de l’opération"
 
@@ -2150,6 +2197,7 @@ msgstr "L’historique des opérations est immuable."
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__role__participant
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__name
 #: model:ir.model.fields,field_description:training_management.field_training_path_assignment__participant_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__participant_id
 msgid "Participant"
 msgstr "Participant"
 
@@ -2179,6 +2227,7 @@ msgstr "Préparation"
 #: model:ir.model.fields,field_description:training_management.field_training_preview_question__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__program_id
 #: model:ir.model.fields,field_description:training_management.field_training_path_step__program_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__program_id
 msgid "Program"
 msgstr "Programme"
 
@@ -2210,6 +2259,7 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_record__reason
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__reason
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__reason
 msgid "Reason"
 msgstr "Motif"
 
@@ -3111,6 +3161,7 @@ msgstr "Équipements"
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__event
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__event_ids
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__event_ids
+#: model:ir.model.fields,field_description:training_management.field_training_publication__event_ids
 msgid "Event"
 msgstr "Événement"
 
@@ -3229,6 +3280,7 @@ msgstr "Lieu"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__mail_id
 #: model:ir.model.fields,field_description:training_management.field_training_notification__mail_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__mail_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__mail_id
 msgid "Mail"
 msgstr "Courriel"
 
@@ -4551,6 +4603,8 @@ msgstr "Retirez cette référence au lieu de supprimer son historique."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__withdrawn
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__withdrawn
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__withdrawn
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__withdrawn
 msgid "Withdrawn"
 msgstr "Retiré"
 
@@ -4943,6 +4997,7 @@ msgstr "Aucun accompagnement en cours."
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_learning_notice.py:0
+#: code:addons/training_management/models/training_publication_notice.py:0
 msgid "No currently authorized recipient with an email address."
 msgstr ""
 "Aucun destinataire actuellement habilité avec une adresse électronique."
@@ -4956,6 +5011,7 @@ msgstr "Aucune activité obligatoire n’est configurée."
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__not_queued_reason
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__not_queued_reason
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__not_queued_reason
 msgid "Not Queued Reason"
 msgstr "Motif d’absence d’envoi"
 
@@ -5080,6 +5136,7 @@ msgstr "Progression"
 #: model:ir.model.fields,field_description:training_management.field_training_document__recipient_ids
 #: model:ir.model.fields,field_description:training_management.field_training_notification__recipient_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__recipient_id
 msgid "Recipient"
 msgstr "Destinataire"
 
@@ -5087,6 +5144,7 @@ msgstr "Destinataire"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_email
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_email
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__recipient_email
 msgid "Recipient Email"
 msgstr "Adresse du destinataire"
 
@@ -5096,6 +5154,7 @@ msgstr "Adresse du destinataire"
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__recipient_language
 #: model:ir.model.fields,field_description:training_management.field_training_notification__recipient_language
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_language
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__recipient_language
 msgid "Recipient Language"
 msgstr "Langue du destinataire"
 
@@ -5776,6 +5835,7 @@ msgstr "Valider la présence"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_attendance__minutes
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__validated_minutes
 msgid "Validated Minutes"
 msgstr "Durée validée (minutes)"
 
@@ -6435,6 +6495,7 @@ msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_booking__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_entitlement__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication__retention_id
 msgid "Retention"
 msgstr "Conservation"
 
@@ -7740,6 +7801,7 @@ msgstr ""
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__snapshot
 #: model:ir.model.fields,field_description:training_management.field_training_document__snapshot
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__snapshot
 msgid "Snapshot"
 msgstr "Instantané"
 
@@ -7863,6 +7925,8 @@ msgstr "Erreur d’invitation"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_feedback_recipient__response_state__invited
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__invited
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__invited
 msgid "Invited"
 msgstr "Invité"
 
@@ -8955,6 +9019,7 @@ msgstr "Un membre autorisé de l’équipe formation est requis."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__checked_at
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__checked_at
 msgid "Checked At"
 msgstr "Contrôlé le"
 
@@ -11022,6 +11087,8 @@ msgstr "Référence de l’accord client consigné par la coordination."
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_company_nomination__state__rejected
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__rejected
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__rejected
 msgid "Rejected"
 msgstr "Refusé"
 
@@ -11790,6 +11857,7 @@ msgstr "Synthèse de mise en pratique autorisée"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__body
+#: model:ir.model.fields,field_description:training_management.field_training_publication__body
 msgid "Body"
 msgstr "Texte"
 
@@ -12615,3 +12683,679 @@ msgstr "Renseignez explicitement le délai d’annulation ; zéro est autorisé.
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__event_kind__booking
 msgid "Tutoring Reservation"
 msgstr "Réservation de tutorat"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid ""
+". <span>Verified participation may be partial; it does not certify "
+"completion or success.</span>"
+msgstr ""
+". <span>La participation vérifiée peut être partielle ; elle ne certifie ni "
+"réalisation complète ni réussite.</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "<span>Exact name:</span>"
+msgstr "<span>Nom exact :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid ""
+"<span>I separately authorize display of this exact customer name:</span>"
+msgstr ""
+"<span>J’autorise séparément l’affichage de ce nom exact du client :</span>"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid "<span>Participation month:</span>"
+msgstr "<span>Mois de participation :</span>"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "A confidential customer case must remain private."
+msgstr "Un cas client confidentiel doit rester privé."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication_notice.py:0
+msgid "A publication authorization awaits your decision"
+msgstr "Une autorisation de publication attend votre décision"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"An invitation requires positive validated attendance and active participant "
+"access."
+msgstr ""
+"Une invitation exige une durée de présence validée positive et un accès "
+"participant actif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Approve a non-confidential case with exact text, public context, month and "
+"representative authority."
+msgstr ""
+"Préparez un cas non confidentiel avec texte exact, contexte public, mois et "
+"qualité du représentant."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__attendance_count
+msgid "Attendance Count"
+msgstr "Nombre de présences"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__authority_reference
+msgid "Authority Reference"
+msgstr "Référence de la qualité du représentant"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Authorization requested"
+msgstr "Autorisation demandée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Authorization withdrawn by its owner"
+msgstr "Autorisation retirée par son auteur"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Authorize for moderation"
+msgstr "Autoriser pour modération"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Authorize the exact customer case and separately authorize its requested "
+"company name."
+msgstr ""
+"Autorisez le cas client exact et, séparément, le nom demandé de "
+"l’entreprise."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Authorized customer case"
+msgstr "Cas client autorisé"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__submitted
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__submitted
+msgid "Awaiting Moderation or Authorization"
+msgstr "En attente de modération ou d’autorisation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid "Back to programme"
+msgstr "Retour au programme"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__state__authorized
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication_event__state__authorized
+msgid "Client Authorized"
+msgstr "Autorisé par le client"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__confidential
+msgid "Confidential"
+msgstr "Confidentiel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__consent_wording
+msgid "Consent Wording"
+msgstr "Texte du consentement"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__consented_at
+msgid "Consented At"
+msgstr "Consentement donné le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__consented_by_id
+msgid "Consented By"
+msgstr "Consentement donné par"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__identity_mode__name
+msgid "Consented Name"
+msgstr "Nom autorisé"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Create a draft; consent and publication evidence are generated by the "
+"server."
+msgstr ""
+"Créez un brouillon ; les preuves de consentement et de publication sont "
+"produites par le serveur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Create a new draft without copying consent or publication evidence."
+msgstr ""
+"Créez un nouveau brouillon sans recopier les preuves de consentement ou de "
+"publication."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__kind__case
+msgid "Customer Case"
+msgstr "Cas client"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__enrollment_state
+msgid "Enrollment State"
+msgstr "État de l’inscription"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid "Exact Public Content"
+msgstr "Contenu public exact"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Exact customer case"
+msgstr "Cas client exact"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Exact version authorized by its owner"
+msgstr "Version exacte autorisée par son auteur"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_home
+msgid ""
+"Giving an opinion or authorizing a customer case is optional. Private "
+"satisfaction surveys remain separate."
+msgstr ""
+"Donner un avis ou autoriser un cas client est facultatif. Les enquêtes "
+"privées de satisfaction restent distinctes."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"I authorize public display of this exact text, training context and month on"
+" the training catalogue. Participation may be partial. This is separate from"
+" private satisfaction surveys. I may withdraw this authorization from this "
+"page. Copies made by third parties cannot be recalled."
+msgstr ""
+"J’autorise l’affichage public de ce texte exact, du contexte de formation et"
+" du mois dans le catalogue des formations. La participation peut être "
+"partielle. Cet avis est distinct des enquêtes privées de satisfaction. Je "
+"peux retirer cette autorisation depuis cette page. Les copies faites par des"
+" tiers ne peuvent pas être rappelées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "I authorize this exact version under the displayed terms."
+msgstr "J’autorise cette version exacte selon les conditions affichées."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "I separately authorize display of this exact name if I select it."
+msgstr ""
+"J’autorise séparément l’affichage de ce nom exact si je le sélectionne."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__identity_consented
+msgid "Identity Consented"
+msgstr "Identité autorisée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__identity_mode
+msgid "Identity Mode"
+msgstr "Mode d’identité"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Keep invited or submitted versions unchanged; create a new draft for a new "
+"authorization."
+msgstr ""
+"Conservez les versions invitées ou soumises ; créez un nouveau brouillon "
+"pour une nouvelle autorisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Keep publication requests and their authorization history."
+msgstr ""
+"Conservez les demandes de publication et leur historique d’autorisation."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid "Moderate and Publish"
+msgstr "Modérer et publier"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__moderated_by_id
+msgid "Moderated By"
+msgstr "Modéré par"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid "Moderation"
+msgstr "Modération"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__moderation_reason
+msgid "Moderation Decision Reason"
+msgstr "Motif de la décision de modération"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid "No authorized publication available."
+msgstr "Aucune publication autorisée disponible."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_home
+msgid "No publication request."
+msgstr "Aucune demande de publication."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication.py:0
+msgid "Only a training coordinator may inspect participation evidence."
+msgstr ""
+"Seul un coordinateur de formation peut consulter les éléments de "
+"participation."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid ""
+"Only the explicitly authorized version may be published. Private "
+"satisfaction surveys are never imported. Check third-party identities, "
+"confidentiality and the absence of individual results before moderation."
+msgstr ""
+"Seule la version explicitement autorisée peut être publiée. Les enquêtes "
+"privées de satisfaction ne sont jamais importées. Vérifiez les identités de "
+"tiers, la confidentialité et l’absence de résultats individuels avant la "
+"modération."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__owner_id
+msgid "Owner"
+msgstr "Auteur"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__owner_partner_id
+msgid "Owner Partner"
+msgstr "Contact auteur"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__kind__review
+msgid "Participant Review"
+msgstr "Avis participant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid ""
+"Participant reviews require verified participation, explicit consent and "
+"moderation. Participation may be partial; an opinion is not a certificate or"
+" a satisfaction rate."
+msgstr ""
+"Les avis participants exigent une participation vérifiée, un consentement "
+"explicite et une modération. La participation peut être partielle ; un avis "
+"n’est ni une attestation ni un taux de satisfaction."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__certificate_count
+msgid "Participation Certificates"
+msgstr "Attestations de participation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication.py:0
+#: model:ir.actions.server,name:training_management.action_inspect_publication_evidence
+#: model:ir.model,name:training_management.model_training_publication_inspection
+msgid "Participation Evidence for a Review"
+msgstr "Éléments de participation pour un avis"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__participation_month
+msgid "Participation Month"
+msgstr "Mois de participation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__participation_snapshot
+msgid "Participation Snapshot"
+msgstr "Instantané des preuves de participation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Participation must still be verified before publication."
+msgstr "La participation doit encore être vérifiée avant la publication."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_publication_event
+msgid "Private Publication Authorization History"
+msgstr "Historique privé des autorisations de publication"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_publication__authority_reference
+msgid ""
+"Private reference establishing authority to authorize this customer case."
+msgstr "Référence privée établissant la qualité pour autoriser ce cas client."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Provide an opinion of at most 5000 characters with currently verified "
+"participation."
+msgstr ""
+"Rédigez un avis de 5 000 caractères maximum avec une participation "
+"actuellement vérifiée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__public_context
+msgid "Public Context"
+msgstr "Contexte public"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__public_identity
+msgid "Public Identity"
+msgstr "Identité publique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Public context"
+msgstr "Contexte public"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Public identity"
+msgstr "Identité publique"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_publication__participation_month
+msgid "Public month in YYYY-MM format; no private session name."
+msgstr "Mois public au format AAAA-MM ; aucun nom de séance privée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication_event__publication_id
+#: model:ir.model.fields,field_description:training_management.field_training_publication_notice__publication_id
+msgid "Publication"
+msgstr "Publication"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_publication_notice
+msgid "Publication Invitation Journal"
+msgstr "Journal des invitations à publier"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Publication authorization"
+msgstr "Autorisation de publication"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication_security.py:0
+msgid "Publication consent and moderation evidence must remain private."
+msgstr "Les preuves de consentement et de modération doivent rester privées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Publication consent evidence is private and cannot be exported in bulk."
+msgstr ""
+"Les preuves de consentement sont privées et ne peuvent pas être exportées en"
+" masse."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Publication of a name requires its separate explicit consent."
+msgstr "La publication d’un nom exige un consentement explicite distinct."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_publications_link
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+#: model_terms:ir.ui.view,arch_db:training_management.publication_home
+msgid "Publication requests"
+msgstr "Demandes de publication"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication_security.py:0
+msgid "Publication requests do not accept shared attachments."
+msgstr ""
+"Les demandes de publication n’acceptent pas de pièces jointes partagées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Publish only an authorized exact version with a recorded moderation "
+"decision."
+msgstr ""
+"Publiez uniquement une version exacte autorisée avec une décision de "
+"modération consignée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Record a reason to reject a submitted publication."
+msgstr "Saisissez un motif pour refuser une publication soumise."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "Record the reason for the publication withdrawal."
+msgstr "Consignez le motif du retrait de publication."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid "Reject"
+msgstr "Refuser"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Reload the exact publication preview and explicitly confirm its "
+"authorization."
+msgstr ""
+"Rechargez l’aperçu exact de la publication et confirmez explicitement son "
+"autorisation."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__representative_id
+msgid "Representative"
+msgstr "Représentant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid "Request Authorization"
+msgstr "Demander l’autorisation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__request_digest
+msgid "Request Digest"
+msgstr "Empreinte de la demande"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_publication__identify_client
+msgid "Request Publication of Customer Name"
+msgstr "Demander la publication du nom du client"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication_notice.py:0
+msgid "Review publication requests"
+msgstr "Consulter les demandes de publication"
+
+#. module: training_management
+#: model:ir.ui.menu,name:training_management.menu_publications
+msgid "Reviews and Customer Cases"
+msgstr "Avis et cas clients"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Select an enrollment or a customer allocation from this delivery and its "
+"operator policy."
+msgstr ""
+"Choisissez une inscription ou un lot client de cette réalisation et la "
+"politique de sa société exploitante."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication_notice.py:0
+msgid ""
+"Sign in to review the proposed publication. Giving an opinion or authorizing"
+" publication is optional."
+msgstr ""
+"Connectez-vous pour consulter la publication proposée. Donner un avis ou "
+"autoriser une publication est facultatif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "The participant training access is no longer active."
+msgstr "L’accès pédagogique du participant n’est plus actif."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication.py:0
+msgid "This enrollment is outside the allowed companies."
+msgstr "Cette inscription est hors des sociétés autorisées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "This participant already has an outstanding publication request."
+msgstr "Ce participant possède déjà une demande de publication en cours."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_inspection_form
+msgid ""
+"This private diagnostic does not authorize an invitation or publication. "
+"Enrollment and certificates do not replace current validated attendance. No "
+"consent is inferred."
+msgstr ""
+"Ce diagnostic privé n’autorise ni invitation ni publication. L’inscription "
+"et les attestations ne remplacent pas les présences actuellement validées. "
+"Aucun consentement n’est déduit."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_publication_security.py:0
+msgid "This private publication record is unavailable."
+msgstr "Ce dossier privé de publication n’est pas disponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "This private publication request is unavailable."
+msgstr "Cette demande privée de publication n’est pas disponible."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "This publication action requires an explicitly authorized staff role."
+msgstr ""
+"Cette action de publication exige un rôle interne explicitement habilité."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_publication_notice_once
+msgid "This publication invitation is already journaled."
+msgstr "Cette invitation à publier est déjà journalisée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid "This publication is outside the allowed companies."
+msgstr "Cette publication est hors des sociétés autorisées."
+
+#. module: training_management
+#: model:res.groups,name:training_management.group_training_publication_moderator
+msgid "Training Publication Moderator"
+msgstr "Modérateur des publications de formation"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_publication_service
+msgid "Training Publication Preparation"
+msgstr "Préparation des publications de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+msgid ""
+"Use a draft, an approved retention policy and a currently public programme."
+msgstr ""
+"Utilisez un brouillon, une politique de conservation approuvée et un "
+"programme actuellement public."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_publication__identity_mode__anonymous
+msgid "Verified Participant"
+msgstr "Participant vérifié"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_publication
+msgid "Verified Review or Customer Case"
+msgstr "Avis vérifié ou cas client"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.action_publications
+msgid "Verified Reviews and Customer Cases"
+msgstr "Avis vérifiés et cas clients"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_testimonial.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Verified participant"
+msgstr "Participant vérifié"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.public_programme_publications
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid "Verified reviews and customer cases"
+msgstr "Avis vérifiés et cas clients"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_publication_form
+msgid "Withdraw Publication"
+msgstr "Retirer la publication"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Withdraw my publication authorization"
+msgstr "Retirer mon autorisation de publication"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid ""
+"Withdrawal removes the publication from this catalogue. Copies made by third"
+" parties cannot be recalled. Contact coordination for a deletion request."
+msgstr ""
+"Le retrait supprime la publication de ce catalogue. Les copies faites par "
+"des tiers ne peuvent pas être rappelées. Contactez la coordination pour une "
+"demande de suppression."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Your exact public opinion"
+msgstr "Votre avis public exact"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid "— <span>Authorized on:</span>"
+msgstr "— <span>Autorisé le (UTC) :</span>"

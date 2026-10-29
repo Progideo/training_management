@@ -8,7 +8,12 @@ class MailMail(models.Model):
 
     def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
         self.ensure_one()
-        if self.model in ("training.learning.notice", "training.practice.notice", "training.tutoring.notice"):
+        if self.model in (
+            "training.learning.notice",
+            "training.practice.notice",
+            "training.tutoring.notice",
+            "training.publication.notice",
+        ):
             notice = self.env[self.model].sudo().search([("mail_id", "=", self.id)], limit=1)
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This learning notification no longer has an authorized recipient."))

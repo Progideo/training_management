@@ -37,3 +37,5 @@ from . import test_practice
 
 from . import test_project
 from . import test_tutoring
+from . import test_publication
+from . import test_testimonial

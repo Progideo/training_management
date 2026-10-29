@@ -19,3 +19,4 @@ from . import path_portal
 
 from . import practice_portal
 from . import tutoring_portal
+from . import publication_portal
