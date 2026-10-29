@@ -12,6 +12,12 @@ class TutoringNotice(models.Model):
 
     booking_id = fields.Many2one("training.tutoring.booking", required=True, ondelete="restrict")
     notice_state = fields.Selection([("confirmed", "Confirmed"), ("cancelled", "Cancelled")], required=True)
+    event_kind = fields.Selection(selection_add=[("booking", "Tutoring Reservation")])
+
+    @api.depends("booking_id")
+    def _compute_event_kind(self):
+        for notice in self:
+            notice.event_kind = "booking"
 
     @api.private
     def _authorized(self):

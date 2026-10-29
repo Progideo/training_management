@@ -1,6 +1,7 @@
 """P13 booking: explicit entitlements, immutable published slots and server fences."""
 
 from datetime import timedelta
+import math
 from uuid import UUID
 
 from odoo import api, fields, models
@@ -99,7 +100,9 @@ class TutoringSlot(models.Model):
     end_at = fields.Datetime(compute="_compute_instants", store=True)
     duration_hours = fields.Float(compute="_compute_instants", store=True)
     refund_policy = fields.Selection([("never", "No refund"), ("before", "Refund before deadline")], required=True)
-    cancellation_hours = fields.Float(help="Hours before the start. Zero allows cancellation until the start.")
+    cancellation_hours = fields.Float(
+        default=None, help="Hours before the start. Zero allows cancellation until the start."
+    )
     cancellation_terms = fields.Text(required=True)
     state = fields.Selection(
         [("draft", "Draft"), ("published", "Published"), ("cancelled", "Cancelled")],
@@ -172,6 +175,7 @@ class TutoringSlot(models.Model):
                 or not slot.tutor_id.active
                 or slot.company_id not in slot.tutor_id.company_ids
                 or slot.tutor_id._is_public()
+                or not math.isfinite(slot.cancellation_hours)
                 or slot.cancellation_hours < 0
                 or not slot.cancellation_terms.strip()
                 or (slot.mode == "remote" and not (slot.meeting_url or "").startswith("https://"))
@@ -197,6 +201,9 @@ class TutoringSlot(models.Model):
         self.env["training.tutoring.service"]._coordinator()
         allowed = self._definition_fields()
         values = [self._add_missing_default_values(dict(v)) for v in vals_list]
+        for supplied, value in zip(vals_list, values):
+            if value.get("refund_policy") == "before":
+                self._require_delay(supplied)
         if any(set(v) - allowed - {"state"} or v.get("state") != "draft" for v in values):
             raise ValidationError(self.env._("Create a draft slot; booking state and UTC instants are server-managed."))
         self.env["training.delivery"].browse([v["delivery_id"] for v in values]).check_access("read")
@@ -232,9 +239,19 @@ class TutoringSlot(models.Model):
         if set(vals) - self._definition_fields() or "delivery_id" in vals:
             raise ValidationError(self.env._("Use the controlled slot actions."))
         self._lock()
+        if (vals.get("refund_policy") == "before" and any(s.refund_policy != "before" for s in self)) or (
+            "cancellation_hours" in vals and any(s.refund_policy == "before" for s in self)
+        ):
+            self._require_delay(vals)
         if any(s.state != "draft" for s in self):
             raise ValidationError(self.env._("Keep published slots unchanged; cancel and replace them."))
         return super().write(vals)
+
+    @api.private
+    def _require_delay(self, values):
+        value = values.get("cancellation_hours")
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0:
+            raise ValidationError(self.env._("Explicitly enter the cancellation delay; zero is allowed."))
 
     @api.ondelete(at_uninstall=False)
     def _keep_slot(self):
@@ -329,6 +346,7 @@ class TutoringBooking(models.Model):
     cancellation_terms = fields.Text(required=True)
     cancelled_at = fields.Datetime()
     retention_id = fields.Many2one(related="entitlement_id.retention_id", store=True)
+    notice_ids = fields.One2many("training.tutoring.notice", "booking_id", readonly=True)
     cancelled_by_id = fields.Many2one("res.users", ondelete="restrict")
     refunded = fields.Boolean()
     _request_unique = models.Constraint(

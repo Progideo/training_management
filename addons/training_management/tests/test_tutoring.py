@@ -101,6 +101,7 @@ class TestTutoring(TutoringCase):
         self.assertFalse(notices.mail_id.attachment_ids)
         self.assertFalse(notices.mail_id.recipient_ids)
         for notice in notices:
+            self.assertEqual(notice.event_kind, "booking")
             self.assertTrue(notice._authorized())
             notice.mail_id._prepare_outgoing_list()
         self.assertFalse(
@@ -337,6 +338,40 @@ class TestTutoring(TutoringCase):
             slot.with_user(outsider).action_cancel()
         with self.assertRaises(AccessError):
             booking.with_user(outsider).read(["cancellation_terms"])
+
+    def test_refund_delay_is_explicit_including_zero(self):
+        delivery = self.delivery(learning_tutor_id=self.portal_b.id)
+        day = (fields.Datetime.now() + timedelta(days=3)).date()
+        values = {
+            "name": "Fictional explicit conditions",
+            "delivery_id": delivery.id,
+            "tutor_id": self.portal_b.id,
+            "kind": "individual",
+            "capacity": 1,
+            "mode": "remote",
+            "meeting_url": "https://example.invalid/tutoring",
+            "start_date": day,
+            "end_date": day,
+            "start_hour": 10,
+            "end_hour": 11,
+            "refund_policy": "before",
+            "cancellation_terms": "Fictional terms",
+        }
+        model = self.env["training.tutoring.slot"].with_user(self.coordinator)
+        for missing in (
+            {},
+            {"cancellation_hours": False},
+            {"cancellation_hours": None},
+            {"cancellation_hours": float("inf")},
+        ):
+            with self.assertRaises(ValidationError):
+                model.create({**values, **missing})
+        slot = model.create({**values, "cancellation_hours": 0})
+        self.assertEqual(slot.cancellation_hours, 0)
+        never = model.create({**values, "refund_policy": "never"})
+        with self.assertRaises(ValidationError):
+            never.write({"refund_policy": "before"})
+        never.write({"refund_policy": "before", "cancellation_hours": 24})
 
     def test_reciprocal_session_conflict_and_room_capacity(self):
         start = fields.Datetime.now() + timedelta(days=3)

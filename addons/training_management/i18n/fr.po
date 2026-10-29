@@ -12604,3 +12604,14 @@ msgstr "· <span>Consommées :</span>"
 #: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
 msgid "· <span>Hours:</span>"
 msgstr "· <span>Heures :</span>"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_tutoring.py:0
+msgid "Explicitly enter the cancellation delay; zero is allowed."
+msgstr "Renseignez explicitement le délai d’annulation ; zéro est autorisé."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__event_kind__booking
+msgid "Tutoring Reservation"
+msgstr "Réservation de tutorat"
