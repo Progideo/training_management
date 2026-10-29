@@ -365,7 +365,13 @@
         "tutoring_preserved",
         "tutoring_second_update",
         "tutoring_repeated_preserved",
-        "tutoring_concurrency"
+        "tutoring_concurrency",
+        "publication_baseline",
+        "publication_update",
+        "publication_preserved",
+        "publication_second_update",
+        "publication_repeated_preserved",
+        "publication_concurrency"
       ]
     }
   }
