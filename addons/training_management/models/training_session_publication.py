@@ -62,6 +62,7 @@ class PublicSessionDelivery(models.Model):
     session_alert_notice_ids = fields.One2many(
         "training.session.alert.notice",
         "delivery_id",
+        string="Date Alert Notifications",
         readonly=True,
         groups="training_management.group_training_coordinator",
     )

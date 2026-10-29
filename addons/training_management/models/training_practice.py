@@ -344,7 +344,7 @@ class PracticeDocumentPolicy(models.AbstractModel):
 
 
 class PracticeEnrollment(models.Model):
-    _inherit = "training.enrollment"
+    _inherit = "training.enrollment"  # pylint: disable=consider-merging-classes-inherited  # P11 revocation policy stays separate from material access
 
     @api.private
     def _store(self, values, reason=False):

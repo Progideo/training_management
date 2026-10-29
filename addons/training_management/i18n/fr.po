@@ -5018,6 +5018,7 @@ msgstr "Aucune activité obligatoire n’est configurée."
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__not_queued_reason
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__not_queued_reason
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__not_queued_reason
+#: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__not_queued_reason
 msgid "Not Queued Reason"
 msgstr "Motif d’absence d’envoi"
 
@@ -5143,6 +5144,7 @@ msgstr "Progression"
 #: model:ir.model.fields,field_description:training_management.field_training_notification__recipient_id
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_id
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__recipient_id
+#: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__recipient_id
 msgid "Recipient"
 msgstr "Destinataire"
 
@@ -5151,6 +5153,7 @@ msgstr "Destinataire"
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_email
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_notice__recipient_email
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__recipient_email
+#: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__recipient_email
 msgid "Recipient Email"
 msgstr "Adresse du destinataire"
 
@@ -13617,3 +13620,28 @@ msgstr "Départ garanti"
 #: model:ir.model.fields,field_description:training_management.field_res_company__training_session_alert_retention_id
 msgid "Date Alert Retention Policy"
 msgstr "Politique de conservation des alertes de dates"
+
+#. module: training_management
+#: model:ir.ui.view,name:training_management.public_session_dates
+msgid "Public session dates"
+msgstr "Dates publiques des sessions"
+
+#. module: training_management
+#: model:ir.ui.view,name:training_management.session_date_consent
+msgid "New date alert consent"
+msgstr "Accord aux alertes de nouvelles dates"
+
+#. module: training_management
+#: model:ir.ui.view,name:training_management.session_date_subscriptions
+msgid "My new date subscriptions"
+msgstr "Mes alertes de nouvelles dates"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__session_alert_notice_ids
+msgid "Date Alert Notifications"
+msgstr "Notifications de nouvelles dates"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__distribution_state
+msgid "Distribution State"
+msgstr "État de distribution"
