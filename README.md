@@ -11,6 +11,19 @@ Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer
 `training_management_sale` (dépend des Ventes et du CRM). Données de test fictives
 uniquement. Les tests et la CI installent et mettent à jour des bases jetables.
 
+## Périmètre du module
+
+Training Management est générique et indépendant de NeoPro Academy. Son installation
+vise tout environnement compatible avec Odoo 20 Community, quel que soit le pays.
+Les données de l’organisme et les localisations se configurent dans Odoo ; elles
+ne sont pas fournies comme paramètres obligatoires propres à NeoPro.
+
+La production, l’hébergement, les sauvegardes opérationnelles et les dossiers
+réglementaires locaux (dont la CNDP) relèvent de l’exploitation de chaque organisme,
+gérée hors de ce projet. La sécurité et les tests du module restent dans ce dépôt.
+Les preuves de compatibilité effectivement exécutées figurent dans la CI ; cette
+séparation ne constitue pas une validation de tous les environnements possibles.
+
 ## Contribution
 
 Lire les [consignes du dépôt](AGENTS.md) et l'[index documentaire](docs/README.md).

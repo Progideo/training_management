@@ -19,6 +19,9 @@ Tu interviens sur le projet « NeoPro - odoo 20 », consacré au développement 
 - Nom affiché : Training Management.
 - Menu principal : Formations.
 - Le module est générique et indépendant de NeoPro Academy, premier organisme utilisateur.
+- Il doit être distribuable et installable dans tout environnement compatible avec Odoo 20 Community, indépendamment du pays et de l’organisme.
+- La mise en production, l’hébergement, les sauvegardes/restaurations opérationnelles et les dossiers réglementaires locaux, dont la CNDP, sont gérés hors de ce projet, dans le dossier d’exploitation de chaque organisme. Ils ne sont ni des fonctions ni des prérequis d’installation du module.
+- Conserver ici le métier générique, ses permissions, ses tests et ses migrations de version. Les paramètres propres à un pays ou à un organisme passent par la configuration Odoo ou des extensions séparées ; aucun dossier d’exploitation privé dans ce dépôt ou ce projet.
 - Communiquer en français ; utiliser des identifiants techniques cohérents en anglais et des libellés traduisibles.
 
 ## Sources et décisions
