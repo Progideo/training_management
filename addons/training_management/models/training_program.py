@@ -1,5 +1,7 @@
 import re
 
+from lxml.html.defs import tags as HTML_TAGS
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import html_sanitize, is_html_empty, plaintext2html
@@ -113,7 +115,9 @@ class TrainingProgramVersion(models.Model):
         for program in self:
             value = program.content or ""
             program.content_formatted = (
-                html_sanitize(value) if re.search(r"</?[a-z][^>]*>", value, re.I) else plaintext2html(value)
+                html_sanitize(value)
+                if any(tag.lower() in HTML_TAGS for tag in re.findall(r"</?([a-z][a-z0-9]*)\b[^>]*>", value, re.I))
+                else plaintext2html(value)
             )
 
     def _inverse_content_formatted(self):

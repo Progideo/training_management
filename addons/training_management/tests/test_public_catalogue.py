@@ -12,7 +12,10 @@ from .test_catalogue import CatalogueCase
 class TestPublicCatalogue(CatalogueCase, HttpCase):
     def test_public_version_pdf_demo_and_private_boundaries(self):
         program = self.new_program(
-            public_catalogue=True, expected_outcomes="Produce an action plan", official_exam_details="Not included"
+            public_catalogue=True,
+            expected_outcomes="Produce an action plan",
+            official_exam_details="Not included",
+            content='<h3 onclick="pr84_unsafe()">Public chapter</h3><ul><li>Topic<ul><li>Public detail</li></ul></li></ul><script>pr84_unsafe()</script>',
         )
         question = (
             self.env["training.preview.question"]
@@ -45,6 +48,12 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Produce an action plan", response.text)
         self.assertIn("Not included", response.text)
+        from lxml import html
+
+        tree = html.fromstring(response.content)
+        self.assertEqual(tree.xpath("//h3[text()='Public chapter']/text()"), ["Public chapter"])
+        self.assertIn("Public detail", tree.xpath("//li/ul/li/text()"))
+        self.assertNotIn("pr84_unsafe", response.text)
         self.assertNotIn("Public explanation", response.text)
         token = self.csrf_token()
         response = self.url_open(f"/formations/{program.id}", data={"csrf_token": token, str(question.id): "a"})

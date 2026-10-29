@@ -20,6 +20,9 @@ class TestProgrammePdf(CatalogueCase):
         program = self.new_program(content="Legacy chapter\nLegacy detail")
         self.assertIn("Legacy chapter", program.content_formatted)
         self.assertIn("<br", program.content_formatted)
+        legacy = self.new_program(version="LITERAL", content="Use <placeholder> & compare 2 < 5\nNext line")
+        self.assertIn("&lt;placeholder&gt;", legacy.content_formatted)
+        self.assertEqual(legacy.content, "Use <placeholder> & compare 2 < 5\nNext line")
         rich = "<h3>Chapter one</h3><ul><li>Topic<ul><li>Detail</li></ul></li></ul>"
         program.write({"content_formatted": rich})
         program.invalidate_recordset()
@@ -68,6 +71,12 @@ class TestProgrammePdf(CatalogueCase):
         self.assertEqual(tree.xpath(".//li/ul/li/text()"), ["Detail"])
         self.assertEqual(tree.text_content().count("Fourth"), 1)
         self.assertEqual(tree.text_content().count("Fifth"), 1)
+        numbered_program = self.new_program(
+            version="NUMBERED",
+            content='<h3>Numbered</h3><ol><li value="9">Nine</li><li>Ten</li></ol>',
+        )
+        numbered_tree = html.fragment_fromstring(numbered_program._pdf_content_html("Content"), create_parent="div")
+        self.assertEqual(numbered_tree.xpath(".//ol/@start"), ["9", "10"])
         program.action_validate()
         text = self.text(program._reference_pdf().raw)
         for value in ("Chapter", "Fourth", "Detail", "Fifth", "Subchapter", "End"):

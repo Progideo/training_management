@@ -34,33 +34,41 @@ class TrainingProgramPdf(models.Model):
             paragraph = html.Element("p")
             paragraph.text, root.text = root.text, None
             root.insert(0, paragraph)
-        first = next((node for node in root if isinstance(node.tag, str)), None)
+        heading_tags = {"h1", "h2", "h3", "h4", "h5", "h6"}
         heading = html.Element("h2")
         heading.text = title
-        # Keep only the label and the first short item together. Keeping the
-        # entire outline together can create a blank page in the native engine.
-        intro = html.Element("div")
-        intro.append(heading)
-        if first is not None and first.tag in {"h1", "h2", "h3", "h4", "h5", "h6"}:
-            intro.append(first)
-        if len(root):
-            first_body = root[0]
-            if first_body.tag in {"ul", "ol"} and len(first_body):
-                lead = html.Element(first_body.tag, dict(first_body.attrib))
-                lead.append(first_body[0])
-                intro.append(lead)
-                if first_body.tag == "ol":
-                    try:
-                        first_body.set("start", str(int(first_body.get("start", "1")) + 1))
-                    except ValueError:
-                        first_body.set("start", "2")
-                if not len(first_body):
-                    root.remove(first_body)
-            else:
-                intro.append(first_body)
-        if len(intro.text_content()) < 1400:
-            intro.set("class", "programme-intro")
-        root.insert(0, intro)
+        root.insert(0, heading)
+        for heading in list(root):
+            if heading.getparent() is not root or heading.tag not in heading_tags:
+                continue
+            index = root.index(heading)
+            group = html.Element("div")
+            group.append(heading)
+            # Keep the section label with the original first chapter heading.
+            if index < len(root) and root[index].tag in heading_tags:
+                group.append(root[index])
+            if index < len(root):
+                body = root[index]
+                if body.tag in {"ul", "ol"} and len(body):
+                    lead = html.Element(body.tag, dict(body.attrib))
+                    if body.tag == "ol":
+                        # Splitting must preserve explicit numbering.
+                        try:
+                            start = int(body[0].get("value", body.get("start", "1")))
+                        except ValueError:
+                            start = 1
+                        lead.set("start", str(start))
+                        body.set("start", str(start + 1))
+                    lead.append(body[0])
+                    group.append(lead)
+                    if not len(body):
+                        root.remove(body)
+                else:
+                    group.append(body)
+            # Never keep a whole long outline in one page-sized block.
+            if len(group.text_content()) < 1400:
+                group.set("class", "programme-intro")
+            root.insert(index, group)
         return Markup("".join(etree.tostring(node, encoding="unicode", method="html") for node in root))
 
     def _audit_fields(self):
