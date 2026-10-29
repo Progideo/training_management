@@ -192,3 +192,11 @@ rule_tutoring_entitlement_company,Tutoring entitlement company,training.tutoring
 rule_tutoring_slot_company,Tutoring slot company,training.tutoring.slot,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_tutoring_booking_company,Tutoring reservation company,training.tutoring.booking,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_tutoring_notice_company,Tutoring notification company,training.tutoring.notice,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_publication_coord,P14 publication coordinator,training.publication,training_management.group_training_coordinator,cru,
+access_publication_moderator,P14 publication moderator,training.publication,training_management.group_training_publication_moderator,ru,
+rule_publication_company,P14 publication company,training.publication,,crud,"[('company_id', 'in', company_ids)]"
+access_publication_event_coord,P14 authorization evidence coordinator,training.publication.event,training_management.group_training_coordinator,r,
+access_publication_event_mod,P14 authorization evidence moderator,training.publication.event,training_management.group_training_publication_moderator,r,
+rule_publication_event_company,P14 authorization evidence company,training.publication.event,,crud,"[('company_id', 'in', company_ids)]"
+access_publication_notice_coord,P14 invitation journal,training.publication.notice,training_management.group_training_coordinator,r,
+rule_publication_notice_company,P14 invitation company,training.publication.notice,,crud,"[('company_id', 'in', company_ids)]"
