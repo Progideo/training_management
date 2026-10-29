@@ -3,6 +3,9 @@
 Références : #23, #24 et [matrice C02/C04](p01-p06-coverage.md).
 L’accueil `/formations` privilégie « Former mon équipe », puis « Me former ».
 Le catalogue, la fiche et le formulaire conservent le parcours et la version choisie.
+Après le choix, le catalogue affiche le parcours retenu et propose de changer de
+parcours. Sur la fiche, « Demander un devis individuel » ou « Demander un devis
+pour mon équipe » annonce l’étape suivante sans faire choisir à nouveau l’intention.
 Le formulaire garde ses champs lorsque le parcours change ; aucun compte,
 contact, accès, inscription ou devis n’est créé automatiquement.
 
