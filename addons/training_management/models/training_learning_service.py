@@ -10,6 +10,7 @@ from psycopg2.errors import SerializationFailure
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, LockError, ValidationError
+from odoo.fields import Domain
 from odoo.tools.binary import BinaryBytes
 from odoo.tools import SQL
 
@@ -161,6 +162,7 @@ class LearningService(models.AbstractModel):
         parent_id=False,
         revision=0,
         decision=False,
+        project_ratings=None,
     ):
         tutor = kind in ("correction", "answer")
         if kind not in ("submission", "correction", "question", "answer"):
@@ -184,6 +186,8 @@ class LearningService(models.AbstractModel):
             "parent": parent_id,
             "decision": decision,
         }
+        if project_ratings is not None:
+            payload["project_ratings"] = project_ratings
         fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         with self.env.cr.savepoint():
             enrollment = self._enrollment(enrollment_id, tutor=tutor, lock=True)
@@ -194,10 +198,17 @@ class LearningService(models.AbstractModel):
             if previous:
                 if previous.fingerprint != fingerprint or previous.create_uid != self.env.user:
                     raise ValidationError(self.env._("This submission identifier already belongs to different work."))
+                if previous.activity_id.project_rubric_id:
+                    self._project_snapshot(enrollment, previous.activity_id, kind, project_ratings, body)
                 return previous
             activity = (
                 self._activity(enrollment, activity_id) if activity_id else self.env["training.learning.activity"]
             )
+            project_snapshot = (
+                self._project_snapshot(enrollment, activity, kind, project_ratings, body) if activity else False
+            )
+            if project_snapshot and len(data) > 20 * 1024 * 1024:
+                raise ValidationError(self.env._("Le fichier du projet est limité à 20 Mo."))
             parent = entries.browse(parent_id).exists() if parent_id else entries.browse()
             if parent_id and (not parent or parent.enrollment_id != enrollment or parent.activity_id != activity):
                 raise AccessError(self.env._("This private learning record is unavailable."))
@@ -222,6 +233,12 @@ class LearningService(models.AbstractModel):
                     "enrollment_id": enrollment.id,
                     "activity_id": activity.id,
                     "kind": kind,
+                    "project_snapshot": project_snapshot,
+                    "project_digest": hashlib.sha256(
+                        json.dumps(project_snapshot, sort_keys=True, ensure_ascii=False).encode()
+                    ).hexdigest()
+                    if project_snapshot
+                    else False,
                     "parent_id": parent.id,
                     "request_key": request_key,
                     "fingerprint": fingerprint,
@@ -299,6 +316,7 @@ class LearningService(models.AbstractModel):
     def _entries(self, enrollment):
         return [
             {
+                "project_snapshot": e.project_snapshot,
                 "id": e.id,
                 "kind": e.kind,
                 "author": e.create_uid.name,
@@ -314,7 +332,9 @@ class LearningService(models.AbstractModel):
                 if e.filename
                 else False,
             }
-            for e in self.env["training.learning.entry"].sudo().search([("enrollment_id", "=", enrollment.id)])
+            for e in self.env["training.learning.entry"]
+            .sudo()
+            .search(Domain("enrollment_id", "=", enrollment.id) & self._project_entry_domain())
         ]
 
     @api.private

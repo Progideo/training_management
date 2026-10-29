@@ -34,3 +34,5 @@ from . import test_path
 from . import test_path_portal
 
 from . import test_practice
+
+from . import test_project
