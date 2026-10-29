@@ -8,6 +8,8 @@ import os
 import threading
 from uuid import uuid4
 
+from psycopg2.errors import SerializationFailure
+
 from odoo import Command, api, fields
 from odoo.exceptions import LockError
 from odoo.http.retrying import retrying
@@ -244,3 +246,45 @@ else:
         work = local["training.learning.entry"].sudo().browse(saved["work"])
         assert hashlib.sha256(work.data.content).hexdigest() == saved["data_hash"]
     print("P12 concurrent revision and criterion validation: one evidence and one notice per operation OK")
+
+    # A publication which already read criteria cannot publish a stale grid
+    # after a different transaction deletes its last criterion.
+    with registry.cursor() as cr:
+        local = api.Environment(cr, saved["coord"], {})
+        draft = local["training.project.rubric"].create(
+            {
+                "name": "Fictional concurrent grid",
+                "criterion_ids": [
+                    Command.create(
+                        {
+                            "name": "Last criterion",
+                            "level_0": "Absent",
+                            "level_1": "Partial",
+                            "level_2": "Correct",
+                            "level_3": "Explained",
+                        }
+                    )
+                ],
+            }
+        )
+        draft_id = draft.id
+        cr.commit()
+    with registry.cursor() as stale_cr:
+        stale = api.Environment(stale_cr, saved["coord"], {})
+        stale_grid = stale["training.project.rubric"].browse(draft_id)
+        assert len(stale_grid.criterion_ids) == 1
+        with registry.cursor() as editing_cr:
+            editing = api.Environment(editing_cr, saved["coord"], {})
+            editing["training.project.rubric"].browse(draft_id).criterion_ids.unlink()
+            editing_cr.commit()
+        try:
+            stale_grid.action_publish()
+        except SerializationFailure:
+            stale_cr.rollback()
+        else:
+            raise AssertionError("Stale grid publication was not rejected")
+    with registry.cursor() as cr:
+        local = api.Environment(cr, saved["coord"], {})
+        draft = local["training.project.rubric"].browse(draft_id)
+        assert draft.state == "draft" and not draft.criterion_ids
+    print("P12 concurrent criterion deletion rejects stale publication; no empty published grid OK")

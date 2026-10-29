@@ -50,6 +50,8 @@ définitions et règles P10 après mise à jour et vérifie qu’un calcul d’o
 ne persiste aucune réponse. Le même parcours conserve ensuite actions P11, preuves
 privées, retours et politiques après deux mises à jour ; deux transactions
 concurrentes produisent une seule réalisation d’action et un seul rappel natif.
+Les nouvelles colonnes P12 des lignes S05 antérieures sont vérifiées vides avant
+la comparaison exacte de toutes leurs colonnes historiques.
 Le même parcours conserve ensuite les grilles P12 V1/V2, remises et décisions par
 critère après deux mises à jour ; des transactions concurrentes déposent puis
 valident une seule version avec une notification par opération.

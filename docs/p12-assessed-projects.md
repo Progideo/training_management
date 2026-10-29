@@ -9,7 +9,10 @@ Dans Community `20.0-20261015` (image `61e3c71b0503`), `mail.activity`
 porte une échéance et un utilisateur interne ; `action_feedback` / `_action_done`
 ne portent pas le contrat de grille et de remises versionnées. La progression
 `slide.channel.partner._recompute_completion` est liée à l’adhésion eLearning,
-sans rattachement à l’inscription S03. Les remises privées S05 et les habilitations
+sans rattachement à l’inscription S03. `project.task` propose affectations,
+étapes, pièces jointes et notation de satisfaction ; son portail utilise
+`_document_check_access`. Il faudrait lui ajouter les droits S03/S09, les remises
+immuables et la grille, avec les dépendances Project/Analytic/Rating. Les remises privées S05 et les habilitations
 S09 représentent déjà ces liens : extension ciblée du socle, sans dépendance,
 service ni interface séparés. P11 et les évaluations S09 restent distincts.
 
@@ -61,7 +64,8 @@ implicite du commanditaire, employeur ou superviseur ; aucune synthèse P11
 alimentée automatiquement. Les profils portail n’obtiennent pas de droits ORM.
 
 Les verrous réalisation/inscription et clés de requête S05 sérialisent remises et
-décisions ; une répétition conserve une preuve et une notification. Le journal
+décisions. Les modifications de critères et la publication sérialisent aussi
+la grille : une page périmée ne peut publier une grille devenue vide. Une répétition conserve une preuve et une notification. Le journal
 et la file native S10 restent génériques, sans résultat, consigne ni fichier.
 Le transport revérifie aussi l’habilitation P12 actuelle du destinataire évaluateur.
 Les échéances/rappels S05 configurés restent applicables ; aucune relance P11

@@ -3,6 +3,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Domain
+from odoo.tools import SQL
 
 from .training_evaluation import clean_context
 from .training_material import COORDINATOR
@@ -40,6 +41,13 @@ class ProjectRubric(models.Model):
             raise AccessError(self.env._("La coordination de formation est requise."))
         self.check_access("write")
         self.lock_for_update()
+        if self:
+            # Child edits and publication share this parent fence. A stale
+            # REPEATABLE READ snapshot must retry after a criterion edit/delete,
+            # even once its lock is released. Preserve all business metadata.
+            self.env.cr.execute(
+                SQL("UPDATE training_project_rubric SET write_date = write_date WHERE id IN %s", tuple(self.ids))
+            )
         self.invalidate_recordset()
         if any(row.state != "draft" for row in self):
             raise ValidationError(self.env._("Conservez la grille publiée ; créez une nouvelle version."))
@@ -182,7 +190,7 @@ class ProjectEntry(models.Model):
 
 
 class ProjectLearningService(models.AbstractModel):
-    _inherit = "training.learning.service"
+    _inherit = "training.learning.service"  # pylint: disable=consider-merging-classes-inherited  # P12 qualifications are separate from S08 closure issuance
 
     @api.private
     def _project_evaluator(self, enrollment):
@@ -215,7 +223,11 @@ class ProjectLearningService(models.AbstractModel):
     def _project_entry_domain(self):
         enrollments = self.env["training.document.policy"]._enrollments() | self._tutored_enrollments()
         allowed = enrollments.filtered(self._project_can_read)
-        return Domain("activity_id.project_rubric_id", "=", False) | Domain("enrollment_id", "in", allowed.ids)
+        # Match absent activities too (S05 private help). The classifier reads
+        # only the project marker, independently of coordinator-only activity
+        # rules; the enclosing S05 enrollment domain still enforces the mission.
+        ordinary = Domain("activity_id", "not any!", Domain("project_rubric_id", "!=", False))
+        return ordinary | Domain("enrollment_id", "in", allowed.ids)
 
     @api.private
     def _project_snapshot(self, enrollment, activity, kind, ratings, body):
@@ -274,7 +286,7 @@ class ProjectLearningService(models.AbstractModel):
 
 
 class ProjectDocumentPolicy(models.AbstractModel):
-    _inherit = "training.document.policy"
+    _inherit = "training.document.policy"  # pylint: disable=consider-merging-classes-inherited  # project grants differ from S08 closure grants
 
     @api.private
     def _can_read(self, record):
