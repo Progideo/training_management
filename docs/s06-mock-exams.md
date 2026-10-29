@@ -72,7 +72,9 @@ la lecture et les mutations, y compris pour une tentative déjà commencée.
 
 Une réussite ne bloque jamais une nouvelle tentative si les droits restent
 actifs. Chaque tentative a sa propre durée complète et son propre résultat.
-Une tentative en cours est reprise au lieu d’en créer une seconde. Les résultats
+Une tentative en cours est reprise au lieu d’en créer une seconde. Si elle est
+expirée, son résultat est figé avant de créer la suivante, même sans passage
+préalable par son écran ou par la tâche d’expiration. Les résultats
 restent consultables dans Mes tentatives après expiration des accès ; suspension
 et révocation bloquent leur lecture. Les ressources de révision restent soumises
 à la politique S05 actuelle, sans diffusion de ressources devenues interdites.

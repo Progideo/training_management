@@ -56,6 +56,8 @@ class ExamService(models.AbstractModel):
         if active and active.deadline <= fields.Datetime.now():
             active.lock_for_update()
             active._training_finish()
+            # Release the partial unique index before INSERT: ORM writes are deferred.
+            active.flush_recordset(["state"])
             active = attempts
         if active:
             if active.training_enrollment_id != enrollment:
