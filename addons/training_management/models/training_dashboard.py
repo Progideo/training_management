@@ -435,6 +435,7 @@ class DashboardService(models.AbstractModel):
             ("training.invitation", []),
             ("training.feedback.notice", []),
             ("training.learning.notice", [("entry_id", "=", False)]),
+            ("training.practice.notice", []),
             ("training.notification", []),
         ):
             model = self.env[model_name]
@@ -448,6 +449,8 @@ class DashboardService(models.AbstractModel):
                             if model_name == "training.notification"
                             else self.env._("Invitation / reminder")
                             if model_name == "training.feedback.notice"
+                            else self.env._("Practice Reminder")
+                            if model_name == "training.practice.notice"
                             else self.env._("Inactivity Reminder")
                             if model_name == "training.learning.notice"
                             else self.env._("Training invitation / schedule update")
@@ -469,6 +472,7 @@ class DashboardService(models.AbstractModel):
                             "training.feedback.notice": "S09.2 — stored native mail",
                             "training.invitation": "S04 — stored native mail",
                             "training.learning.notice": "S05 — stored native mail",
+                            "training.practice.notice": "P11 — stored native mail",
                             "training.notification": "S10-LIFECYCLE-1",
                         }[model_name],
                         "source": model_name,

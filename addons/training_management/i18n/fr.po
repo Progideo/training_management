@@ -92,6 +92,8 @@ msgstr "Contact accessibilité"
 msgid "Accessibility Information"
 msgstr "Informations d’accessibilité"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__action_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__action_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_action_reason__action_label
 msgid "Action"
@@ -173,6 +175,10 @@ msgstr ""
 "Les tarifs commerciaux seront gérés par les produits et devis standards "
 "Odoo."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__company_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__company_id
@@ -266,6 +272,10 @@ msgstr "Consignes de contact conservées dans cette version du programme."
 msgid "Content"
 msgstr "Contenu"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__create_uid
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__create_uid
@@ -331,6 +341,10 @@ msgstr "Contenu"
 msgid "Created by"
 msgstr "Créé par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__create_date
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__create_date
@@ -411,6 +425,10 @@ msgstr ""
 msgid "Delivery Mode"
 msgstr "Modalité"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__display_name
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_mail_activity__display_name
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_quality_summary__display_name
@@ -558,6 +576,10 @@ msgstr "Prolonger l’échéance"
 msgid "Formations"
 msgstr "Formations"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_mail_activity__id
 #: model:ir.model.fields,field_description:training_management.field_report_training_management_quality_summary__id
@@ -656,6 +678,10 @@ msgstr "ID"
 msgid "Labels"
 msgstr "Libellés"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__write_uid
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__write_uid
@@ -721,6 +747,10 @@ msgstr "Libellés"
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__write_date
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__write_date
@@ -791,6 +821,7 @@ msgstr "Dernière modification le"
 msgid "Model"
 msgstr "Modèle"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__name
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_retention_category__name
 #: model:ir.model.fields,field_description:training_management.field_training_course__name
@@ -962,12 +993,14 @@ msgstr "Publier le programme"
 msgid "Published"
 msgstr "Publié"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__published_at
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__published_at
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__published_at
 msgid "Published At"
 msgstr "Publié le"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__published_by_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_program_version__published_by_id
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation__published_by_id
@@ -1093,6 +1126,7 @@ msgstr "Formation standard"
 msgid "Standard training catalogue and controlled programme versions"
 msgstr "Catalogue de formations standards et versions de programme contrôlées"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__state
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__state
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__state
@@ -1120,6 +1154,7 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 msgid "State"
 msgstr "État"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__distribution_state
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_search
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__distribution_state
@@ -1490,6 +1525,7 @@ msgstr "Toutes les places de ce lot ont déjà été attribuées."
 msgid "Allocate a positive number of places."
 msgstr "Le nombre de places doit être strictement positif."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__allocation_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_extend__allocation_id
 #: model:ir.model.fields,field_description:training_management.field_training_allocation_release__allocation_id
@@ -1644,6 +1680,7 @@ msgstr "Sélectionnez une version de programme validée."
 msgid "Choose an available allocation for this delivery."
 msgstr "Sélectionnez un lot disponible pour cette réalisation."
 
+#: model_terms:ir.ui.view,arch_db:training_management.practice_action_form
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_delivery.py:0
@@ -1653,6 +1690,8 @@ msgstr "Sélectionnez un lot disponible pour cette réalisation."
 msgid "Close"
 msgstr "Clôturer"
 
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_action__state__closed
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_entry__kind__closed
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_complaint__state__closed
 #: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
@@ -1777,6 +1816,8 @@ msgstr "Réalisée"
 msgid "Deliveries"
 msgstr "Réalisations"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__delivery_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__delivery_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__delivery_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__delivery_id
@@ -1828,6 +1869,8 @@ msgstr "Accès effectif"
 msgid "End At"
 msgstr "Fin"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__enrollment_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__enrollment_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__enrollment_id
 #: model:ir.model.fields,field_description:training_management.field_training_closure__enrollment_id
@@ -1923,6 +1966,7 @@ msgstr ""
 "Conservez les enregistrements et leur historique ; utilisez le circuit "
 "d’annulation."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__kind
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__kind
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
@@ -3112,6 +3156,7 @@ msgstr "Rejoindre la séance à distance"
 msgid "Location"
 msgstr "Lieu"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__mail_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_invitation__mail_id
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__mail_id
@@ -4148,6 +4193,7 @@ msgstr "Référence PDF de réalisation"
 msgid "File streaming helper model for controllers"
 msgstr "Service de diffusion des fichiers pour les contrôleurs"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__filename
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__name
 #: model:ir.model.fields,field_description:training_management.field_training_document__filename
@@ -4208,6 +4254,7 @@ msgstr "Support"
 msgid "Material Assignment"
 msgstr "Affectation de support"
 
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_participant_home
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training
@@ -4327,6 +4374,7 @@ msgstr "Agenda"
 msgid "Sequence"
 msgstr "Ordre"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__sha256
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_document__sha256
@@ -4424,6 +4472,7 @@ msgstr "Retirez les PDF privés au lieu de supprimer leur historique."
 msgid "Withdraw this reference instead of deleting its history."
 msgstr "Retirez cette référence au lieu de supprimer son historique."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__withdrawn
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_material__withdrawn
 #: model:ir.model.fields,field_description:training_management.field_training_material_assignment__withdrawn
@@ -4618,6 +4667,8 @@ msgstr "Progression d’une activité par inscription"
 msgid "Enter a message or select a named file."
 msgstr "Saisissez un message ou choisissez un fichier nommé."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__entry_ids
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__entry_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__entry_id
 msgid "Entry"
@@ -4643,6 +4694,7 @@ msgstr ""
 "La réalisation attend un résultat de référence fourni par l’intégration des "
 "examens S06."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__event_key
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__event_key
 #: model:ir.model.fields,field_description:training_management.field_training_notification__event_key
@@ -4810,6 +4862,7 @@ msgstr ""
 msgid "No current tutoring assignment."
 msgstr "Aucun accompagnement en cours."
 
+#: code:addons/training_management/models/training_practice_notice.py:0
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_learning_notice.py:0
@@ -4822,6 +4875,7 @@ msgstr ""
 msgid "No required learning activity is configured."
 msgstr "Aucune activité obligatoire n’est configurée."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__not_queued_reason
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__not_queued_reason
 msgid "Not Queued Reason"
@@ -4940,6 +4994,7 @@ msgstr "Travaux et aide privés"
 msgid "Progress"
 msgstr "Progression"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__recipient_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__recipient_ids
@@ -4949,11 +5004,13 @@ msgstr "Progression"
 msgid "Recipient"
 msgstr "Destinataire"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__recipient_email
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_email
 msgid "Recipient Email"
 msgstr "Adresse du destinataire"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__recipient_language
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__recipient_language
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_notice__recipient_language
@@ -5010,6 +5067,7 @@ msgstr "Statut de la correction"
 msgid "Save correction"
 msgstr "Enregistrer la correction"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__sealed_at
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sealed_at
 msgid "Sealed At"
@@ -5060,6 +5118,7 @@ msgstr "Cette activité possède déjà un suivi de progression."
 msgid "This activity does not accept exercise submissions or corrections."
 msgstr "Cette activité n’accepte pas de remise d’exercice ni de correction."
 
+#: model:ir.model.constraint,message:training_management.constraint_training_practice_notice_one_event
 #. module: training_management
 #: model:ir.model.constraint,message:training_management.constraint_training_learning_notice_one_event
 msgid "This learning notification is already journaled."
@@ -5187,16 +5246,19 @@ msgstr ""
 "Aucun tuteur n’est encore affecté. Votre demande sera conservée ; contactez "
 "la coordination pour l’affectation d’un tuteur."
 
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_notice__event_kind__reminder
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__reminder
 msgid "Inactivity Reminder"
 msgstr "Relance d’inactivité"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_notice__event_kind
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_learning_notice__event_kind
 msgid "Notification"
 msgstr "Notification"
 
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_notice__event_kind__entry
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__entry
 msgid "Private Learning Update"
@@ -5344,6 +5406,7 @@ msgstr "Correction du coordinateur"
 msgid "Correct Validated Attendance"
 msgstr "Corriger une présence validée"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__data
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_file__data
 #: model:ir.model.fields,field_description:training_management.field_training_document__data
@@ -6275,6 +6338,8 @@ msgstr "Renseignez la provenance et l’auteur de la preuve."
 msgid "Requests are reviewed manually; no automatic purge."
 msgstr "Les demandes sont instruites manuellement ; aucune purge automatique."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__retention_id
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__retention_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__retention_id
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__retention_id
@@ -7524,6 +7589,7 @@ msgstr ""
 msgid "Remind Eligible Recipients"
 msgstr "Relancer les destinataires éligibles"
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__reminder_days
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_campaign__reminder_days
 msgid "Reminder Days"
@@ -7965,6 +8031,7 @@ msgstr "Renseignez la réalisation et le résultat corrigé."
 msgid "Document the subject and origin of the action."
 msgstr "Renseignez le sujet et l’origine de l’action."
 
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__due_date
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__due_date
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__due_date
@@ -8282,6 +8349,7 @@ msgstr "Téléphone"
 msgid "Plan Action"
 msgstr "Planifier l’action"
 
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_action__state__planned
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_improvement__state__planned
 msgid "Planned"
@@ -11539,3 +11607,350 @@ msgstr "Accès terminé"
 #: code:addons/training_management/models/training_path_portal.py:0
 msgid "Access pending"
 msgstr "Accès en attente"
+
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_action__horizon__30
+msgid "30 Days"
+msgstr "30 jours"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_action__horizon__60
+msgid "60 Days"
+msgstr "60 jours"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__access_withdrawn
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_entry__kind__withdrawn
+msgid "Access Withdrawn"
+msgstr "Accès retiré"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__service_reference
+msgid "Agreed Service Reference"
+msgstr "Référence de la prestation convenue"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__body
+msgid "Agreed Summary"
+msgstr "Synthèse convenue"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_action_form
+msgid ""
+"Agreed actions are preserved. Close an action and create a replacement to "
+"correct its definition. Private evidence is never included in client "
+"summaries."
+msgstr ""
+"Les actions convenues sont conservées. Clôturez puis remplacez une action "
+"pour corriger sa définition. Aucune preuve privée n’est intégrée aux "
+"synthèses client."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__authorization_reference
+msgid "Agreement and Authorization Reference"
+msgstr "Référence de l’accord et de l’autorisation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_summary__authorization_id
+msgid "Authorization"
+msgstr "Habilitation"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.practice_summaries
+#: model:ir.ui.menu,name:training_management.menu_practice_summaries
+msgid "Authorized Practice Summaries"
+msgstr "Synthèses de mise en pratique autorisées"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_practice_summary
+msgid "Authorized Practice Summary"
+msgstr "Synthèse de mise en pratique autorisée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_entry__body
+msgid "Body"
+msgstr "Texte"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_summary.py:0
+msgid "Choose an authorized allocation and an approved retention policy."
+msgstr ""
+"Choisissez un lot habilité et une politique de conservation approuvée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Closed by coordination"
+msgstr "Clôturée par la coordination"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Complete the action before recording a trainer comment."
+msgstr "Réalisez l’action avant d’enregistrer un retour du formateur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "Completion note (optional)"
+msgstr "Note de réalisation (facultative)"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Create a new agreed action instead of copying its history."
+msgstr "Créez une nouvelle action convenue pour préserver son historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Create a planned action; its history is generated by the server."
+msgstr "Créez une action prévue ; son historique est produit par le serveur."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_action__state__done
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_entry__kind__done
+msgid "Done"
+msgstr "Réalisée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "Due:"
+msgstr "Échéance :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_summary_form
+msgid ""
+"Enter only the agreed and authorized summary. No private action, proof or "
+"trainer comment is copied automatically."
+msgstr ""
+"Saisissez uniquement la synthèse convenue et autorisée. Aucune action, "
+"preuve ou retour privé du formateur n’est copié automatiquement."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__horizon
+msgid "Horizon"
+msgstr "Horizon"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Keep practice actions and their history."
+msgstr "Conservez les actions de mise en pratique et leur historique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_summary.py:0
+msgid "Keep published summaries and their authorization evidence."
+msgstr "Conservez les synthèses publiées et leurs preuves d’autorisation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_summary.py:0
+msgid "Keep published summaries unchanged; withdraw and replace them."
+msgstr ""
+"Conservez les synthèses publiées intactes ; retirez-les puis remplacez-les."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Keep the agreed action unchanged; close it and create a replacement."
+msgstr ""
+"Conservez l’action convenue intacte ; clôturez-la puis créez une action de "
+"remplacement."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "Mark as done"
+msgstr "Marquer comme réalisée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_from_trainings
+#: model_terms:ir.ui.view,arch_db:training_management.practice_home
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "My practice plans"
+msgstr "Mes plans de mise en pratique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "No practice action is currently assigned."
+msgstr "Aucune action de mise en pratique n’est actuellement affectée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Only a training coordinator may manage practice plans."
+msgstr "Seule la coordination peut gérer les plans de mise en pratique."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_notice.py:0
+msgid "Open practice plan"
+msgstr "Ouvrir le plan de mise en pratique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid ""
+"Optional evidence and trainer comments remain private. Your employer "
+"receives only a separately agreed and authorized summary."
+msgstr ""
+"Les preuves facultatives et retours du formateur restent privés. Votre "
+"employeur reçoit uniquement une synthèse distincte, convenue et autorisée."
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_practice_action
+msgid "Post-training Practice Action"
+msgstr "Action de mise en pratique après formation"
+
+#. module: training_management
+#: model:ir.actions.act_window,name:training_management.practice_actions
+#: model:ir.ui.menu,name:training_management.menu_practice_actions
+msgid "Practice Plans"
+msgstr "Plans de mise en pratique"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_practice_notice
+msgid "Practice Reminder Journal"
+msgstr "Journal des rappels de mise en pratique"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Practice access withdrawn with enrollment access"
+msgstr "Accès à la mise en pratique retiré avec les accès de l’inscription"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_practice_entry
+msgid "Private Practice Evidence and Feedback"
+msgstr "Preuves et retours privés de mise en pratique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "Private evidence (optional, up to 20 MB)"
+msgstr "Preuve privée (facultative, 20 Mo maximum)"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid ""
+"Private practice evidence is available through the authenticated portal "
+"only."
+msgstr ""
+"Les preuves privées de mise en pratique sont disponibles uniquement sur le "
+"portail authentifié."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_summary_form
+msgid "Publish Agreed Summary"
+msgstr "Publier la synthèse convenue"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_summary.py:0
+msgid "Publish the agreed summary using the authorized action."
+msgstr "Publiez la synthèse convenue avec l’action prévue."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_summary.py:0
+msgid "Record the agreed summary and its authorization before publication."
+msgstr ""
+"Renseignez la synthèse convenue et son autorisation avant publication."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "Record trainer comment"
+msgstr "Enregistrer le retour du formateur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Select a named file of at most 20 MB."
+msgstr "Choisissez un fichier nommé de 20 Mo maximum."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_notice.py:0
+msgid "Sign in to review your post-training actions."
+msgstr "Connectez-vous pour consulter vos actions après formation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "This action is closed."
+msgstr "Cette action est clôturée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "This private practice action is unavailable."
+msgstr "Cette action privée de mise en pratique est indisponible."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_practice_entry__kind__feedback
+msgid "Trainer Feedback"
+msgstr "Retour du formateur"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__trainer_feedback
+msgid "Trainer Feedback Included"
+msgstr "Retour du formateur inclus"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_portal
+msgid "Trainer comment"
+msgstr "Retour du formateur"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_practice_action__completed_on
+msgid "Training Completed On"
+msgstr "Date de fin de formation constatée"
+
+#. module: training_management
+#: model:ir.actions.server,name:training_management.cron_practice_reminders_ir_actions_server
+msgid "Training: post-training practice reminders"
+msgstr "Formations : rappels de mise en pratique après formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid ""
+"Use a completed training, a confirmed enrollment, an approved retention "
+"policy and a non-negative reminder interval."
+msgstr ""
+"Utilisez une formation effectuée, une inscription confirmée, une politique "
+"de conservation approuvée et un intervalle de rappel positif ou nul."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_summary_form
+msgid "Withdraw"
+msgstr "Retirer"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice_notice.py:0
+msgid "Your practice plan needs attention"
+msgstr "Votre plan de mise en pratique demande votre attention"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_practice_action__reminder_days
+msgid "Zero disables reminders. First reminder on the due date."
+msgstr "Zéro désactive les rappels. Premier rappel à l’échéance."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_dashboard.py:0
+msgid "Practice Reminder"
+msgstr "Rappel de mise en pratique"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_practice.py:0
+msgid "Practice access withdrawn by coordination"
+msgstr "Accès à la mise en pratique retiré par la coordination"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.practice_action_form
+msgid "Withdraw Practice Access"
+msgstr "Retirer les accès de mise en pratique"

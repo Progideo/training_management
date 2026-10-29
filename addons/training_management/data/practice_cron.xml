@@ -1,0 +1,6 @@
+<odoo noupdate="1">
+    <record id="cron_practice_reminders" model="ir.cron">
+        <field name="name">Training: post-training practice reminders</field><field name="model_id" ref="model_training_practice_action"/>
+        <field name="state">code</field><field name="code">model._cron_reminders()</field><field name="interval_number">1</field><field name="interval_type">days</field>
+    </record>
+</odoo>

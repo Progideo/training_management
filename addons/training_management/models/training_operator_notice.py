@@ -37,6 +37,7 @@ class OperatorNotice(models.Model):
             "training.invitation",
             "training.feedback.notice",
             "training.learning.notice",
+            "training.practice.notice",
         )
 
     @api.private
@@ -74,7 +75,13 @@ class OperatorNotice(models.Model):
             return False
         if (
             source._name
-            in ("training.notification", "training.invitation", "training.feedback.notice", "training.learning.notice")
+            in (
+                "training.notification",
+                "training.invitation",
+                "training.feedback.notice",
+                "training.learning.notice",
+                "training.practice.notice",
+            )
             and source.mail_id.state != "exception"
         ):
             return False

@@ -129,7 +129,7 @@ class LearningEvidence(models.AbstractModel):
             if not k.startswith("default_") and k not in ("bin_size", "bin_size_data")
         }
         clean.update(tracking_disable=True, mail_create_nosubscribe=True)
-        if self._name == ENTRY_MODEL:
+        if self._name in (ENTRY_MODEL, "training.practice.entry"):
             # Native switch: a submitted original is evidence, not a web image.
             clean["image_no_postprocess"] = True
         return super(LearningEvidence, self.sudo().with_context(clean)).create(values)  # pylint: disable=context-overridden,super-method-mismatch  # narrow, server-authored evidence factory
