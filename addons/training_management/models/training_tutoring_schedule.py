@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 
 
 class TutoringSession(models.Model):
-    _inherit = "training.session"
+    _inherit = "training.session"  # pylint: disable=consider-merging-classes-inherited  # P13 interoperability stays separate from S04
 
     @api.private
     def _reserve(self, reason=None):
@@ -33,7 +33,7 @@ class TutoringSession(models.Model):
 
 
 class TutoringUnavailability(models.Model):
-    _inherit = "training.unavailability"
+    _inherit = "training.unavailability"  # pylint: disable=consider-merging-classes-inherited  # P13 interoperability stays separate from S04
 
     @api.private
     def _record_change(self, before, after):
@@ -61,7 +61,7 @@ class TutoringUnavailability(models.Model):
 
 
 class TutoringRoom(models.Model):
-    _inherit = "resource.resource"
+    _inherit = "resource.resource"  # pylint: disable=consider-merging-classes-inherited  # P13 room integrity stays separate from S04
 
     def write(self, vals):
         slots = (
@@ -77,7 +77,7 @@ class TutoringRoom(models.Model):
 
 
 class TutoringDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # preserve P13 definitions independently of S04 sessions
 
     def write(self, vals):
         if set(vals) & {"timezone", "company_id", "program_id", "kind"}:

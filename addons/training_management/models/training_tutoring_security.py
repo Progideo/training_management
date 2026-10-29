@@ -7,7 +7,7 @@ DOCUMENTS = ("training.tutoring.booking", "training.tutoring.entitlement", "trai
 
 
 class TutoringDocumentPolicy(models.AbstractModel):
-    _inherit = "training.document.policy"
+    _inherit = "training.document.policy"  # pylint: disable=consider-merging-classes-inherited  # P13 booking confidentiality is separate from closure documents
 
     @api.private
     def _document(self, record):
@@ -42,7 +42,7 @@ class TutoringDocumentPolicy(models.AbstractModel):
 
 
 class TutoringAttachment(models.Model):
-    _inherit = "ir.attachment"
+    _inherit = "ir.attachment"  # pylint: disable=consider-merging-classes-inherited  # P13 has no file workflow, unlike S05
 
     @api.model_create_multi
     def create(self, vals_list):
