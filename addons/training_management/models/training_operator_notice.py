@@ -38,6 +38,7 @@ class OperatorNotice(models.Model):
             "training.feedback.notice",
             "training.learning.notice",
             "training.practice.notice",
+            "training.tutoring.notice",
         )
 
     @api.private
@@ -81,6 +82,7 @@ class OperatorNotice(models.Model):
                 "training.feedback.notice",
                 "training.learning.notice",
                 "training.practice.notice",
+                "training.tutoring.notice",
             )
             and source.mail_id.state != "exception"
         ):

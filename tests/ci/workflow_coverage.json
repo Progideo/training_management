@@ -359,7 +359,13 @@
         "project_preserved",
         "project_second_update",
         "project_repeated_preserved",
-        "project_concurrency"
+        "project_concurrency",
+        "tutoring_baseline",
+        "tutoring_update",
+        "tutoring_preserved",
+        "tutoring_second_update",
+        "tutoring_repeated_preserved",
+        "tutoring_concurrency"
       ]
     }
   }

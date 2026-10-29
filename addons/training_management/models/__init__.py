@@ -56,3 +56,7 @@ from . import training_practice_notice
 from . import training_practice_summary
 
 from . import training_project
+from . import training_tutoring
+from . import training_tutoring_notice
+from . import training_tutoring_schedule
+from . import training_tutoring_security

@@ -54,6 +54,7 @@ class Mail(models.Model):
                         "training.request.notice",
                         "training.learning.notice",
                         "training.practice.notice",
+                        "training.tutoring.notice",
                     )
                 )
             ):
@@ -73,6 +74,7 @@ class Mail(models.Model):
                 "training.notification",
                 "training.learning.notice",
                 "training.practice.notice",
+                "training.tutoring.notice",
                 "training.feedback.notice",
                 "training.session",
                 "training.request.notice",

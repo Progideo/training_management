@@ -97,7 +97,7 @@ class LearningNotice(models.Model):
         return subject, body
 
     @api.private
-    def _queue(self, enrollment, event_key, recipient, *, entry=None):
+    def _queue(self, enrollment, event_key, recipient, *, entry=None, extra_values=None):
         # Caller holds the learning enrollment fence or the S03 delivery fence. No request context can
         # add attachments, CC, followers or different recipients to elevated mail.
         existing = self.sudo().search([("enrollment_id", "=", enrollment.id), ("event_key", "=", event_key)], limit=1)
@@ -107,6 +107,7 @@ class LearningNotice(models.Model):
             return existing
         record = self._create_evidence(
             {
+                **(extra_values or {}),
                 "enrollment_id": enrollment.id,
                 "event_key": event_key,
                 "entry_id": entry.id if entry else False,
