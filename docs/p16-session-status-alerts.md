@@ -58,7 +58,9 @@ de notification de la société ; cela n’active pas le transport.
 
 La fiche catalogue mène aux dates publiques et à l’accord volontaire. Le compte
 retrouve ses alertes et leur retrait dans `/my/training-date-alerts`, même sans
-accès pédagogique actif. L’accord porte sur les conditions affichées et leur
+accès pédagogique actif. Après retrait, **Me réabonner** rouvre le consentement
+pour une version encore publique du même cours et de la même société.
+L’accord porte sur les conditions affichées et leur
 politique de conservation ; une modification oblige à relire avant validation.
 La file native conserve les erreurs visibles ; aucun cron supplémentaire.
 Les verrous et révisions S03/société sérialisent publication, abonnement,
