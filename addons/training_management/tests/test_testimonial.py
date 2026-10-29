@@ -110,6 +110,28 @@ class PublicationCase(ClosureCase):
 
 @tagged("post_install", "-at_install")
 class TestTestimonial(PublicationCase):
+    def test_native_draft_creation_with_combined_staff_roles(self):
+        self.coordinator.write(
+            {"group_ids": [Command.link(self.env.ref("training_management.group_training_publication_moderator").id)]}
+        )
+        case, _ = self.case_request()
+        with Form(self.env["training.publication"].with_user(self.coordinator)) as form:
+            form.name = "Fictional case prepared in the native form"
+            form.kind = "case"
+            form.delivery_id = case.delivery_id
+            form.allocation_id = case.allocation_id
+            form.representative_id = self.portal_b
+            form.authority_reference = "Fictional exact mandate"
+            form.retention_id = self.retention
+            form.confidential = False
+            form.body = "Fictional native case text"
+            form.public_context = "Fictional native public context"
+            form.participation_month = "2027-01"
+            prepared = form.save()
+        prepared.action_request_authorization()
+        self.assertEqual(prepared.state, "submitted")
+        self.assertFalse(prepared.consented_at)
+
     def test_native_moderator_form_and_visible_actions(self):
         row, _ = self.review_request()
         self.consent(row)
