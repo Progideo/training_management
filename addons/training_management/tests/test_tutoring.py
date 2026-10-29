@@ -185,6 +185,13 @@ class TestTutoring(TutoringCase):
             booking.with_user(self.portal).create({"slot_id": slot.id})
         with self.assertRaises(UserError):
             booking.with_user(self.coordinator).export_data(["state"])
+        next_slot = self.slot(slot.delivery_id, start_hour=11, end_hour=12)
+        next_slot.action_publish()
+        self.portal_b.active = False
+        with self.assertRaises(ValidationError):
+            self.reserve(entitlement, next_slot)
+        self.assertEqual(entitlement.used_count, 1)
+        self.portal_b.active = True
         notice = (
             self.env["training.tutoring.notice"]
             .sudo()

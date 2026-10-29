@@ -429,6 +429,9 @@ class TutoringService(models.AbstractModel):
             raise ValidationError(self.env._("Choose a tutoring slot within your authorized access period."))
         if bookings.search_count([("slot_id", "=", slot.id), ("state", "=", "confirmed")]) >= slot.capacity:
             raise ValidationError(self.env._("This tutoring slot is full."))
+        # Users can be archived or lose company membership after publication.
+        # Recheck the native references, not just the frozen slot definition.
+        slot._check_definition()
         slot._check_conflicts()
         booking = bookings._create_evidence(
             {

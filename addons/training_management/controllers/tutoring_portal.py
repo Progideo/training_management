@@ -71,6 +71,8 @@ class TutoringPortal(http.Controller):
                 [
                     ("delivery_id", "=", enrollment.delivery_id.id),
                     ("state", "=", "published"),
+                    ("tutor_id.active", "=", True),
+                    ("tutor_id.company_ids", "in", enrollment.company_id.ids),
                     ("tutor_id", "=", (enrollment.learning_tutor_id or enrollment.delivery_id.learning_tutor_id).id),
                     ("start_at", ">", now),
                 ],
