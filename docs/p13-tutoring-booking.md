@@ -52,19 +52,21 @@ Si elle est activée, un délai en heures avant début doit être renseigné :
 annuler au plus tard à cette échéance restitue une unité ; après cette échéance,
 le quota reste consommé. L’annulation libère toujours la place avant le début.
 Une annulation de créneau par la coordination restitue les unités de toutes ses
-réservations. Conditions et règle appliquée restent figées avec chaque confirmation.
-Une politique modifiée ne réécrit pas les réservations antérieures.
+réservations encore confirmées. Conditions et règle appliquée restent figées avec
+chaque confirmation. Un créneau de remplacement ne réécrit pas les réservations
+antérieures.
 
 Les opérations serveur revérifient accès actif, société, inscription, tuteur,
 période, capacité et quota. Verrous et révisions suivent l’ordre société,
-réalisation, inscription, créneau. Deux confirmations concurrentes ne dépassent
+réalisation, créneau ; le verrou exclusif de la réalisation protège aussi les
+changements d’accès et le quota de ses inscriptions. Deux confirmations concurrentes ne dépassent
 ni le quota ni la capacité. Rejouer une confirmation ou une annulation conserve
 une seule opération et ses notifications. Une réservation annulée reste consultable ;
 une nouvelle réservation exige une nouvelle intention explicite.
 
 Les créneaux publiés, leurs auteurs et dates de publication/annulation sont conservés.
-Un horaire déjà réservé
-ne se déplace pas silencieusement : annuler puis proposer un remplacement.
+Un horaire déjà réservé ne se déplace pas silencieusement : annuler puis proposer
+un remplacement.
 Une suspension ou réaffectation retire les accès selon S05, sans effacement
 ni restitution commerciale inventée. Le participant annule avant le début du
 créneau ; après le début, il contacte la coordination. Aucun accès au commanditaire
