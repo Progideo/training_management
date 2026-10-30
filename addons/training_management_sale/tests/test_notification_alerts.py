@@ -18,7 +18,16 @@ class TestRequestAlerts(EnrollmentCase):
         self.coordinator.partner_id.email = "manager@example.invalid"
         self.company.write(
             {
-                "training_notification_address": "contact@example.invalid",
+                "training_notification_template_id": self.env["mail.template"]
+                .create(
+                    {
+                        "name": "Fictional notification identity",
+                        "model_id": self.env["ir.model"]._get_id("res.company"),
+                        "email_from": "{{ object.name }} <contact@example.invalid>",
+                        "reply_to": "contact@example.invalid",
+                    }
+                )
+                .id,
                 "training_notification_manager_id": self.coordinator.id,
             }
         )
@@ -61,7 +70,16 @@ class TestRequestAlerts(EnrollmentCase):
         self.coordinator.partner_id.email = "manager@example.invalid"
         self.company.write(
             {
-                "training_notification_address": "contact@example.invalid",
+                "training_notification_template_id": self.env["mail.template"]
+                .create(
+                    {
+                        "name": "Fictional notification identity",
+                        "model_id": self.env["ir.model"]._get_id("res.company"),
+                        "email_from": "{{ object.name }} <contact@example.invalid>",
+                        "reply_to": "contact@example.invalid",
+                    }
+                )
+                .id,
                 "training_notification_manager_id": self.coordinator.id,
             }
         )

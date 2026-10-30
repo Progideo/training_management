@@ -17,7 +17,16 @@ class TestNotificationAlerts(AttendanceCase):
         super().setUp()
         self.company.write(
             {
-                "training_notification_address": "contact@example.invalid",
+                "training_notification_template_id": self.env["mail.template"]
+                .create(
+                    {
+                        "name": "Fictional notification identity",
+                        "model_id": self.env["ir.model"]._get_id("res.company"),
+                        "email_from": "{{ object.name }} <contact@example.invalid>",
+                        "reply_to": "contact@example.invalid",
+                    }
+                )
+                .id,
                 "training_notification_manager_id": self.coordinator.id,
             }
         )
@@ -147,17 +156,41 @@ class TestNotificationAlerts(AttendanceCase):
 
     def test_configuration_rights_cross_company_and_stale_identity(self):
         with self.assertRaises(AccessError):
-            self.company.with_user(self.coordinator).write({"training_notification_address": "other@example.invalid"})
+            self.company.with_user(self.coordinator).write({"training_notification_template_id": False})
         with self.assertRaises(ValidationError):
             self.company.write({"training_notification_manager_id": self.portal.id})
         with self.assertRaises(ValidationError):
-            self.company.write({"training_notification_address": "a@example.invalid,b@example.invalid"})
+            self.company.write({"training_alert_address": "a@example.invalid,b@example.invalid"})
         enrollment = self.opened(self.delivery())
         notice = self.env["training.notification"].search([("enrollment_id", "=", enrollment.id)], limit=1)
-        self.company.training_notification_address = "changed@example.invalid"
+        before = (notice.mail_id.email_from, notice.mail_id.reply_to)
+        self.company.training_notification_template_id.write({"email_from": "changed@example.invalid"})
+        self.assertTrue(notice.mail_id._prepare_outgoing_list())
+        self.assertEqual((notice.mail_id.email_from, notice.mail_id.reply_to), before)
+        self.assertFalse(self.other_company.training_notification_template_id)
+
+    def test_native_template_cannot_add_recipients_or_private_attachments(self):
+        template = self.company.training_notification_template_id
+        attachment = self.env["ir.attachment"].create({"name": "Fictional unwanted", "raw": b"private"})
+        template.write(
+            {
+                "email_to": "unwanted@example.invalid",
+                "email_cc": "unwanted@example.invalid",
+                "attachment_ids": [(6, 0, attachment.ids)],
+                "body_html": "UNWANTED TEMPLATE CONTENT",
+                "reply_to": "reply@example.invalid",
+            }
+        )
+        enrollment = self.opened(self.delivery())
+        notice = self.env["training.notification"].search([("enrollment_id", "=", enrollment.id)], limit=1)
+        self.assertEqual(notice.mail_id.email_to, self.portal.partner_id.email)
+        self.assertEqual(notice.mail_id.reply_to, "reply@example.invalid")
+        self.assertFalse(notice.mail_id.email_cc or notice.mail_id.attachment_ids)
+        self.assertNotIn("UNWANTED", notice.mail_id.body_html)
+        self.assertTrue(notice.mail_id._prepare_outgoing_list())
+        self.portal.active = False
         with self.assertRaises(ValidationError):
             notice.mail_id._prepare_outgoing_list()
-        self.assertFalse(self.other_company.training_notification_address)
 
     def test_no_transport_called_when_generating_alerts(self):
         with patch.object(
@@ -179,7 +212,16 @@ class TestQualityAlerts(QualityCase):
         self.quality.partner_id.email = "reviewer@example.invalid"
         self.company.write(
             {
-                "training_notification_address": "contact@example.invalid",
+                "training_notification_template_id": self.env["mail.template"]
+                .create(
+                    {
+                        "name": "Fictional notification identity",
+                        "model_id": self.env["ir.model"]._get_id("res.company"),
+                        "email_from": "{{ object.name }} <contact@example.invalid>",
+                        "reply_to": "contact@example.invalid",
+                    }
+                )
+                .id,
                 "training_notification_manager_id": self.quality.id,
             }
         )

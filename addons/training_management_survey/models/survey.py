@@ -91,8 +91,6 @@ class Survey(models.Model):
                 and (not math.isfinite(exam.time_limit) or exam.time_limit <= 0)
             ):
                 raise ValidationError(self.env._("Use a positive duration and at least one question."))
-            if not 0 <= exam.scoring_success_min <= 100:
-                raise ValidationError(self.env._("Use a threshold between 0 and 100."))
             if exam.training_feedback_id or (exam.training_evaluation_id and not exam.training_evaluation_id.scored):
                 if any(
                     q.question_type not in ("simple_choice", "multiple_choice", "char_box", "text_box")

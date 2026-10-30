@@ -684,3 +684,13 @@ Phase 1 : réussir la recette du socle R01 à R09 et les cas nominaux et limites
 Phase 2 : réussir P09 à P14 et P16 (P15 annulé) et les régressions ciblées sur accès, inscription, facturation, planning, évaluations et notifications. Tester en particulier capacités et quotas concurrents, consentements, désabonnement et cohérence des devises. La livraison de la phase 2 ne déclenche pas automatiquement P17 à P20.
 
 Suite : consigner la décision de validation de chaque fonctionnalité P17 à P20, puis finaliser sa conception et sa recette avant réalisation. Les tests décrits dans cette spécification restent à exécuter sur la solution retenue.
+
+## Complément validé — règles natives, 30 octobre 2026
+
+Les sept simplifications du [complément natif](../native-rules-followup.md)
+s’appliquent à COM02/COM03, CAT01 et NOT01 : lignes commerciales sans droit
+pédagogique et corrections administratives selon Odoo, langue de consultation
+native, seuil Survey natif, sélection fiscale native sur l’adresse retenue par
+l’extension facultative et identité des notifications par modèles de courriel.
+Versions, quotas, bénéficiaires et confidentialité restent protégés. Les historiques
+ne sont pas recalculés ; aucun transport ni déploiement n’est activé par la mise à jour.

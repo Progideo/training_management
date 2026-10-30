@@ -71,6 +71,9 @@ Le parcours COM02/COM03 part de la V2 `367bfff`, conserve les colonnes et lignes
 historiques métier, commandes, factures, écritures, paiements, rapprochements,
 pièces et audits bancaires après deux mises à jour ; il vérifie également le
 marqueur de confidentialité et la désactivation de l’ancien assistant.
+Le parcours `native_rules` part de #103 (`f8c4591`) et compare les documents,
+PDF, habilitations et courriels après deux mises à jour ; il vérifie la migration
+des identités vers les modèles natifs et des anciens critères fiscaux.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.
@@ -105,7 +108,7 @@ Aucun accès OVH, secret ou jeu de données réel n’est utilisé.
 
 Onze contrôles sont visibles : qualité, huit configurations, migrations et verdict.
 Les artefacts comprennent un dossier par configuration et un artefact de migration
-avec les journaux de chacun des 22 parcours. Ils sont publiés même après échec.
+avec les journaux de chacun des 23 parcours. Ils sont publiés même après échec.
 
 [check_results.py](../tests/ci/check_results.py) refuse les prérequis échoués,
 annulés, exclus ou manquants. Il vérifie chaque configuration, un résultat Odoo

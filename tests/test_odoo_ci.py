@@ -82,7 +82,7 @@ class Coverage(unittest.TestCase):
                 self.assertIn("assert after.pop(column) is None", path.read_text())
             else:
                 self.assertEqual(path.read_text(), original(name))
-        self.assertEqual(len(PLAN["migrations"]), 22)
+        self.assertEqual(len(PLAN["migrations"]), 23)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
         base = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]
@@ -95,8 +95,8 @@ class Coverage(unittest.TestCase):
         for entry in PLAN["migrations"]:
             if entry["id"] in base:
                 expected = [step["step"] for step in base[entry["id"]]]
-            elif entry["id"] == "native_commercial":
-                self.assertEqual(entry["script"], "tests/ci/run_native_commercial.sh")
+            elif entry["id"] in ("native_commercial", "native_rules"):
+                self.assertEqual(entry["script"], f"tests/ci/run_{entry['id']}.sh")
                 expected = [
                     "baseline",
                     "catalogue_prepare",

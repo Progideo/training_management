@@ -67,7 +67,8 @@ inscriptions et références de parcours ; aucun second registre de progression.
 
 1. Préparer un devis individuel complet, puis un devis de groupe limité à
    certaines formations ; vérifier produits, versions, prix, devise et PDF.
-2. Négocier les montants, confirmer puis refuser leur modification directe.
+2. Négocier les montants, confirmer puis tester les remises natives et les corrections
+   administratives ; refuser la modification de la composition pédagogique.
    Tester facture, acompte et avoir natifs sans paiement ni envoi réel.
 3. Pour deux bénéficiaires et deux formations, attribuer deux places par étape,
    puis refuser une troisième place ou un troisième bénéficiaire distinct.

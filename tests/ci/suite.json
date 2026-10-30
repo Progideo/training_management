@@ -506,6 +506,23 @@
         "repeat_upgrade",
         "repeat_preserved"
       ]
+    },
+    {
+      "id": "native_rules",
+      "script": "tests/ci/run_native_rules.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "exact_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "exact_preserved",
+        "repeat_upgrade",
+        "repeat_preserved"
+      ]
     }
   ],
   "relocated_steps": {

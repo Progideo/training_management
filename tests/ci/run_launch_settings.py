@@ -32,7 +32,14 @@ env.cr.commit()
 """,
         )
         checked(
-            database.odoo("-i", "l10n_ma,sale_invoice_address_fiscal", "--without-demo", "--stop-after-init"),
+            database.odoo(
+                "-i",
+                "l10n_ma,sale_invoice_address_fiscal",
+                "--without-demo",
+                "--stop-after-init",
+                "--test-enable",
+                "--test-tags=/sale_invoice_address_fiscal",
+            ),
             folder / "localization.log",
         )
         profile = json.loads((ROOT / "deployment/launch-settings.example.json").read_text())

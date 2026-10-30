@@ -53,7 +53,7 @@ def _export_sales(env, company, source_tax, profile):
     if position._name != "account.fiscal.position" or position.company_id != company:
         raise ValueError("Export fiscal position must belong to the company")
     position.write(
-        {"name": profile["name"], "auto_apply": False, "vat_required": False, "note": profile["invoice_note"]}
+        {"name": profile["name"], "auto_apply": True, "vat_required": False, "note": profile["invoice_note"]}
     )
     key = f"launch_settings.company_{company.id}_export_sales_tax"
     tax = env.ref(key, raise_if_not_found=False)
@@ -85,6 +85,15 @@ def _export_sales(env, company, source_tax, profile):
         }
     )
     position.tax_ids = tax
+    # Native geographical matching, evaluated against the opted-in billing address.
+    key = f"launch_settings.company_{company.id}_export_countries"
+    countries = env["res.country"].search([("id", "!=", company.account_fiscal_country_id.id)])
+    group_countries = env.ref(key, raise_if_not_found=False)
+    if not group_countries:
+        group_countries = env["res.country.group"].create({"name": f"Export sales — {company.name}"})
+        _bind(env, key, group_countries)
+    group_countries.country_ids = countries
+    position.write({"country_group_id": group_countries.id, "country_id": False})
     if not company.domestic_fiscal_position_id:
         raise ValueError("Native domestic fiscal position is required")
     company.write({"sale_export_fiscal_position_id": position.id, "sale_fiscal_by_invoice_address": True})
@@ -264,8 +273,27 @@ def apply_notifications(env, profile):
     manager = env["res.users"].search([("login", "=", profile["manager_login"])], limit=1)
     if not manager:
         raise ValueError("Alert manager not found")
+    key = f"launch_settings.company_{company.id}_notification_identity"
+    template = company.training_notification_template_id or env.ref(key, raise_if_not_found=False)
+    identity = {
+        "email_from": profile["notification_address"],
+        "reply_to": profile.get("reply_to", profile["notification_address"]),
+    }
+    if not template:
+        template = env["mail.template"].create(
+            {
+                "name": f"Training notifications — {company.name}",
+                "model_id": env["ir.model"]._get_id("res.company"),
+                **identity,
+            }
+        )
+        _bind(env, key, template)
+    elif template.model != "res.company":
+        raise ValueError("Notification identity template must target companies")
+    elif any(template[field] != value for field, value in identity.items()):
+        template.write(identity)
     values = {
-        "training_notification_address": profile["notification_address"],
+        "training_notification_template_id": template.id,
         "training_notification_manager_id": manager.id,
         "training_alert_address": profile["manager_alert_address"],
     }

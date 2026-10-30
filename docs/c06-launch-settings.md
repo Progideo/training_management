@@ -3,7 +3,7 @@
 > Portée : profils optionnels d’exploitation du premier organisme. Selon la
 > [décision #102](native-commercial-accounting.md), ils ne sont ni une dépendance
 > ni une politique obligatoire du module générique. L’extension séparée
-> `sale_invoice_address_fiscal` reste facultative et inchangée.
+> `sale_invoice_address_fiscal` reste facultative ; son évolution est décrite dans le [complément natif](native-rules-followup.md).
 
 
 Référence : [C06 #10](https://github.com/Progideo/training_management/issues/10).
@@ -52,13 +52,12 @@ ne doivent pas écraser leurs choix.
 
 ## TVA suivant l’adresse de facturation
 
-Le standard de cette version choisit la position fiscale selon la livraison.
-L’addon optionnel `sale_invoice_address_fiscal` permet d’activer, société par
-société, une politique commerciale suivant le pays de facturation : pays fiscal
-local → position domestique native ; autre pays renseigné → position export
-configurée ; pays absent → position domestique, jamais une exonération implicite.
-Cette règle concerne les ventes, y compris les factures directes et avoirs ; les
-achats et sociétés sans activation conservent leur sélection native.
+Le standard de cette version tient compte de la livraison. L’extension optionnelle
+permet de choisir l’adresse de facturation, puis utilise le sélecteur natif :
+positions manuelles prioritaires, critères automatiques et ordre de priorité.
+Sans activation, les ventes utilisent leur adresse native ; les achats gardent
+le sélecteur natif. Les critères automatiques configurés peuvent donc s’appliquer
+aux achats également et doivent être vérifiés avant déploiement.
 
 Le profil `export_sales` crée une position dédiée et une taxe de vente à 0 % qui
 remplace la taxe de services du profil. Il ajoute la mention validée aux rapports
@@ -97,6 +96,10 @@ profil et vérifier Maroc/MAD et étranger/EUR, puis le refus de Maroc/EUR et
 Les anciens documents de recette restent conservés ; une combinaison désormais
 interdite ne pourra plus être confirmée ou comptabilisée. Aucun montant ni prix
 n’est converti automatiquement. Exclure les documents fictifs de la production.
+
+La sélection fiscale et le recalcul suivent désormais le [complément natif](native-rules-followup.md) :
+configurer les critères automatiques, conserver la priorité manuelle et vérifier
+les achats. L’ancien champ de position export devient historique.
 
 ## Coordonnées de virement sur les PDF
 
@@ -191,13 +194,12 @@ transaction ; les réglages restent disponibles pour le second passage.
 
 ## Notifications de formation
 
-La société configure une adresse commune d’expédition et de réponse, le
-responsable interne et, si nécessaire, sa boîte d’alerte distincte de son compte.
-Ces champs administrateur n’activent aucun transport ni tâche automatique.
-Appliquer `apply_notifications(env, profile)` depuis
-[launch_settings.py](../deployment/launch_settings.py), avec un profil privé
-fondé sur [l’exemple fictif](../deployment/notification-settings.example.json).
-Vérifier la cible et rejouer avant validation de la transaction.
+La société sélectionne un modèle de courriel natif pour l’expéditeur et la réponse,
+ainsi que le responsable interne et, si nécessaire, sa boîte d’alerte distincte.
+Ces réglages n’activent aucun transport ni tâche automatique. `apply_notifications`
+configure le modèle natif depuis le profil privé ; son rejeu conserve la même référence.
+La [mise à jour des identités](native-rules-followup.md) conserve les anciennes
+adresses et les courriels préparés. Les habilitations sont toujours recontrôlées.
 
 Les notifications d’accès suivent les opérations réellement enregistrées, sans
 rouvrir les accès. Les convocations restent une action explicite. Les alertes
@@ -208,7 +210,7 @@ adressée à son tuteur, sans alerte au responsable sur son contenu.
 
 Les journaux empêchent les doublons et revérifient les destinataires avant
 transport. Les messages ne contiennent ni résultat individuel ni support privé.
-Un changement d’affectation, de droit ou d’adresse peut bloquer une ancienne
+Un changement d’affectation, de droit ou d’adresse du destinataire peut bloquer une ancienne
 file : la revoir, sans réécrire ni réexpédier les historiques. Le journal des
 alertes est limité à son destinataire habilité. Les envois et automatismes restent
 neutralisés sur dev ; authentification et délivrabilité se vérifient séparément

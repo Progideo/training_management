@@ -98,3 +98,23 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         other.action_publish()
         self.authenticate(None, None)
         self.assertEqual(self.url_open(f"/formations/{other.id}").status_code, 404)
+
+    def test_catalogue_uses_current_language_without_replacing_contract_pdf(self):
+        # Controller projection must honor a language already chosen by native routing,
+        # with and without the optional Website addon.
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from odoo.addons.training_management.controllers import public_catalogue
+
+        self.env["res.lang"]._activate_lang("fr_FR")
+        program = self.new_program(public_catalogue=True, title="English catalogue title")
+        program.with_context(lang="fr_FR").title = "Titre français du catalogue"
+        program.action_validate()
+        program.action_publish()
+        raw = bytes(program.pdf_attachment_id.raw)
+        for language, title in (("en_US", "English catalogue title"), ("fr_FR", "Titre français du catalogue")):
+            current = SimpleNamespace(env=self.env(context={**self.env.context, "lang": language}), website=False)
+            with patch.object(public_catalogue, "request", current):
+                projected = public_catalogue.TrainingPublicCatalogue._program(program.id)
+                self.assertEqual(projected.title, title)
+                self.assertEqual(bytes(projected.pdf_attachment_id.raw), raw)

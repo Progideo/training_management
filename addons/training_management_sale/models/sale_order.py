@@ -24,6 +24,7 @@ class SaleOrder(models.Model):
     training_requested_currency_id = fields.Many2one(
         "res.currency",
         string="Requested Currency",
+        tracking=True,
         ondelete="restrict",
         copy=True,
     )
@@ -32,6 +33,7 @@ class SaleOrder(models.Model):
         ondelete="restrict",
         check_company=True,
         copy=True,
+        tracking=True,
         groups="base.group_user",
         help="Person or organisation ordering the training; it can differ from the customer.",
     )
@@ -41,6 +43,7 @@ class SaleOrder(models.Model):
         ondelete="restrict",
         check_company=True,
         copy=True,
+        tracking=True,
         groups="base.group_user",
         help="Planned payer only; this does not change the invoice debtor or grant access.",
     )
@@ -50,6 +53,7 @@ class SaleOrder(models.Model):
         ondelete="restrict",
         check_company=True,
         copy=True,
+        tracking=True,
         groups="base.group_user",
         help="Contact for commercial administration, without automatic document access.",
     )
@@ -88,10 +92,6 @@ class SaleOrder(models.Model):
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind",
             "training_requested_program_id",
-            "training_requested_currency_id",
-            "training_sponsor_id",
-            "training_expected_payer_id",
-            "training_admin_contact_id",
         }:
             raise ValidationError(self.env._("Revise the training offer instead of changing its confirmed request."))
         with self.env.cr.savepoint():

@@ -73,7 +73,7 @@ Les empreintes ci-dessus restent celles de l’import initial. Empreinte courant
 SHA-256 de la spécification amendée :
 
 ```text
-a6dbce56721dd057cd1f709777c15d1ac4d436852ef05db2a67eafe18f91753e  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+94ddfdfe80523bf8f42a25e3f5f1338c08d0fe9cdaf05500036fb3612a90372d  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments
@@ -82,6 +82,7 @@ a6dbce56721dd057cd1f709777c15d1ac4d436852ef05db2a67eafe18f91753e  docs/reference
 | --- | --- |
 | S01 — catalogue standard | [development-readiness.md](development-readiness.md), [native-coverage.md](native-coverage.md) |
 | COM02/COM03 — règles natives, révision du 30 octobre 2026 | [native-commercial-accounting.md](native-commercial-accounting.md) |
+| Complément — sept règles natives | [native-rules-followup.md](native-rules-followup.md) |
 | S02 — circuit commercial historique | [s02-native-coverage.md](s02-native-coverage.md), [s02-crm-quotation.md](s02-crm-quotation.md) |
 | S03 — réalisations, places, inscriptions, accès | [s03-enrollment-access.md](s03-enrollment-access.md) |
 | S03.1 — corrections de revue | [s03-1-review-fixes.md](s03-1-review-fixes.md), cadrage [s03-1-corrections.md](s03-1-corrections.md) |
