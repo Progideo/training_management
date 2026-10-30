@@ -13,8 +13,7 @@ from odoo.tests import HttpCase, new_test_user, tagged
 from odoo.addons.training_management.tests.test_catalogue import CatalogueCase
 
 
-@tagged("post_install", "-at_install")
-class TestOrientation(CatalogueCase, HttpCase):
+class OrientationCase(CatalogueCase):
     def diagnostic(self, **values):
         survey = (
             self.env["survey.survey"]
@@ -69,6 +68,9 @@ class TestOrientation(CatalogueCase, HttpCase):
         answers = {str(q.id): str(q.suggested_answer_ids[0].id) for q in questions}
         return survey, questions, rule, answers
 
+
+@tagged("post_install", "-at_install")
+class TestOrientation(OrientationCase, HttpCase):
     def test_rules_complete_missing_foreign_and_ambiguous(self):
         survey, questions, rule, answers = self.diagnostic()
         other = rule.copy({"level": "Avancé"})

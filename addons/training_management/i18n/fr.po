@@ -4634,6 +4634,7 @@ msgstr "Un message ne peut pas être réaffecté à un travail pédagogique priv
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__decision__accepted
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Accepted"
 msgstr "Accepté"
 
@@ -4692,6 +4693,7 @@ msgstr "Affectez un tuteur actif autorisé pour cette société exploitante."
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_entry__decision__changes
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_progress__state__changes
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Changes Requested"
 msgstr "À reprendre"
 
@@ -4714,6 +4716,7 @@ msgstr "Choisissez une référence PDF de cette réalisation."
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Choose a status"
 msgstr "Choisir un statut"
 
@@ -4751,6 +4754,7 @@ msgstr "Correction"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Correction or validation"
 msgstr "Correction ou validation"
 
@@ -4846,6 +4850,7 @@ msgstr "Remise d’exercice"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Exercise submission"
 msgstr "Remise d’exercice"
 
@@ -5096,6 +5101,7 @@ msgstr "Réponse privée"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Private file (optional)"
 msgstr "Fichier privé (facultatif)"
 
@@ -5209,11 +5215,13 @@ msgstr "Activités obligatoires réalisées"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Review status"
 msgstr "Statut de la correction"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Save correction"
 msgstr "Enregistrer la correction"
 
@@ -5248,6 +5256,7 @@ msgstr ""
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_work_form
 msgid "Submit a new version"
 msgstr "Remettre une nouvelle version"
 
@@ -13651,3 +13660,23 @@ msgstr "État de distribution"
 #: code:addons/training_management/models/training_session_alert.py:0
 msgid "Your account needs a single valid email address for date alerts."
 msgstr "Votre compte doit comporter une seule adresse électronique valide pour les alertes de dates."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Your submission has been saved."
+msgstr "Votre remise a bien été enregistrée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "Awaiting the tutor's assessment."
+msgstr "En attente d’évaluation par le formateur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "View my submission"
+msgstr "Consulter ma remise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
+msgid "View and assess the latest submission"
+msgstr "Consulter et évaluer la dernière remise"

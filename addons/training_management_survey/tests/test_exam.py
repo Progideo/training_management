@@ -639,6 +639,38 @@ class TestMockExamHttp(ExamCase, HttpCase):
         self.assertEqual(
             self.env["survey.user_input"].sudo().search_count([("training_enrollment_id", "=", enrollment.id)]), 2
         )
+        current = (
+            self.env["survey.user_input"]
+            .sudo()
+            .search([("training_enrollment_id", "=", enrollment.id), ("state", "!=", "done")])
+        )
+        deadline = current.deadline
+        resumed = self.url_open(start_url, data={"csrf_token": csrf})
+        self.assertEqual(resumed.url, second.url)
+        current.invalidate_recordset()
+        self.assertEqual(current.deadline, deadline)
+        self.url_open(
+            f"/my/training-exams/{current.id}/save",
+            data={
+                "csrf_token": csrf,
+                "question": q1.id,
+                "choices": json.dumps(q1.suggested_answer_ids.filtered("is_correct").ids),
+            },
+        )
+        # No GET/status/cron closes this expired attempt before the new-start POST.
+        with patch("odoo.fields.Datetime.now", return_value=deadline):
+            restarted = self.url_open(start_url, data={"csrf_token": csrf}, allow_redirects=False)
+        self.assertEqual(restarted.status_code, 303)
+        current.invalidate_recordset()
+        self.assertEqual(current.state, "done")
+        self.assertEqual(current.end_datetime, deadline)
+        self.assertEqual(current.scoring_total, q1.answer_score)
+        self.assertTrue(current.user_input_line_ids)
+        self.assertEqual(attempt.scoring_percentage, 100)
+        all_attempts = self.env["survey.user_input"].sudo().search([("training_enrollment_id", "=", enrollment.id)])
+        self.assertEqual(len(all_attempts), 3)
+        self.assertEqual(len(all_attempts.filtered(lambda a: a.state != "done")), 1)
+        self.assertNotEqual(restarted.headers["Location"], f"/my/training-exams/{current.id}")
         token = limited_field_access_token(q1, "training_explanation", scope="binary")
         self.assertEqual(
             self.url_open(

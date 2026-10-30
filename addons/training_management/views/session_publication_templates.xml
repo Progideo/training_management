@@ -46,6 +46,7 @@
                 <form t-if="row['active']" method="post" t-att-action="'/my/training-date-alerts/%s/unsubscribe' % row['id']">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><button class="btn btn-outline-secondary">Me désabonner</button>
                 </form>
+                <a t-if="not row['active'] and row['subscribe_url']" t-att-href="row['subscribe_url']" class="btn btn-outline-primary">Me réabonner</a>
             </li></ul>
             <a class="d-inline-block mt-3" href="/formations">Catalogue</a>
         </main></t>

@@ -12,19 +12,249 @@ from uuid import uuid4
 from lxml import html
 from werkzeug.datastructures import FileStorage
 
-from odoo import Command
+from odoo import Command, fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
 from odoo.tools.binary import BinaryBytes
 from odoo.tools.pdf import PdfFileReader
+from odoo.tools.translate import load_language
 from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
+from odoo.addons.training_management.tests.test_path import PathCase
+from odoo.addons.training_management.tests.test_project import ProjectCase
+from odoo.addons.training_management.tests.test_tutoring import TutoringCase
 
 from .test_exam import ExamCase
+from .test_orientation import OrientationCase
 
 
 @tagged("post_install", "-at_install")
 class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
     """One shared fixture; discovered by the existing cumulative module suite."""
+
+    project_service = ProjectCase.project_service
+    submit_project = ProjectCase.submit_project
+    review_project = ProjectCase.review_project
+
+    def test_v2_french_website_page_titles_follow_the_visible_language(self):
+        if not self.env["ir.module.module"].search_count([("name", "=", "website"), ("state", "=", "installed")]):
+            self.skipTest("Website owns the additional page title")
+        load_language(self.cr, "fr_FR")
+        french = self.env.ref("base.lang_fr")
+        self.env["website"].search([]).write({"language_ids": [Command.set(french.ids)], "default_lang_id": french.id})
+        self.portal.lang = "fr_FR"
+        self.authenticate(self.portal.login, self.portal.login)
+        survey, _questions, _rule, _answers = OrientationCase.diagnostic(self)
+        survey.action_orientation_publish()
+        for route, title in (
+            ("/formations", "Formations"),
+            ("/formations/orientation", "Diagnostic d’orientation"),
+            (f"/formations/orientation/{survey.id}", "Diagnostic d’orientation"),
+            ("/my/trainings", "Mes formations"),
+            ("/my/training-paths", "Mes parcours"),
+            ("/my/training-practice", "Mes plans de mise en pratique"),
+            ("/my/training-bookings", "Réservations de tutorat"),
+            ("/my/training-publications", "Demandes de publication"),
+        ):
+            response = self.url_open(route)
+            self.assertEqual(response.status_code, 200, route)
+            self.assertIn(title, html.fromstring(response.text).findtext(".//title"), route)
+
+    def test_v2_orientation_sale_capacity_and_voluntary_alert_withdrawal(self):
+        """P10 -> S02/S03 -> P16: advice never grants admission or consent."""
+        survey, _questions, rule, answers = OrientationCase.diagnostic(self)
+        rule.write({"level": False, "program_id": self.public_program.id})
+        survey.action_orientation_publish()
+        models = ("survey.user_input", "training.enrollment", "training.session.alert.subscription")
+        counts = {model: self.env[model].search_count([]) for model in models}
+        self.assertEqual(
+            survey._orientation_result(answers)["programs"], [(self.public_program.id, self.public_program.title)]
+        )
+        self.assertEqual(counts, {model: self.env[model].search_count([]) for model in models})
+        _lead, order = self._commerce(count=1)
+        delivery = self.delivery(
+            program_id=self.public_program.id,
+            kind="session",
+            capacity=1,
+            start_at=fields.Datetime.now() + timedelta(days=10),
+            end_at=fields.Datetime.now() + timedelta(days=11),
+        )
+        delivery.action_publish_session(reason="Fictional public offer approved")
+        allocation = self._allocation(order, delivery, quantity=1)
+        self.assertEqual(delivery._session_public_row()["status"], "full")
+        self.assertFalse(delivery._session_public_row()["guaranteed"])
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.lot(delivery, quantity=1, source_reference="FICTIONAL-OVER-CAPACITY")
+        self.assertFalse(delivery.enrollment_ids)
+        self.assertFalse(self.env["training.session.alert.subscription"].search([]))
+        self.assertEqual(allocation.sale_line_id.order_id, order)
+        self.company.training_session_alert_retention_id = self.retention
+        subscriptions = self.env["training.session.alert.subscription"].with_user(self.portal)
+        definition = subscriptions._definition(self.public_program.sudo())
+        sub = subscriptions._subscribe(self.public_program.sudo(), accepted=True, definition=definition)
+        self.assertEqual(
+            subscriptions._subscribe(self.public_program.sudo(), accepted=True, definition=definition), sub
+        )
+        notices = self.env["training.session.alert.notice"]
+        self.assertFalse(notices.search([("delivery_id", "=", delivery.id)]))
+        new = self.delivery(
+            program_id=self.public_program.id,
+            kind="session",
+            start_at=delivery.start_at + timedelta(days=7),
+            end_at=delivery.end_at + timedelta(days=7),
+        )
+        new.action_publish_session(reason="Fictional new dates")
+        notice = notices.search([("delivery_id", "=", new.id)])
+        self.assertEqual(len(notice), 1)
+        self.assertTrue(notice._authorized())
+        self.assertTrue(notice.mail_id._prepare_outgoing_list())
+        self.assertFalse(notice.mail_id.attachment_ids)
+        new.action_guarantee_session(reason="Fictional explicit commitment")
+        new.write({"timezone": "America/Montreal"})
+        self.assertFalse(new._session_public_row())
+        self.assertFalse(new.session_guaranteed)
+        new.action_publish_session(reason="Fictional timezone reviewed")
+        self.assertEqual(notices.search([("delivery_id", "=", new.id)]), notice)
+        sub._unsubscribe()
+        sub._unsubscribe()
+        with (
+            patch.object(
+                type(self.env["ir.mail_server"]), "send_email", side_effect=AssertionError("External SMTP forbidden")
+            ) as transport,
+            patch.object(type(self.env["ir.mail_server"]), "_disable_send", return_value=False),
+        ):
+            notice.mail_id._send(smtp_session=object())
+            self.assertFalse(transport.called)
+        self.assertEqual(notice.mail_id.state, "exception")
+        self.assertEqual(order.currency_id, self.mad)
+        self.assertFalse(new.enrollment_ids)
+
+    def test_v2_project_revision_unlocks_path_tutoring_revocation_preserves_evidence(self):
+        """P12 -> P09 -> P13: one learning source, live access and transport checks."""
+        activity, enrollment, _grant = ProjectCase.setup_project(self)
+        path = PathCase.path(self)
+        path.action_validate()
+        first = PathCase.reference(self, path.step_ids[0], enrollment)
+        second_enrollment = self.admitted(self.delivery(program_id=path.step_ids[1].program_id.id))
+        second = PathCase.reference(self, path.step_ids[1], second_enrollment)
+        self.assertTrue(second.blocked)
+        second_enrollment.action_authorize(reason="Fictional commercial approval only")
+        with self.assertRaises(ValidationError):
+            second_enrollment.action_open_access(reason="Fictional premature opening")
+        original = self.submit_project(activity, enrollment)
+        changes = self.review_project(activity, enrollment, "changes")
+        self.assertFalse(first.completed)
+        revised = self.submit_project(activity, enrollment)
+        accepted = self.review_project(activity, enrollment)
+        self.assertEqual(revised.parent_id, original)
+        self.assertEqual(changes.project_snapshot["rubric"], accepted.project_snapshot["rubric"])
+        self.assertTrue(first.completed)
+        self.assertFalse(second.blocked)
+        second_enrollment.action_authorize(reason="Fictional explicit approval")
+        second_enrollment.action_open_access(reason="Fictional manual opening")
+        rows = self.env["training.path.portal"].with_user(self.portal)._rows(path.id)
+        self.assertEqual(rows[0]["completed"], 1)
+        self.assertTrue(rows[0]["steps"][1]["url"])
+        entitlement = (
+            self.env["training.tutoring.entitlement"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "enrollment_id": enrollment.id,
+                    "included_count": 1,
+                    "service_reference": "Fictional integrated V2 agreement",
+                    "retention_id": self.retention.id,
+                }
+            )
+        )
+        slot = TutoringCase.slot(self, enrollment.delivery_id)
+        slot.action_publish()
+        booking = TutoringCase.reserve(self, entitlement, slot)
+        self.assertEqual(TutoringCase.reserve(self, entitlement, slot), booking)
+        self.assertEqual(entitlement.used_count, 1)
+        self.assertEqual(slot.occupied_count, 1)
+        notices = self.env["training.tutoring.notice"].search([("booking_id", "=", booking.id)])
+        self.assertEqual(len(notices), 2)
+        for notice in notices:
+            self.assertTrue(notice._authorized())
+        digest, content = accepted.project_digest, original.data.content
+        enrollment.action_revoke_access(reason="Fictional explicit withdrawal")
+        for notice in notices.filtered(lambda row: row.recipient_id == self.portal):
+            self.assertFalse(notice._authorized())
+            with self.assertRaises(ValidationError):
+                notice.mail_id._prepare_outgoing_list()
+        # The tutor remains assigned independently of participant access.
+        enrollment.delivery_id.learning_tutor_id = False
+        self.assertFalse(any(notice._authorized() for notice in notices))
+        with self.assertRaises(AccessError):
+            self.project_service()._post(
+                enrollment.id, "submission", activity_id=activity.id, request_key=str(uuid4()), body="late"
+            )
+        self.assertEqual((accepted.project_digest, original.data.content), (digest, content))
+        self.assertEqual(len(enrollment.learning_progress_ids), 1)
+        self.assertFalse(self.env["training.path.portal"].with_user(self.representative)._rows(path.id))
+
+    def test_v2_attendance_practice_review_and_private_evidence_stay_separate(self):
+        """S07 -> P11/P14: participation supports a review, private work never does."""
+        self.program = self.public_program
+        delivery, session, enrollment = self.scheduled()
+        delivery.learning_tutor_id = self.portal_b
+        allocation = self.lot(delivery, quantity=1)
+        self._grant(allocation)
+        presence = self.declare(session, enrollment)
+        self.review(presence)
+        self.assertGreater(presence.minutes, 0)
+        delivery.action_start()
+        delivery.action_deliver()
+        action = (
+            self.env["training.practice.action"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "PRIVATE integrated action",
+                    "enrollment_id": enrollment.id,
+                    "completed_on": fields.Date.today(),
+                    "horizon": "30",
+                    "trainer_feedback": True,
+                    "service_reference": "Fictional integrated agreement",
+                    "retention_id": self.retention.id,
+                }
+            )
+        )
+        action.with_user(self.portal).sudo()._submit("participant", "PRIVATE evidence", self.pdf, "private.pdf")
+        action.with_user(self.portal_b).sudo()._submit("trainer", "PRIVATE feedback")
+        publication = (
+            self.env["training.publication"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "name": "Fictional integrated invitation",
+                    "delivery_id": delivery.id,
+                    "enrollment_id": enrollment.id,
+                    "retention_id": self.retention.id,
+                }
+            )
+        )
+        publication.action_request_authorization()
+        self.assertFalse(publication._public_row())
+        publication.with_user(self.portal).sudo()._consent(
+            definition=publication._definition(), body="Fictional public review", accepted=True
+        )
+        moderator = new_test_user(
+            self.env, login="v2_moderator", groups="training_management.group_training_publication_moderator"
+        )
+        publication.with_user(moderator).write({"moderation_reason": "Fictional exact content and privacy checked"})
+        publication.with_user(moderator).action_publish()
+        public = publication._public_row()
+        self.assertEqual(public["body"], "Fictional public review")
+        self.assertNotIn("PRIVATE", json.dumps(public))
+        self.assertNotIn(self.portal.name, json.dumps(public))
+        self.assertFalse(self.env["training.practice.summary"].with_user(self.representative)._client_rows(allocation))
+        publication.with_user(self.portal).sudo()._withdraw()
+        publication.with_user(self.portal).sudo()._withdraw()
+        self.assertFalse(publication._public_row())
+        self.assertEqual(action.state, "done")
+        self.assertEqual(len(action.entry_ids), 2)
+        self.assertEqual(action.entry_ids[:1].data.content, self.pdf)
 
     @classmethod
     def setUpClass(cls):

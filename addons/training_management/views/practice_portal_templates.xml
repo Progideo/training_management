@@ -6,7 +6,7 @@
         <xpath expr="//h1" position="after"><p><a href="/my/training-practice">My practice plans</a></p></xpath>
     </template>
     <template id="practice_portal" name="My Practice Plans">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="My practice plans">
             <main class="container py-4">
                 <a href="/my/trainings">My training</a><h1>My practice plans</h1>
                 <p>Optional evidence and trainer comments remain private. Your employer receives only a separately agreed and authorized summary.</p>

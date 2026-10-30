@@ -2,9 +2,17 @@
     <template id="public_journeys" inherit_id="training_management.public_catalogue">
         <xpath expr="//h1" position="after">
             <section class="my-4" aria-label="Choisir mon parcours">
-                <h2>Former mon équipe</h2><p>Un projet intraentreprise, une adaptation ou une formation sur mesure.</p><a class="btn btn-primary" href="/formations?kind=group">Choisir pour mon équipe</a>
-                <h2 class="mt-3">Me former</h2><a class="btn btn-outline-primary" href="/formations?kind=individual">Choisir pour moi</a>
-                <a class="d-block mt-3" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
+                <t t-if="not kind">
+                    <h2>Former mon équipe</h2><p>Un projet intraentreprise, une adaptation ou une formation sur mesure.</p><a class="btn btn-primary" href="/formations?kind=group">Choisir pour mon équipe</a>
+                    <h2 class="mt-3">Me former</h2><a class="btn btn-outline-primary" href="/formations?kind=individual">Choisir pour moi</a>
+                </t>
+                <t t-else="">
+                    <h2 t-if="kind == 'individual'">Votre formation individuelle</h2>
+                    <h2 t-else="">La formation de votre équipe</h2>
+                    <p>Choisissez une formation ci-dessous pour consulter son programme et demander un devis.</p>
+                    <a href="/formations">Changer de parcours</a>
+                </t>
+                <a t-if="kind != 'individual'" class="d-block mt-3" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
             </section>
         </xpath>
         <xpath expr="//ul/li/a" position="attributes"><attribute name="t-att-href">'/formations/%s?kind=%s' % (p['id'], kind)</attribute></xpath>
@@ -12,8 +20,8 @@
     </template>
     <template id="public_programme_actions" inherit_id="training_management.public_programme">
         <xpath expr="//div[@id='training_request_actions']" position="inside">
-            <a t-if="kind != 'individual'" class="btn btn-primary me-2 mb-3" t-att-href="'/formations/demande?kind=group&amp;program=%s' % program['id']">Former mon équipe</a>
-            <a t-if="kind != 'group'" class="btn btn-outline-primary mb-3" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % program['id']">Me former</a>
+            <a t-if="kind != 'individual'" class="btn btn-primary me-2 mb-3" t-att-href="'/formations/demande?kind=group&amp;program=%s' % program['id']">Demander un devis pour mon équipe</a>
+            <a t-if="kind != 'group'" class="btn btn-outline-primary mb-3" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % program['id']">Demander un devis individuel</a>
         </xpath>
     </template>
     <template id="public_programme_catalogue_link" inherit_id="training_management.public_programme">

@@ -105,6 +105,10 @@ class SessionPublicationPortal(http.Controller):
                 [("owner_id", "=", user.id), ("owner_partner_id", "=", user.partner_id.id)], order="id desc", limit=200
             )
         )
+        public_programs = {
+            (program.company_id.id, program.course_id.id): program.id
+            for program in TrainingPublicCatalogue._programs().sorted("id")
+        }
         return self._private(
             request.render(
                 "training_management.session_date_subscriptions",
@@ -115,6 +119,11 @@ class SessionPublicationPortal(http.Controller):
                             "title": row.public_title,
                             "operator": row.company_id.name,
                             "active": row.active_consent,
+                            "subscribe_url": (
+                                "/formations/%s/date-alert" % public_programs[(row.company_id.id, row.course_id.id)]
+                                if (row.company_id.id, row.course_id.id) in public_programs
+                                else False
+                            ),
                         }
                         for row in rows
                     ]

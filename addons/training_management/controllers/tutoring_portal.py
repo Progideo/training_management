@@ -6,7 +6,7 @@ from uuid import uuid4
 from odoo import fields, http
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
-from odoo.tools.misc import format_datetime
+from odoo.tools.misc import format_datetime, formatLang
 
 from .material_portal import TrainingParticipantPortal
 
@@ -102,7 +102,7 @@ class TutoringPortal(http.Controller):
                     "name": slot.name,
                     "start": format_datetime(request.env, slot.start_at, tz=tz),
                     "end": format_datetime(request.env, slot.end_at, tz=tz),
-                    "duration": slot.duration_hours,
+                    "duration": formatLang(request.env, slot.duration_hours, digits=1),
                     "capacity": slot.capacity,
                     "kind": slot.kind,
                     "terms": slot.cancellation_terms,

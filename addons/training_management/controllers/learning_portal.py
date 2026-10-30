@@ -23,7 +23,14 @@ def learning_values(enrollment):
         )
     required = [r for r in rows if not r["optional"]]
     entries = service._entries(enrollment)
+    rows_by_id = {row["id"]: row for row in rows}
     for entry in entries:
+        activity = rows_by_id.get(entry["activity_id"])
+        entry["review_activity"] = (
+            activity
+            if activity and entry["kind"] == "submission" and activity["latest_submission"] == entry["id"]
+            else False
+        )
         entry["key"] = str(uuid4())
         entry["parent_date"] = (
             format_datetime(
@@ -119,7 +126,7 @@ class LearningPortal(http.Controller):
             if kind == "declaration":
                 service._declare(enrollment_id, activity_id)
             else:
-                service._post(
+                entry = service._post(
                     enrollment_id,
                     kind,
                     activity_id=activity_id or False,
@@ -155,4 +162,9 @@ class LearningPortal(http.Controller):
             response.status_code = 400
             return response
         path = "/my/training-tutoring/%s" if tutor else "/my/trainings/%s"
-        return request.redirect(path % enrollment_id, code=303)
+        target = path % enrollment_id
+        if kind == "submission":
+            target += "#learning-activity-%s" % activity_id
+        elif kind == "correction":
+            target += "#learning-entry-%s" % entry.id
+        return request.redirect(target, code=303)

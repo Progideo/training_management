@@ -39,8 +39,9 @@ Le participant ne peut jamais évaluer son propre projet, même en cumul de rôl
 
 Dans **Mes formations**, le participant consulte livrable et grille puis dépose
 texte et/ou fichier (20 Mo maximum). Dans **Mes accompagnements**, l’évaluateur
-choisit un niveau par critère et saisit un retour motivé, puis demande une révision
-ou accepte. La décision reste humaine : aucun seuil numérique implicite.
+consulte la dernière remise et son fichier, puis l’évalue dans le formulaire placé
+juste sous cette réponse. Il choisit un niveau par critère, saisit un retour
+motivé, puis demande une révision ou accepte. La décision reste humaine : aucun seuil numérique implicite.
 Une nouvelle remise référence la précédente ; une décision vise la dernière
 remise. Corriger une décision exige un nouveau retour motivé et conserve les
 précédents. Une nouvelle remise ou demande de révision retire la complétion
