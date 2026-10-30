@@ -20,11 +20,11 @@ class SaleOrder(models.Model):
     )
     training_price_source = fields.Selection(
         [
-            ("pricelist", "Fixed Catalogue Price"),
+            ("pricelist", "Native Pricelist"),
             ("quote", "Price Agreed on Quotation"),
         ],
         copy=True,
-        help="An empty legacy value keeps the fixed catalogue price policy.",
+        help="Commercial origin only; prices and discounts follow native Odoo rules.",
     )
     training_path_usage_ids = fields.One2many(
         "training.path.sale.usage",
@@ -130,12 +130,6 @@ class SaleOrder(models.Model):
                 order.training_request_kind == "individual" and order.training_attendee_count != 1
             ):
                 raise ValidationError(self.env._("Set a positive group size or one individual beneficiary."))
-            if (
-                order.training_requested_currency_id.name not in ("MAD", "EUR")
-                or order.training_requested_currency_id != order.currency_id
-                or order.pricelist_id.currency_id != order.currency_id
-            ):
-                raise ValidationError(self.env._("Choose a pricelist in the requested MAD or EUR currency."))
             if not lines or order.training_path_scope not in ("complete", "selection"):
                 raise ValidationError(self.env._("Select at least one course and the path scope."))
             lines._check_path_step()
@@ -145,7 +139,7 @@ class SaleOrder(models.Model):
                 raise ValidationError(self.env._("A complete path offer must contain every path course exactly once."))
             lines._check_training_program()
             for line in lines:
-                line._check_training_tariff()
+                line._check_training_quantity()
         return True
 
     @api.private
@@ -319,27 +313,6 @@ class SaleOrderLine(models.Model):
             item.order_id.training_agreed_at and (not item.is_downpayment or item.training_program_id) for item in self
         ):
             raise ValidationError(self.env._("Keep accepted training lines and their history."))
-
-    @api.private
-    def _check_training_tariff(self):
-        self.ensure_one()
-        if self.order_id.training_price_source != "quote":
-            return super()._check_training_tariff()
-        expected = (
-            self.order_id.training_attendee_count
-            if self.product_id.product_tmpl_id.training_price_basis == "person"
-            else 1
-        )
-        if (
-            self.product_uom_qty != expected
-            or self.product_uom_id != self.product_id.uom_id
-            or self.price_unit < 0
-            or not 0 <= self.discount <= 100
-        ):
-            raise ValidationError(
-                self.env._("Use the contracted quantity, a non-negative agreed price and a discount from 0 to 100.")
-            )
-        return True
 
 
 class TrainingEnrollment(models.Model):

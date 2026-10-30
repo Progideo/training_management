@@ -3,13 +3,10 @@
         <field name="name">account.payment.register.form.training</field>
         <field name="model">account.payment.register</field>
         <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="active" eval="False"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='communication']" position="after">
-                <field name="training_bank_payment_required" invisible="1"/>
-                <field name="training_bank_reference" string="Bank Transfer Reference" required="training_bank_payment_required" invisible="not training_bank_payment_required"/>
-                <field name="training_bank_verified" required="training_bank_payment_required" invisible="not training_bank_payment_required"/>
-                <field name="training_duplicate_reference_exists" invisible="1"/>
-                <field name="training_duplicate_reference_reason" required="training_bank_payment_required and training_duplicate_reference_exists" invisible="not training_bank_payment_required or not training_duplicate_reference_exists"/>
+            <xpath expr="//field[@name='communication']" position="attributes">
+                <attribute name="name">communication</attribute>
             </xpath>
         </field>
     </record>
@@ -19,11 +16,11 @@
         <field name="inherit_id" ref="account.view_account_payment_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='memo']" position="after">
-                <field name="training_bank_reference" readonly="state != 'draft'"/>
-                <field name="training_bank_verified" readonly="state != 'draft'" invisible="not training_bank_reference"/>
+                <field name="training_bank_reference" readonly="1" invisible="not training_bank_reference"/>
+                <field name="training_bank_verified" readonly="1" invisible="not training_bank_reference"/>
                 <field name="training_bank_verified_by_id" invisible="not training_bank_verified"/>
                 <field name="training_bank_verified_at" invisible="not training_bank_verified"/>
-                <field name="training_duplicate_reference_reason" readonly="state != 'draft'" invisible="not training_bank_reference"/>
+                <field name="training_duplicate_reference_reason" readonly="1" invisible="not training_bank_reference"/>
             </xpath>
         </field>
     </record>

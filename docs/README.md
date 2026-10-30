@@ -73,7 +73,7 @@ Les empreintes ci-dessus restent celles de l’import initial. Empreinte courant
 SHA-256 de la spécification amendée :
 
 ```text
-cdd7c3c72273c382205950912a8fa34310183c17101efb5dacc808bcac72da82  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+5d13c3263cacad5a958515e006cc81121a48b624b3c836b32c6de4198f8504a3  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments
@@ -81,7 +81,8 @@ cdd7c3c72273c382205950912a8fa34310183c17101efb5dacc808bcac72da82  docs/reference
 | Incrément | Page |
 | --- | --- |
 | S01 — catalogue standard | [development-readiness.md](development-readiness.md), [native-coverage.md](native-coverage.md) |
-| S02 — circuit commercial | [s02-native-coverage.md](s02-native-coverage.md), [s02-crm-quotation.md](s02-crm-quotation.md) |
+| COM02/COM03 — règles natives, révision du 30 octobre 2026 | [native-commercial-accounting.md](native-commercial-accounting.md) |
+| S02 — circuit commercial historique | [s02-native-coverage.md](s02-native-coverage.md), [s02-crm-quotation.md](s02-crm-quotation.md) |
 | S03 — réalisations, places, inscriptions, accès | [s03-enrollment-access.md](s03-enrollment-access.md) |
 | S03.1 — corrections de revue | [s03-1-review-fixes.md](s03-1-review-fixes.md), cadrage [s03-1-corrections.md](s03-1-corrections.md) |
 | S04 — besoins, aménagements et séances | [s04-preparation-sessions.md](s04-preparation-sessions.md) |
@@ -146,3 +147,11 @@ réelle. Ces opérations conservent leurs validations explicites respectives.
    suspension de l’audit historique, sans changement des exigences importées.
 4. Relire le diff de la PR : uniquement la documentation et les consignes ; aucun
    changement des licences, scripts ou workflows, aucune donnée de production.
+
+## Révision commerciale et comptable — 30 octobre 2026
+
+La [décision #102](native-commercial-accounting.md) remplace les contraintes
+MAD/EUR et virement manuel dans le module générique. COM02/COM03 et les consignes
+du dépôt sont amendées ; les documents S02 gardent leur provenance historique.
+Les fichiers synchronisés `sources/` et le prompt maître importé restent inchangés ;
+leurs prescriptions commerciales historiques se lisent avec cette décision plus récente.

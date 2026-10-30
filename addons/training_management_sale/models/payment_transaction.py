@@ -1,39 +1,34 @@
-from odoo import api, models
-from odoo.exceptions import ValidationError
+"""Document confidentiality around native transactions; no payment policy."""
+
+from odoo import models
 
 
 class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
 
-    def _check_training_payment_links(self, values):
-        for field_name, model_name in (
-            ("sale_order_ids", "sale.order"),
-            ("invoice_ids", "account.move"),
-        ):
-            if field_name not in values:
-                continue
-            document_ids = self._fields[field_name].convert_to_cache(
-                values[field_name],
-                self,
-            )
-            documents = self.env[model_name].browse(document_ids)
-            if model_name == "sale.order":
-                training_documents = documents.filtered("training_request_kind")
-            else:
-                training_documents = documents._training_sale_invoices()
-            if training_documents:
-                raise ValidationError(
-                    self.env._("Online payment transactions are disabled for training orders and invoices.")
-                )
+    def _training_documents(self):
+        self.ensure_one()
+        return [*self.sale_order_ids, *self.invoice_ids]
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for values in vals_list:
-            self._check_training_payment_links(values)
-        return super().create(vals_list)
+    def _check_training_document_access(self):
+        policy = self.env["training.document.policy"]
+        for transaction in self:
+            for document in transaction._training_documents():
+                policy.with_user(self.env.user)._check_read(document)
 
-    def write(self, vals):
-        if "sale_order_ids" in vals or "invoice_ids" in vals:
-            for transaction in self:
-                transaction._check_training_payment_links(vals)
-        return super().write(vals)
+    def _bus_channels(self):
+        self.ensure_one()
+        documents = self._training_documents()
+        policy = self.env["training.document.policy"]
+        if not any(policy._restricted(document) for document in documents):
+            return super()._bus_channels()
+        # The native status page already listens on its authenticated partner's
+        # private bus. Never broadcast training status through a reusable public
+        # transaction token: revoking a grant must also revoke future updates.
+        partners = policy._partners(documents[0])
+        for document in documents[1:]:
+            partners &= policy._partners(document)
+        for user in self.partner_id.user_ids.filtered(lambda user: not user.share):
+            if all(policy.with_user(user)._can_read(document) for document in documents):
+                partners |= user.partner_id
+        return partners

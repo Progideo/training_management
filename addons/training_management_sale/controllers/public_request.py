@@ -68,6 +68,7 @@ class TrainingPublicRequest(http.Controller):
                     "error": error,
                     "token": token,
                     "programs": [{"id": p.id, "title": p.title, "version": p.version} for p in programs],
+                    "currencies": request.env["res.currency"].sudo().search([]),
                     "countries": [(c.id, c.name) for c in request.env["res.country"].sudo().search([])],
                 },
             )

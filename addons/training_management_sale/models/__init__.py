@@ -14,8 +14,6 @@ from . import mail_template
 from . import account_payment
 from . import account_payment_register
 from . import account_partial_reconcile
-from . import payment_transaction
-from . import payment_link_wizard
 from . import account_journal
 from . import mail_message
 from . import mail_scheduled_message
@@ -30,3 +28,5 @@ from . import training_public_request
 from . import training_company_portal
 
 from . import training_path_sale
+
+from . import payment_transaction

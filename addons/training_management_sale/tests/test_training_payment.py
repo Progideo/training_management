@@ -47,75 +47,32 @@ class TestTrainingPayment(TransactionCase):
             "amount": 10,
             "payment_type": "inbound",
             "partner_type": "customer",
-            "training_bank_reference": " fictional-repeat ",
-            "training_bank_verified": True,
             **extra,
         }
 
     def test_paid_write_create_and_audit_are_guarded(self):
+        # Historical method id retained for the CI inventory; #102 retires bank guards.
         payments = self.env["account.payment"].with_user(self.finance)
-        first = payments.create(self._values())
-        self.assertFalse(first.training_bank_verified_at)
-        first.write({"state": "paid"})
-        self.assertEqual(first.training_bank_reference, "FICTIONAL-REPEAT")
-        self.assertEqual(first.move_id.state, "posted")
-        self.assertEqual(first.training_bank_verified_by_id, self.finance)
-        self.assertTrue(first.training_bank_verified_at)
-        audit = first.training_bank_verified_at
-        first.action_post()
-        self.assertEqual(first.training_bank_verified_at, audit)
-        second = payments.create(self._values())
-        for operation in (
-            lambda: second.action_post(),
-            lambda: second.write({"state": "paid"}),
-            lambda: second.write({"state": "reconciled"}),
-            lambda: payments.create(self._values(state="paid")),
-            lambda: payments.create(self._values(state="reconciled")),
+        for method in ("action", "write"):
+            values = self._values(memo="Fictional repeated native reference")
+            payment = payments.create(values)
+            if method == "action":
+                payment.action_post()
+            else:
+                payment.write({"state": "paid"})
+            self.assertEqual(payment.state, "paid")
+            self.assertEqual(payment.move_id.state, "posted")
+            self.assertFalse(payment.training_bank_verified_at)
+        for field, value in (
+            ("training_bank_reference", "FORGED"),
+            ("training_bank_verified", True),
+            ("training_bank_verified_by_id", self.finance.id),
+            ("training_bank_verified_at", "2000-01-01 00:00:00"),
+            ("training_duplicate_reference_reason", "FORGED"),
         ):
             with self.assertRaises(ValidationError), self.cr.savepoint():
-                operation()
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            payments.with_context(default_state="paid").create(self._values())
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            payments.with_context(default_training_bank_verified_by_id=self.finance.id).create(self._values())
-        self.assertEqual(second.state, "draft")
-        self.assertFalse(second.move_id)
-        self.assertFalse(second.training_bank_verified_by_id)
-        second.write({"training_duplicate_reference_reason": "Intentional split across invoices"})
-        second.action_post()
-        self.assertEqual(second.training_bank_verified_by_id, self.finance)
-        for metadata in (
-            {"training_bank_verified_by_id": self.env.user.id},
-            {"training_bank_verified_at": "2000-01-01 00:00:00"},
-        ):
+                payments.create(self._values(**{field: value}))
             with self.assertRaises(ValidationError), self.cr.savepoint():
-                payments.create(self._values(**metadata))
-            with self.assertRaises(ValidationError):
-                first.write(metadata)
-        unverified = payments.create(
-            self._values(training_bank_reference="FICTIONAL-UNVERIFIED", training_bank_verified=False)
-        )
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            unverified.write({"state": "paid"})
-        self.assertFalse(unverified.move_id)
-        unverified.write({"state": "paid", "training_bank_verified": True})
-        self.assertEqual(unverified.training_bank_verified_by_id, self.finance)
-        batch = self._values(state="paid", training_bank_reference="FICTIONAL-BATCH")
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            payments.create([batch.copy(), batch.copy()])
-        self.assertFalse(payments.search([("training_bank_reference", "=", "FICTIONAL-BATCH")]))
-        values = self._values()
-        values.pop("training_bank_reference")
-        contextual = payments.with_context(
-            default_state="paid",
-            default_training_bank_reference=" fictional-context ",
-        ).create(values)
-        self.assertEqual(contextual.training_bank_reference, "FICTIONAL-CONTEXT")
-        self.assertEqual(contextual.training_bank_verified_by_id, self.finance)
-        # Creating a valid paid record and ordinary native payments remain possible.
-        direct = payments.create(self._values(state="paid", training_bank_reference="FICTIONAL-DIRECT"))
-        self.assertEqual(direct.training_bank_verified_by_id, self.finance)
-        native = payments.create(self._values(training_bank_reference=False, training_bank_verified=False))
-        native.action_post()
-        self.assertEqual(native.state, "paid")
-        self.assertFalse(native.training_bank_verified_at)
+                payment.write({field: value})
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                payments.with_context(**{"default_" + field: value}).create(self._values())

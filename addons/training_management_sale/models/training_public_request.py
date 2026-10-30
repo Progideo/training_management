@@ -87,10 +87,10 @@ class TrainingPublicRequest(models.Model):
         currency = (
             self.env["res.currency"]
             .with_context(active_test=False)
-            .search([("name", "=", values["currency"])], limit=1)
+            .search([("name", "=", values["currency"]), ("active", "=", True)], limit=1)
         )
-        if not country or values["currency"] not in ("MAD", "EUR") or not currency:
-            raise ValidationError(self.env._("Choose a country and MAD or EUR independently of the language."))
+        if not country or not currency:
+            raise ValidationError(self.env._("Choose a country and an active currency independently of the language."))
         if values["mode"] not in ("onsite", "remote", "blended", "elearning"):
             raise ValidationError(self.env._("Choose a valid delivery mode."))
         program = self.env["training.program.version"].browse(program_id).exists()

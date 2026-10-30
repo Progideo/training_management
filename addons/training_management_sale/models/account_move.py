@@ -56,12 +56,7 @@ class AccountMove(models.Model):
             )
 
     def _training_sale_invoices(self):
-        return self.filtered(
-            lambda move: (
-                move.move_type == "out_invoice"
-                and bool(move.invoice_line_ids.sale_line_ids.order_id.filtered("training_request_kind"))
-            )
-        )
+        return self.filtered("training_is_sale_invoice")
 
     def _message_get_default_recipients(self, with_cc=False, all_tos=False):
         recipients = super()._message_get_default_recipients(with_cc=with_cc, all_tos=all_tos)
@@ -76,25 +71,3 @@ class AccountMove(models.Model):
     def _notify_get_recipients(self, message, **kwargs):
         recipients = super()._notify_get_recipients(message, **kwargs)
         return self.env["training.document.policy"]._filter_notifications(self, recipients)
-
-    def _has_to_be_paid(self):
-        self.ensure_one()
-        return not self._training_sale_invoices() and super()._has_to_be_paid()
-
-    @api.depends("company_id", "invoice_line_ids.sale_line_ids.order_id.training_request_kind")
-    def _compute_display_link_qr_code(self):  # pylint: disable=missing-return  # compute method, nothing to return
-        super()._compute_display_link_qr_code()
-        for invoice in self._training_sale_invoices():
-            invoice.display_link_qr_code = False
-
-    def _get_portal_payment_link(self):
-        self.ensure_one()
-        if self._training_sale_invoices():
-            return None
-        return super()._get_portal_payment_link()
-
-    def _generate_portal_payment_qr(self):
-        self.ensure_one()
-        if self._training_sale_invoices():
-            return None
-        return super()._generate_portal_payment_qr()

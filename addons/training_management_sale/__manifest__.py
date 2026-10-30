@@ -1,8 +1,8 @@
 # pylint: disable=manifest-required-author,missing-readme  # not an OCA module: no OCA author, README kept in docs/
 {
     "name": "Training Management - Sales",
-    "summary": "Qualify training requests and price programme quotations in MAD or EUR",
-    "version": "20.0.2.2.1",
+    "summary": "Link training programmes to native Odoo sales and accounting",
+    "version": "20.0.2.3.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",

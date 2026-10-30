@@ -489,6 +489,23 @@
         "sessions_repeated_preserved",
         "sessions_concurrency"
       ]
+    },
+    {
+      "id": "native_commercial",
+      "script": "tests/ci/run_native_commercial.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "documents_prepare",
+        "exact_prepare",
+        "upgrade",
+        "documents_preserved",
+        "catalogue_preserved",
+        "exact_preserved",
+        "repeat_upgrade",
+        "repeat_preserved"
+      ]
     }
   ],
   "relocated_steps": {

@@ -10,7 +10,7 @@
             <field name="training_requested_program_id" position="before">
                 <field name="training_path_id" readonly="state in ['sale','cancel']" options="{'no_create': True}"/>
                 <field name="training_path_scope" invisible="not training_path_id" readonly="state in ['sale','cancel']"/>
-                <field name="training_price_source" readonly="state in ['sale','cancel']" placeholder="Fixed catalogue price"/>
+                <field name="training_price_source" readonly="state in ['sale','cancel']" placeholder="Native pricelist"/>
             </field>
             <field name="training_requested_program_id" position="attributes">
                 <attribute name="invisible">training_path_id</attribute>

@@ -1,5 +1,11 @@
 # C06 — Paramétrage commercial au déploiement
 
+> Portée : profils optionnels d’exploitation du premier organisme. Selon la
+> [décision #102](native-commercial-accounting.md), ils ne sont ni une dépendance
+> ni une politique obligatoire du module générique. L’extension séparée
+> `sale_invoice_address_fiscal` reste facultative et inchangée.
+
+
 Référence : [C06 #10](https://github.com/Progideo/training_management/issues/10).
 La reprise M01 et le paramétrage de facturation sont deux étapes de la livraison.
 La fiche société ne suffit pas à valider son pays fiscal ni son plan comptable.

@@ -1,3 +1,8 @@
+> Révision du 30 octobre 2026 — [#102](https://github.com/Progideo/training_management/issues/102).
+> Les règles commerciales et comptables suivent désormais Odoo natif et les extensions/localisations installées.
+> Les mentions historiques MAD/EUR et virement manuel décrivent le premier organisme ; elles ne contraignent plus le module générique.
+> Voir la [décision commerciale et comptable du 30 octobre 2026](../native-commercial-accounting.md). P15 reste annulé ; P17–P20 restent conditionnels.
+
 Training Management pour NeoPro Academy
 
 Spécification fonctionnelle
@@ -85,21 +90,17 @@ Priorité MVP. Distinguer demande individuelle et groupe ; saisir besoin, modali
 
 Acceptation — Nominal : une demande intra de 12 personnes produit un devis traçable. Erreur ou limite : une soumission répétée signale le doublon et ne crée pas deux réservations.
 
-## COM02 Vendre en MAD ou EUR
+## COM02 Vendre avec les règles natives Odoo
 
-Priorité MVP. Une offre peut avoir deux tarifs commerciaux validés indépendamment. Une commande et ses documents portent une seule devise, prix par personne ou forfait, quantité, taxes et conditions. Aucun taux implicite.
+Priorité MVP. Les devises actives, listes de prix, remises, conversions, arrondis, taxes et positions fiscales suivent Odoo et les extensions/localisations installées. La devise demandée est indicative ; l’offre négociée utilise sa devise native. Une commande porte une devise, une version contractuelle du programme et des quantités cohérentes avec les places vendues par personne ou par forfait. Les choix MAD/EUR du premier organisme ne sont pas des restrictions génériques.
 
-Acceptation — Nominal : un forfait EUR reste en EUR dans la commande et la facture. Erreur ou limite : un changement de devise après confirmation exige une révision contrôlée ; aucune simple substitution de symbole.
+Acceptation — Nominal : une troisième devise et une société de devise comptable différente peuvent utiliser une tarification native, une remise ou un prix convenu. Erreur ou limite : une incohérence de version, société ou quantité pédagogique reste refusée. Un changement de devise ne réécrit pas une commande de formation confirmée.
 
-## COM03 Suivre le virement
+## COM03 Suivre factures et paiements natifs
 
-Priorité MVP. La facturation enregistre date, montant, devise, référence et affectation du règlement ; acomptes et soldes restent distincts. Un avis de virement client ne vaut pas règlement constaté.
+Priorité MVP. Odoo porte factures, acomptes, avoirs, échéances, règlements partiels, journaux, méthodes de paiement, rapprochements, différences et résiduels. Le module ne crée ni moteur comptable ni second solde. Un avis de virement reste une déclaration privée sans effet comptable. Les anciens champs de vérification bancaire sont conservés en lecture seule pour l’historique, sans exigence pour les nouveaux paiements.
 
-Acceptation — Nominal : un virement partiel réduit le solde sans marquer réglé. Erreur ou limite : une référence déjà traitée déclenche un contrôle ; un versement dans une autre devise attend un rapprochement explicite.
-
-La devise comptable, les taxes, les mentions marocaines et les règles de conversion seront validées avec le responsable comptable. Le pays du client ne suffit pas à déterminer automatiquement le traitement fiscal.
-
-# 4 Inscriptions et accès
+Acceptation — Nominal : un paiement partiel, y compris dans une autre devise selon la configuration native, réduit le résiduel ; un avoir et les rapprochements utilisent le même circuit. Erreur ou limite : aucun règlement, paiement en ligne ou commande ne donne automatiquement d’accès pédagogique ; les droits documentaires restent requis. Aucun prestataire n’est activé par le module. Les capacités de chaque localisation ou prestataire nécessitent leur propre validation.
 
 ## INS01 Gérer les places
 

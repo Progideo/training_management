@@ -104,8 +104,6 @@ class TrainingPathQuote(models.TransientModel):
                             "Choose an existing service product with the course and price basis required by each selected line."
                         )
                     )
-                if line.price_unit < 0:
-                    raise ValidationError(self.env._("Enter non-negative amounts in the quotation currency."))
             order.write(
                 {
                     "training_path_id": self.path_id.id,

@@ -14,13 +14,12 @@ achetée. Les formations restent aussi vendables seules. Chaque ligne conserve
 sa version pédagogique et sa valeur contractuelle. Le total négocié est réparti
 entre les lignes avant acceptation, dans une seule devise par offre.
 
-Les montants peuvent être fixés au devis, sans liste de prix exhaustive ni
-conversion automatique des tarifs MAD/EUR. Le mode de prix fixe existant reste
-possible ; les documents historiques conservent ce mode. La nouvelle option
-« Prix convenu au devis » permet la négociation explicite. Les montants nuls
-peuvent représenter une prestation incluse ; ils ne sont jamais déduits d'un
-acquis automatiquement. Une équivalence a un effet pédagogique ; son impact
-commercial est convenu au cas par cas avant acceptation.
+Depuis la [décision #102](native-commercial-accounting.md), les prix et remises
+suivent les règles natives Odoo, quelle que soit l’origine commerciale conservée
+sur l’offre. Les anciennes valeurs « liste » et « prix convenu » sont conservées
+pour l’historique, sans imposer une règle fixe par produit. Les montants nuls
+peuvent représenter une prestation incluse. Une équivalence a un effet pédagogique ;
+son impact commercial est convenu avant acceptation.
 
 L'assistant propose toutes les formations, permet d'en décocher, choisit les
 produits de service existants et prépare le devis. Il ne crée ni formation,

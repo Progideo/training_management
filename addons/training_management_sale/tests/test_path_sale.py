@@ -363,8 +363,8 @@ class TestPathSale(PathSaleCase):
         plain.action_confirm()
         self.assertEqual(plain.amount_untaxed, 73)
         legacy = plain.copy({"training_price_source": False})
-        with self.assertRaises(ValidationError):
-            legacy.action_confirm()
+        legacy.action_confirm()
+        self.assertEqual(legacy.amount_untaxed, 73)
 
     def test_restricted_roles_and_forged_metadata(self):
         order, path = self.offer()

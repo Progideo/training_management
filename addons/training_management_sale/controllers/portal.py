@@ -1,6 +1,6 @@
 from odoo import http
-from odoo.exceptions import AccessError, ValidationError
 from odoo.http import request
+from odoo.addons.payment.controllers.payment_status import PaymentStatus
 from odoo.addons.account.controllers.portal import PortalAccount
 from odoo.addons.account_payment.controllers.payment import PaymentPortal as InvoicePaymentPortal
 from odoo.addons.sale.controllers.portal import CustomerPortal, PaymentPortal
@@ -14,10 +14,7 @@ class TrainingPortalDocumentAccess:
 
 
 class TrainingCustomerPortal(TrainingPortalDocumentAccess, CustomerPortal):
-    def _get_payment_values(self, order_sudo, **kwargs):
-        if order_sudo.training_request_kind:
-            return {"payment_amount": None}
-        return super()._get_payment_values(order_sudo, **kwargs)
+    pass
 
 
 class TrainingAccountPortal(TrainingPortalDocumentAccess, PortalAccount):
@@ -26,24 +23,35 @@ class TrainingAccountPortal(TrainingPortalDocumentAccess, PortalAccount):
 
 class TrainingInvoicePaymentPortal(TrainingPortalDocumentAccess, InvoicePaymentPortal):
     @http.route()
-    def invoice_transaction(self, invoice_id, access_token, **kwargs):
-        invoice_sudo = self._document_check_access("account.move", invoice_id, access_token)
-        if invoice_sudo._training_sale_invoices():
-            raise ValidationError(
-                request.env._("Online payment transactions are disabled for training orders and invoices.")
-            )
-        return super().invoice_transaction(invoice_id, access_token, **kwargs)
+    def payment_pay(self, *args, amount=None, invoice_id=None, access_token=None, **kwargs):
+        # Native payment tokens can bypass _document_check_access on this route.
+        # Keep the named grant before rendering invoice details or a payment form.
+        target = self._cast_as_int(invoice_id)
+        if target:
+            invoice = request.env["account.move"].sudo().browse(target).exists()
+            request.env["training.document.policy"]._check_read(invoice)
+        return super().payment_pay(*args, amount=amount, invoice_id=invoice_id, access_token=access_token, **kwargs)
+
+    @http.route()
+    def payment_confirm(self, tx_id, access_token, **kwargs):
+        target = self._cast_as_int(tx_id)
+        if target:
+            request.env["payment.transaction"].sudo().browse(target).exists()._check_training_document_access()
+        return super().payment_confirm(tx_id, access_token, **kwargs)
+
+    def _process_transaction(self, partner_id, currency_id, invoice_ids, payment_reference, **kwargs):
+        # Includes the native batch route for overdue invoices.
+        for invoice in request.env["account.move"].sudo().browse(invoice_ids):
+            request.env["training.document.policy"]._check_read(invoice)
+        return super()._process_transaction(partner_id, currency_id, invoice_ids, payment_reference, **kwargs)
 
 
 class TrainingPaymentPortal(TrainingPortalDocumentAccess, PaymentPortal):
-    @http.route()
-    def portal_order_transaction(self, order_id, access_token, **kwargs):
-        try:
-            order_sudo = self._document_check_access("sale.order", order_id, access_token)
-        except AccessError:
-            raise ValidationError(request.env._("The access token is invalid.")) from None
-        if order_sudo.training_request_kind:
-            raise ValidationError(
-                request.env._("Online payment transactions are disabled for training orders and invoices.")
-            )
-        return super().portal_order_transaction(order_id, access_token, **kwargs)
+    pass
+
+
+class TrainingPaymentStatus(PaymentStatus):
+    def _get_monitored_transaction(self):
+        transaction = super()._get_monitored_transaction()
+        transaction._check_training_document_access()
+        return transaction
