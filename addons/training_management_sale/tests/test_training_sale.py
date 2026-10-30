@@ -1393,6 +1393,10 @@ class TestTrainingSale(TransactionCase):
             "reference": "Fictional declaration only",
         }
         original = notices.create(values)
+        contextual = notices.with_context(default_order_id=order.id).create(
+            {key: value for key, value in values.items() if key != "order_id"}
+        )
+        self.assertEqual(contextual.currency_id, self.eur)
         foreign = notices.create({**values, "currency_id": gbp.id})
         self.assertEqual(original.currency_id, self.eur)
         self.assertEqual(foreign.currency_id, gbp)

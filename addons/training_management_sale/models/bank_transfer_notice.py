@@ -75,7 +75,7 @@ class BankTransferNotice(models.Model):
         for vals in vals_list:
             vals = {**vals, "reported_by_id": self.env.user.id}
             if "currency_id" not in vals:
-                order = self.env["sale.order"].browse(vals.get("order_id"))
+                order = self.env["sale.order"].browse(vals.get("order_id") or self.env.context.get("default_order_id"))
                 vals["currency_id"] = self.env.context.get("default_currency_id") or order.currency_id.id
             values.append(vals)
         return super().create(values)
