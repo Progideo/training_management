@@ -29,7 +29,8 @@ class TrainingInvoicePaymentPortal(TrainingPortalDocumentAccess, InvoicePaymentP
         target = self._cast_as_int(invoice_id)
         if target:
             invoice = request.env["account.move"].sudo().browse(target).exists()
-            request.env["training.document.policy"]._check_read(invoice)
+            if invoice:
+                request.env["training.document.policy"]._check_read(invoice)
         return super().payment_pay(*args, amount=amount, invoice_id=invoice_id, access_token=access_token, **kwargs)
 
     @http.route()

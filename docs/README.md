@@ -73,7 +73,7 @@ Les empreintes ci-dessus restent celles de l’import initial. Empreinte courant
 SHA-256 de la spécification amendée :
 
 ```text
-5d13c3263cacad5a958515e006cc81121a48b624b3c836b32c6de4198f8504a3  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+f188271f205d7c809a742a910e4ce7521f14b8f6d69977ab003b87bb3280a6c0  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments

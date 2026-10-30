@@ -21,10 +21,10 @@ Training Management conserve les versions contractuelles, quantités personne/fo
 places, inscriptions, autorisations pédagogiques explicites et habilitations
 nominatives sur devis, factures, avoirs, reçus, pièces, messages et notifications.
 Un paiement ou une confirmation native de vente ne donne aucun accès pédagogique.
-Les contrats de parcours acceptés gardent leurs termes et leur périmètre figés.
-Le contrôle de devise des commandes confirmées et des listes qu’elles utilisent
-évite une réécriture de leur historique : le calcul natif de devise dépend de la
-liste, même après confirmation. Il ne limite aucune devise disponible.
+Les contrats de parcours acceptés gardent leur périmètre et leurs références
+pédagogiques figés. Les prix, remises, taxes et devises suivent les protections
+natives, sans verrou financier spécifique. La devise stockée sur une commande
+n’est pas recalculée lors du seul changement de devise de sa liste de prix.
 
 Les liens, QR et transactions de paiement natifs sont rétablis. Les routes de
 transaction et la page générique de paiement de facture exigent encore les

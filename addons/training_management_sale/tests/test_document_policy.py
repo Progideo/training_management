@@ -603,7 +603,7 @@ class TestTrainingDocumentPolicy(TransactionCase):
         for currency, date, rate in (
             (usd, "2026-10-01", 1),
             (eur, "2026-10-01", 0.5),
-            (eur, "2026-10-20", 0.25),
+            (eur, "2026-10-19", 0.25),
         ):
             self.env["res.currency.rate"].create(
                 {
@@ -662,6 +662,7 @@ class TestTrainingDocumentPolicy(TransactionCase):
         self.assertEqual(invoice.amount_residual, 0)
         self.assertEqual(payment.amount, 100)
         exchange = self.env["account.move"].search([("journal_id", "=", exchange_journal.id), ("state", "=", "posted")])
+        self.assertEqual(eur._convert(100, usd, company, payment.date), 400)
         self.assertTrue(exchange)
         gain = exchange.line_ids.filtered(lambda line: line.account_id == exchange_accounts["income"])
         self.assertEqual(sum(gain.mapped("credit")), 200)

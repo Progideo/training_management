@@ -85,11 +85,6 @@ class SaleOrder(models.Model):
             return orders
 
     def write(self, vals):
-        if "currency_id" in vals and any(
-            order.state == "sale" and order.training_request_kind and order.currency_id.id != vals["currency_id"]
-            for order in self
-        ):
-            raise ValidationError(self.env._("Revise the training offer instead of changing its confirmed currency."))
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind",
             "training_requested_program_id",

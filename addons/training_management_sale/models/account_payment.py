@@ -124,3 +124,4 @@ class AccountPayment(models.Model):
         for payment in self.filtered(lambda item: not item.training_receipt_restricted):
             if payment._training_receipt_is_restricted():
                 super(AccountPayment, payment).write({"training_receipt_restricted": True})  # pylint: disable=super-method-mismatch
+        return True

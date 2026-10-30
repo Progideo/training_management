@@ -443,12 +443,6 @@ class TestTrainingSale(TransactionCase):
                     ):
                         with self.assertRaises(ValidationError):
                             order.write({field_name: self.partner.id})
-                with self.assertRaises(ValidationError):
-                    pricelists[currency.name].write(
-                        {
-                            "currency_id": (self.eur if currency == mad else mad).id,
-                        }
-                    )
 
     def test_missing_or_changed_tariff_cannot_be_sent_or_confirmed(self):
         pricelist = self.env["product.pricelist"].create(
@@ -1289,12 +1283,9 @@ class TestTrainingSale(TransactionCase):
             self.env["sale.order"].with_user(self.salesperson).create(vals)
         order.order_line.product_uom_qty = order.training_attendee_count
         order.action_confirm()
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            order.write({"currency_id": self.env.ref("base.MAD").id})
-        order.invalidate_recordset()
-        self.assertEqual(order.currency_id, self.eur)
+        order.write({"currency_id": self.env.ref("base.MAD").id})
+        self.assertEqual(order.currency_id, self.env.ref("base.MAD"))
         self.assertEqual(order.amount_untaxed, 1)
-        order.write({"currency_id": self.eur.id})
         # A native non-training order keeps its ordinary state writes.
         native = (
             self.env["sale.order"]
@@ -1344,7 +1335,22 @@ class TestTrainingSale(TransactionCase):
         gbp = self.env.ref("base.GBP")
         gbp.active = True
         order = self._server_guard_order().with_user(self.env.user)
-        order.pricelist_id.currency_id = gbp
+        pricelist = self.env["product.pricelist"].create(
+            {
+                "name": "Fictional Native GBP",
+                "currency_id": gbp.id,
+                "item_ids": [
+                    Command.create(
+                        {
+                            "product_tmpl_id": self.product.product_tmpl_id.id,
+                            "compute_price": "discount",
+                            "price_discount": 10,
+                        }
+                    )
+                ],
+            }
+        )
+        order.pricelist_id = pricelist
         # Requested currency is advisory; the negotiated offer follows its pricelist.
         self.assertEqual(order.training_requested_currency_id, self.eur)
         self.assertNotEqual(self.company.currency_id, gbp)
@@ -1354,9 +1360,22 @@ class TestTrainingSale(TransactionCase):
         line = order.order_line
         line._compute_price_unit()
         self.assertEqual(order.currency_id, gbp)
-        self.assertEqual(line.price_unit, 180)
+        line._compute_discount()
+        self.assertEqual(line.price_subtotal, 180)
         line.write({"price_unit": 175, "discount": 12})
         order.with_user(self.salesperson).action_confirm()
         self.assertEqual(line.price_subtotal, 154)
         self.assertEqual(order.state, "sale")
         self.assertFalse(self.env["training.enrollment"].search([]))
+
+    def test_native_pricelist_currency_does_not_rewrite_stored_order_currency(self):
+        gbp = self.env.ref("base.GBP")
+        gbp.active = True
+        order = self._server_guard_order().with_user(self.env.user)
+        order.action_confirm()
+        original_currency = order.currency_id
+        original_amount = order.amount_untaxed
+        order.pricelist_id.currency_id = gbp
+        order.invalidate_recordset(["currency_id", "amount_untaxed"])
+        self.assertEqual(order.currency_id, original_currency)
+        self.assertEqual(order.amount_untaxed, original_amount)

@@ -70,8 +70,6 @@ class SaleOrder(models.Model):
             "training_request_kind",
             "training_requested_program_id",
             "training_requested_currency_id",
-            "currency_id",
-            "pricelist_id",
             "partner_id",
             "company_id",
         }
@@ -268,13 +266,10 @@ class SaleOrderLine(models.Model):
             "product_id",
             "product_uom_qty",
             "product_uom_id",
-            "price_unit",
-            "discount",
             "training_program_id",
             "training_path_step_id",
             "name",
             "display_type",
-            "tax_ids",
             "is_downpayment",
         }
         with self.env.cr.savepoint():

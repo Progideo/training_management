@@ -94,7 +94,7 @@ Acceptation — Nominal : une demande intra de 12 personnes produit un devis tra
 
 Priorité MVP. Les devises actives, listes de prix, remises, conversions, arrondis, taxes et positions fiscales suivent Odoo et les extensions/localisations installées. La devise demandée est indicative ; l’offre négociée utilise sa devise native. Une commande porte une devise, une version contractuelle du programme et des quantités cohérentes avec les places vendues par personne ou par forfait. Les choix MAD/EUR du premier organisme ne sont pas des restrictions génériques.
 
-Acceptation — Nominal : une troisième devise et une société de devise comptable différente peuvent utiliser une tarification native, une remise ou un prix convenu. Erreur ou limite : une incohérence de version, société ou quantité pédagogique reste refusée. Un changement de devise ne réécrit pas une commande de formation confirmée.
+Acceptation — Nominal : une troisième devise et une société de devise comptable différente peuvent utiliser une tarification native, une remise ou un prix convenu. Erreur ou limite : une incohérence de version, société ou quantité pédagogique reste refusée. Les révisions commerciales suivent les protections natives Odoo ; la mise à jour ne réécrit aucun historique.
 
 ## COM03 Suivre factures et paiements natifs
 
