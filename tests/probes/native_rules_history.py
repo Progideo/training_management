@@ -28,6 +28,21 @@ if os.environ["S021_PHASE"] == "prepare":
     second = env["res.company"].create(
         {"name": "Fictional second operator", "training_notification_address": "second@example.invalid"}
     )
+    retired = (
+        env["res.users"]
+        .with_context(no_reset_password=True)
+        .create(
+            {
+                "name": "Fictional retired manager",
+                "login": "native_rules_retired_manager",
+                "company_id": second.id,
+                "company_ids": [(6, 0, second.ids)],
+                "group_ids": [(6, 0, env.ref("training_management.group_training_coordinator").ids)],
+            }
+        )
+    )
+    second.training_notification_manager_id = retired
+    retired.active = False
     export = env["account.fiscal.position"].create({"name": "Fictional former export", "company_id": company.id})
     company.write({"sale_fiscal_by_invoice_address": True, "sale_export_fiscal_position_id": export.id})
     queue = env["mail.mail"]
@@ -57,7 +72,13 @@ if os.environ["S021_PHASE"] == "prepare":
         "account_full_reconcile",
         "mail_mail",
     ]
-    data = {"companies": [company.id, second.id], "export": export.id, "queue": queue.ids, "tables": {}}
+    data = {
+        "companies": [company.id, second.id],
+        "retired_manager": retired.id,
+        "export": export.id,
+        "queue": queue.ids,
+        "tables": {},
+    }
     for table in tables:
         env.cr.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name=%s ORDER BY ordinal_position",
@@ -76,6 +97,8 @@ else:
         assert snapshot(table, before["columns"]) == before["rows"], table
     companies = env["res.company"].browse(data["companies"])
     assert len(companies.training_notification_template_id) == 2
+    assert companies[1].training_notification_manager_id.id == data["retired_manager"]
+    assert not companies[1].training_notification_manager_id.active
     for company in companies:
         identity = env["mail.mail"]._training_identity(company)
         assert parseaddr(identity["email_from"])[1] == company.training_notification_address

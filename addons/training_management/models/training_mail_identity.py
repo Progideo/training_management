@@ -27,13 +27,17 @@ class Company(models.Model):
         "res.users", string="Training Alert Manager", groups="base.group_system", ondelete="restrict"
     )
 
-    @api.constrains("training_notification_template_id", "training_alert_address", "training_notification_manager_id")
-    def _check_training_notifications(self):
+    @api.constrains("training_notification_template_id")
+    def _check_training_notification_template(self):
         for company in self:
-            manager = company.training_notification_manager_id
             template = company.training_notification_template_id
             if template and template.model != "res.company":
                 raise ValidationError(self.env._("Choose an email template for companies."))
+
+    @api.constrains("training_alert_address", "training_notification_manager_id")
+    def _check_training_notifications(self):
+        for company in self:
+            manager = company.training_notification_manager_id
             for address in (company.training_alert_address,):
                 if address and email_normalize(address) != address:
                     raise ValidationError(self.env._("Enter one normalized notification email address."))
