@@ -633,7 +633,7 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         self.assertEqual(payments.currency_id, self.eur)
         self.assertFalse(payments.training_bank_verified_by_id)
         self.assertTrue(all(payments.mapped("training_receipt_restricted")))
-        self.assertFalse(invoice._get_portal_payment_link())
+        self.assertIn(f"/my/invoices/{invoice.id}", invoice._get_portal_payment_link())
 
     def test_r03_autonomous_pdf_two_successful_attempts_and_themes(self):
         exam, q1, q2, activity, enrollment, service = self.published()
