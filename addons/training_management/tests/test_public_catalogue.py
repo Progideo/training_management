@@ -104,7 +104,7 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         # with and without the optional Website addon.
         from types import SimpleNamespace
         from unittest.mock import patch
-        from odoo.addons.training_management.controllers import public_catalogue
+        from ..controllers import public_catalogue
 
         self.env["res.lang"]._activate_lang("fr_FR")
         program = self.new_program(public_catalogue=True, title="English catalogue title")

@@ -300,7 +300,7 @@ class PracticeEntry(models.Model):
 
 
 class PracticeDocumentPolicy(models.AbstractModel):
-    _inherit = "training.document.policy"
+    _inherit = "training.document.policy"  # pylint: disable=consider-merging-classes-inherited  # P11 proof access is separate from closure documents
 
     @api.private
     def _document(self, record):
