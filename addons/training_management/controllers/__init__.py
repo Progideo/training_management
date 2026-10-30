@@ -21,3 +21,5 @@ from . import practice_portal
 from . import tutoring_portal
 from . import publication_portal
 from . import session_publication
+
+from . import certificate_verification

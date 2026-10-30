@@ -523,6 +523,25 @@
         "repeat_upgrade",
         "repeat_preserved"
       ]
+    },
+    {
+      "id": "p20",
+      "script": "tests/ci/run_p20.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "learning_prepare",
+        "attendance_prepare",
+        "closure_prepare",
+        "exact_prepare",
+        "upgrade",
+        "legacy_preserved",
+        "verification_prepare",
+        "second_update",
+        "verification_preserved",
+        "concurrency"
+      ]
     }
   ],
   "relocated_steps": {

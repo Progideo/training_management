@@ -74,6 +74,11 @@ marqueur de confidentialité et la désactivation de l’ancien assistant.
 Le parcours `native_rules` part de #103 (`f8c4591`) et compare les documents,
 PDF, habilitations et courriels après deux mises à jour ; il vérifie la migration
 des identités vers les modèles natifs et des anciens critères fiscaux.
+Le parcours `p20` part du main fusionné `92b0c3d` (#103/#104) : anciens PDF et
+preuves comparés intégralement, aucune publication rétroactive, nouveau PDF/registre
+conservés après mise à jour, émissions et révocations concurrentes avec reprise
+après conflit. Il rejoint le même job de migrations ; les tests P20 sont découverts
+automatiquement dans les huit configurations.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.

@@ -40,3 +40,5 @@ from . import test_tutoring
 from . import test_publication
 from . import test_testimonial
 from . import test_session_publication
+
+from . import test_certificate_verification

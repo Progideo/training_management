@@ -379,6 +379,23 @@
         "sessions_repeated_preserved",
         "sessions_concurrency"
       ]
+    },
+    "certificate_verification": {
+      "script": "tests/ci/run_p20.sh",
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "learning_prepare",
+        "attendance_prepare",
+        "closure_prepare",
+        "exact_prepare",
+        "upgrade",
+        "legacy_preserved",
+        "verification_prepare",
+        "second_update",
+        "verification_preserved",
+        "concurrency"
+      ]
     }
   }
 }

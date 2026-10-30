@@ -39,7 +39,8 @@ Ne pas supposer que les fichiers joints et le dépôt sont synchronisés. Signal
 - Phase 1 : socle MVP et P01 à P08.
 - Phase 2 : P09 à P14 et P16.
 - P15 : entièrement annulé le 29 octobre 2026 (#38), hors périmètre ; ne pas le réintroduire dans P16.
-- P17 à P20 : après validation complémentaire explicite.
+- P20 : réalisation autorisée le 30 octobre 2026 (#105), après les refactorings #103/#104.
+- P17 à P19 et autres évolutions : reportés ; aucune autorisation implicite.
 
 Préserver les exigences suivantes :
 - Marché francophone mondial ; intraentreprise prioritaire, puis inscriptions individuelles.

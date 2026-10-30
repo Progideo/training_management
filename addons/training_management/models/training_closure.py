@@ -1,6 +1,8 @@
 """DOC01–02: versioned evidence, explicit decisions and preserved outputs."""
 
+import base64
 import hashlib
+import secrets
 import io
 import json
 import math
@@ -112,6 +114,11 @@ class ClosureDossier(models.Model):
         "training.retention.category", required=True, ondelete="restrict", check_company=True
     )
     share_certificates = fields.Boolean(string="Share Issued Certificates with Explicit Client Recipients")
+    verify_certificates = fields.Boolean(
+        string="Issue Verifiable Certificates",
+        help="Publish the approved minimal verification details for newly issued certificates only.",
+    )
+    verification_ids = fields.One2many("training.certificate.verification", "dossier_id", readonly=True)
     customer_id = fields.Many2one("res.partner", readonly=True, ondelete="restrict")
     client_contact_ids = fields.Many2many("res.partner", string="Explicit Client Recipients")
     evidence_ids = fields.One2many("training.proof", "dossier_id", readonly=True)
@@ -163,6 +170,7 @@ class ClosureDossier(models.Model):
                 "retention_id",
                 "client_contact_ids",
                 "share_certificates",
+                "verify_certificates",
                 "frozen",
             }:
                 raise AccessError(self.env._("Dossier identity and audit fields are controlled by the server."))
@@ -184,6 +192,7 @@ class ClosureDossier(models.Model):
             "retention_id",
             "client_contact_ids",
             "share_certificates",
+            "verify_certificates",
             "frozen",
         }:
             raise ValidationError(self.env._("Keep dossier identity and closed dossiers unchanged."))
@@ -511,7 +520,7 @@ class ClosureDocument(models.Model):
     def _append(self, values):
         values = dict(
             values,
-            created_at=fields.Datetime.now(),
+            created_at=values.get("created_at") or fields.Datetime.now(),
             actor_id=self.env.uid,
             sha256=hashlib.sha256(values["data"].content).hexdigest(),
         )
@@ -618,17 +627,22 @@ class ClosureEnrollment(models.Model):
             "delivery": self.delivery_id.name,
             "minutes": minutes,
             "origins": origins,
-            "template": "S08-QWEB-1",
+            "template": "P20-QWEB-1" if dossier.verify_certificates else "S08-QWEB-1",
             "retention": dossier.retention_id.id,
             "start": str(self.delivery_id.start_at or ""),
             "end": str(self.delivery_id.end_at or ""),
         }
+        if dossier.verify_certificates:
+            snapshot["issuer"] = self.company_id.name
         snapshot["client_recipients"] = dossier.client_contact_ids.ids if dossier.share_certificates else []
         snapshot["reference"] += "-" + hashlib.sha256(json.dumps(snapshot, sort_keys=True).encode()).hexdigest()[:12]
         serialized = json.dumps(snapshot, ensure_ascii=False, sort_keys=True)
         previous = dossier.output_ids.filtered(lambda d: d.kind == kind and d.sudo().snapshot == serialized)
         if previous:
             return previous[:1].action_download()
+        token = secrets.token_urlsafe(32) if dossier.verify_certificates else False
+        verification_url = f"{self.get_base_url().rstrip('/')}/training/verify/{token}" if token else False
+        issued_at = fields.Datetime.now()
         report = self.env.ref("training_management.action_training_certificate")
         engine = self.env["ir.actions.report"]
         html = engine._render_template(
@@ -637,7 +651,12 @@ class ClosureEnrollment(models.Model):
                 "values": snapshot,
                 "title": dict(KINDS)[kind],
                 "issuer": self.company_id.name,
-                "issued_at": fields.Datetime.now(),
+                "issued_at": issued_at,
+                "verification_url": verification_url,
+                "verification_qr": "data:image/png;base64,"
+                + base64.b64encode(engine.barcode("QR", verification_url, width=240, height=240)).decode()
+                if token
+                else False,
                 "issued_by": self.env.user.name,
             },
         ).decode()
@@ -651,10 +670,14 @@ class ClosureEnrollment(models.Model):
                 "filename": f"certificate-{self.id}-{kind}.pdf",
                 "data": BinaryBytes(raw),
                 "snapshot": serialized,
+                "template_version": snapshot["template"],
+                "created_at": issued_at,
                 "client_shared": dossier.share_certificates,
                 "recipient_ids": [(6, 0, dossier.client_contact_ids.ids)] if dossier.share_certificates else [],
             }
         )
+        if token:
+            self.env["training.certificate.verification"]._issue(doc, token, verification_url)
         return doc.with_user(self.env.user).action_download()
 
 
