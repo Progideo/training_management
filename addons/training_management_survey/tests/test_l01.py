@@ -599,8 +599,7 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
                         "currency_id": self.eur.id,
                         "amount": amount,
                         "payment_difference_handling": "open",
-                        "training_bank_reference": reference,
-                        "training_bank_verified": True,
+                        "communication": reference,
                     }
                 )
             )
@@ -632,7 +631,8 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         payments = self.env["account.payment"].search([("reconciled_invoice_ids", "in", invoice.ids)])
         self.assertEqual(len(payments), 2)
         self.assertEqual(payments.currency_id, self.eur)
-        self.assertEqual(payments.training_bank_verified_by_id, self.finance)
+        self.assertFalse(payments.training_bank_verified_by_id)
+        self.assertTrue(all(payments.mapped("training_receipt_restricted")))
         self.assertFalse(invoice._get_portal_payment_link())
 
     def test_r03_autonomous_pdf_two_successful_attempts_and_themes(self):

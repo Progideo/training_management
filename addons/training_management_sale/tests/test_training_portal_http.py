@@ -500,7 +500,7 @@ class TestTrainingPortalHttp(HttpCase):
             )
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
         self.assertIn(invoice.name, self.url_open(mail_url).text)
-        self.assertIn("Pay Now", self.url_open(url).text)
+        self.assertIn('id="pay_with"', self.url_open(url).text)
         payment_token = payment_utils.generate_access_token(
             invoice.partner_id.id,
             invoice.amount_residual,

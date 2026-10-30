@@ -142,6 +142,7 @@ elif phase == "verify":
     )
     print("P01P06_HISTORY_PDFS_AND_ACCESS_PRESERVED")
 elif phase == "concurrency":
+    env.ref("base.EUR").active = True
     saved = json.loads(env["ir.config_parameter"].search([("key", "=", key)]).value)
     coord, portal = env["res.users"].browse(saved["coord"]), env["res.users"].browse(saved["portal"])
     client = env["res.partner"].create({"name": "Fictional concurrent client"})

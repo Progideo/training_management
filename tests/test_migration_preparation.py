@@ -70,7 +70,7 @@ class MigrationPreparation(unittest.TestCase):
             self.assertIn("file_missing_unsafe_or_hash_mismatch", self.findings(root=path))
 
     def test_nonfinite_floating_or_unknown_currency_balances_rejected(self):
-        for amount, currency in [("NaN", "EUR"), ("Infinity", "MAD"), (1.2, "EUR"), ("12", "USD")]:
+        for amount, currency in [("NaN", "EUR"), ("Infinity", "MAD"), (1.2, "EUR"), ("12", "")]:
             with self.subTest(amount=amount):
                 self.bundle["lots"]["balances"]["records"][0].update(amount=amount, currency=currency)
                 self.assertIn("balance_or_currency_invalid", self.findings())
@@ -91,7 +91,7 @@ class MigrationPreparation(unittest.TestCase):
         report = inspect(self.bundle, self.root)
         self.assertEqual(report["findings"], [])
         self.assertEqual(report["balances"], {"MAD": expected})
-        self.bundle["lots"]["balances"]["records"][0]["amount"] = "0.001"
+        self.bundle["lots"]["balances"]["records"][0]["amount"] = "0.00x"
         self.assertIn("balance_or_currency_invalid", self.findings())
 
     def test_present_but_invalid_lot_cannot_pass_as_an_empty_inventory(self):
@@ -212,6 +212,18 @@ class MigrationPreparation(unittest.TestCase):
             self.assertEqual(report["contact_target_reconciliation"], "matched")
             self.assertEqual(report["target_contacts_sha256"], hashlib.sha256(raw).hexdigest())
             self.assertFalse(report["second_person_review_declared"])
+
+    def test_native_currency_names_and_fractional_precision_are_preserved_exactly(self):
+        self.bundle["lots"]["balances"]["records"] = [
+            {"id": "third", "currency": "GBP", "amount": "1.234"},
+            {"id": "more", "currency": "GBP", "amount": "0.001"},
+            {"id": "custom", "currency": "CUSTOM", "amount": "12"},
+        ]
+        self.bundle["lots"]["balances"]["expected_count"] = 3
+        self.bundle["expected_balances"] = {"GBP": "1.235", "CUSTOM": "12"}
+        report = inspect(self.bundle, self.root)
+        self.assertEqual(report["findings"], [])
+        self.assertEqual(report["balances"], {"CUSTOM": "12.00", "GBP": "1.235"})
 
 
 if __name__ == "__main__":
