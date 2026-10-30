@@ -26,6 +26,11 @@
                 <p t-elif="values['kind'] == 'completion'">Les activités obligatoires et leurs justificatifs ont été contrôlés.</p>
                 <p t-else="">Le seuil de l'évaluation dédiée des acquis a été atteint et validé.</p>
                 <p>Émise le <span t-out="issued_at"/> (UTC), par <span t-out="issued_by"/>.</p>
+                <div t-if="values['template'] == 'P20-QWEB-1'" style="margin-top: 15pt; font-size: 9pt;">
+                    <img t-att-src="verification_qr" alt="QR code de vérification" style="width: 95pt; height: 95pt;"/>
+                    <p>Vérifier le statut de cette attestation :<br/><a t-att-href="verification_url" t-out="verification_url"/></p>
+                    <p>La page confirme le statut du document enregistré. Comparez son empreinte SHA-256 pour vérifier l’intégrité du fichier.</p>
+                </div>
                 <p class="footer">Ce document ne constitue pas une certification officielle ou une certification Qualiopi.<br/>Modèle : <span t-out="values['template']"/></p>
             </body>
         </html>

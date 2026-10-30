@@ -89,7 +89,7 @@ sont pas régénérés. Les verrous S03 et leur révision protègent émission, 
 export et clôture des requêtes concurrentes périmées.
 
 Un dossier complet ne vaut ni certification Qualiopi, ni validation par un financeur.
-Les attestations ne confèrent aucune certification officielle. P20 reste hors périmètre.
+Les attestations ne confèrent aucune certification officielle. L’extension [P20](p20-verifiable-certificates.md) ajoute la vérification publique aux nouvelles attestations explicitement retenues.
 
 ## Recette courte
 

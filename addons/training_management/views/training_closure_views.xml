@@ -60,10 +60,11 @@
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status">A complete dossier does not constitute Qualiopi certification.</div>
-                    <group><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id"/><field name="retention_id"/><field name="customer_id"/><field name="client_contact_ids" widget="many2many_tags"/><field name="share_certificates"/><field name="frozen"/></group>
+                    <group><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id"/><field name="retention_id"/><field name="customer_id"/><field name="client_contact_ids" widget="many2many_tags"/><field name="share_certificates"/><field name="verify_certificates"/><field name="frozen"/></group>
                     <group><field name="missing" readonly="1"/><field name="closed_by_id"/><field name="closed_at"/></group>
                     <notebook>
                         <page string="Evidence"><field name="evidence_ids" context="{'default_dossier_id': id}" readonly="state == 'closed'"/></page>
+                        <page string="Certificate Verification" groups="training_management.group_training_quality"><field name="verification_ids" readonly="1"/></page>
                         <page string="Preserved Documents" groups="training_management.group_training_quality"><field name="output_ids" readonly="1"/></page>
                     </notebook>
                 </sheet>

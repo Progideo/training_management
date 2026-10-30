@@ -200,3 +200,7 @@ access_publication_event_mod,P14 authorization evidence moderator,training.publi
 rule_publication_event_company,P14 authorization evidence company,training.publication.event,,crud,"[('company_id', 'in', company_ids)]"
 access_publication_notice_coord,P14 invitation journal,training.publication.notice,training_management.group_training_coordinator,r,
 rule_publication_notice_company,P14 invitation company,training.publication.notice,,crud,"[('company_id', 'in', company_ids)]"
+
+access_p20_verification_quality,P20 assigned quality,training.certificate.verification,training_management.group_training_quality,r,"[('dossier_id.quality_id', '=', user.id)]"
+rule_p20_verification_company,P20 company,training.certificate.verification,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_p20_change_quality,P20 change certificate status,training.certificate.change,training_management.group_training_quality,crud,

@@ -250,6 +250,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__company_id
 msgid "Company"
 msgstr "Société"
 
@@ -354,6 +355,8 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -431,6 +434,8 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -553,6 +558,8 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_publication_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -717,6 +724,8 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__id
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__id
 #: model:ir.model.fields,field_description:training_management.field_training_publication_service__id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__id
 msgid "ID"
 msgstr "ID"
 
@@ -799,6 +808,8 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -876,6 +887,8 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_publication_notice__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -1023,6 +1036,7 @@ msgstr "Tarification"
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_search
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__programme
 msgid "Programme"
 msgstr "Programme"
 
@@ -1096,6 +1110,7 @@ msgstr "Identifiants des enregistrements"
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_delivery__reference
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_assignment__reference_id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__reference
 msgid "Reference"
 msgstr "Référence"
 
@@ -1228,6 +1243,8 @@ msgstr "Catalogue de formations standards et versions de programme contrôlées"
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__state
 #: model:ir.model.fields,field_description:training_management.field_training_publication__state
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__state
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__state
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__state
 msgid "State"
 msgstr "État"
 
@@ -1460,6 +1477,7 @@ msgstr "Créer le brouillon"
 #: model_terms:ir.ui.view,arch_db:training_management.view_feedback_export
 #: model_terms:ir.ui.view,arch_db:training_management.view_quality_operation
 #: model_terms:ir.ui.view,arch_db:training_management.view_quality_export
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_change
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -1654,6 +1672,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_release
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_operation
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_change
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -2084,6 +2103,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:training_management.field_training_notification__kind
 #: model:ir.model.fields,field_description:training_management.field_training_tutoring_slot__kind
 #: model:ir.model.fields,field_description:training_management.field_training_publication__kind
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__kind
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__kind
 msgid "Kind"
 msgstr "Type"
 
@@ -2264,6 +2285,8 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_result__reason
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__reason
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__reason
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__reason
 msgid "Reason"
 msgstr "Motif"
 
@@ -2310,6 +2333,8 @@ msgstr "Remplacer le participant"
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__state__replaced
 #: model:ir.model.fields.selection,name:training_management.selection__training_dashboard_line__state__replaced
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_change__state__replaced
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_verification__state__replaced
 msgid "Replaced"
 msgstr "Remplacée"
 
@@ -2388,6 +2413,8 @@ msgstr "Révoquer l’accès"
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__access_state__revoked
 #: model:ir.model.fields.selection,name:training_management.selection__training_enrollment__effective_access__revoked
 #: model:ir.model.fields.selection,name:training_management.selection__training_company_authorization__state__revoked
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_change__state__revoked
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_verification__state__revoked
 msgid "Revoked"
 msgstr "Révoqué"
 
@@ -3896,6 +3923,7 @@ msgstr "À venir"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/wizard/training_action_reason.py:0
+#: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "Enter a reason for this action."
 msgstr "Saisissez un motif pour cette action."
 
@@ -4515,6 +4543,7 @@ msgstr "Ordre"
 #: model:ir.model.fields,field_description:training_management.field_training_material__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_learning_entry__sha256
 #: model:ir.model.fields,field_description:training_management.field_training_export_audit__sha256
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__sha256
 msgid "Sha256"
 msgstr "Empreinte SHA-256"
 
@@ -5942,6 +5971,7 @@ msgstr ""
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_verification__kind__achievement
 msgid "Achievement Certificate"
 msgstr "Attestation de réussite"
 
@@ -6121,6 +6151,7 @@ msgstr ""
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_verification__kind__completion
 msgid "Completion Certificate"
 msgstr "Attestation de réalisation"
 
@@ -6182,6 +6213,8 @@ msgstr "Traitement de la pièce"
 #: model:ir.model.fields,field_description:training_management.field_training_provider_event__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_provider_obligation__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__dossier_id
 msgid "Dossier"
 msgstr "Dossier"
 
@@ -6455,6 +6488,7 @@ msgstr "Document conservé"
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_closure
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_verification__kind__participation
 msgid "Participation Certificate"
 msgstr "Attestation de participation"
 
@@ -6710,6 +6744,7 @@ msgstr "Émise le"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.certificate_document
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
 msgid "— version"
 msgstr "— version"
 
@@ -8912,6 +8947,8 @@ msgstr ""
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__verification
 #: model:ir.model.fields,field_description:training_management.field_training_quality_operation__verification
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__verification_id
+#: model:ir.model.fields,field_description:training_management.field_training_closure__verification_ids
 msgid "Verification"
 msgstr "Vérification"
 
@@ -9291,6 +9328,8 @@ msgstr "Justificatif remplacé"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__replacement_ids
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_change__replacement_id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__replacement_id
 msgid "Replacement"
 msgstr "Remplacement"
 
@@ -9645,6 +9684,7 @@ msgstr "Synthèses des questionnaires de la réalisation"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_notification__document_id
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__document_id
 msgid "Document"
 msgstr "Document"
 
@@ -9984,6 +10024,7 @@ msgstr "Papier à déposer"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_document__kind__participation
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
 msgid "Participation"
 msgstr "Participation"
 
@@ -11127,6 +11168,7 @@ msgstr "Diffusé"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_company_authorization_form
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Revoke"
 msgstr "Révoquer"
 
@@ -13711,3 +13753,228 @@ msgstr "Le modèle natif fournit uniquement l’expéditeur et l’adresse de r�
 #: code:addons/training_management/models/training_mail_identity.py:0
 msgid "Choose an email template for companies."
 msgstr "Choisissez un modèle de courriel pour les sociétés."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Attestation inconnue"
+msgstr "Attestation inconnue"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Attestation remplacée"
+msgstr "Attestation remplacée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Attestation révoquée"
+msgstr "Attestation révoquée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Attestation valide"
+msgstr "Attestation valide"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__beneficiary
+msgid "Beneficiary"
+msgstr "Bénéficiaire"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Bénéficiaire"
+msgstr "Bénéficiaire"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Ce lien ne permet pas de confirmer l’authenticité d’un document."
+msgstr "Ce lien ne permet pas de confirmer l’authenticité d’un document."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "Certificate verification cannot be copied."
+msgstr "Une vérification d’attestation ne peut pas être dupliquée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Cette attestation n’est plus valide."
+msgstr "Cette attestation n’est plus valide."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Cette vérification ne constitue pas une certification officielle ni une certification Qualiopi."
+msgstr "Cette vérification ne constitue pas une certification officielle ni une certification Qualiopi."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+#: model:ir.model,name:training_management.model_training_certificate_change
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_change
+msgid "Change Certificate Status"
+msgstr "Modifier le statut de l’attestation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__changed_at
+msgid "Changed At"
+msgstr "Décision prise le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__changed_by_id
+msgid "Changed By"
+msgstr "Décision prise par"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "Choose a different valid certificate for the same dossier and type."
+msgstr "Choisissez une autre attestation valide du même dossier et du même type."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Comparez aussi le bénéficiaire et les mentions présentées avec celles du document. L’empreinte permet de vérifier l’ensemble du fichier original."
+msgstr "Comparez aussi le bénéficiaire et les mentions présentées avec celles du document. L’empreinte permet de vérifier l’ensemble du fichier original."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Comparez l’empreinte du fichier PDF présenté à celle ci-dessus pour en vérifier l’intégrité. Un QR code copié sur un autre document ne prouve pas l’authenticité de ce document."
+msgstr "Comparez l’empreinte du fichier PDF présenté à celle ci-dessus pour en vérifier l’intégrité. Un QR code copié sur un autre document ne prouve pas l’authenticité de ce document."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Empreinte SHA-256 du fichier PDF original"
+msgstr "Empreinte SHA-256 du fichier PDF original"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Formation"
+msgstr "Formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure__verify_certificates
+msgid "Issue Verifiable Certificates"
+msgstr "Émettre des attestations vérifiables"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__issuer
+msgid "Issuer"
+msgstr "Émetteur"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "Keep certificate verification and its history."
+msgstr "Conservez la vérification de l’attestation et son historique."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__programme_version
+msgid "Programme Version"
+msgstr "Version du programme"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_closure__verify_certificates
+msgid "Publish the approved minimal verification details for newly issued certificates only."
+msgstr "Publier les mentions minimales approuvées uniquement pour les nouvelles attestations : émetteur, nom complet du bénéficiaire, référence, type, formation/version, date d’émission, statut et empreinte du PDF."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
+msgid "Replace"
+msgstr "Remplacer"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Réalisation"
+msgstr "Réalisation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Référence"
+msgstr "Référence"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Réussite"
+msgstr "Réussite"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "This certificate has already been revoked or replaced."
+msgstr "Cette attestation a déjà été révoquée ou remplacée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "This certificate is outside the allowed companies."
+msgstr "Cette attestation est hors des sociétés autorisées."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_certificate_verification_unique_document
+msgid "This document already has verification."
+msgstr "Ce document possède déjà une vérification."
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_certificate_verification_unique_token
+msgid "This verification identifier already exists."
+msgstr "Cet identifiant de vérification existe déjà."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__token
+msgid "Token"
+msgstr "Identifiant public"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_certificate_verification
+msgid "Training Certificate Verification"
+msgstr "Vérification d’attestation de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Type"
+msgstr "Type"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "Use the certificate revocation or replacement action."
+msgstr "Utilisez l’action de révocation ou de remplacement de l’attestation."
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_verification__state__valid
+msgid "Valid"
+msgstr "Valide"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
+msgid "Verification is created only when issuing a new certificate."
+msgstr "La vérification est créée uniquement lors de l’émission d’une nouvelle attestation."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Vérification d’attestation"
+msgstr "Vérification d’attestation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Émetteur"
+msgstr "Émetteur"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.certificate_verification
+msgid "Émission (UTC)"
+msgstr "Émission (UTC)"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__issued_at
+msgid "Certificate Issued At"
+msgstr "Émise le"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__url
+msgid "Verification Link"
+msgstr "Lien de vérification"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Certificate Verification"
+msgstr "Vérification des attestations"

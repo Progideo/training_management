@@ -70,10 +70,10 @@ P09–P16 se lisent avec cette annulation. Les fichiers synchronisés sous `sour
 ne sont pas modifiés : la divergence avec l’import d’origine est volontaire et tracée.
 
 Les empreintes ci-dessus restent celles de l’import initial. Empreinte courante
-SHA-256 de la spécification amendée :
+SHA-256 de la spécification amendée (y compris P20, #105) :
 
 ```text
-94ddfdfe80523bf8f42a25e3f5f1338c08d0fe9cdaf05500036fb3612a90372d  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+56a3f02dcb753128c56638808f9f5b991d63d2322e27aa9f937d17b568bbdf91  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments
@@ -111,6 +111,7 @@ SHA-256 de la spécification amendée :
 | P12 — projet pratique évalué | [p12-assessed-projects.md](p12-assessed-projects.md) |
 | P13 — réservation de tutorat | [p13-tutoring-booking.md](p13-tutoring-booking.md) |
 | P14 — avis vérifiés et cas clients | [p14-verified-reviews.md](p14-verified-reviews.md) |
+| P20 — attestations vérifiables | [p20-verifiable-certificates.md](p20-verifiable-certificates.md) |
 | P16 — préparation des statuts et alertes | [p16-session-status-alerts.md](p16-session-status-alerts.md) |
 | C06 — paramètres natifs au déploiement | [c06-launch-settings.md](c06-launch-settings.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
@@ -119,7 +120,7 @@ SHA-256 de la spécification amendée :
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;
-2 = P09 à P14 et P16 (P15 annulé) ; P17 à P20 exigent une validation complémentaire explicite. La cible vérifiée est
+2 = P09 à P14 et P16 (P15 annulé) ; P20 est autorisé (#105) ; P17–P19 et les autres évolutions sont reportés. La cible vérifiée est
 Odoo Community `20.0-20261015` ([couverture native](native-coverage.md)). Les réserves sur les
 références Odoo 19, Qualiopi et l'émargement sont conservées. L'audit historique
 `MASTER_PROMPT_AUDIT_ODOO_19_NEOPRO_ACADEMY.md` n'est pas importé.

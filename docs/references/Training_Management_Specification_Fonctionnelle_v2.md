@@ -1,7 +1,7 @@
 > Révision du 30 octobre 2026 — [#102](https://github.com/Progideo/training_management/issues/102).
 > Les règles commerciales et comptables suivent désormais Odoo natif et les extensions/localisations installées.
 > Les mentions historiques MAD/EUR et virement manuel décrivent le premier organisme ; elles ne contraignent plus le module générique.
-> Voir la [décision commerciale et comptable du 30 octobre 2026](../native-commercial-accounting.md). P15 reste annulé ; P17–P20 restent conditionnels.
+> Voir la [décision commerciale et comptable du 30 octobre 2026](../native-commercial-accounting.md). P15 reste annulé. P20 est autorisé le 30 octobre 2026 (#105) ; P17–P19 et autres évolutions sont reportés. Les mentions conditionnelles historiques ci-dessous se lisent avec cette décision.
 
 Training Management pour NeoPro Academy
 
@@ -654,6 +654,11 @@ Limiter les réponses aux sources pédagogiques autorisées pour le participant,
 Acceptation — Nominal : une question reçoit une réponse fondée sur un support accessible et une référence vérifiable. Erreur : sans source suffisante, l'assistant le signale ; aucune réponse ne révèle un support client confidentiel ou un corrigé protégé. Il ne décide pas d'une validation pédagogique.
 
 ## P20 Attestation vérifiable
+
+Décision du 30 octobre 2026 : réalisation autorisée (#105), extension ciblée de S08,
+sans publication rétroactive des anciens PDF. Projection publique validée : émetteur,
+nom complet du bénéficiaire, référence, type, formation/version, émission, statut et
+empreinte SHA-256 du PDF. Voir les [règles P20](../p20-verifiable-certificates.md).
 
 Ajouter aux attestations retenues un QR code ou lien de vérification vers les seules informations nécessaires, avec gestion de validité, remplacement et révocation. Valider les données exposées avant publication. La vérification atteste l'authenticité du document ; elle ne confère aucune certification officielle ni Qualiopi. Rattachement : DOC01, SEC02.
 
