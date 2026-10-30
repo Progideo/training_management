@@ -73,6 +73,7 @@ if os.environ["S021_PHASE"] == "prepare":
             "reference": "HISTORICAL-NATIVE-COMMERCIAL",
         }
     )
+    env.flush_all()  # Capture stored related values after their normal V2 computation.
     env.cr.execute("SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename LIKE 'training_%'")
     tables = [row[0] for row in env.cr.fetchall()]
     tables += [
@@ -98,7 +99,17 @@ if os.environ["S021_PHASE"] == "prepare":
     print("NATIVE_COMMERCIAL_V2_SNAPSHOT_PERSISTED")
 else:
     for table, expected in json.loads(params.get_str(key)).items():
-        assert rows(table, expected["columns"]) == expected["rows"], "Historical rows changed: " + table
+        actual = rows(table, expected["columns"])
+        if actual != expected["rows"]:
+            before, after = (
+                [json.loads(row) for row in json.loads(expected["rows"])],
+                [json.loads(row) for row in json.loads(actual)],
+            )
+            changes = [
+                {column: (old, new) for column, old, new in zip(expected["columns"], left, right) if old != new}
+                for left, right in zip(before, after)
+            ]
+            raise AssertionError(f"Historical rows changed: {table}; {changes}; counts {len(before)}/{len(after)}")
     payment = env["account.payment"].search([("training_bank_reference", "=", "HISTORICAL-S021")])
     assert len(payment) == 1 and payment.training_receipt_restricted
     assert not env.ref("training_management_sale.view_account_payment_register_form_training").active
