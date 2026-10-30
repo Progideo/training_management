@@ -40,7 +40,7 @@ git -C "$repo" archive 367bfff6a90f21205236be55e50d3901013cb4ea addons | tar -x 
 TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i website,website_slides,training_management_sale,training_management_survey --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" TM_UPGRADE_PHASE=prepare step catalogue_prepare run_odoo shell --no-http < "$repo/tests/probes/catalogue_upgrade_probe.py"
 TM_ADDONS_DIR="$work_dir/addons" S021_PHASE=prepare step documents_prepare run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
-S021_PHASE=prepare step exact_prepare run_odoo shell --no-http < "$repo/tests/probes/native_commercial_history.py"
+TM_ADDONS_DIR="$work_dir/addons" S021_PHASE=prepare step exact_prepare run_odoo shell --no-http < "$repo/tests/probes/native_commercial_history.py"
 step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
 S021_PHASE=verify step documents_preserved run_odoo shell --no-http < "$repo/tests/probes/s021_history.py"
 TM_UPGRADE_PHASE=verify step catalogue_preserved run_odoo shell --no-http < "$repo/tests/probes/catalogue_upgrade_probe.py"
