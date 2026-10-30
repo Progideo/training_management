@@ -19,7 +19,7 @@ Ce document décrit le fonctionnement attendu de la future plateforme de formati
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Public            | Marché francophone mondial ; français au lancement.                                                                    |
 | Priorités         | Formations intraentreprise, puis inscriptions individuelles ; présentiel, distanciel, eLearning et mixte.              |
-| Commercialisation | Ventes en dirhams marocains MAD ou euros EUR ; virement bancaire ; pas de paiement en ligne.                           |
+| Commercialisation | Devises, tarification, fiscalité et paiements selon Odoo natif et les extensions/localisations installées.                           |
 | Pédagogie         | PDF, quiz et examens blancs à questions fixes, chronométrés, avec score et correction finale ; répétitions illimitées. |
 | Présences         | Papier ou numérique selon le cas ; émargement électronique dès le lancement.                                           |
 | Qualité           | Alignement volontaire sur Qualiopi ; aucune certification effective engagée.                                           |
@@ -35,8 +35,8 @@ L'audit Odoo 19 reste suspendu. Cette révision porte sur les spécifications. L
 
 | **Parcours**                | **Déroulement et résultat**                                                                                                                                                                                                                              |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Intraentreprise prioritaire | Le commercial analyse le besoin, prépare un devis MAD ou EUR, puis réserve les places. Le coordinateur nomme les participants, prépare la session et ouvre les accès. Le formateur suit présences et acquis. Le responsable qualité contrôle la clôture. |
-| Individuel synchrone        | Le visiteur choisit une formation et une session, transmet une demande, reçoit les modalités de virement. NeoPro confirme la place et les accès ; le participant suit la formation et retrouve ses documents.                                            |
+| Intraentreprise prioritaire | Le commercial analyse le besoin, prépare un devis selon la tarification native Odoo, puis réserve les places. Le coordinateur nomme les participants, prépare la session et ouvre les accès. Le formateur suit présences et acquis. Le responsable qualité contrôle la clôture. |
+| Individuel synchrone        | Le visiteur choisit une formation et une session, transmet une demande, reçoit les modalités de paiement du devis. NeoPro confirme la place et les accès ; le participant suit la formation et retrouve ses documents.                                            |
 | eLearning autonome          | La demande porte sur un parcours, sans session collective obligatoire. Après validation NeoPro, le participant consulte les PDF, réalise les activités et examens, puis conserve les accès jusqu'à leur échéance.                                        |
 | Mixte                       | Une inscription réunit activités autonomes et séances datées. Les critères de présence et de complétion sont visibles séparément ; le bilan rassemble les deux.                                                                                          |
 | Annulation ou report        | NeoPro trace le motif, les impacts commerciaux et les accès. Le report crée un lien vers la nouvelle réalisation ; les preuves de l'ancienne ne sont pas réécrites.                                                                                      |
@@ -359,7 +359,7 @@ Acceptation — Nominal : un participant réalise inscription, quiz et émargeme
 
 # 12 Indicateurs de pilotage
 
-Toute vue affiche période, population, date d'extraction, numérateur et dénominateur. Dénominateur nul : « non calculable ». Pas de somme brute de MAD et EUR. Le dossier qualité publie seulement des indicateurs validés et non identifiants.
+Toute vue affiche période, population, date d'extraction, numérateur et dénominateur. Dénominateur nul : « non calculable ». Pas de somme brute de devises différentes. Le dossier qualité publie seulement des indicateurs validés et non identifiants.
 
 | **Indicateur**           | **Formule et périmètre proposé**                                                                                                                        | **Accès**                    |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
@@ -483,7 +483,7 @@ Le périmètre et le séquencement sont acceptés : phase 1 P01 à P08, phase 2 
 
 ## Paramètres à fixer avant mise en service
 
-Entité facturante et devise comptable ; tarifs MAD/EUR ; fiscalité et mentions validées ; coordonnées bancaires ; durées d'accès ; délai de réservation ; conditions d'annulation ; fenêtres d'émargement et niveau de signature ; responsabilités qualité ; conservation ; délai d'assistance ; volumes, concurrence, objectifs de service et échéance de lancement. Aucun de ces paramètres ne doit être deviné au déploiement.
+Entité facturante et devise comptable ; devises, tarifs et moyens de paiement natifs ; fiscalité et mentions validées ; coordonnées bancaires ; durées d'accès ; délai de réservation ; conditions d'annulation ; fenêtres d'émargement et niveau de signature ; responsabilités qualité ; conservation ; délai d'assistance ; volumes, concurrence, objectifs de service et échéance de lancement. Aucun de ces paramètres ne doit être deviné au déploiement.
 
 ## Passage à l'étape suivante
 
@@ -523,7 +523,7 @@ P17 Accords et budgets entreprise ; P18 Environnements pratiques ; P19 Assistant
 
 Les phases de livraison ci-dessus sont distinctes des étapes de travail du projet : spécification, architecture, développement et déploiement. Le séquencement ne fixe aucune date ni aucun budget et n'autorise pas le démarrage automatique des travaux.
 
-Invariants : marché francophone mondial ; intraentreprise prioritaire ; inscriptions individuelles ensuite ; MAD et EUR ; virement bancaire sans paiement en ligne ; supports surtout PDF ; émargement électronique dès le lancement avec papier au cas par cas ; reprise Odoo 19 indispensable ; absence de certification Qualiopi effective.
+Invariants : marché francophone mondial ; intraentreprise prioritaire ; inscriptions individuelles ensuite ; règles commerciales et comptables natives Odoo ; supports surtout PDF ; émargement électronique dès le lancement avec papier au cas par cas ; reprise Odoo 19 indispensable ; absence de certification Qualiopi effective.
 
 Les exigences ci-dessous complètent les règles existantes. SEC01, SEC02, NOT01 et UX01 s'appliquent à tous les ajouts : droits par périmètre, conservation définie, notifications tracées et interfaces accessibles. Les nouveaux tests constituent des critères de recette, pas des résultats déjà obtenus.
 
@@ -537,7 +537,7 @@ Acceptation — Nominal : les deux parcours aboutissent au bon formulaire en con
 
 ## P02 Demande intra guidée
 
-Le demandeur choisit catalogue, adaptation ou sur mesure et décrit objectifs, niveau, effectif, pays, dates souhaitées, modalité et outils disponibles. Il peut joindre un cahier des charges et demander un échange avec un conseiller. Le commercial reçoit une demande qualifiée, puis prépare un devis MAD ou EUR ; aucune disponibilité ni commande n'est confirmée automatiquement. Rattachement : COM01, ORG01.
+Le demandeur choisit catalogue, adaptation ou sur mesure et décrit objectifs, niveau, effectif, pays, dates souhaitées, modalité et outils disponibles. Il peut joindre un cahier des charges et demander un échange avec un conseiller. Le commercial reçoit une demande qualifiée, puis prépare un devis selon la tarification native Odoo ; aucune disponibilité ni commande n'est confirmée automatiquement. Rattachement : COM01, ORG01.
 
 Acceptation — Nominal : la demande et ses pièces sont retrouvées dans le dossier commercial avec accusé de réception. Erreur : champs indispensables absents ou pièce interdite empêchent la soumission avec indication claire ; les pièces ne sont jamais publiques.
 
@@ -637,7 +637,7 @@ P17 à P20 ne font partie ni de la phase 1 ni de la phase 2. Les critères ci-de
 
 ## P17 Accords et budgets entreprise
 
-Gérer accords négociés, tarifs, périodes de validité, enveloppes et consommation par entreprise. Séparer MAD et EUR ; tracer engagements, consommation, annulations et restitutions. Définir les règles d'imputation avant activation. Aucun abonnement illimité n'est présumé. Dépend de P05 et des règles commerciales COM02 et COM03.
+Gérer accords négociés, tarifs, périodes de validité, enveloppes et consommation par entreprise. Séparer les devises ; tracer engagements, consommation, annulations et restitutions. Définir les règles d'imputation avant activation. Aucun abonnement illimité n'est présumé. Dépend de P05 et des règles commerciales COM02 et COM03.
 
 Acceptation — Nominal : une inscription consomme le montant autorisé et le solde est explicable. Erreur : dépassement bloqué ou soumis à dérogation tracée ; aucun mélange de devises ou remboursement non justifié.
 

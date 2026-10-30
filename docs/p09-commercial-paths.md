@@ -50,8 +50,9 @@ prérequis, capacité et autorisation commerciale restent applicables.
 
 ## Modifications et conservation
 
-Après confirmation, la composition, l'effectif et les prix de l'offre sont
-figés ; une modification contractuelle nécessite une révision explicite.
+Après confirmation, la composition et l’effectif pédagogique restent figés ;
+leur modification nécessite une révision explicite. Les prix, remises et taxes
+suivent les protections natives Odoo, conformément à #102.
 La copie native prépare un nouveau devis sans transférer les inscriptions
 ni les droits. La régularisation du contrat antérieur reste manuelle.
 Annulation, report et remplacement restent manuels et motivés. Les frais
