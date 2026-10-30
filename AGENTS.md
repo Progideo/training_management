@@ -44,7 +44,7 @@ Ne pas supposer que les fichiers joints et le dépôt sont synchronisés. Signal
 Préserver les exigences suivantes :
 - Marché francophone mondial ; intraentreprise prioritaire, puis inscriptions individuelles.
 - Présentiel, distanciel, mixte et eLearning.
-- Commercialisation en MAD ou EUR ; virement bancaire, sans paiement en ligne au lancement.
+- Devises, tarifs, remises, fiscalité, facturation, paiements et rapprochements selon les règles natives Odoo et les extensions/localisations installées ; aucun mode de paiement ni couple de devises imposé par le module générique (#102).
 - Supports principalement PDF, quiz et examens blancs.
 - Examens blancs à questions choisies par le créateur, durée contrôlée, score et correction finale, tentatives illimitées.
 - Émargement électronique dès le lancement ; papier possible selon les cas.

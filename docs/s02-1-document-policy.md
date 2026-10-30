@@ -1,5 +1,12 @@
 # S02.1 Politique documentaire et protections natives
 
+> Référence historique S02. La [décision du 30 octobre 2026](native-commercial-accounting.md)
+> remplace les restrictions MAD/EUR, prix fixes/remise nulle, virement manuel,
+> vérification bancaire obligatoire et interdiction des paiements en ligne.
+> Les preuves datées ci-dessous restent celles des règles anciennes ; elles ne
+> constituent pas une validation des nouveaux parcours. Les protections documentaires demeurent.
+
+
 Référence : [#50](https://github.com/Progideo/training_management/issues/50),
 COM03 et SEC01. Ce préalable du [cadrage S05 validé](s05-private-materials.md)
 consolide les protections de S02 sans changer les habilitations ni les parcours.

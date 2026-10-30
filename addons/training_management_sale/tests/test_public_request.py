@@ -16,6 +16,7 @@ class TestPublicRequest(CatalogueCase, HttpCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env.ref("base.EUR").active = True
         cls.salesperson = new_test_user(
             cls.env,
             login="p02_sales",
@@ -150,7 +151,7 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         cases = [
             {"objectives": ""},
             {"count": "0"},
-            {"currency": "USD"},
+            {"currency": "XXX"},
             {"country": "0"},
             {"date_from": "2026-12-01", "date_to": "2026-11-01"},
             {"mode": "invalid"},
@@ -168,3 +169,23 @@ class TestPublicRequest(CatalogueCase, HttpCase):
                     uuid4().hex,
                     FileStorage(stream=BytesIO(data), filename=filename),
                 )
+
+    def test_public_request_offers_and_accepts_any_active_currency(self):
+        gbp = self.env.ref("base.GBP")
+        gbp.active = True
+        self.authenticate(None, None)
+        page = self.url_open("/formations/demande")
+        self.assertIn('value="GBP"', page.text)
+        lead = self.env["crm.lead"]._submit_public_request(
+            self.company,
+            self.request_values(currency="GBP"),
+            uuid4().hex,
+        )
+        self.assertEqual(lead.training_requested_currency_id, gbp)
+        gbp.active = False
+        with self.assertRaises(ValidationError):
+            self.env["crm.lead"]._submit_public_request(
+                self.company,
+                self.request_values(currency="GBP"),
+                uuid4().hex,
+            )

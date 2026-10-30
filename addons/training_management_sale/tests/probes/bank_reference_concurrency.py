@@ -10,7 +10,6 @@ from uuid import uuid4
 from psycopg2.errors import SerializationFailure
 
 from odoo import Command, api
-from odoo.exceptions import ValidationError
 from odoo.tests import new_test_user
 
 if not env.cr.dbname.startswith(("tm_s01_test_", "tm_s02_test_")):  # noqa: F821
@@ -70,8 +69,7 @@ values = {
     "partner_type": "customer",
     "amount": 10,
     "currency_id": company.currency_id.id,
-    "training_bank_reference": "FICTIONAL-CONCURRENT-" + suffix.upper(),
-    "training_bank_verified": True,
+    "memo": "FICTIONAL-CONCURRENT-" + suffix.upper(),
 }
 payments = env["account.payment"].with_user(finance).with_company(company).create([values.copy(), values.copy()])
 env.cr.commit()
@@ -87,35 +85,24 @@ with env.registry.cursor() as first, env.registry.cursor() as second:
         assert current["account.payment"].search_count(domain) == 0
     e1["account.payment"].browse(payments[0].id).action_post()
     first.commit()
+    # The native journal sequence may serialize these postings. Either success
+    # or a native serialization retry is valid; no Training reference fence remains.
     try:
         e2["account.payment"].browse(payments[1].id).action_post()
+        second.commit()
     except SerializationFailure:
         second.rollback()
-    else:
-        raise AssertionError("A stale snapshot must not validate the second payment")
-# Inspect committed results using an independent snapshot, never the seed env.
 with env.registry.cursor() as third:
     e3 = api.Environment(third, finance.id, context)
-    paid = e3["account.payment"].search(domain)
-    assert paid.ids == payments[:1].ids
-    assert paid.move_id.state == "posted"
-    assert paid.training_bank_verified_by_id.id == finance.id
     retry = e3["account.payment"].browse(payments[1].id)
-    try:
-        with third.savepoint():
-            retry.action_post()
-    except ValidationError:  # pylint: disable=except-pass  # the expected failure is the test
-        pass
-    else:
-        raise AssertionError("A full retry must detect the already committed reference")
-    assert retry.state == "draft" and not retry.move_id
-    retry.write({"training_duplicate_reference_reason": "Intentional allocation to another invoice"})
-    retry.action_post()
+    if retry.state == "draft":
+        retry.action_post()
     third.commit()
 with env.registry.cursor() as fourth:
     e4 = api.Environment(fourth, finance.id, context)
     paid = e4["account.payment"].search(domain)
     assert len(paid) == 2
-    assert len(paid.filtered("training_duplicate_reference_reason")) == 1
-print("TRAINING_CONCURRENCY_OK: stale snapshot rejected; fresh retry refused; motivated split accepted")  # pylint: disable=print-used  # odoo shell probe prints its verdict
+    assert all(payment.move_id.state == "posted" for payment in paid)
+    assert not paid.mapped("training_bank_verified_by_id")
+print("TRAINING_CONCURRENCY_OK: native repeated references posted after native retry if needed")  # pylint: disable=print-used
 env.cr.rollback()

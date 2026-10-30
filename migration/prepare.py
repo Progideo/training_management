@@ -5,6 +5,7 @@ import csv
 from datetime import date, datetime, timezone
 import hashlib
 import io
+from fractions import Fraction
 import json
 from pathlib import Path
 import re
@@ -17,19 +18,34 @@ METHODS = {"native_import", "manual", "archive", "unknown"}
 CONTACT_FIELDS = ("name", "email", "phone", "street", "city", "zip", "vat")
 CSV_FIELDS = ("id", *CONTACT_FIELDS, "country_id/id", "parent_id/id", "company_id/id", "active")
 XMLID = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z0-9_]+\Z")
-MONEY = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]{1,2})?\Z")
+MONEY = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?\Z")
 
 
-def cents(value):
+def exact_amount(value):
     if not isinstance(value, str) or not MONEY.fullmatch(value):
-        raise ValueError("Amount must be an exact decimal string with at most two fractional digits")
-    whole, _, fraction = value.removeprefix("-").partition(".")
-    result = int(whole) * 100 + int(fraction.ljust(2, "0"))
-    return -result if value.startswith("-") else result
+        raise ValueError("Amount must be a finite exact decimal string")
+    return Fraction(value)
 
 
 def money(value):
-    return f"{'-' if value < 0 else ''}{abs(value) // 100}.{abs(value) % 100:02d}"
+    # Exact source comparison only: never convert currencies or apply target rounding.
+    value = Fraction(value)
+    denominator, twos, fives = value.denominator, 0, 0
+    while denominator % 2 == 0:
+        denominator //= 2
+        twos += 1
+    while denominator % 5 == 0:
+        denominator //= 5
+        fives += 1
+    digits = max(2, twos, fives)
+    scale = 10**digits
+    amount = abs(value.numerator) * scale // value.denominator
+    return f"{'-' if value < 0 else ''}{amount // scale}.{amount % scale:0{digits}d}"
+
+
+def currency_name(value):
+    # Offline source evidence; target availability/rounding must be checked in Odoo.
+    return text(value) and value == value.strip()
 
 
 def external_id(system, source_id):
@@ -188,8 +204,8 @@ def inspect(bundle, root):
             if kind == "balances":
                 currency = row.get("currency")
                 try:
-                    amount = cents(row.get("amount"))
-                    if currency not in ("MAD", "EUR"):
+                    amount = exact_amount(row.get("amount"))
+                    if not currency_name(currency):
                         raise ValueError
                     totals[currency] = totals.get(currency, 0) + amount
                 except (ValueError, TypeError):
@@ -223,8 +239,8 @@ def inspect(bundle, root):
     try:
         if not isinstance(expected_totals, dict):
             raise ValueError
-        declared = {k: cents(v) for k, v in expected_totals.items()}
-        if set(declared) - {"MAD", "EUR"}:
+        declared = {k: exact_amount(v) for k, v in expected_totals.items()}
+        if any(not currency_name(currency) for currency in declared):
             raise ValueError
         if declared != totals:
             fail("balances_not_reconciled")

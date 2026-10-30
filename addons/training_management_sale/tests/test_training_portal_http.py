@@ -6,7 +6,9 @@ from pypdf import PdfWriter
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, JsonRpcException, new_test_user, tagged
-from odoo.tools import mute_logger
+from odoo.tools import file_open, mute_logger
+from odoo.tools.binary import BinaryBytes
+from odoo.addons.payment import utils as payment_utils
 
 
 @tagged("post_install", "-at_install")
@@ -174,14 +176,22 @@ class TestTrainingPortalHttp(HttpCase):
             allow_redirects=False,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn('id="o_payment_form"', response.text)
-        self.assertNotIn('id="payment_method"', response.text)
+        # Native form is omitted without a configured provider; payment values are
+        # passed through unchanged (the native amount field is rendered).
+        self.assertIn('id="payment_method"', response.text)
+        # Without a configured provider, native validation still rejects a transaction.
         with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
             self.make_jsonrpc_request(
                 f"/my/orders/{self.order.id}/transaction",
                 {"access_token": self.order.access_token},
             )
         self.assertFalse(self.order.transaction_ids)
+        self.authenticate(self.colleague_user.login, self.colleague_user.login)
+        with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
+            self.make_jsonrpc_request(
+                f"/my/orders/{self.order.id}/transaction",
+                {"access_token": self.order.access_token},
+            )
 
     def test_named_contact_required_even_with_a_valid_token(self):
         url = f"/my/orders/{self.order.id}?access_token={self.order.access_token}"
@@ -409,7 +419,7 @@ class TestTrainingPortalHttp(HttpCase):
             "account_payment.enable_portal_payment",
             "True",
         )
-        self.assertFalse(invoice._has_to_be_paid())
+        self.assertTrue(invoice._has_to_be_paid())
         self.env["sale.order.line"].create(
             {
                 "order_id": self.order.id,
@@ -490,7 +500,20 @@ class TestTrainingPortalHttp(HttpCase):
             )
         self.assertEqual(self.url_open(url, allow_redirects=False).status_code, 200)
         self.assertIn(invoice.name, self.url_open(mail_url).text)
-        self.assertNotIn("Pay Now", self.url_open(url).text)
+        self.assertIn('id="pay_with"', self.url_open(url).text)
+        payment_token = payment_utils.generate_access_token(
+            invoice.partner_id.id,
+            invoice.amount_residual,
+            invoice.currency_id.id,
+            env=self.env,
+        )
+        generic_payment_url = (
+            f"/payment/pay?invoice_id={invoice.id}&amount={invoice.amount_residual}&access_token={payment_token}"
+        )
+        self.assertEqual(self.url_open(generic_payment_url).status_code, 200)
+        self.authenticate(self.colleague_user.login, self.colleague_user.login)
+        self.assertIn(self.url_open(generic_payment_url, allow_redirects=False).status_code, (403, 404))
+        self.authenticate(self.authorized_user.login, self.authorized_user.login)
         with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
             self.make_jsonrpc_request(
                 f"/invoice/transaction/{invoice.id}",
@@ -503,6 +526,7 @@ class TestTrainingPortalHttp(HttpCase):
             200,
         )
         invoice.training_portal_partner_ids = [Command.clear()]
+        self.assertIn(self.url_open(generic_payment_url, allow_redirects=False).status_code, (403, 404))
         self.assertFalse([r for r in invoice._notify_get_recipients(message) if r["share"]])
         with self.assertRaises(ValidationError):
             sender._get_mail_params(
@@ -609,3 +633,52 @@ class TestTrainingPortalHttp(HttpCase):
                 self.assertNotIn("Fictional private order bytes", response.text)
             self.authenticate(sales.login, sales.login)
             self.assertEqual(self.url_open(url).content, b"Fictional private order bytes")
+
+    def test_native_transaction_routes_keep_document_grants_and_revocation(self):
+        provider = self.env["payment.provider"].create(
+            {"name": "Fictional Disabled Provider", "code": "none", "active": False}
+        )
+        with file_open("web/static/img/placeholder.png", "rb") as image:
+            method = self.env["payment.method"].create(
+                {
+                    "name": "Fictional Method",
+                    "code": "fictional",
+                    "provider_id": provider.id,
+                    "image": BinaryBytes(image.read()),
+                }
+            )
+        self.assertFalse(provider.active)
+        payload = {
+            "access_token": self.order.access_token,
+            "provider_id": provider.id,
+            "payment_method_id": method.id,
+            "token_id": None,
+            "amount": 25,
+            "flow": "redirect",
+            "tokenization_requested": False,
+            "landing_route": "/payment/status",
+        }
+        route = f"/my/orders/{self.order.id}/transaction"
+        self.authenticate(self.colleague_user.login, self.colleague_user.login)
+        with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
+            self.make_jsonrpc_request(route, payload)
+        self.authenticate(self.authorized_user.login, self.authorized_user.login)
+        result = self.make_jsonrpc_request(route, payload)
+        tx = self.env["payment.transaction"].search([("reference", "=", result["reference"])])
+        self.assertEqual(tx.sale_order_ids, self.order)
+        self.assertEqual(tx.amount, 25)
+        self.assertEqual(tx.state, "draft")
+        self.assertEqual(tx._bus_channels(), self.authorized_user.partner_id)
+        token = payment_utils.generate_access_token(tx.partner_id.id, tx.amount, tx.currency_id.id, env=self.env)
+        confirmation = f"/payment/confirmation?tx_id={tx.id}&access_token={token}"
+        self.assertEqual(self.url_open(confirmation).status_code, 200)
+        self.assertEqual(self.url_open("/payment/status").status_code, 200)
+        self.order.training_portal_partner_ids = [Command.clear()]
+        self.assertFalse(tx._bus_channels())
+        for url in (confirmation, "/payment/status"):
+            self.assertIn(self.url_open(url, allow_redirects=False).status_code, (403, 404))
+        with self.assertRaises(JsonRpcException), mute_logger("odoo.http"):
+            self.make_jsonrpc_request("/payment/process", {})
+        self.authenticate(None, None)
+        self.assertIn(self.url_open(confirmation, allow_redirects=False).status_code, (403, 404))
+        self.assertFalse(self.env["training.enrollment"].search([]))

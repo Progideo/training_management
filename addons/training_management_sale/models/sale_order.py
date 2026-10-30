@@ -85,11 +85,6 @@ class SaleOrder(models.Model):
             return orders
 
     def write(self, vals):
-        if "currency_id" in vals and any(
-            order.state == "sale" and order.training_request_kind and order.currency_id.id != vals["currency_id"]
-            for order in self
-        ):
-            raise ValidationError(self.env._("Revise the training offer instead of changing its confirmed currency."))
         if any(order.state == "sale" for order in self) and set(vals) & {
             "training_request_kind",
             "training_requested_program_id",
@@ -121,17 +116,11 @@ class SaleOrder(models.Model):
                 )
             if order.training_attendee_count <= 0:
                 raise ValidationError(self.env._("Enter a positive participant count on the training quotation."))
-            if (
-                order.training_requested_currency_id.name not in ("MAD", "EUR")
-                or order.training_requested_currency_id != order.currency_id
-                or order.pricelist_id.currency_id != order.currency_id
-            ):
-                raise ValidationError(self.env._("Choose a pricelist in the requested MAD or EUR currency."))
             if not lines or any(line.training_program_id != order.training_requested_program_id for line in lines):
                 raise ValidationError(self.env._("Training lines must use the requested programme version."))
             lines._check_training_program()
             for line in lines:
-                line._check_training_tariff()
+                line._check_training_quantity()
 
     def action_quotation_send(self):
         self._check_training_offer()
@@ -154,7 +143,3 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         self._check_training_offer()
         return super().action_confirm()
-
-    def _has_to_be_paid(self):
-        self.ensure_one()
-        return not self.training_request_kind and super()._has_to_be_paid()

@@ -1,5 +1,12 @@
 # S02 — Étude du circuit commercial natif et écarts
 
+> Référence historique S02. La [décision du 30 octobre 2026](native-commercial-accounting.md)
+> remplace les restrictions MAD/EUR, prix fixes/remise nulle, virement manuel,
+> vérification bancaire obligatoire et interdiction des paiements en ligne.
+> Les preuves datées ci-dessous restent celles des règles anciennes ; elles ne
+> constituent pas une validation des nouveaux parcours. Les protections documentaires demeurent.
+
+
 État du 20 octobre 2026, première étude préalable au code métier.
 Besoin : [#12](https://github.com/Progideo/training_management/issues/12).
 [Cadrage accepté](https://github.com/Progideo/training_management/issues/12#issuecomment-6290595309).

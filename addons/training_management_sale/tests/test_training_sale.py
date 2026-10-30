@@ -5,7 +5,6 @@ from odoo import Command, fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, new_test_user, tagged
 from odoo.tools.translate import load_language
-from odoo.addons.training_management_sale.controllers.portal import TrainingCustomerPortal
 
 
 @tagged("post_install", "-at_install")
@@ -289,34 +288,17 @@ class TestTrainingSale(TransactionCase):
         )
         order.prepayment_percent = 0.25
         self.assertGreater(order.amount_total, 0)
-        self.assertFalse(order._has_to_be_paid())
-        self.assertIsNone(
-            TrainingCustomerPortal()._get_payment_values(
-                order,
-                payment_amount=100,
-            )["payment_amount"]
+        self.assertTrue(order._has_to_be_paid())
+        link = self.env["payment.link.wizard"].create(
+            {
+                "res_model": "sale.order",
+                "res_id": order.id,
+                "amount": 25,
+                "currency_id": self.eur.id,
+                "partner_id": self.partner.id,
+            }
         )
-        with self.assertRaises(ValidationError):
-            self.env["payment.transaction"].create(
-                {
-                    "sale_order_ids": [Command.set(order.ids)],
-                }
-            )
-        with self.assertRaises(ValidationError):
-            self.env["payment.link.wizard"].with_context(
-                active_model="sale.order",
-                active_id=order.id,
-            ).default_get(["res_model", "res_id", "amount"])
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            self.env["payment.link.wizard"].create(
-                {
-                    "res_model": "sale.order",
-                    "res_id": order.id,
-                    "amount": 25,
-                    "currency_id": self.eur.id,
-                    "partner_id": self.partner.id,
-                }
-            )
+        self.assertTrue(link.link)
         with self.assertRaises(AccessError):
             order.with_user(self.portal).read(["name"])
         company_contact = self.env["res.partner"].create(
@@ -461,12 +443,6 @@ class TestTrainingSale(TransactionCase):
                     ):
                         with self.assertRaises(ValidationError):
                             order.write({field_name: self.partner.id})
-                with self.assertRaises(ValidationError):
-                    pricelists[currency.name].write(
-                        {
-                            "currency_id": (self.eur if currency == mad else mad).id,
-                        }
-                    )
 
     def test_missing_or_changed_tariff_cannot_be_sent_or_confirmed(self):
         pricelist = self.env["product.pricelist"].create(
@@ -495,10 +471,7 @@ class TestTrainingSale(TransactionCase):
                 "training_program_id": self.program.id,
             }
         )
-        with self.assertRaises(ValidationError):
-            order.action_quotation_send()
-        with self.assertRaises(ValidationError):
-            order.action_confirm()
+        order._check_training_offer()  # Native fallback price needs no explicit rule.
         rule = self.env["product.pricelist.item"].create(
             {
                 "pricelist_id": pricelist.id,
@@ -514,16 +487,12 @@ class TestTrainingSale(TransactionCase):
             order.action_confirm()
         line.product_uom_qty = 12
         line.price_unit = 126
-        with self.assertRaises(ValidationError):
-            order.action_confirm()
-        line.price_unit = 125
         line.discount = 5
-        with self.assertRaises(ValidationError):
-            order.action_confirm()
-        line.discount = 0
         rule.compute_price = "discount"
-        with self.assertRaises(ValidationError):
-            order.action_confirm()
+        order.action_confirm()
+        self.assertEqual(order.state, "sale")
+        self.assertEqual(line.price_unit, 126)
+        self.assertEqual(line.discount, 5)
 
     def test_taxable_down_payment_uses_company_liability_account(self):
         self.eur.active = True
@@ -887,38 +856,18 @@ class TestTrainingSale(TransactionCase):
         with self.assertRaises(AccessError):
             advance.with_user(portal_colleague).read(["name"])
         self.company.link_qr_code = True
-        self.assertFalse(final_invoice.display_link_qr_code)
-        self.assertFalse(final_invoice._get_portal_payment_link())
-        self.assertFalse(final_invoice._generate_portal_payment_qr())
-        invoice_html = self.env["ir.actions.report"]._render_qweb_html(
-            "account.account_invoices",
-            [final_invoice.id],
-        )[0]
-        self.assertNotIn(
-            "payment_link_qrcode",
-            invoice_html.decode() if isinstance(invoice_html, bytes) else invoice_html,
+        # Links are native; document grants still guard access to their targets.
+        self.assertTrue(final_invoice._has_to_be_paid())
+        link = self.env["payment.link.wizard"].create(
+            {
+                "res_model": "account.move",
+                "res_id": final_invoice.id,
+                "amount": 1200,
+                "currency_id": self.eur.id,
+                "partner_id": invoice_address.id,
+            }
         )
-        with self.assertRaises(ValidationError):
-            self.env["payment.link.wizard"].with_context(
-                active_model="account.move",
-                active_id=final_invoice.id,
-            ).default_get(["res_model", "res_id", "amount"])
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            self.env["payment.link.wizard"].create(
-                {
-                    "res_model": "account.move",
-                    "res_id": final_invoice.id,
-                    "amount": 1200,
-                    "currency_id": self.eur.id,
-                    "partner_id": invoice_address.id,
-                }
-            )
-        with self.assertRaises(ValidationError):
-            self.env["payment.transaction"].create(
-                {
-                    "invoice_ids": [Command.set(final_invoice.ids)],
-                }
-            )
+        self.assertTrue(link.link)
 
         notice = (
             self.env["training.bank.transfer.notice"]
@@ -1021,23 +970,6 @@ class TestTrainingSale(TransactionCase):
         )
         cash_method = cash_journal.inbound_payment_method_line_ids.filtered(lambda line: line.code == "manual")
         self.assertEqual(len(cash_method), 1)
-        cash_wizard = (
-            self.env["account.payment.register"]
-            .with_context(
-                active_model="account.move",
-                active_ids=final_invoice.ids,
-            )
-            .create(
-                {
-                    "journal_id": cash_journal.id,
-                    "currency_id": self.eur.id,
-                    "payment_method_line_id": cash_method.id,
-                }
-            )
-        )
-        with self.assertRaises(ValidationError):
-            cash_wizard.action_create_payments()
-        self.assertEqual(final_invoice.amount_residual, 1200)
         payment_wizard = (
             self.env["account.payment.register"]
             .with_context(
@@ -1054,39 +986,12 @@ class TestTrainingSale(TransactionCase):
                 }
             )
         )
-        self.assertTrue(payment_wizard.training_bank_payment_required)
-        with self.assertRaises(ValidationError):
-            payment_wizard.action_create_payments()
-        mad = self.env.ref("base.MAD")
-        mad.active = True
-        payment_wizard.training_bank_reference = " fictional-transfer-001 "
-        with self.assertRaises(ValidationError):
-            payment_wizard.action_create_payments()
-        payment_wizard.write(
-            {
-                "training_bank_verified": True,
-                "currency_id": mad.id,
-            }
-        )
-        with self.assertRaises(ValidationError):
-            payment_wizard.action_create_payments()
-        payment_wizard.currency_id = self.eur
-        payment_wizard.amount = 300
-        payment_wizard.payment_difference_handling = "open"
-        self.assertEqual(payment_wizard.amount, 300)
-        payment_wizard.action_create_payments()
-        first_payment = self.env["account.payment"].search(
-            [
-                ("journal_id", "=", bank_journal.id),
-                ("training_bank_reference", "=", "FICTIONAL-TRANSFER-001"),
-            ]
-        )
+        first_payment = payment_wizard._create_payments()
         self.assertEqual(len(first_payment), 1)
         self.assertEqual(first_payment.memo, final_invoice.name)
-        self.assertNotEqual(first_payment.memo, first_payment.training_bank_reference)
-        self.assertTrue(first_payment.training_bank_verified)
-        self.assertEqual(first_payment.training_bank_verified_by_id, self.env.user)
-        self.assertTrue(first_payment.training_bank_verified_at)
+        self.assertFalse(first_payment.training_bank_reference)
+        self.assertFalse(first_payment.training_bank_verified_at)
+        self.assertTrue(first_payment.training_receipt_restricted)
         self.assertEqual(first_payment.reconciled_invoice_ids, final_invoice)
         receipt_defaults = first_payment._message_get_default_recipients()[first_payment.id]
         self.assertEqual(receipt_defaults["partner_ids"], colleague.ids)
@@ -1249,76 +1154,12 @@ class TestTrainingSale(TransactionCase):
                 active_model="account.move",
                 active_ids=advance.ids,
             )
-            .create(
-                {
-                    "journal_id": bank_journal.id,
-                    "payment_method_line_id": manual_method.id,
-                    "currency_id": self.eur.id,
-                    "amount": 100,
-                    "payment_difference_handling": "open",
-                    "training_bank_reference": " fictional-transfer-001 ",
-                    "training_bank_verified": True,
-                }
-            )
+            .create({"journal_id": bank_journal.id, "amount": 100, "payment_difference_handling": "open"})
         )
-        self.assertTrue(split_wizard.training_bank_payment_required)
-        self.assertTrue(split_wizard.training_duplicate_reference_exists)
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            split_wizard.action_create_payments()
-        self.assertEqual(advance.amount_residual, 400)
-        split_wizard.training_duplicate_reference_reason = "Fictional split across two invoices"
         split_wizard.action_create_payments()
         self.assertEqual(advance.amount_residual, 300)
-        split_payments = self.env["account.payment"].search(
-            [
-                ("journal_id", "=", bank_journal.id),
-                ("training_bank_reference", "=", "FICTIONAL-TRANSFER-001"),
-                ("state", "in", ("paid", "reconciled")),
-            ]
-        )
-        self.assertEqual(len(split_payments), 2)
-        self.assertTrue(split_payments.filtered("training_duplicate_reference_reason"))
-        direct_payment = self.env["account.payment"].create(
-            {
-                "date": "2026-10-20",
-                "amount": 50,
-                "payment_type": "inbound",
-                "partner_type": "customer",
-                "partner_id": invoice_address.id,
-                "journal_id": bank_journal.id,
-                "company_id": self.company.id,
-                "currency_id": self.eur.id,
-                "payment_method_line_id": manual_method.id,
-                "destination_account_id": receivable.id,
-                "training_bank_reference": "FICTIONAL-TRANSFER-001",
-                "training_bank_verified": True,
-            }
-        )
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            direct_payment.action_post()
-        untagged_payment = self.env["account.payment"].create(
-            {
-                "date": "2026-10-20",
-                "amount": 50,
-                "payment_type": "inbound",
-                "partner_type": "customer",
-                "partner_id": invoice_address.id,
-                "journal_id": bank_journal.id,
-                "company_id": self.company.id,
-                "currency_id": self.eur.id,
-                "payment_method_line_id": manual_method.id,
-                "destination_account_id": receivable.id,
-            }
-        )
-        untagged_payment.action_post()
         invoice_receivable = final_invoice.line_ids.filtered(lambda line: line.account_id == receivable)
-        payment_receivable = untagged_payment.move_id.line_ids.filtered(lambda line: line.account_id == receivable)
-        self.assertEqual(len(invoice_receivable), 1)
-        self.assertEqual(len(payment_receivable), 1)
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            (invoice_receivable + payment_receivable).reconcile()
-        self.assertEqual(final_invoice.amount_residual, 900)
-        unchecked_payment = self.env["account.payment"].create(
+        native_payment = self.env["account.payment"].create(
             {
                 "date": "2026-10-20",
                 "amount": 50,
@@ -1326,120 +1167,33 @@ class TestTrainingSale(TransactionCase):
                 "partner_type": "customer",
                 "partner_id": invoice_address.id,
                 "journal_id": bank_journal.id,
-                "company_id": self.company.id,
                 "currency_id": self.eur.id,
                 "payment_method_line_id": manual_method.id,
                 "destination_account_id": receivable.id,
-                "training_bank_reference": "FICTIONAL-UNCHECKED-001",
             }
         )
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            unchecked_payment.action_post()
-        valid_direct_payment = self.env["account.payment"].create(
-            {
-                "date": "2026-10-20",
-                "amount": 50,
-                "payment_type": "inbound",
-                "partner_type": "customer",
-                "partner_id": invoice_address.id,
-                "journal_id": bank_journal.id,
-                "company_id": self.company.id,
-                "currency_id": self.eur.id,
-                "payment_method_line_id": manual_method.id,
-                "destination_account_id": receivable.id,
-                "training_bank_reference": "FICTIONAL-TRANSFER-002",
-                "training_bank_verified": True,
-            }
-        )
-        valid_direct_payment.action_post()
-        unallocated_recipients = valid_direct_payment._message_get_default_recipients()[valid_direct_payment.id]
-        self.assertFalse(unallocated_recipients["partner_ids"])
-        valid_receivable = valid_direct_payment.move_id.line_ids.filtered(lambda line: line.account_id == receivable)
-        (invoice_receivable + valid_receivable).reconcile()
+        native_payment.action_post()
+        payment_receivable = native_payment.move_id.line_ids.filtered(lambda line: line.account_id == receivable)
+        (invoice_receivable + payment_receivable).reconcile()
         self.assertEqual(final_invoice.amount_residual, 850)
-        cash_payment = self.env["account.payment"].create(
-            {
-                "date": "2026-10-20",
-                "amount": 50,
-                "payment_type": "inbound",
-                "partner_type": "customer",
-                "partner_id": invoice_address.id,
-                "journal_id": cash_journal.id,
-                "company_id": self.company.id,
-                "currency_id": self.eur.id,
-                "payment_method_line_id": cash_method.id,
-                "destination_account_id": receivable.id,
-                "training_bank_reference": "FICTIONAL-CASH-REF-001",
-                "training_bank_verified": True,
-            }
-        )
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            cash_payment.action_post()
-        accountant = new_test_user(
-            self.env,
-            login="training_sale_accountant",
-            groups="account.group_account_invoice,sales_team.group_sale_salesman",
-            company_id=self.company.id,
-            company_ids=[Command.set([self.company.id])],
-        )
+        self.assertTrue(native_payment.training_receipt_restricted)
+        for journal in (bank_journal, cash_journal):
+            statement = self.env["account.bank.statement.line"].create(
+                {
+                    "journal_id": journal.id,
+                    "date": "2026-10-20",
+                    "payment_ref": "Fictional native statement",
+                    "partner_id": invoice_address.id,
+                    "amount": 50,
+                    "counterpart_account_id": receivable.id,
+                }
+            )
+            counterpart = statement.move_id.line_ids.filtered(lambda line: line.account_id == receivable)
+            (invoice_receivable + counterpart).reconcile()
+        self.assertEqual(final_invoice.amount_residual, 750)
+        accountant = new_test_user(self.env, login="training_sale_accountant", groups="account.group_account_invoice")
         notice.with_user(accountant).action_void()
         self.assertEqual(notice.state, "void")
-        self.assertEqual(final_invoice.amount_residual, 850)
-        statement_line = self.env["account.bank.statement.line"].create(
-            {
-                "journal_id": bank_journal.id,
-                "date": "2026-10-20",
-                "payment_ref": "",
-                "partner_id": invoice_address.id,
-                "amount": 50,
-                "counterpart_account_id": receivable.id,
-            }
-        )
-        statement_receivable = statement_line.move_id.line_ids.filtered(lambda line: line.account_id == receivable)
-        self.assertFalse(statement_line.payment_ref)
-        self.assertFalse(statement_receivable.payment_id)
-        (invoice_receivable + statement_receivable).reconcile()
-        self.assertEqual(final_invoice.amount_residual, 800)
-        mad_journal = self.env["account.journal"].create(
-            {
-                "name": "Fictional MAD Bank",
-                "code": "FMB",
-                "type": "bank",
-                "company_id": self.company.id,
-                "currency_id": mad.id,
-                "default_account_id": bank_account.id,
-            }
-        )
-        other_currency_line = self.env["account.bank.statement.line"].create(
-            {
-                "journal_id": mad_journal.id,
-                "date": "2026-10-20",
-                "payment_ref": "FICTIONAL-MAD-STATEMENT",
-                "partner_id": invoice_address.id,
-                "amount": 50,
-                "counterpart_account_id": receivable.id,
-            }
-        )
-        other_currency_receivable = other_currency_line.move_id.line_ids.filtered(
-            lambda line: line.account_id == receivable
-        )
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            (invoice_receivable + other_currency_receivable).reconcile()
-        self.assertEqual(final_invoice.amount_residual, 800)
-        cash_statement = self.env["account.bank.statement.line"].create(
-            {
-                "journal_id": cash_journal.id,
-                "date": "2026-10-20",
-                "payment_ref": "FICTIONAL-CASH-STATEMENT",
-                "partner_id": invoice_address.id,
-                "amount": 50,
-                "counterpart_account_id": receivable.id,
-            }
-        )
-        cash_receivable = cash_statement.move_id.line_ids.filtered(lambda line: line.account_id == receivable)
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            (invoice_receivable + cash_receivable).reconcile()
-        self.assertEqual(final_invoice.amount_residual, 800)
 
         # S10 reuses these real native down-payment/final-invoice fixtures;
         # an advance is not omitted or counted twice in the invoice cohort.
@@ -1518,6 +1272,7 @@ class TestTrainingSale(TransactionCase):
     def test_direct_sale_state_and_currency_are_guarded(self):
         order = self._server_guard_order()
         order.order_line.price_unit = 1
+        order.order_line.product_uom_qty = 2
         for state in ("sent", "sale"):
             with self.assertRaises(ValidationError), self.cr.savepoint():
                 order.write({"state": state})
@@ -1526,14 +1281,11 @@ class TestTrainingSale(TransactionCase):
         vals["state"] = "sale"
         with self.assertRaises(ValidationError), self.cr.savepoint():
             self.env["sale.order"].with_user(self.salesperson).create(vals)
-        order.order_line.price_unit = 100
+        order.order_line.product_uom_qty = order.training_attendee_count
         order.action_confirm()
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            order.write({"currency_id": self.env.ref("base.MAD").id})
-        order.invalidate_recordset()
-        self.assertEqual(order.currency_id, self.eur)
-        self.assertEqual(order.amount_untaxed, 100)
-        order.write({"currency_id": self.eur.id})
+        order.write({"currency_id": self.env.ref("base.MAD").id})
+        self.assertEqual(order.currency_id, self.env.ref("base.MAD"))
+        self.assertEqual(order.amount_untaxed, 1)
         # A native non-training order keeps its ordinary state writes.
         native = (
             self.env["sale.order"]
@@ -1578,3 +1330,78 @@ class TestTrainingSale(TransactionCase):
         self.assertFalse(self.env[notice._name].with_user(other).search([("id", "=", notice.id)]))
         for user in (self.salesperson, manager, finance):
             self.assertEqual(notice.with_user(user).read(["reference"])[0]["reference"], "FICTIONAL-PRIVATE-NOTICE")
+
+    def test_third_currency_native_pricelist_formula_and_manual_discount(self):
+        gbp = self.env.ref("base.GBP")
+        gbp.active = True
+        order = self._server_guard_order().with_user(self.env.user)
+        pricelist = self.env["product.pricelist"].create(
+            {
+                "name": "Fictional Native GBP",
+                "currency_id": gbp.id,
+                "item_ids": [
+                    Command.create(
+                        {
+                            "product_tmpl_id": self.product.product_tmpl_id.id,
+                            "compute_price": "discount",
+                            "price_discount": 10,
+                        }
+                    )
+                ],
+            }
+        )
+        order.pricelist_id = pricelist
+        # Requested currency is advisory; the negotiated offer follows its pricelist.
+        self.assertEqual(order.training_requested_currency_id, self.eur)
+        self.assertNotEqual(self.company.currency_id, gbp)
+        rule = order.pricelist_id.item_ids
+        rule.write({"compute_price": "discount", "price_discount": 10})
+        self.product.list_price = 200
+        line = order.order_line
+        line._compute_price_unit()
+        self.assertEqual(order.currency_id, gbp)
+        line._compute_discount()
+        self.assertEqual(line.price_subtotal, 180)
+        line.write({"price_unit": 175, "discount": 12})
+        order.with_user(self.salesperson).action_confirm()
+        self.assertEqual(line.price_subtotal, 154)
+        self.assertEqual(order.state, "sale")
+        self.assertFalse(self.env["training.enrollment"].search([]))
+
+    def test_native_pricelist_currency_does_not_rewrite_stored_order_currency(self):
+        gbp = self.env.ref("base.GBP")
+        gbp.active = True
+        order = self._server_guard_order().with_user(self.env.user)
+        order.action_confirm()
+        original_currency = order.currency_id
+        original_amount = order.amount_untaxed
+        order.pricelist_id.currency_id = gbp
+        order.invalidate_recordset(["currency_id", "amount_untaxed"])
+        self.assertEqual(order.currency_id, original_currency)
+        self.assertEqual(order.amount_untaxed, original_amount)
+
+    def test_transfer_notice_keeps_declared_currency_when_order_changes(self):
+        gbp = self.env.ref("base.GBP")
+        gbp.active = True
+        order = self._server_guard_order()
+        order.action_confirm()
+        notices = self.env["training.bank.transfer.notice"].with_user(self.salesperson)
+        values = {
+            "order_id": order.id,
+            "amount": 30,
+            "claimed_date": "2026-10-20",
+            "reference": "Fictional declaration only",
+        }
+        original = notices.create(values)
+        contextual = notices.with_context(default_order_id=order.id).create(
+            {key: value for key, value in values.items() if key != "order_id"}
+        )
+        self.assertEqual(contextual.currency_id, self.eur)
+        foreign = notices.create({**values, "currency_id": gbp.id})
+        self.assertEqual(original.currency_id, self.eur)
+        self.assertEqual(foreign.currency_id, gbp)
+        order.currency_id = self.env.ref("base.MAD")
+        self.assertEqual(original.currency_id, self.eur)
+        self.assertEqual(foreign.currency_id, gbp)
+        self.assertFalse(order.invoice_ids)
+        self.assertFalse(self.env["account.payment"].search([]))

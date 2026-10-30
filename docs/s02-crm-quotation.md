@@ -1,5 +1,12 @@
 # S02 — Demande CRM, devis et facturation native
 
+> Référence historique S02. La [décision du 30 octobre 2026](native-commercial-accounting.md)
+> remplace les restrictions MAD/EUR, prix fixes/remise nulle, virement manuel,
+> vérification bancaire obligatoire et interdiction des paiements en ligne.
+> Les preuves datées ci-dessous restent celles des règles anciennes ; elles ne
+> constituent pas une validation des nouveaux parcours. Les protections documentaires demeurent.
+
+
 Incréments demande/devis, tarifs et rôles commerciaux de [#12](https://github.com/Progideo/training_management/issues/12),
 à relire avec la [matrice de couverture](s02-native-coverage.md).
 Ce document décrit S02 livré par les PR #43 et #44 et son périmètre de recette.

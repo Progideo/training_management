@@ -151,13 +151,14 @@ class TestPathSale(PathSaleCase):
             (order, {"training_attendee_count": 3}),
             (order, {"training_path_scope": "selection"}),
             (order, {"training_price_source": "pricelist"}),
-            (lines[0], {"price_unit": 1}),
             (lines[0], {"training_path_step_id": path.step_ids[1].id}),
         ):
             with self.assertRaises(ValidationError), self.cr.savepoint():
                 record.write(values)
         with self.assertRaises((ValidationError, AccessError)), self.cr.savepoint():
             lines[0].unlink()
+        lines[0].write({"price_unit": 90, "discount": 5})
+        self.assertEqual(lines[0].price_subtotal, 85.5)
         copied = order.copy()
         self.assertEqual(copied.state, "draft")
         self.assertEqual(copied.amount_untaxed, order.amount_untaxed)
@@ -166,8 +167,7 @@ class TestPathSale(PathSaleCase):
         self.assertTrue(order.training_agreed_at)
         order.action_cancel()
         order.action_draft()
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            lines[0].price_unit = 1
+        lines[0].price_unit = 1
         with self.assertRaises(ValidationError), self.cr.savepoint():
             order.training_attendee_count = 3
         with self.assertRaises(ValidationError), self.cr.savepoint():
@@ -363,8 +363,8 @@ class TestPathSale(PathSaleCase):
         plain.action_confirm()
         self.assertEqual(plain.amount_untaxed, 73)
         legacy = plain.copy({"training_price_source": False})
-        with self.assertRaises(ValidationError):
-            legacy.action_confirm()
+        legacy.action_confirm()
+        self.assertEqual(legacy.amount_untaxed, 73)
 
     def test_restricted_roles_and_forged_metadata(self):
         order, path = self.offer()

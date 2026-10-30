@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 20.0-20261015\n"
-"PO-Revision-Date: 2026-10-22 13:00+0000\n"
+"PO-Revision-Date: 2026-10-30 12:00+0000\n"
 "Last-Translator: Training Management contributors\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -1835,8 +1835,8 @@ msgstr "Ajouter un parcours"
 
 #. module: training_management_sale
 #: model:ir.model.fields,help:training_management_sale.field_sale_order__training_price_source
-msgid "An empty legacy value keeps the fixed catalogue price policy."
-msgstr "Une valeur historique vide conserve la règle du tarif catalogue fixe."
+msgid "Commercial origin only; prices and discounts follow native Odoo rules."
+msgstr "Origine commerciale uniquement ; les prix et remises suivent les règles natives Odoo."
 
 
 #. module: training_management_sale
@@ -1958,8 +1958,8 @@ msgstr "Motif de l’équivalence"
 
 #. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__sale_order__training_price_source__pricelist
-msgid "Fixed Catalogue Price"
-msgstr "Tarif catalogue fixe"
+msgid "Native Pricelist"
+msgstr "Liste de prix native"
 
 
 #. module: training_management_sale
@@ -2331,3 +2331,43 @@ msgstr "Une attribution de places de parcours exige une étape commerciale préc
 #: model_terms:ir.ui.view,arch_db:training_management_sale.report_saleorder_path
 msgid "<strong>Beneficiaries:</strong>"
 msgstr "<strong>Bénéficiaires :</strong>"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_account_payment__training_receipt_restricted
+msgid "Training Receipt Restricted"
+msgstr "Reçu de formation protégé"
+
+#. module: training_management_sale
+#: model:ir.model.fields,help:training_management_sale.field_account_payment__training_receipt_restricted
+msgid "Privacy marker retained after a training payment is unreconciled."
+msgstr "Protection documentaire conservée après le dérapprochement d’un paiement de formation."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/account_payment.py:0
+msgid "Historical bank evidence is read-only."
+msgstr "Les preuves bancaires historiques sont en lecture seule."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/account_payment.py:0
+msgid "Historical bank evidence and receipt privacy are read-only."
+msgstr "Les preuves bancaires historiques et la protection des reçus sont en lecture seule."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose a country and an active currency independently of the language."
+msgstr "Choisissez un pays et une devise active indépendamment de la langue."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_sale_order_form_training_path
+msgid "Native pricelist"
+msgstr "Liste de prix native"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_bank_transfer_notice__currency_id
+msgid "Claimed Currency"
+msgstr "Devise déclarée"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/bank_transfer_notice.py:0
+msgid "The claimed invoice must belong to the order."
+msgstr "La facture déclarée doit appartenir à la commande."

@@ -197,13 +197,11 @@ class TestTrainingDocumentPolicy(TransactionCase):
                 {
                     "journal_id": self.bank.id,
                     "group_payment": True,
-                    "training_bank_reference": "POLICY-INTERSECTION",
-                    "training_bank_verified": True,
                 }
             )
         )
         wizard.action_create_payments()
-        payment = self.env["account.payment"].search([("training_bank_reference", "=", "POLICY-INTERSECTION")])
+        payment = self.env["account.payment"].search([("invoice_ids", "in", invoices.ids)])
         self.assertEqual(len(payment), 1)
         self.assertEqual(payment.reconciled_invoice_ids, invoices)
         self.assertEqual(self.policy._partners(payment), self.allowed.partner_id)
@@ -225,13 +223,11 @@ class TestTrainingDocumentPolicy(TransactionCase):
                 {
                     "journal_id": self.bank.id,
                     "group_payment": True,
-                    "training_bank_reference": "POLICY-MIXED",
-                    "training_bank_verified": True,
                 }
             )
         )
         extra.action_create_payments()
-        mixed_payment = self.env["account.payment"].search([("training_bank_reference", "=", "POLICY-MIXED")])
+        mixed_payment = self.env["account.payment"].search([("invoice_ids", "in", mixed.ids)])
         self.assertEqual(len(mixed_payment), 1)
         self.assertEqual(mixed_payment.reconciled_invoice_ids, mixed)
         self.assertFalse(self.policy._partners(mixed_payment))
@@ -247,7 +243,7 @@ class TestTrainingDocumentPolicy(TransactionCase):
                     "amount": 10,
                     "payment_type": "inbound",
                     "partner_type": "customer",
-                    "training_bank_reference": "POLICY-UNALLOCATED",
+                    "training_receipt_restricted": True,
                 }
             )
         )
@@ -278,18 +274,21 @@ class TestTrainingDocumentPolicy(TransactionCase):
                 {
                     "journal_id": self.bank.id,
                     "group_payment": False,
-                    "training_bank_reference": "POLICY-BATCH",
-                    "training_bank_verified": True,
-                    "training_duplicate_reference_reason": "Intentional split across invoices",
                 }
             )
         )
         wizard.action_create_payments()
-        payments = self.env["account.payment"].search([("training_bank_reference", "=", "POLICY-BATCH")])
+        payments = self.env["account.payment"].search([("invoice_ids", "in", invoices.ids)])
         self.assertEqual(len(payments), 2)
         self.assertEqual(payments.mapped("reconciled_invoice_ids"), invoices)
-        self.assertEqual(payments.mapped("training_bank_verified_by_id"), self.finance)
-        self.assertTrue(all(payments.mapped("training_bank_verified_at")))
+        self.assertFalse(payments.mapped("training_bank_verified_by_id"))
+        self.assertTrue(all(payments.mapped("training_receipt_restricted")))
+        payments.move_id.line_ids.remove_move_reconcile()
+        for payment in payments:
+            self.assertTrue(self.policy._restricted(payment))
+            self.assertFalse(self.policy._partners(payment))
+            with self.assertRaises(ValidationError):
+                payment.write({"training_receipt_restricted": False})
 
     def test_payment_link_write_and_compute_still_refuse_training(self):
         native = self.env["sale.order"].with_user(self.sales).create({"partner_id": self.buyer.id})
@@ -307,20 +306,9 @@ class TestTrainingDocumentPolicy(TransactionCase):
             )
         )
         self.assertTrue(wizard.link)
-        with self.assertRaises(ValidationError), self.cr.savepoint():
-            wizard.write({"res_id": self.order.id})
-        bypassed = (
-            self.env["payment.link.wizard"]
-            .with_user(self.sales)
-            .new(
-                {
-                    "res_model": "sale.order",
-                    "res_id": self.order.id,
-                }
-            )
-        )
-        with self.assertRaises(ValidationError):
-            bypassed._compute_link()
+        wizard.write({"res_id": self.order.id})
+        wizard._compute_link()
+        self.assertTrue(wizard.link)
 
     def test_transaction_write_cannot_attach_a_training_document(self):
         provider = self.env["payment.provider"].create({"name": "Fictional Provider", "code": "none"})
@@ -347,10 +335,9 @@ class TestTrainingDocumentPolicy(TransactionCase):
             {"sale_order_ids": [Command.set(self.order.ids)]},
             {"invoice_ids": [Command.set(self._invoice().ids)]},
         ):
-            with self.assertRaises(ValidationError), self.cr.savepoint():
-                tx.with_user(self.finance).write(values)
-        self.assertFalse(tx.sale_order_ids)
-        self.assertFalse(tx.invoice_ids)
+            tx.with_user(self.finance).with_context(payment_safe_write=True).write(values)
+        self.assertEqual(tx.sale_order_ids, self.order)
+        self.assertTrue(tx.invoice_ids.training_is_sale_invoice)
 
     def test_native_invoice_sender_ignores_followers_outside_selected_contacts(self):
         invoice = self._invoice()
@@ -506,3 +493,177 @@ class TestTrainingDocumentPolicy(TransactionCase):
         message = native.message_ids.filtered(lambda m: m.subject == "Fictional native schedule")
         self.assertEqual(len(message), 1)
         self.assertIn(self.internal.partner_id, message.notification_ids.res_partner_id)
+
+    def test_native_foreign_currency_payment_partial_and_credit(self):
+        company = self.env.company
+        usd, eur, gbp = (self.env.ref("base." + code) for code in ("USD", "EUR", "GBP"))
+        company.currency_id = usd
+        (usd | eur | gbp).write({"active": True})
+        for currency, rate in ((usd, 1), (eur, 0.5), (gbp, 0.25)):
+            self.env["res.currency.rate"].create(
+                {
+                    "currency_id": currency.id,
+                    "company_id": company.id,
+                    "name": "2026-10-01",
+                    "rate": rate,
+                }
+            )
+        invoice = self._invoice()
+        invoice.write({"currency_id": eur.id, "invoice_date": "2026-10-20", "date": "2026-10-20"})
+        invoice.action_post()
+        self.assertEqual(invoice.amount_total, 100)
+        self.assertEqual(invoice.amount_total_signed, 200)
+        self.bank.currency_id = gbp
+        wizard = (
+            self.env["account.payment.register"]
+            .with_user(self.finance)
+            .with_context(
+                active_model="account.move",
+                active_ids=invoice.ids,
+            )
+            .create(
+                {
+                    "journal_id": self.bank.id,
+                    "currency_id": gbp.id,
+                    "amount": 25,
+                    "payment_date": "2026-10-20",
+                    "payment_difference_handling": "open",
+                }
+            )
+        )
+        payment = wizard._create_payments()
+        self.assertEqual(payment.currency_id, gbp)
+        self.assertEqual(invoice.amount_residual, 50)
+        self.assertEqual(invoice.payment_state, "partial")
+        self.assertFalse(payment.training_bank_reference)
+        self.assertTrue(payment.training_receipt_restricted)
+        self.assertTrue(self.policy.with_user(self.allowed)._can_read(payment))
+        self.assertFalse(self.policy.with_user(self.denied)._can_read(payment))
+        # A native credit note settles the remaining balance, without a second balance.
+        credit = invoice._reverse_moves(default_values_list=[{"date": "2026-10-20"}], cancel=False)
+        credit.invoice_line_ids.price_unit = 50
+        credit.action_post()
+        self.assertTrue(credit.training_is_sale_invoice)
+        receivables = (invoice | credit).line_ids.filtered(
+            lambda line: line.account_id == self.accounts["receivable"] and not line.reconciled
+        )
+        receivables.with_user(self.finance).reconcile()
+        self.assertEqual(invoice.amount_residual, 0)
+        self.assertEqual(credit.amount_residual, 0)
+        self.assertFalse(self.env["training.enrollment"].search([]))
+        payment.move_id.line_ids.remove_move_reconcile()
+        self.assertTrue(payment.training_receipt_restricted)
+        self.assertFalse(self.policy.with_user(self.allowed)._can_read(payment))
+
+    def test_native_cash_and_alternative_payment_method(self):
+        cash = self.env["account.journal"].create(
+            {
+                "name": "Fictional Native Cash",
+                "code": "PNC",
+                "type": "cash",
+                "default_account_id": self.accounts["bank"].id,
+            }
+        )
+        method = self.env["account.payment.method"].create(
+            {
+                "name": "Fictional local method",
+                "code": "fictional_local",
+                "payment_type": "inbound",
+            }
+        )
+        method_line = self.env["account.payment.method.line"].create(
+            {
+                "payment_method_id": method.id,
+                "journal_id": cash.id,
+                "payment_account_id": self.accounts["outstanding"].id,
+            }
+        )
+        invoice = self._invoice()
+        invoice.action_post()
+        wizard = (
+            self.env["account.payment.register"]
+            .with_user(self.finance)
+            .with_context(
+                active_model="account.move",
+                active_ids=invoice.ids,
+            )
+            .create({"journal_id": cash.id, "payment_method_line_id": method_line.id, "amount": 40})
+        )
+        payment = wizard._create_payments()
+        self.assertEqual(payment.payment_method_line_id, method_line)
+        self.assertEqual(invoice.amount_residual, 60)
+        self.assertFalse(payment.training_bank_verified)
+        self.assertTrue(payment.training_receipt_restricted)
+
+    def test_native_exchange_difference_uses_company_accounts(self):
+        company = self.env.company
+        usd, eur = self.env.ref("base.USD"), self.env.ref("base.EUR")
+        company.currency_id = usd
+        eur.active = True
+        for currency, date, rate in (
+            (usd, "2026-10-01", 1),
+            (eur, "2026-10-01", 0.5),
+            (eur, "2026-10-19", 0.25),
+        ):
+            self.env["res.currency.rate"].create(
+                {
+                    "currency_id": currency.id,
+                    "company_id": company.id,
+                    "name": date,
+                    "rate": rate,
+                }
+            )
+        exchange_accounts = {}
+        for code, kind in (("POLFXG", "income"), ("POLFXL", "expense")):
+            exchange_accounts[kind] = self.env["account.account"].create(
+                {
+                    "name": "Fictional " + code,
+                    "code": code,
+                    "account_type": kind,
+                    "company_ids": [Command.set(company.ids)],
+                }
+            )
+        exchange_journal = self.env["account.journal"].create(
+            {
+                "name": "Fictional Native Exchange",
+                "code": "PFX",
+                "type": "general",
+            }
+        )
+        company.write(
+            {
+                "currency_exchange_journal_id": exchange_journal.id,
+                "income_currency_exchange_account_id": exchange_accounts["income"].id,
+                "expense_currency_exchange_account_id": exchange_accounts["expense"].id,
+            }
+        )
+        invoice = self._invoice()
+        invoice.write({"currency_id": eur.id, "invoice_date": "2026-10-01", "date": "2026-10-01"})
+        invoice.action_post()
+        self.assertEqual(invoice.amount_total_signed, 200)
+        wizard = (
+            self.env["account.payment.register"]
+            .with_user(self.finance)
+            .with_context(
+                active_model="account.move",
+                active_ids=invoice.ids,
+            )
+            .create(
+                {
+                    "journal_id": self.bank.id,
+                    "currency_id": eur.id,
+                    "amount": 100,
+                    "payment_date": "2026-10-20",
+                    "payment_difference_handling": "open",
+                }
+            )
+        )
+        payment = wizard._create_payments()
+        self.assertEqual(invoice.amount_residual, 0)
+        self.assertEqual(payment.amount, 100)
+        exchange = self.env["account.move"].search([("journal_id", "=", exchange_journal.id), ("state", "=", "posted")])
+        self.assertEqual(eur._convert(100, usd, company, payment.date), 400)
+        self.assertTrue(exchange)
+        gain = exchange.line_ids.filtered(lambda line: line.account_id == exchange_accounts["income"])
+        self.assertEqual(sum(gain.mapped("credit")), 200)
+        self.assertTrue(payment.training_receipt_restricted)

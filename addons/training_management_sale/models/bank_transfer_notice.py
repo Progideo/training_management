@@ -30,9 +30,10 @@ class BankTransferNotice(models.Model):
     )
     currency_id = fields.Many2one(
         "res.currency",
-        related="order_id.currency_id",
-        store=True,
-        readonly=True,
+        string="Claimed Currency",
+        required=True,
+        ondelete="restrict",
+        default=lambda self: self.env.company.currency_id,
     )
     amount = fields.Monetary(string="Claimed Amount", required=True)
     claimed_date = fields.Date(string="Claimed Transfer Date", required=True)
@@ -62,17 +63,22 @@ class BankTransferNotice(models.Model):
             if not notice.reference.strip():
                 raise ValidationError(self.env._("Enter the reference provided with the transfer notice."))
             if notice.invoice_id and (
-                notice.invoice_id not in notice.order_id.invoice_ids
-                or notice.invoice_id.move_type != "out_invoice"
-                or notice.invoice_id.currency_id != notice.currency_id
+                notice.invoice_id not in notice.order_id.invoice_ids or notice.invoice_id.move_type != "out_invoice"
             ):
-                raise ValidationError(self.env._("The claimed invoice must belong to the order in its currency."))
+                raise ValidationError(self.env._("The claimed invoice must belong to the order."))
 
     @api.model_create_multi
     def create(self, vals_list):
         if any(vals.get("state", "reported") != "reported" for vals in vals_list):
             raise ValidationError(self.env._("A new transfer notice must be unverified."))
-        return super().create([{**vals, "reported_by_id": self.env.user.id} for vals in vals_list])
+        values = []
+        for vals in vals_list:
+            vals = {**vals, "reported_by_id": self.env.user.id}
+            if "currency_id" not in vals:
+                order = self.env["sale.order"].browse(vals.get("order_id") or self.env.context.get("default_order_id"))
+                vals["currency_id"] = self.env.context.get("default_currency_id") or order.currency_id.id
+            values.append(vals)
+        return super().create(values)
 
     def write(self, vals):
         if set(vals) != {"state"} or vals["state"] != "void":

@@ -28,12 +28,12 @@
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="training_transfer_notices" string="Unverified Transfer Notices" groups="sales_team.group_sale_salesman,account.group_account_invoice" invisible="not training_request_kind or state != 'sale'">
-                    <field name="training_transfer_notice_ids" readonly="state != 'sale'">
+                    <field name="training_transfer_notice_ids" readonly="state != 'sale'" context="{'default_currency_id': currency_id}">
                         <list editable="bottom" create="1" delete="0">
                             <field name="claimed_date"/>
                             <field name="reference"/>
                             <field name="invoice_id" optional="show" groups="account.group_account_invoice"/>
-                            <field name="currency_id" column_invisible="True"/>
+                            <field name="currency_id" optional="show"/>
                             <field name="amount"/>
                             <field name="state" readonly="True"/>
                             <button name="action_void" type="object" string="Void" groups="account.group_account_invoice" invisible="state == 'void'"/>

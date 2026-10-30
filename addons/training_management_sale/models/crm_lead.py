@@ -24,7 +24,6 @@ class CrmLead(models.Model):
         "res.currency",
         string="Requested Currency",
         ondelete="restrict",
-        domain="[('name', 'in', ('MAD', 'EUR'))]",
     )
     training_sponsor_id = fields.Many2one(
         "res.partner",
@@ -77,8 +76,7 @@ class CrmLead(models.Model):
             )
         if self.training_attendee_count <= 0 or not self.training_requested_currency_id:
             raise ValidationError(self.env._("Enter a positive participant count and requested currency."))
-        if self.training_requested_currency_id.name not in ("MAD", "EUR"):
-            raise ValidationError(self.env._("Training quotations use MAD or EUR."))
+
         self.training_program_id.check_access("read")
         context.update(
             {

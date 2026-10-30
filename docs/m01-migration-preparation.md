@@ -21,7 +21,7 @@ Une méthode inconnue reste `unknown` et produit un écart bloquant.
 | Contacts | Import natif `res.partner`, identifiants externes stables ; personne/entreprise, pays et parent explicites. Aucun rapprochement automatique par nom ou e-mail. |
 | Offres et sessions | Programmes et réalisations : correspondances et liens déclarés, saisie contrôlée ; aucun ancien code installé. |
 | Inscriptions | Participant et réalisation retrouvés avant toute ouverture. Un actif orphelin bloque le lot. Aucune ouverture d’accès automatique. |
-| Soldes | Décimaux exacts, rapprochement séparé MAD/EUR ; aucune écriture comptable historique recréée. Autres devises : écart à instruire. |
+| Soldes | Décimaux exacts, rapprochement séparé par devise, sans restriction MAD/EUR ni arrondi implicite (#102) ; aucune écriture comptable historique recréée. Disponibilité, conversion et arrondi de la cible à vérifier dans Odoo. |
 | Supports et pièces | Chemins relatifs, fichiers locaux réguliers, empreintes SHA-256, responsable des accès et conservation déclarés. Le contrôle d’empreinte ne prouve pas la lisibilité d’un PDF. |
 | Résultats | Version historique identifiée ; inconnue signalée. Pas de tentative, score, thème ou certificat inventé. |
 | Archive | Index source/fichiers, responsable, accès et conservation à valider. Préservation des originaux ; pas de nouvelle preuve générée à leur place. |
