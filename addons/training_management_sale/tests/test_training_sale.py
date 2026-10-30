@@ -1379,3 +1379,25 @@ class TestTrainingSale(TransactionCase):
         order.invalidate_recordset(["currency_id", "amount_untaxed"])
         self.assertEqual(order.currency_id, original_currency)
         self.assertEqual(order.amount_untaxed, original_amount)
+
+    def test_transfer_notice_keeps_declared_currency_when_order_changes(self):
+        gbp = self.env.ref("base.GBP")
+        gbp.active = True
+        order = self._server_guard_order()
+        order.action_confirm()
+        notices = self.env["training.bank.transfer.notice"].with_user(self.salesperson)
+        values = {
+            "order_id": order.id,
+            "amount": 30,
+            "claimed_date": "2026-10-20",
+            "reference": "Fictional declaration only",
+        }
+        original = notices.create(values)
+        foreign = notices.create({**values, "currency_id": gbp.id})
+        self.assertEqual(original.currency_id, self.eur)
+        self.assertEqual(foreign.currency_id, gbp)
+        order.currency_id = self.env.ref("base.MAD")
+        self.assertEqual(original.currency_id, self.eur)
+        self.assertEqual(foreign.currency_id, gbp)
+        self.assertFalse(order.invoice_ids)
+        self.assertFalse(self.env["account.payment"].search([]))

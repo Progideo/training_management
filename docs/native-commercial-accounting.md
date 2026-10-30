@@ -57,7 +57,9 @@ serveur ; le compteur historique de journal reste stocké sans verrou ni usage m
 L’ancien assistant de contrôle bancaire est désactivé par son identifiant XML stable.
 La migration marque par lots les reçus déjà protégés ou rapprochés d’une facture
 de formation. Réexécuter la mise à jour conserve les mêmes preuves et habilitations.
-Les avis de virement privés restent facultatifs et sans effet comptable.
+Les avis de virement privés restent facultatifs et sans effet comptable. Leur
+devise déclarée est conservée indépendamment de celle de la commande ou facture,
+sans conversion implicite ni réécriture après une modification du devis.
 
 ## Recette courte sur base jetable
 
