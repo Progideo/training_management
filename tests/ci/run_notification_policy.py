@@ -46,7 +46,7 @@ first=apply_notifications(env,profile)
 stamp=company.write_date
 assert apply_notifications(env,profile)==first and company.write_date==stamp
 assert env['mail.mail'].search_count([])==before
-assert company.training_notification_address=='contact@example.invalid'
+assert company.training_notification_template_id.email_from=='contact@example.invalid'
 assert company.training_alert_address=='alerts@example.invalid'
 env['res.lang']._activate_lang('fr_FR')
 env['ir.module.module']._load_module_terms(['training_management'],['fr_FR'],overwrite=True)

@@ -13680,3 +13680,34 @@ msgstr "Consulter ma remise"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_learning_content
 msgid "View and assess the latest submission"
 msgstr "Consulter et évaluer la dernière remise"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_res_company__training_notification_template_id
+msgid "Notification Identity Template"
+msgstr "Modèle d’identité des notifications"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_res_company__training_notification_address
+msgid "Legacy Notification Address"
+msgstr "Ancienne adresse de notification"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_res_company__training_notification_address
+msgid "Preserved migration history; new notifications use the native email template."
+msgstr "Historique conservé ; les nouvelles notifications utilisent le modèle de courriel natif."
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_res_company__training_notification_template_id
+msgid "Only sender and reply-to are rendered. Recipients, content and attachments remain controlled by the notification."
+msgstr "Seuls l’expéditeur et l’adresse de réponse sont repris. La notification contrôle les destinataires, le contenu et les pièces jointes."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_form_training_notifications
+msgid "The native email template supplies sender and reply-to only. Without a template, the company mail domain is used. Existing queued messages are not rewritten; recipient permissions are checked before sending."
+msgstr "Le modèle natif fournit uniquement l’expéditeur et l’adresse de réponse. Sans modèle, le domaine de messagerie de la société est utilisé. Les courriels en attente restent inchangés ; les droits des destinataires sont vérifiés avant envoi."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_mail_identity.py:0
+msgid "Choose an email template for companies."
+msgstr "Choisissez un modèle de courriel pour les sociétés."

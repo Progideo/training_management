@@ -1,7 +1,5 @@
 """Optional company identity; never configure or activate a mail transport."""
 
-from email.utils import formataddr
-
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import email_normalize
@@ -10,17 +8,37 @@ from odoo.tools import email_normalize
 class Company(models.Model):
     _inherit = "res.company"
 
-    training_notification_address = fields.Char(groups="base.group_system")
+    training_notification_address = fields.Char(
+        string="Legacy Notification Address",
+        groups="base.group_system",
+        readonly=True,
+        help="Preserved migration history; new notifications use the native email template.",
+    )
+    training_notification_template_id = fields.Many2one(
+        "mail.template",
+        string="Notification Identity Template",
+        groups="base.group_system",
+        domain="[('model', '=', 'res.company')]",
+        ondelete="restrict",
+        help="Only sender and reply-to are rendered. Recipients, content and attachments remain controlled by the notification.",
+    )
     training_alert_address = fields.Char(string="Training Manager Alert Address", groups="base.group_system")
     training_notification_manager_id = fields.Many2one(
         "res.users", string="Training Alert Manager", groups="base.group_system", ondelete="restrict"
     )
 
-    @api.constrains("training_notification_address", "training_alert_address", "training_notification_manager_id")
+    @api.constrains("training_notification_template_id")
+    def _check_training_notification_template(self):
+        for company in self:
+            template = company.training_notification_template_id
+            if template and template.model != "res.company":
+                raise ValidationError(self.env._("Choose an email template for companies."))
+
+    @api.constrains("training_alert_address", "training_notification_manager_id")
     def _check_training_notifications(self):
         for company in self:
             manager = company.training_notification_manager_id
-            for address in (company.training_notification_address, company.training_alert_address):
+            for address in (company.training_alert_address,):
                 if address and email_normalize(address) != address:
                     raise ValidationError(self.env._("Enter one normalized notification email address."))
             if manager and (
@@ -37,9 +55,25 @@ class Mail(models.Model):
 
     @api.private
     def _training_identity(self, company):
-        # Narrow read of administrator-only configuration, no recipient elevation.
-        address = company.sudo().training_notification_address
-        return {"email_from": formataddr((company.name, address)), "reply_to": address} if address else {}
+        # Only the administrator-selected template and two identity fields are read
+        # with elevation. Never render recipients, body, reports or attachments here.
+        company = company.sudo()
+        template = company.training_notification_template_id
+        if template:
+            if template.model != "res.company":
+                raise ValidationError(self.env._("Choose an email template for companies."))
+            values = template.with_company(company)._generate_template(company.ids, ("email_from", "reply_to"))[
+                company.id
+            ]
+            return {key: value for key, value in values.items() if key in ("email_from", "reply_to") and value}
+        return {
+            key: value
+            for key, value in {
+                "email_from": company.default_from_email or company.partner_id.email_formatted,
+                "reply_to": company.catchall_email,
+            }.items()
+            if value
+        }
 
     def write(self, vals):
         result = super().write(vals)
@@ -67,30 +101,3 @@ class Mail(models.Model):
                 if source and not (source._name == "training.learning.notice" and source.entry_id):
                     self.env["training.operator.notice"]._queue(source, "mail-failure")
         return result
-
-    def _prepare_outgoing_list(self, mail_server=False, doc_to_followers=None):
-        self.ensure_one()
-        if (
-            self.model
-            in (
-                "training.notification",
-                "training.learning.notice",
-                "training.practice.notice",
-                "training.tutoring.notice",
-                "training.publication.notice",
-                "training.session.alert.notice",
-                "training.feedback.notice",
-                "training.session",
-                "training.request.notice",
-                "training.operator.notice",
-            )
-            and self.model in self.env
-        ):
-            record = self.env[self.model].sudo().browse(self.res_id).exists()
-            if record:
-                expected = self._training_identity(record.company_id)
-                if any(self[key] != value for key, value in expected.items()):
-                    raise ValidationError(
-                        self.env._("Review this queued notification after the sender identity changed.")
-                    )
-        return super()._prepare_outgoing_list(mail_server=mail_server, doc_to_followers=doc_to_followers)

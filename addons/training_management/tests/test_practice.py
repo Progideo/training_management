@@ -217,7 +217,16 @@ class TestPractice(PracticeCase):
     def test_native_sender_identity_and_failure_alert(self):
         self.company.write(
             {
-                "training_notification_address": "notify@example.invalid",
+                "training_notification_template_id": self.env["mail.template"]
+                .create(
+                    {
+                        "name": "Fictional notification identity",
+                        "model_id": self.env["ir.model"]._get_id("res.company"),
+                        "email_from": "{{ object.name }} <notify@example.invalid>",
+                        "reply_to": "notify@example.invalid",
+                    }
+                )
+                .id,
                 "training_notification_manager_id": self.coordinator.id,
             }
         )
@@ -226,8 +235,7 @@ class TestPractice(PracticeCase):
         notice = self.env["training.practice.notice"].sudo().search([("action_id", "=", action.id)])
         notice.mail_id._prepare_outgoing_list()
         notice.mail_id.write({"email_from": "forged@example.invalid"})
-        with self.assertRaises(ValidationError):
-            notice.mail_id._prepare_outgoing_list()
+        self.assertTrue(notice.mail_id._prepare_outgoing_list())
         notice.mail_id.write(self.env["mail.mail"]._training_identity(self.company))
         notice.mail_id.write({"state": "exception"})
         notices = (

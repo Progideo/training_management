@@ -202,10 +202,14 @@ class TestPathSale(PathSaleCase):
                 }
             )
         )
+        line.write({"order_id": accepted.id})
+        self.assertEqual(line.order_id, accepted)
+        pedagogical = accepted.order_line.filtered("training_program_id")[0]
         with self.assertRaises(ValidationError), self.cr.savepoint():
-            line.write({"order_id": accepted.id})
-        self.assertEqual(line.order_id, draft)
-        self.assertEqual(accepted.amount_untaxed, 250)
+            line.write(
+                {"product_id": pedagogical.product_id.id, "training_program_id": pedagogical.training_program_id.id}
+            )
+        self.assertEqual(accepted.amount_untaxed, 295)
 
     def test_native_down_payment_final_invoice_credit_and_quotation_report(self):
         order, path = self.offer()
@@ -417,3 +421,54 @@ class TestPathSale(PathSaleCase):
         self.assertEqual(usage.withdrawn_by_id, self.coordinator)
         self.assertFalse(reference.withdrawn_at)
         self.assertEqual(enrollment.access_state, "unopened")
+
+    def test_native_global_discounts_notes_and_administrative_corrections(self):
+        order, _ = self.offer()
+        order.action_confirm()
+        order.action_unlock()
+        pedagogy = order.order_line.filtered("training_program_id")
+        snapshot = [(line.id, line.training_program_id.id, line.product_uom_qty) for line in pedagogy]
+        for kind, values in (("so_discount", {"discount_percentage": 0.1}), ("amount", {"discount_amount": 5})):
+            self.env["sale.order.discount"].create(
+                {"sale_order_id": order.id, "discount_type": kind, **values}
+            ).action_apply_discount()
+        self.assertAlmostEqual(order.amount_untaxed, 220)
+        discounts = order.order_line.filtered(lambda line: line.product_id == self.company.sale_discount_product_id)
+        self.assertTrue(discounts)
+        note = (
+            self.env["sale.order.line"]
+            .with_user(self.coordinator)
+            .create(
+                {
+                    "order_id": order.id,
+                    "display_type": "line_note",
+                    "name": "Fictional administrative note",
+                }
+            )
+        )
+        note.name = "Corrected note"
+        note.unlink()
+        replacement = self.env["res.partner"].create({"name": "Fictional new contact"})
+        order.with_user(self.coordinator).write(
+            {
+                "training_admin_contact_id": replacement.id,
+                "training_expected_payer_id": replacement.id,
+                "training_sponsor_id": replacement.id,
+                "training_requested_currency_id": self.env.ref("base.USD").id,
+            }
+        )
+        self.assertFalse(order.training_portal_partner_ids)
+        self.assertEqual(snapshot, [(line.id, line.training_program_id.id, line.product_uom_qty) for line in pedagogy])
+        self.assertFalse(self.env["training.enrollment"].search([]))
+        for values in ({"training_program_id": False}, {"product_uom_qty": 8}, {"is_downpayment": True}):
+            with self.assertRaises(ValidationError), self.cr.savepoint():
+                pedagogy[0].write(values)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            discounts[0].write(
+                {"product_id": pedagogy[0].product_id.id, "training_program_id": pedagogy[0].training_program_id.id}
+            )
+        order.action_lock()
+        from odoo.exceptions import UserError
+
+        with self.assertRaises(UserError), self.cr.savepoint():
+            discounts[0].price_unit = -12

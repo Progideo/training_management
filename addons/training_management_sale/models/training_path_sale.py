@@ -69,7 +69,6 @@ class SaleOrder(models.Model):
             "training_attendee_count",
             "training_request_kind",
             "training_requested_program_id",
-            "training_requested_currency_id",
             "partner_id",
             "company_id",
         }
@@ -251,11 +250,12 @@ class SaleOrderLine(models.Model):
             if order.training_path_id or order.training_price_source == "quote":
                 order.lock_for_update()
                 order.invalidate_recordset()
-            if order.training_agreed_at and not (
-                vals.get("is_downpayment")
-                and not vals.get("training_program_id")
-                and not vals.get("training_path_step_id")
-                and not self.env["product.product"].browse(vals.get("product_id")).product_tmpl_id.training_course_id
+            if order.training_agreed_at and (
+                vals.get("training_program_id", self.env.context.get("default_training_program_id"))
+                or vals.get("training_path_step_id", self.env.context.get("default_training_path_step_id"))
+                or self.env["product.product"]
+                .browse(vals.get("product_id", self.env.context.get("default_product_id")))
+                .product_tmpl_id.training_course_id
             ):
                 raise ValidationError(self.env._("Revise the accepted offer before adding commercial lines."))
         return super().create(vals_list)
@@ -290,10 +290,31 @@ class SaleOrderLine(models.Model):
                 "is_downpayment",
                 "display_type",
             }
-            if downpayment_identity & vals.keys() and any(order.training_agreed_at for order in orders):
+            pedagogical = self.filtered(
+                lambda line: (
+                    line.training_program_id
+                    or line.training_path_step_id
+                    or line.product_id.product_tmpl_id.training_course_id
+                )
+            )
+            becomes_pedagogical = (
+                vals.get("training_program_id")
+                or vals.get("training_path_step_id")
+                or self.env["product.product"].browse(vals.get("product_id")).product_tmpl_id.training_course_id
+            )
+            if (
+                (pedagogical or becomes_pedagogical or self.filtered("is_downpayment"))
+                and downpayment_identity & vals.keys()
+                and any(order.training_agreed_at for order in orders)
+            ):
                 raise ValidationError(self.env._("Revise the accepted training offer instead of changing its lines."))
             if commercial & vals.keys() and any(
-                item.order_id.training_agreed_at and (not item.is_downpayment or item.training_program_id)
+                item.order_id.training_agreed_at
+                and (
+                    item.training_program_id
+                    or item.training_path_step_id
+                    or item.product_id.product_tmpl_id.training_course_id
+                )
                 for item in self
             ):
                 raise ValidationError(self.env._("Revise the accepted training offer instead of changing its lines."))
@@ -305,7 +326,13 @@ class SaleOrderLine(models.Model):
         orders.lock_for_update()
         orders.invalidate_recordset()
         if any(
-            item.order_id.training_agreed_at and (not item.is_downpayment or item.training_program_id) for item in self
+            item.order_id.training_agreed_at
+            and (
+                item.training_program_id
+                or item.training_path_step_id
+                or item.product_id.product_tmpl_id.training_course_id
+            )
+            for item in self
         ):
             raise ValidationError(self.env._("Keep accepted training lines and their history."))
 

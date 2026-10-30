@@ -50,3 +50,8 @@ msgstr "Une liste vide conserve les choix de devises natifs pour les ventes loca
 #: model:ir.model.fields,help:sale_invoice_address_fiscal.field_res_company__sale_foreign_currency_ids
 msgid "An empty list keeps the native currency choices for foreign sales."
 msgstr "Une liste vide conserve les choix de devises natifs pour les ventes à l’étranger."
+
+#. module: sale_invoice_address_fiscal
+#: model:ir.model.fields,field_description:sale_invoice_address_fiscal.field_res_company__sale_export_fiscal_position_id
+msgid "Legacy export sales fiscal position"
+msgstr "Ancienne position fiscale des ventes à l’export"

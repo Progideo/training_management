@@ -174,7 +174,7 @@ class NotificationEnrollment(models.Model):
         result = super()._store(values, reason)
         if values.get("state") == "confirmed" and previous != "confirmed":
             self.env["training.notification"]._queue(self, "confirmation", "confirmation")
-        if changed and self.company_id.sudo().training_notification_address:
+        if changed and self.company_id.sudo().training_notification_template_id:
             kind = "change" if values.get("state") and values["state"] != previous else "access"
             if kind == "access" or values.get("state") != "confirmed":
                 operation = (

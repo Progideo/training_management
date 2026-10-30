@@ -141,7 +141,7 @@ class OperatorNotice(models.Model):
         if source._name not in self._source_models():
             raise ValidationError(self.env._("Unsupported staff alert source."))
         company = source.company_id
-        if not company.sudo().training_notification_address:
+        if not company.sudo().training_notification_template_id:
             return self.browse()
         # Serialize only this trusted source; prevents duplicate concurrent queueing.
         source.sudo().lock_for_update()

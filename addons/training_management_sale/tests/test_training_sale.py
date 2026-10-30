@@ -441,8 +441,8 @@ class TestTrainingSale(TransactionCase):
                         "training_expected_payer_id",
                         "training_admin_contact_id",
                     ):
-                        with self.assertRaises(ValidationError):
-                            order.write({field_name: self.partner.id})
+                        order.write({field_name: self.partner.id})
+                        self.assertEqual(order[field_name], self.partner)
 
     def test_missing_or_changed_tariff_cannot_be_sent_or_confirmed(self):
         pricelist = self.env["product.pricelist"].create(

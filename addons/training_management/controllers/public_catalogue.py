@@ -17,11 +17,6 @@ class TrainingPublicCatalogue(http.Controller):
         return (
             request.env["training.program.version"]
             .sudo()
-            .with_context(
-                lang="fr_FR"
-                if request.env["res.lang"].sudo().search_count([("code", "=", "fr_FR")])
-                else request.env.lang
-            )
             .search(
                 [
                     ("state", "=", "published"),

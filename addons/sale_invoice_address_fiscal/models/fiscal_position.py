@@ -11,7 +11,8 @@ class ResCompany(models.Model):
     )
     sale_export_fiscal_position_id = fields.Many2one(
         "account.fiscal.position",
-        string="Export sales fiscal position",
+        string="Legacy export sales fiscal position",
+        readonly=True,
         check_company=True,
     )
 
@@ -48,10 +49,7 @@ class ResCompany(models.Model):
 
     def _sale_invoice_fiscal_position(self, partner):
         self.ensure_one()
-        # An unknown country must never qualify as an export.
-        if partner.country_id and partner.country_id != self.account_fiscal_country_id:
-            return self.sale_export_fiscal_position_id
-        return self.domestic_fiscal_position_id
+        return self.env["account.fiscal.position"].with_company(self)._get_fiscal_position(partner, delivery=partner)
 
 
 class SaleOrder(models.Model):
@@ -74,16 +72,6 @@ class SaleOrder(models.Model):
         # Recheck stored drafts, including a country changed on the contact itself.
         self._check_sales_currency()
         return super().action_confirm()
-
-
-class SaleOrderLine(models.Model):
-    _inherit = "sale.order.line"
-
-    @api.depends("order_id.fiscal_position_id")
-    def _compute_tax_ids(self):
-        # Native Odoo offers a manual tax-update action on fiscal position change.
-        # This opt-in policy also updates draft lines when the billing address changes.
-        return super()._compute_tax_ids()
 
 
 class AccountMove(models.Model):

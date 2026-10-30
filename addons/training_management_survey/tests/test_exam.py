@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from io import BytesIO
+from psycopg2.errors import CheckViolation
 from PIL import Image
 from odoo.tools.binary import BinaryBytes
 from unittest.mock import patch
@@ -103,6 +104,16 @@ class ExamCase(MaterialCase):
 
 @tagged("post_install", "-at_install")
 class TestMockExam(ExamCase):
+    def test_native_threshold_constraint_and_publication_boundaries(self):
+        for threshold in (0, 100):
+            exam, _q1, _q2 = self.exam(scoring_success_min=threshold)
+            exam.action_training_publish()
+            self.assertEqual(exam.scoring_success_min, threshold)
+        for threshold in (-1, 101):
+            with self.assertRaises(CheckViolation), self.cr.savepoint():
+                self.exam(scoring_success_min=threshold)
+                self.env.flush_all()
+
     def test_legacy_public_exam_attachment_cannot_bypass_parent_access(self):
         exam, q1, q2 = self.exam()
         attachment = (

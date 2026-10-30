@@ -97,8 +97,11 @@ quote = env["sale.order"].create(
 assert quote.amount_tax == 200
 quote.write({"partner_invoice_id": foreign.id, "pricelist_id": eur_prices.id})
 assert quote.fiscal_position_id == export_position
+assert quote.amount_tax == 200  # RPC does not silently overwrite existing line taxes.
+quote._recompute_taxes()
 assert quote.amount_tax == 0
 quote.write({"partner_invoice_id": partner.id, "pricelist_id": pricelist.id})
+quote._recompute_taxes()
 assert quote.amount_tax == 200
 
 # Disabling the policy retains native delivery-based selection. Purchases always do.
@@ -108,7 +111,7 @@ native = env["sale.order"].create({"partner_id": partner.id, "partner_shipping_i
 assert native.fiscal_position_id == native_position
 company.sale_fiscal_by_invoice_address = True
 purchase = env["account.move"].create({"move_type": "in_invoice", "partner_id": foreign.id})
-assert purchase.fiscal_position_id != export_position
+assert purchase.fiscal_position_id == env["account.fiscal.position"]._get_fiscal_position(foreign, foreign)
 
 # A normal sales user can read/use the policy but cannot change company settings.
 sales_user = env["res.users"].create(
