@@ -29,6 +29,12 @@ def snapshot():
     ):
         env.cr.execute(f"SELECT to_jsonb(t) FROM {table} t WHERE {column}=%s ORDER BY id", [value])
         result[table] = [r[0] for r in env.cr.fetchall()]
+    # P20: new opt-in stays disabled; all original columns remain compared below.
+    for row in result["training_closure"]:
+        if "verify_certificates" in row:
+            assert row.pop("verify_certificates") in (None, False)
+    if "training.certificate.verification" in env:
+        assert not env["training.certificate.verification"].search([("dossier_id", "=", dossier.id)])
     result["pdf"] = [hashlib.sha256(d.data.content).hexdigest() for d in dossier.output_ids]
     return json.dumps(result, default=str, sort_keys=True)
 

@@ -80,6 +80,19 @@ class Coverage(unittest.TestCase):
                 self.assertEqual(path.read_text().split("\nelse:\n")[0], original(name).split("\nelse:\n")[0])
                 self.assertIn("assert actual == expected", path.read_text())
                 self.assertIn("assert after.pop(column) is None", path.read_text())
+            elif name == "tests/probes/s08_history.py":
+                # P20 admits only its disabled opt-in on historical dossiers.
+                # All original comparisons and the absence of public registration stay checked.
+                addition = (
+                    "    # P20: new opt-in stays disabled; all original columns remain compared below.\n"
+                    '    for row in result["training_closure"]:\n'
+                    '        if "verify_certificates" in row:\n'
+                    '            assert row.pop("verify_certificates") in (None, False)\n'
+                    '    if "training.certificate.verification" in env:\n'
+                    '        assert not env["training.certificate.verification"].search([("dossier_id", "=", dossier.id)])\n'
+                )
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(path.read_text().replace(addition, ""), original(name))
             else:
                 self.assertEqual(path.read_text(), original(name))
         self.assertEqual(len(PLAN["migrations"]), 24)
