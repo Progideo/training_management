@@ -68,6 +68,15 @@ class TestNativeCommercialUI(EnrollmentCase):
             for node in arch.xpath("./header/button[@context]")
             if "reason_action" in safe_eval(node.get("context", "{}"))
         }
+        secondary = {
+            self.env.ref("training_management.action_enrollment_" + name).id
+            for name in ("withdraw_authorization", "suspend_access", "revoke_access")
+        }
+        for name in ("action_revoke_authorization", "action_suspend_access", "action_revoke_access"):
+            self.assertNotIn(name, buttons)
+        for user, expected in ((self.seller, set()), (self.coordinator, secondary)):
+            bindings = self.env["ir.actions.actions"].with_user(user).get_bindings("training.enrollment")
+            self.assertEqual({action["id"] for action in bindings.get("action", [])} & secondary, expected)
         for state in (
             "requested",
             "reserved",
@@ -79,14 +88,22 @@ class TestNativeCommercialUI(EnrollmentCase):
             "replaced",
             "abandoned",
         ):
-            values = {"state": state, "commercially_authorized": True, "access_state": "active", "user_id": 1}
-            for name in ("action_revoke_authorization", "action_suspend_access", "action_revoke_access"):
-                self.assertEqual(safe_eval(buttons[name].get("invisible"), values), state != "confirmed", (name, state))
-        for access_state in ("unopened", "suspended", "active", "revoked"):
-            values = {"state": "confirmed", "commercially_authorized": True, "access_state": access_state, "user_id": 1}
-            self.assertEqual(
-                safe_eval(buttons["action_open_access"].get("invisible"), values), access_state in ("active", "revoked")
-            )
+            for authorized in (False, True):
+                for access_state in ("unopened", "suspended", "active", "revoked"):
+                    values = {
+                        "state": state,
+                        "commercially_authorized": authorized,
+                        "access_state": access_state,
+                        "user_id": 1,
+                    }
+                    self.assertEqual(
+                        safe_eval(buttons["action_authorize"].get("invisible"), values),
+                        state != "confirmed" or authorized,
+                    )
+                    self.assertEqual(
+                        safe_eval(buttons["action_open_access"].get("invisible"), values),
+                        state != "confirmed" or not authorized or access_state in ("active", "revoked"),
+                    )
 
     def test_french_bulk_actions_and_dates_wizard(self):
         load_language(self.cr, "fr_FR")

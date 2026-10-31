@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta
+from urllib.parse import urlsplit
 
 from lxml import html
 
@@ -647,7 +648,10 @@ class TestTrainerPortal(HttpCase, PreparationCase):
             response = self.url_open("/my/training-sessions/page/%s" % page)
             self.assertEqual(response.status_code, 200)
             tree = html.fromstring(response.text)
-            ids = {int(link.rsplit("/", 1)[1]) for link in tree.xpath("//ul[contains(@class, 'list-group')]//a/@href")}
+            ids = {
+                int(urlsplit(link).path.rsplit("/", 1)[1])
+                for link in tree.xpath("//ul[contains(@class, 'list-group')]//a/@href")
+            }
             self.assertLessEqual(len(ids), 40)
             self.assertFalse(seen & ids)
             seen |= ids
