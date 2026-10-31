@@ -3,7 +3,7 @@
 Point 9 de la revue : complément aux contrôles Odoo de [la CI](ci.md),
 références UX01, SEC01 et supports privés S05. Robot Framework Browser pilote
 réellement Chromium avec Playwright. Les mots clés métier sont dans
-[`manual-browser/resources`](../manual-browser/resources/training.resource).
+[`resources/business/training.resource`](../manual-browser/resources/business/training.resource).
 Le choix s'appuie sur les documentations officielles
 [d'installation](https://robotframework-browser.org/docs/start/installation/) et
 [d'architecture](https://robotframework-browser.org/docs/concepts/architecture/).
@@ -23,6 +23,34 @@ sélecteurs et assertions ; les noms techniques des champs et les identifiants
 métier sont préférés aux positions dans la page. La suite ne prétend pas couvrir
 les examens, le multi-société ou tous les rôles. L'émargement reste par
 demi-journée et la durée des attestations issue du planning.
+
+## Structure des tests
+
+La suite applique le Page Object Model avec des ressources Robot Framework,
+sans ajouter une seconde bibliothèque Playwright ni une hiérarchie de classes.
+Voir les principes officiels [Playwright](https://playwright.dev/docs/pom) et
+[Robot Framework](https://docs.robotframework.org/docs/examples/project_structure).
+
+- `journeys.robot` : scénarios, données attendues et tags ; uniquement des mots
+  clés métier, sans sélecteur, URL ni commande Browser.
+- `resources/business/training.resource` : bibliothèque de mots clés métier
+  paramétrés, composition des pages et assertions fonctionnelles. Elle ne lit pas
+  le DOM directement et ne connaît aucun sélecteur.
+- `resources/pages/*_page.resource` : objets de page connexion, portail,
+  formation et catégories. Ils encapsulent routes, sélecteurs, actions, attentes
+  de disponibilité et lectures de l'interface. Ils retournent les valeurs utiles
+  sans décider du résultat métier attendu. Les sélecteurs dynamiques sont
+  construits ici à partir des identifiants reçus en arguments.
+- `resources/browser.resource` : configuration et cycle de vie du navigateur,
+  contexte neuf, capture d'échec et fermeture garantie même si la capture échoue.
+- `fixture.py` et `run.py` : préparation et nettoyage indépendants des parcours.
+
+Les appels aux pages sont qualifiés par leur nom pour éviter les ambiguïtés.
+Une page ne dépend ni de la bibliothèque métier ni des données globales de la
+fixture. Pour adapter l'interface, modifier la page concernée ; pour changer une
+règle attendue, modifier le mot clé métier ; pour ajouter un parcours, composer
+ces mots clés dans la suite. Le dépôt corrigé remplace seulement le fichier,
+sans ressaisir le texte : cette propriété reste explicitement testée.
 
 ## Installation isolée
 
