@@ -1,29 +1,129 @@
 <odoo>
     <record id="view_dashboard_list" model="ir.ui.view">
-        <field name="name">training.dashboard.line.list</field><field name="model">training.dashboard.line</field>
-        <field name="arch" type="xml"><list create="0" edit="0" delete="0"><field name="delivery_id" options="{'no_open': True}"/><field name="program"/><field name="name"/><field name="state"/><field name="attendance"/><field name="questionnaires"/><field name="evaluations"/><field name="overdue" optional="hide"/><field name="company_id" groups="base.group_multi_company"/></list></field>
+        <field name="name">training.dashboard.line.list</field>
+        <field name="model">training.dashboard.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="delivery_id" options="{'no_open': True}"/>
+                <field name="program"/>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="attendance"/>
+                <field name="questionnaires"/>
+                <field name="evaluations"/>
+                <field name="overdue" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
     </record>
     <record id="view_dashboard_form" model="ir.ui.view">
-        <field name="name">training.dashboard.line.form</field><field name="model">training.dashboard.line</field>
-        <field name="arch" type="xml"><form create="0" edit="0" delete="0"><header><button name="action_delivery_dashboard" type="object" string="Delivery Summary" class="btn-primary"/></header><sheet><group><field name="name"/><field name="delivery_id" options="{'no_open': True}"/><field name="program"/><field name="state"/></group><field name="details" widget="html" nolabel="1"/></sheet></form></field>
+        <field name="name">training.dashboard.line.form</field>
+        <field name="model">training.dashboard.line</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header><button name="action_delivery_dashboard" type="object" string="Delivery Summary" class="btn-primary"/></header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="delivery_id" options="{'no_open': True}"/>
+                        <field name="program"/>
+                        <field name="state"/>
+                    </group>
+                    <field name="details" widget="html" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
     </record>
     <record id="view_dashboard_search" model="ir.ui.view">
-        <field name="name">training.dashboard.line.search</field><field name="model">training.dashboard.line</field>
-        <field name="arch" type="xml"><search><field name="name"/><field name="delivery_id"/><field name="program"/><field name="state"/>
-            <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
-            <filter name="abandoned" string="Abandoned" domain="[('state','=','abandoned')]"/>
-            <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
-            <separator/><filter name="attendance_incomplete" string="Attendance to Review" domain="[('attendance_incomplete','=',True)]"/>
-            <filter name="feedback_pending" string="Feedback Expected" domain="[('feedback_pending','=',True)]"/>
-            <filter name="evaluation_pending" string="Evaluation to Finish / Validate" domain="[('evaluation_pending','=',True)]"/>
-            <filter name="overdue" string="Overdue" domain="[('overdue','=',True)]"/>
-            <separator/><filter name="group_delivery" string="Delivery" context="{'group_by':'delivery_id'}"/><filter name="group_state" string="Enrollment Status" context="{'group_by':'state'}"/>
-        </search></field>
+        <field name="name">training.dashboard.line.search</field>
+        <field name="model">training.dashboard.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="program"/>
+                <field name="state"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <filter name="abandoned" string="Abandoned" domain="[('state','=','abandoned')]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                <separator/>
+                <filter name="attendance_incomplete" string="Attendance to Review" domain="[('attendance_incomplete','=',True)]"/>
+                <filter name="feedback_pending" string="Feedback Expected" domain="[('feedback_pending','=',True)]"/>
+                <filter name="evaluation_pending" string="Evaluation to Finish / Validate" domain="[('evaluation_pending','=',True)]"/>
+                <filter name="overdue" string="Overdue" domain="[('overdue','=',True)]"/>
+                <separator/>
+                <filter name="group_delivery" string="Delivery" context="{'group_by':'delivery_id'}"/>
+                <filter name="group_state" string="Enrollment Status" context="{'group_by':'state'}"/>
+            </search>
+        </field>
     </record>
-    <record id="action_training_dashboard" model="ir.actions.act_window"><field name="name">Operational Dashboard</field><field name="res_model">training.dashboard.line</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_dashboard_search"/><field name="help" type="html"><p class="o_view_nocontent_smiling_face">No assigned training to follow.</p><p>Only training within your current responsibilities appears here. Use Catalogue or your native Sales and Invoicing applications for administrative work.</p></field></record>
-    <record id="action_training_start" model="ir.actions.server"><field name="name">Training Overview</field><field name="model_id" ref="model_training_dashboard_line"/><field name="state">code</field><field name="group_ids" eval="[(4, ref('base.group_user'))]"/><field name="code">action = model.action_open_training()</field></record><menuitem id="menu_training_dashboard" name="Training Overview" parent="menu_training_root" action="action_training_start" sequence="5" groups="base.group_user"/>
-    <record id="view_pdf_accessibility_review_list" model="ir.ui.view"><field name="name">training.pdf.accessibility.review.list</field><field name="model">training.pdf.accessibility.review</field><field name="arch" type="xml"><list edit="0" delete="0"><field name="program_id"/><field name="material_id"/><field name="document_id"/><field name="reviewer_id"/><field name="reviewed_at"/><field name="passed"/></list></field></record>
-    <record id="view_pdf_accessibility_review_form" model="ir.ui.view"><field name="name">training.pdf.accessibility.review.form</field><field name="model">training.pdf.accessibility.review</field><field name="arch" type="xml"><form delete="0" duplicate="0"><header><button name="action_record_review" type="object" string="Record Human Review" class="btn-primary" invisible="id"/></header><sheet><div class="alert alert-info" role="note">Human pedagogical check; this does not certify PDF accessibility. Keep failures and record a new review after correction.</div><group><field name="program_id"/><field name="material_id"/><field name="document_id"/><field name="reviewer_id"/><field name="reviewed_at"/><field name="source_sha256" required="0"/></group><group><field name="logical_reading_order"/><field name="text_alternatives"/><field name="contrast"/><field name="selectable_text"/><field name="pedagogical_review"/><field name="passed"/></group><group><field name="notes"/></group></sheet></form></field></record>
-    <record id="action_pdf_accessibility_reviews" model="ir.actions.act_window"><field name="name">PDF Accessibility Reviews</field><field name="res_model">training.pdf.accessibility.review</field><field name="view_mode">list,form</field></record>
+    <record id="action_training_dashboard" model="ir.actions.act_window">
+        <field name="name">Operational Dashboard</field>
+        <field name="res_model">training.dashboard.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_dashboard_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No assigned training to follow.</p>
+            <p>Only training within your current responsibilities appears here. Use Catalogue or your native Sales and Invoicing applications for administrative work.</p>
+        </field>
+    </record>
+    <record id="action_training_start" model="ir.actions.server">
+        <field name="name">Training Overview</field>
+        <field name="model_id" ref="model_training_dashboard_line"/>
+        <field name="state">code</field>
+        <field name="group_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="code">action = model.action_open_training()</field>
+    </record>
+    <menuitem id="menu_training_dashboard" name="Training Overview" parent="menu_training_root" action="action_training_start" sequence="5" groups="base.group_user"/>
+    <record id="view_pdf_accessibility_review_list" model="ir.ui.view">
+        <field name="name">training.pdf.accessibility.review.list</field>
+        <field name="model">training.pdf.accessibility.review</field>
+        <field name="arch" type="xml">
+            <list edit="0" delete="0">
+                <field name="program_id"/>
+                <field name="material_id"/>
+                <field name="document_id"/>
+                <field name="reviewer_id"/>
+                <field name="reviewed_at"/>
+                <field name="passed"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_pdf_accessibility_review_form" model="ir.ui.view">
+        <field name="name">training.pdf.accessibility.review.form</field>
+        <field name="model">training.pdf.accessibility.review</field>
+        <field name="arch" type="xml">
+            <form delete="0" duplicate="0">
+                <header><button name="action_record_review" type="object" string="Record Human Review" class="btn-primary" invisible="id"/></header>
+                <sheet>
+                    <div class="alert alert-info" role="note">Human pedagogical check; this does not certify PDF accessibility. Keep failures and record a new review after correction.</div>
+                    <group>
+                        <field name="program_id"/>
+                        <field name="material_id"/>
+                        <field name="document_id"/>
+                        <field name="reviewer_id"/>
+                        <field name="reviewed_at"/>
+                        <field name="source_sha256" required="0"/>
+                    </group>
+                    <group>
+                        <field name="logical_reading_order"/>
+                        <field name="text_alternatives"/>
+                        <field name="contrast"/>
+                        <field name="selectable_text"/>
+                        <field name="pedagogical_review"/>
+                        <field name="passed"/>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_pdf_accessibility_reviews" model="ir.actions.act_window">
+        <field name="name">PDF Accessibility Reviews</field>
+        <field name="res_model">training.pdf.accessibility.review</field>
+        <field name="view_mode">list,form</field>
+    </record>
     <menuitem id="menu_pdf_accessibility_reviews" name="PDF Accessibility Reviews" parent="menu_training_quality" action="action_pdf_accessibility_reviews" groups="training_management.group_training_quality" sequence="30"/>
 </odoo>

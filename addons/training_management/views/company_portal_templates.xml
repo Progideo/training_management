@@ -1,7 +1,8 @@
 <odoo>
     <template id="company_trainings" name="Company training dossiers">
         <t t-call="portal.portal_layout">
-            <t t-call="training_management.portal_training_navigation"/><div class="container py-4">
+            <t t-call="training_management.portal_training_navigation"/>
+            <div class="container py-4">
                 <h1>Formations de mon entreprise</h1>
                 <p>Seuls les dossiers expressément habilités sont présentés. Aucun score, réponse ou échange pédagogique privé n’est partagé.</p>
                 <ul>
@@ -23,10 +24,15 @@
     </template>
     <template id="company_training" name="Company training dossier">
         <t t-call="portal.portal_layout">
-            <t t-call="training_management.portal_training_navigation"/><div class="container py-4">
+            <t t-call="training_management.portal_training_navigation"/>
+            <div class="container py-4">
                 <a href="/my/company-trainings">Mes dossiers entreprise</a>
                 <h1 t-out="name"/>
-                <div class="card p-3 mb-3"><p><strong><t t-out="lot_quantity"/></strong> places in this allocation · <strong><t t-out="lot_remaining"/></strong> places not yet assigned.</p><p><t t-out="pending_nominations"/> participant proposals awaiting coordination.</p><p t-if="lot_deadline">Reservation deadline: <t t-out="lot_deadline"/></p></div>
+                <div class="card p-3 mb-3">
+                    <p><strong><t t-out="lot_quantity"/></strong> places in this allocation · <strong><t t-out="lot_remaining"/></strong> places not yet assigned.</p>
+                    <p><t t-out="pending_nominations"/> participant proposals awaiting coordination.</p>
+                    <p t-if="lot_deadline">Reservation deadline: <t t-out="lot_deadline"/></p>
+                </div>
                 <div t-if="saved" id="company-feedback" class="alert alert-success o_training_feedback" tabindex="-1" role="status">Participant proposal recorded. Coordination must still confirm the enrollment.</div>
                 <p t-out="program"/>
                 <h2>Séances</h2>
@@ -93,10 +99,12 @@
         </t>
     </template>
     <template id="company_portal_home" inherit_id="training_management.portal_trainings">
-        <xpath expr="//div[@id='training_responsibility_links']" position="inside"><t t-if="training_links.get('company')">
-            <div class="col-12">
+        <xpath expr="//div[@id='training_responsibility_links']" position="inside">
+            <t t-if="training_links.get('company')">
+                <div class="col-12">
                 <a class="btn btn-outline-primary my-2" href="/my/company-trainings">Formations de mon entreprise</a>
             </div>
-        </t></xpath>
+            </t>
+        </xpath>
     </template>
 </odoo>

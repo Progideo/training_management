@@ -1,16 +1,25 @@
 <odoo>
     <template id="portal_learning_home" inherit_id="training_management.portal_trainings" name="Learning Tutoring">
-        <xpath expr="//div[@id='training_responsibility_links']" position="inside"><t t-if="training_links.get('tutoring')"><div class="card p-3 my-2"><a href="/my/training-tutoring">My tutoring assignments</a></div></t></xpath>
+        <xpath expr="//div[@id='training_responsibility_links']" position="inside">
+            <t t-if="training_links.get('tutoring')">
+                <div class="card p-3 my-2"><a href="/my/training-tutoring">My tutoring assignments</a></div>
+            </t>
+        </xpath>
     </template>
     <template id="portal_learning_participant" inherit_id="portal_training" name="Participant Learning">
         <xpath expr="//t[@t-call='training_management.portal_materials']" position="after">
-            <t t-set="is_tutor" t-value="False"/><t t-call="training_management.portal_learning_content"/>
+            <t t-set="is_tutor" t-value="False"/>
+            <t t-call="training_management.portal_learning_content"/>
         </xpath>
     </template>
     <template id="portal_learning_tutoring" name="My Tutoring Assignments">
-        <t t-call="portal.portal_layout"><t t-call="training_management.portal_training_navigation"/><h1>My tutoring assignments</h1>
+        <t t-call="portal.portal_layout">
+            <t t-call="training_management.portal_training_navigation"/>
+            <h1>My tutoring assignments</h1>
             <p t-if="not enrollments">No current tutoring assignment.</p>
-            <ul class="list-group"><li class="list-group-item" t-foreach="enrollments" t-as="e"><a t-att-href="'/my/training-tutoring/%s' % e['id']"><t t-out="e['participant']"/> — <t t-out="e['name']"/></a></li></ul>
+            <ul class="list-group">
+                <li class="list-group-item" t-foreach="enrollments" t-as="e"><a t-att-href="'/my/training-tutoring/%s' % e['id']"><t t-out="e['participant']"/> — <t t-out="e['name']"/></a></li>
+            </ul>
             <t t-call="portal.pager"/>
         </t>
     </template>
@@ -23,9 +32,11 @@
         <section id="training-activities" class="mt-4" aria-label="Learning activities">
             <h2>Activities and progress</h2>
             <div t-if="learning['error']" class="alert alert-danger o_training_feedback" role="alert" t-out="learning['error']" tabindex="-1"/>
-            <t t-if="learning['required']"><p><t t-out="learning['complete']"/> / <t t-out="learning['required']"/> required activities completed.</p>
+            <t t-if="learning['required']">
+                <p><t t-out="learning['complete']"/> / <t t-out="learning['required']"/> required activities completed.</p>
                 <progress t-att-value="learning['complete']" t-att-max="learning['required']" class="w-100" aria-label="Required activities completed"/>
-            </t><p t-else="">No required learning activity is configured.</p>
+            </t>
+            <p t-else="">No required learning activity is configured.</p>
             <p>Opening a PDF does not validate learning or attendance.</p>
             <t t-set="learning_action" t-value="('/my/training-tutoring/%s/learning' if is_tutor else '/my/trainings/%s/learning') % learning['id']"/>
             <div t-foreach="learning['activities']" t-as="a" t-att-id="'learning-activity-%s' % a['id']" class="card p-3 mb-3" style="scroll-margin-top:5rem">
@@ -51,7 +62,9 @@
             </div>
         </section>
         <section id="training-help" class="mt-4" aria-label="Private work and help">
-            <h2>Private work and help</h2><p t-if="not learning['has_tutor']" class="alert alert-info" role="status">A tutor has not yet been assigned. Your request will be kept; contact coordination for tutor assignment.</p><p>Only the participant and the currently assigned tutor can read these exchanges.</p>
+            <h2>Private work and help</h2>
+            <p t-if="not learning['has_tutor']" class="alert alert-info" role="status">A tutor has not yet been assigned. Your request will be kept; contact coordination for tutor assignment.</p>
+            <p>Only the participant and the currently assigned tutor can read these exchanges.</p>
             <div t-foreach="learning['entries']" t-as="entry" t-att-id="'learning-entry-%s' % entry['id']" class="card p-3 mb-2" style="scroll-margin-top:5rem">
                 <p><strong t-out="entry['author']"/> · <span t-out="entry['date']"/> · <span t-out="entry['activity']"/></p>
                 <span t-if="entry['kind'] == 'submission'">Exercise submission</span><span t-if="entry['kind'] == 'correction'">Correction</span><span t-if="entry['kind'] == 'question'">Private help request</span><span t-if="entry['kind'] == 'answer'">Private answer</span>
@@ -79,7 +92,11 @@
     <template id="portal_learning_work_form" name="Private Submission or Assessment Form">
         <form t-if="a['available'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])" t-att-action="learning_action" method="post" enctype="multipart/form-data" class="mt-3">
             <details t-att-open="is_tutor or not a['latest_submission'] or (learning['error'] and learning['draft_activity'] == a['id']) or None">
-            <summary class="mb-3"><t t-if="is_tutor">Correction or validation</t><t t-elif="a['latest_submission']">Submit a new version</t><t t-else="">Exercise submission</t></summary>
+            <summary class="mb-3">
+                    <t t-if="is_tutor">Correction or validation</t>
+                    <t t-elif="a['latest_submission']">Submit a new version</t>
+                    <t t-else="">Exercise submission</t>
+                </summary>
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="kind" t-att-value="'correction' if is_tutor else 'submission'"/>
             <input type="hidden" name="activity_id" t-att-value="a['id']"/><input type="hidden" name="parent_id" t-att-value="a['latest_submission'] or ''"/>
             <input type="hidden" name="revision" t-att-value="a['revision']"/><input type="hidden" name="request_key" t-att-value="a['key']"/>

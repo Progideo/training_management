@@ -1,18 +1,125 @@
 <odoo>
-    <record id="view_tutoring_entitlement_list" model="ir.ui.view"><field name="name">training.tutoring.entitlement.list</field><field name="model">training.tutoring.entitlement</field><field name="arch" type="xml"><list><field name="enrollment_id"/><field name="included_count"/><field name="used_count"/><field name="service_reference"/><field name="company_id" groups="base.group_multi_company"/></list></field></record>
-    <record id="view_tutoring_entitlement_form" model="ir.ui.view"><field name="name">training.tutoring.entitlement.form</field><field name="model">training.tutoring.entitlement</field><field name="arch" type="xml"><form><sheet><group><field name="enrollment_id" readonly="id"/><field name="included_count" readonly="id"/><field name="service_reference" readonly="id"/><field name="retention_id" readonly="id"/><field name="used_count" readonly="1"/></group><p>One confirmed reservation consumes one unit. Cancelled reservations remain consumed unless the announced refund applies.</p></sheet></form></field></record>
-    <record id="action_tutoring_entitlements" model="ir.actions.act_window"><field name="name">Included Tutoring Reservations</field><field name="res_model">training.tutoring.entitlement</field><field name="view_mode">list,form</field></record>
-    <record id="view_tutoring_slot_list" model="ir.ui.view"><field name="name">training.tutoring.slot.list</field><field name="model">training.tutoring.slot</field><field name="arch" type="xml"><list><field name="name"/><field name="delivery_id"/><field name="tutor_id"/><field name="start_at"/><field name="duration_hours" widget="float_time"/><field name="capacity"/><field name="occupied_count"/><field name="state"/></list></field></record>
-    <record id="view_tutoring_slot_calendar" model="ir.ui.view"><field name="name">training.tutoring.slot.calendar</field><field name="model">training.tutoring.slot</field><field name="arch" type="xml"><calendar date_start="start_at" date_stop="end_at" color="tutor_id" quick_create="0" create="0" edit="0" delete="0"><field name="name"/><field name="delivery_id"/><field name="capacity"/><field name="state"/></calendar></field></record>
-    <record id="view_tutoring_slot_form" model="ir.ui.view"><field name="name">training.tutoring.slot.form</field><field name="model">training.tutoring.slot</field><field name="arch" type="xml"><form>
-        <header><button name="action_publish" type="object" string="Publish" class="btn-primary" invisible="state != 'draft'"/><button name="action_cancel" type="object" string="Cancel Slot and Refund" confirm="Cancel this slot and refund all its confirmed reservations?" invisible="state == 'cancelled'"/><field name="state" widget="statusbar"/></header>
-        <sheet><h1><field name="name" readonly="state != 'draft'"/></h1>
-            <group><group><field name="delivery_id" readonly="id"/><field name="tutor_id" readonly="state != 'draft'"/><field name="kind" readonly="state != 'draft'"/><field name="capacity" readonly="state != 'draft'"/><field name="occupied_count"/><field name="mode" readonly="state != 'draft'"/><field name="room_id" readonly="state != 'draft'"/><field name="location" readonly="state != 'draft'"/><field name="meeting_url" readonly="state != 'draft'"/></group>
-            <group><field name="timezone"/><field name="start_date" readonly="state != 'draft'"/><field name="start_hour" widget="float_time" readonly="state != 'draft'"/><field name="start_occurrence" readonly="state != 'draft'"/><field name="end_date" readonly="state != 'draft'"/><field name="end_hour" widget="float_time" readonly="state != 'draft'"/><field name="end_occurrence" readonly="state != 'draft'"/><field name="duration_hours" widget="float_time"/></group></group>
-            <group string="Cancellation Conditions"><field name="refund_policy" readonly="state != 'draft'"/><field name="cancellation_hours" invisible="refund_policy != 'before'" required="refund_policy == 'before'" readonly="state != 'draft'"/><field name="cancellation_terms" readonly="state != 'draft'"/></group>
-            <field name="booking_ids" readonly="1"><list create="0" delete="0"><field name="enrollment_id"/><field name="confirmed_at"/><field name="state"/><field name="refunded"/><field name="cancelled_at"/><field name="cancelled_by_id"/></list></field>
-        </sheet></form></field></record>
-    <record id="action_tutoring_slots" model="ir.actions.act_window"><field name="name">Tutoring Slots</field><field name="res_model">training.tutoring.slot</field><field name="view_mode">list,calendar,form</field></record>
+    <record id="view_tutoring_entitlement_list" model="ir.ui.view">
+        <field name="name">training.tutoring.entitlement.list</field>
+        <field name="model">training.tutoring.entitlement</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="enrollment_id"/>
+                <field name="included_count"/>
+                <field name="used_count"/>
+                <field name="service_reference"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_tutoring_entitlement_form" model="ir.ui.view">
+        <field name="name">training.tutoring.entitlement.form</field>
+        <field name="model">training.tutoring.entitlement</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="enrollment_id" readonly="id"/>
+                        <field name="included_count" readonly="id"/>
+                        <field name="service_reference" readonly="id"/>
+                        <field name="retention_id" readonly="id"/>
+                        <field name="used_count" readonly="1"/>
+                    </group>
+                    <p>One confirmed reservation consumes one unit. Cancelled reservations remain consumed unless the announced refund applies.</p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_tutoring_entitlements" model="ir.actions.act_window">
+        <field name="name">Included Tutoring Reservations</field>
+        <field name="res_model">training.tutoring.entitlement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="view_tutoring_slot_list" model="ir.ui.view">
+        <field name="name">training.tutoring.slot.list</field>
+        <field name="model">training.tutoring.slot</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="tutor_id"/>
+                <field name="start_at"/>
+                <field name="duration_hours" widget="float_time"/>
+                <field name="capacity"/>
+                <field name="occupied_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_tutoring_slot_calendar" model="ir.ui.view">
+        <field name="name">training.tutoring.slot.calendar</field>
+        <field name="model">training.tutoring.slot</field>
+        <field name="arch" type="xml">
+            <calendar date_start="start_at" date_stop="end_at" color="tutor_id" quick_create="0" create="0" edit="0" delete="0">
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="capacity"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+    <record id="view_tutoring_slot_form" model="ir.ui.view">
+        <field name="name">training.tutoring.slot.form</field>
+        <field name="model">training.tutoring.slot</field>
+        <field name="arch" type="xml">
+            <form>
+                <header><button name="action_publish" type="object" string="Publish" class="btn-primary" invisible="state != 'draft'"/><button name="action_cancel" type="object" string="Cancel Slot and Refund" confirm="Cancel this slot and refund all its confirmed reservations?" invisible="state == 'cancelled'"/><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="state != 'draft'"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="delivery_id" readonly="id"/>
+                            <field name="tutor_id" readonly="state != 'draft'"/>
+                            <field name="kind" readonly="state != 'draft'"/>
+                            <field name="capacity" readonly="state != 'draft'"/>
+                            <field name="occupied_count"/>
+                            <field name="mode" readonly="state != 'draft'"/>
+                            <field name="room_id" readonly="state != 'draft'"/>
+                            <field name="location" readonly="state != 'draft'"/>
+                            <field name="meeting_url" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="timezone"/>
+                            <field name="start_date" readonly="state != 'draft'"/>
+                            <field name="start_hour" widget="float_time" readonly="state != 'draft'"/>
+                            <field name="start_occurrence" readonly="state != 'draft'"/>
+                            <field name="end_date" readonly="state != 'draft'"/>
+                            <field name="end_hour" widget="float_time" readonly="state != 'draft'"/>
+                            <field name="end_occurrence" readonly="state != 'draft'"/>
+                            <field name="duration_hours" widget="float_time"/>
+                        </group>
+                    </group>
+                    <group string="Cancellation Conditions">
+                        <field name="refund_policy" readonly="state != 'draft'"/>
+                        <field name="cancellation_hours" invisible="refund_policy != 'before'" required="refund_policy == 'before'" readonly="state != 'draft'"/>
+                        <field name="cancellation_terms" readonly="state != 'draft'"/>
+                    </group>
+                    <field name="booking_ids" readonly="1">
+                        <list create="0" delete="0">
+                            <field name="enrollment_id"/>
+                            <field name="confirmed_at"/>
+                            <field name="state"/>
+                            <field name="refunded"/>
+                            <field name="cancelled_at"/>
+                            <field name="cancelled_by_id"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_tutoring_slots" model="ir.actions.act_window">
+        <field name="name">Tutoring Slots</field>
+        <field name="res_model">training.tutoring.slot</field>
+        <field name="view_mode">list,calendar,form</field>
+    </record>
     <menuitem id="menu_tutoring_slots" name="Tutoring Slots" parent="menu_training_pedagogy" action="action_tutoring_slots" groups="group_training_coordinator" sequence="70"/>
     <menuitem id="menu_tutoring_entitlements" name="Included Tutoring Reservations" parent="menu_training_pedagogy" action="action_tutoring_entitlements" groups="group_training_coordinator" sequence="71"/>
 </odoo>

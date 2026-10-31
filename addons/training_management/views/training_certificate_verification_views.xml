@@ -1,36 +1,96 @@
 <odoo>
     <record id="view_training_certificate_verification_list" model="ir.ui.view">
-        <field name="name">training.certificate.verification.list</field><field name="model">training.certificate.verification</field>
-        <field name="arch" type="xml"><list create="false" delete="false"><field name="reference"/><field name="kind"/><field name="issued_at"/><field name="state"/></list></field>
+        <field name="name">training.certificate.verification.list</field>
+        <field name="model">training.certificate.verification</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false">
+                <field name="reference"/>
+                <field name="kind"/>
+                <field name="issued_at"/>
+                <field name="state"/>
+            </list>
+        </field>
     </record>
     <record id="view_training_certificate_verification_form" model="ir.ui.view">
-        <field name="name">training.certificate.verification.form</field><field name="model">training.certificate.verification</field>
+        <field name="name">training.certificate.verification.form</field>
+        <field name="model">training.certificate.verification</field>
         <field name="arch" type="xml">
             <form create="false" edit="false" delete="false" duplicate="false">
                 <header><button name="action_revoke" type="object" string="Revoke" invisible="state != 'valid'"/><button name="action_replace" type="object" string="Replace" invisible="state != 'valid'"/><field name="state" widget="statusbar"/></header>
-                <sheet><group><field name="document_id" options="{'no_open': True}"/><field name="reference"/><field name="url" widget="url"/><field name="issuer"/><field name="beneficiary"/><field name="programme"/><field name="programme_version"/><field name="kind"/><field name="issued_at"/><field name="sha256"/></group>
-                <group><field name="reason"/><field name="changed_at"/><field name="changed_by_id"/><field name="replacement_id"/></group></sheet>
+                <sheet>
+                    <group>
+                        <field name="document_id" options="{'no_open': True}"/>
+                        <field name="reference"/>
+                        <field name="url" widget="url"/>
+                        <field name="issuer"/>
+                        <field name="beneficiary"/>
+                        <field name="programme"/>
+                        <field name="programme_version"/>
+                        <field name="kind"/>
+                        <field name="issued_at"/>
+                        <field name="sha256"/>
+                    </group>
+                    <group>
+                        <field name="reason"/>
+                        <field name="changed_at"/>
+                        <field name="changed_by_id"/>
+                        <field name="replacement_id"/>
+                    </group>
+                </sheet>
             </form>
         </field>
     </record>
     <template id="certificate_verification" name="Certificate Verification">
-        <t t-set="head"><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content="noindex, nofollow, noarchive"/><t t-call-assets="web.assets_frontend" t-js="false"/></t><t t-call="web.layout" title.f="Vérification d’attestation" html_data="{'lang': 'fr'}" body_classname.f="o_training_management_certificate_verification" head="head"><main id="wrap" class="container py-4 text-break"><div class="row justify-content-center"><div class="col-lg-8"><h1>Vérification d’attestation</h1>
-            <t t-if="not certificate"><p class="h4">Attestation inconnue</p><p>Ce lien ne permet pas de confirmer l’authenticité d’un document.</p></t>
-            <t t-else="">
-                <p class="h4"><t t-if="certificate['state'] == 'valid'">Attestation valide</t><t t-elif="certificate['state'] == 'revoked'">Attestation révoquée</t><t t-else="">Attestation remplacée</t></p>
-                <p t-if="certificate['state'] != 'valid'">Cette attestation n’est plus valide.</p>
-                <dl>
-                    <dt class="fw-bold">Émetteur</dt><dd t-out="certificate['issuer']" class="mb-3 text-break"/>
-                    <dt class="fw-bold">Bénéficiaire</dt><dd t-out="certificate['beneficiary']" class="mb-3 text-break"/>
-                    <dt class="fw-bold">Référence</dt><dd t-out="certificate['reference']" class="mb-3 text-break"/>
-                    <dt class="fw-bold">Type</dt><dd class="mb-3 text-break"><t t-if="certificate['kind'] == 'participation'">Participation</t><t t-elif="certificate['kind'] == 'completion'">Réalisation</t><t t-else="">Réussite</t></dd>
-                    <dt class="fw-bold">Formation</dt><dd class="mb-3 text-break"><t t-out="certificate['programme']"/> — version <t t-out="certificate['programme_version']"/></dd>
-                    <dt class="fw-bold">Émission (UTC)</dt><dd t-out="certificate['issued_at']" class="mb-3 text-break"/>
-                    <dt class="fw-bold">Empreinte SHA-256 du fichier PDF original</dt><dd class="mb-3 text-break"><code t-out="certificate['sha256']"/></dd>
-                </dl>
-                <p>Comparez l’empreinte du fichier PDF présenté à celle ci-dessus pour en vérifier l’intégrité. Un QR code copié sur un autre document ne prouve pas l’authenticité de ce document.</p>
-                <p>Comparez aussi le bénéficiaire et les mentions présentées avec celles du document. L’empreinte permet de vérifier l’ensemble du fichier original.</p>
-            </t>
-            <p>Cette vérification ne constitue pas une certification officielle ni une certification Qualiopi.</p>
-        </div></div></main></t></template>
+        <t t-set="head">
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <meta name="robots" content="noindex, nofollow, noarchive"/>
+            <t t-call-assets="web.assets_frontend" t-js="false"/>
+        </t>
+        <t t-call="web.layout" title.f="Vérification d’attestation" html_data="{'lang': 'fr'}" body_classname.f="o_training_management_certificate_verification" head="head">
+            <main id="wrap" class="container py-4 text-break">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h1>Vérification d’attestation</h1>
+                        <t t-if="not certificate">
+                            <p class="h4">Attestation inconnue</p>
+                            <p>Ce lien ne permet pas de confirmer l’authenticité d’un document.</p>
+                        </t>
+                        <t t-else="">
+                            <p class="h4">
+                                <t t-if="certificate['state'] == 'valid'">Attestation valide</t>
+                                <t t-elif="certificate['state'] == 'revoked'">Attestation révoquée</t>
+                                <t t-else="">Attestation remplacée</t>
+                            </p>
+                            <p t-if="certificate['state'] != 'valid'">Cette attestation n’est plus valide.</p>
+                            <dl>
+                                <dt class="fw-bold">Émetteur</dt>
+                                <dd t-out="certificate['issuer']" class="mb-3 text-break"/>
+                                <dt class="fw-bold">Bénéficiaire</dt>
+                                <dd t-out="certificate['beneficiary']" class="mb-3 text-break"/>
+                                <dt class="fw-bold">Référence</dt>
+                                <dd t-out="certificate['reference']" class="mb-3 text-break"/>
+                                <dt class="fw-bold">Type</dt>
+                                <dd class="mb-3 text-break">
+                                    <t t-if="certificate['kind'] == 'participation'">Participation</t>
+                                    <t t-elif="certificate['kind'] == 'completion'">Réalisation</t>
+                                    <t t-else="">Réussite</t>
+                                </dd>
+                                <dt class="fw-bold">Formation</dt>
+                                <dd class="mb-3 text-break"><t t-out="certificate['programme']"/> — version <t t-out="certificate['programme_version']"/></dd>
+                                <dt class="fw-bold">Émission (UTC)</dt>
+                                <dd t-out="certificate['issued_at']" class="mb-3 text-break"/>
+                                <dt class="fw-bold">Empreinte SHA-256 du fichier PDF original</dt>
+                                <dd class="mb-3 text-break">
+                                    <code t-out="certificate['sha256']"/>
+                                </dd>
+                            </dl>
+                            <p>Comparez l’empreinte du fichier PDF présenté à celle ci-dessus pour en vérifier l’intégrité. Un QR code copié sur un autre document ne prouve pas l’authenticité de ce document.</p>
+                            <p>Comparez aussi le bénéficiaire et les mentions présentées avec celles du document. L’empreinte permet de vérifier l’ensemble du fichier original.</p>
+                        </t>
+                        <p>Cette vérification ne constitue pas une certification officielle ni une certification Qualiopi.</p>
+                    </div>
+                </div>
+            </main>
+        </t>
+    </template>
 </odoo>

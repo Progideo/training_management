@@ -4,7 +4,6 @@
             <attribute name="t-value">sale_order.invoice_ids.filtered(lambda invoice: invoice.state not in ['draft', 'cancel'] and (not sale_order.training_request_kind or request.env.user.partner_id in invoice.training_portal_partner_ids)).sorted('date', reverse=True)</attribute>
         </xpath>
     </template>
-
     <template id="sale_order_portal_down_payment_label" inherit_id="sale.sale_order_portal_content">
         <xpath expr="//t[@t-set='label_parts_m']" position="attributes">
             <attribute name="t-value">(sale_order.env._('Down Payment') if sale_order.training_request_kind and line.is_downpayment else (line.label or '')).split('\n', 1)</attribute>

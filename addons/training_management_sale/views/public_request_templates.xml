@@ -15,7 +15,9 @@
                 <a t-if="kind != 'individual'" class="d-block mt-3" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
             </section>
         </xpath>
-        <xpath expr="//ul/li/a" position="attributes"><attribute name="t-att-href">'/formations/%s?kind=%s' % (p['id'], kind)</attribute></xpath>
+        <xpath expr="//ul/li/a" position="attributes">
+            <attribute name="t-att-href">'/formations/%s?kind=%s' % (p['id'], kind)</attribute>
+        </xpath>
         <xpath expr="//form[@action='/formations']" position="inside"><input type="hidden" name="kind" t-att-value="kind"/></xpath>
     </template>
     <template id="public_programme_actions" inherit_id="training_management.public_programme">
@@ -25,37 +27,56 @@
         </xpath>
     </template>
     <template id="public_programme_catalogue_link" inherit_id="training_management.public_programme">
-        <xpath expr="//a[@href='/formations']" position="attributes"><attribute name="t-att-href">'/formations?kind=%s' % kind</attribute></xpath>
+        <xpath expr="//a[@href='/formations']" position="attributes">
+            <attribute name="t-att-href">'/formations?kind=%s' % kind</attribute>
+        </xpath>
     </template>
     <template id="public_request" name="Training request">
-        <t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
-            <p><a href="/formations">Retour au catalogue</a><a t-if="values['program']" class="ms-3" t-att-href="'/formations/%s?kind=%s' % (values['program'], values['kind'])">Retour au programme</a></p><h1>Votre projet de formation</h1><p>Une demande ne confirme ni disponibilité, ni commande, ni inscription. Les conditions commerciales sont précisées dans le devis.</p>
-            <p>Vous pouvez changer de parcours dans ce formulaire en conservant vos saisies. Les champs entreprise restent disponibles.</p>
-            <div t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
-            <form method="post" enctype="multipart/form-data">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
+                <p><a href="/formations">Retour au catalogue</a><a t-if="values['program']" class="ms-3" t-att-href="'/formations/%s?kind=%s' % (values['program'], values['kind'])">Retour au programme</a></p>
+                <h1>Votre projet de formation</h1>
+                <p>Une demande ne confirme ni disponibilité, ni commande, ni inscription. Les conditions commerciales sont précisées dans le devis.</p>
+                <p>Vous pouvez changer de parcours dans ce formulaire en conservant vos saisies. Les champs entreprise restent disponibles.</p>
+                <div t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
+                <form method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="submission_token" t-att-value="token"/>
-                <fieldset class="mb-4"><legend class="h4">Vos coordonnées</legend><div class="mb-3"><label for="contact">Votre nom</label><input class="form-control" id="contact" name="contact" t-att-value="values['contact']" type="text" maxlength="5000" required="required"/></div>
-                <div class="mb-3"><label for="email">Votre email</label><input class="form-control" id="email" name="email" t-att-value="values['email']" type="email" maxlength="5000" required="required"/></div>
-                <div class="mb-3"><label for="organisation">Entreprise (obligatoire en intra)</label><input class="form-control" id="organisation" name="organisation" t-att-value="values['organisation']" type="text" maxlength="5000"/></div>
-                <div class="mb-3"><label for="phone">Téléphone</label><input class="form-control" id="phone" name="phone" t-att-value="values['phone']" type="text" maxlength="5000"/></div>
-                </fieldset><fieldset class="mb-4"><legend class="h4">Votre besoin</legend><div class="mb-3"><label for="kind">Parcours</label><select id="kind" name="kind" class="form-select"><option value="group" t-att-selected="values['kind'] == 'group'">Former mon équipe</option><option value="individual" t-att-selected="values['kind'] == 'individual'">Me former</option></select></div>
-                <div class="mb-3"><label for="request_type">Type de besoin</label><select id="request_type" name="request_type" class="form-select"><option value="catalogue" t-att-selected="values['request_type'] == 'catalogue'">Formation du catalogue</option><option value="adaptation" t-att-selected="values['request_type'] == 'adaptation'">Adaptation du catalogue</option><option value="custom" t-att-selected="values['request_type'] == 'custom'">Sur mesure</option></select></div>
-                <div class="mb-3"><label for="program">Formation (facultative pour le sur mesure)</label><select id="program" name="program" class="form-select"><option value="">À définir</option><option t-foreach="programs" t-as="p" t-att-value="p['id']" t-att-selected="str(p['id']) == values['program']"><t t-out="p['title']"/> — <t t-out="p['version']"/></option></select></div>
-                <div class="mb-3"><label for="level">Niveau des participants</label><input class="form-control" id="level" name="level" t-att-value="values['level']" type="text" maxlength="5000" required="required"/></div>
-                <div class="mb-3"><label for="objectives">Objectifs attendus</label><textarea id="objectives" name="objectives" class="form-control" required="required" maxlength="5000" t-out="values['objectives']"/></div>
-                <div class="mb-3"><label for="count">Effectif (1 pour une demande individuelle)</label><input id="count" name="count" type="number" min="1" class="form-control" required="required" t-att-value="values['count']"/></div>
-                </fieldset><fieldset class="mb-4"><legend class="h4">Vos préférences</legend><div class="mb-3"><label for="country">Pays</label><select id="country" name="country" class="form-select" required="required"><option value="">Choisir</option><option t-foreach="countries" t-as="c" t-att-value="c[0]" t-att-selected="str(c[0]) == values['country']" t-out="c[1]"/></select></div>
-                <div class="mb-3"><label for="currency">Devise souhaitée</label><select id="currency" name="currency" class="form-select" required="required"><option value="">Choisir indépendamment du pays</option><t t-foreach="currencies" t-as="currency"><option t-att-value="currency.name" t-att-selected="values['currency'] == currency.name" t-out="currency.name"/></t></select></div>
+                <fieldset class="mb-4">
+                        <legend class="h4">Vos coordonnées</legend>
+                        <div class="mb-3"><label for="contact">Votre nom</label><input class="form-control" id="contact" name="contact" t-att-value="values['contact']" type="text" maxlength="5000" required="required"/></div>
+                        <div class="mb-3"><label for="email">Votre email</label><input class="form-control" id="email" name="email" t-att-value="values['email']" type="email" maxlength="5000" required="required"/></div>
+                        <div class="mb-3"><label for="organisation">Entreprise (obligatoire en intra)</label><input class="form-control" id="organisation" name="organisation" t-att-value="values['organisation']" type="text" maxlength="5000"/></div>
+                        <div class="mb-3"><label for="phone">Téléphone</label><input class="form-control" id="phone" name="phone" t-att-value="values['phone']" type="text" maxlength="5000"/></div>
+                    </fieldset><fieldset class="mb-4">
+                        <legend class="h4">Votre besoin</legend>
+                        <div class="mb-3"><label for="kind">Parcours</label><select id="kind" name="kind" class="form-select"><option value="group" t-att-selected="values['kind'] == 'group'">Former mon équipe</option><option value="individual" t-att-selected="values['kind'] == 'individual'">Me former</option></select></div>
+                        <div class="mb-3"><label for="request_type">Type de besoin</label><select id="request_type" name="request_type" class="form-select"><option value="catalogue" t-att-selected="values['request_type'] == 'catalogue'">Formation du catalogue</option><option value="adaptation" t-att-selected="values['request_type'] == 'adaptation'">Adaptation du catalogue</option><option value="custom" t-att-selected="values['request_type'] == 'custom'">Sur mesure</option></select></div>
+                        <div class="mb-3"><label for="program">Formation (facultative pour le sur mesure)</label><select id="program" name="program" class="form-select"><option value="">À définir</option><option t-foreach="programs" t-as="p" t-att-value="p['id']" t-att-selected="str(p['id']) == values['program']"><t t-out="p['title']"/> — <t t-out="p['version']"/></option></select></div>
+                        <div class="mb-3"><label for="level">Niveau des participants</label><input class="form-control" id="level" name="level" t-att-value="values['level']" type="text" maxlength="5000" required="required"/></div>
+                        <div class="mb-3"><label for="objectives">Objectifs attendus</label><textarea id="objectives" name="objectives" class="form-control" required="required" maxlength="5000" t-out="values['objectives']"/></div>
+                        <div class="mb-3"><label for="count">Effectif (1 pour une demande individuelle)</label><input id="count" name="count" type="number" min="1" class="form-control" required="required" t-att-value="values['count']"/></div>
+                    </fieldset><fieldset class="mb-4"><legend class="h4">Vos préférences</legend><div class="mb-3"><label for="country">Pays</label><select id="country" name="country" class="form-select" required="required"><option value="">Choisir</option><option t-foreach="countries" t-as="c" t-att-value="c[0]" t-att-selected="str(c[0]) == values['country']" t-out="c[1]"/></select></div>
+                <div class="mb-3"><label for="currency">Devise souhaitée</label><select id="currency" name="currency" class="form-select" required="required"><option value="">Choisir indépendamment du pays</option><t t-foreach="currencies" t-as="currency">
+                                    <option t-att-value="currency.name" t-att-selected="values['currency'] == currency.name" t-out="currency.name"/>
+                                </t></select></div>
                 <div class="mb-3"><label for="mode">Modalité</label><select id="mode" name="mode" class="form-select" required="required"><option value="">Choisir</option><option value="onsite" t-att-selected="values['mode'] == 'onsite'">Présentiel</option><option value="remote" t-att-selected="values['mode'] == 'remote'">Distanciel</option><option value="blended" t-att-selected="values['mode'] == 'blended'">Mixte</option><option value="elearning" t-att-selected="values['mode'] == 'elearning'">eLearning</option></select></div>
                 <div class="mb-3"><label for="date_from">Date de début souhaitée</label><input type="date" class="form-control" id="date_from" name="date_from" t-att-value="values['date_from']"/></div>
                 <div class="mb-3"><label for="date_to">Date de fin souhaitée</label><input type="date" class="form-control" id="date_to" name="date_to" t-att-value="values['date_to']"/></div>
                 <label class="d-block my-3"><input type="checkbox" name="dates_flexible" value="1" t-att-checked="values['dates_flexible']"/> Dates à discuter</label>
-                </fieldset><details class="mb-4" t-att-open="values['kind'] == 'group' or error or values['organisation'] or values['tools'] or None"><summary class="h4">Compléments facultatifs</summary><fieldset class="mb-4"><legend class="visually-hidden">Compléments facultatifs</legend><div class="mb-3"><label for="tools">Outils disponibles</label><textarea id="tools" name="tools" class="form-control" maxlength="5000" t-out="values['tools']"/></div>
+                </fieldset><details class="mb-4" t-att-open="values['kind'] == 'group' or error or values['organisation'] or values['tools'] or None">
+                        <summary class="h4">Compléments facultatifs</summary>
+                        <fieldset class="mb-4"><legend class="visually-hidden">Compléments facultatifs</legend><div class="mb-3"><label for="tools">Outils disponibles</label><textarea id="tools" name="tools" class="form-control" maxlength="5000" t-out="values['tools']"/></div>
                 <div class="mb-3"><label for="specification">Cahier des charges privé (PDF, 10 Mo maximum)</label><input id="specification" name="specification" type="file" accept="application/pdf" class="form-control"/><p t-if="error">Après une erreur, sélectionnez à nouveau votre pièce jointe avant de renvoyer.</p></div>
                 <label class="d-block my-3"><input type="checkbox" name="advice" value="1" t-att-checked="values['advice']"/> Je souhaite un échange avec un conseiller</label>
-                </fieldset></details><button class="btn btn-primary">Transmettre ma demande</button>
+                </fieldset>
+                    </details><button class="btn btn-primary">Transmettre ma demande</button>
             </form>
-        </div></t>
+            </div>
+        </t>
     </template>
-    <template id="request_received" name="Request received"><t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap"><h1>Demande reçue</h1><p>Votre demande est enregistrée. Un accusé de réception est préparé pour votre adresse email. L’équipe vous recontactera ; aucune inscription ni disponibilité n’est confirmée.</p><a href="/formations">Retour au catalogue</a></div></t></template>
+    <template id="request_received" name="Request received">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap"><h1>Demande reçue</h1><p>Votre demande est enregistrée. Un accusé de réception est préparé pour votre adresse email. L’équipe vous recontactera ; aucune inscription ni disponibilité n’est confirmée.</p><a href="/formations">Retour au catalogue</a></div>
+        </t>
+    </template>
 </odoo>

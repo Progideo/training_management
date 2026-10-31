@@ -3,7 +3,12 @@
         <field name="name">training.retention.category.list</field>
         <field name="model">training.retention.category</field>
         <field name="arch" type="xml">
-            <list><field name="name"/><field name="company_id"/><field name="duration_days"/><field name="approved_at"/></list>
+            <list>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="duration_days"/>
+                <field name="approved_at"/>
+            </list>
         </field>
     </record>
     <record id="view_training_retention_form" model="ir.ui.view">
@@ -12,7 +17,19 @@
         <field name="arch" type="xml">
             <form>
                 <header><button name="action_approve" type="object" string="Approve Policy" invisible="approved_at" groups="training_management.group_training_quality"/></header>
-                <sheet><group><field name="name"/><field name="company_id"/><field name="purpose"/><field name="responsible_id"/><field name="duration_days"/><field name="archive_policy"/><field name="deletion_policy"/><field name="approved_by_id"/><field name="approved_at"/></group></sheet>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="company_id"/>
+                        <field name="purpose"/>
+                        <field name="responsible_id"/>
+                        <field name="duration_days"/>
+                        <field name="archive_policy"/>
+                        <field name="deletion_policy"/>
+                        <field name="approved_by_id"/>
+                        <field name="approved_at"/>
+                    </group>
+                </sheet>
             </form>
         </field>
     </record>
@@ -20,7 +37,14 @@
         <field name="name">training.proof.list</field>
         <field name="model">training.proof</field>
         <field name="arch" type="xml">
-            <list><field name="dossier_id"/><field name="category"/><field name="version"/><field name="disposition"/><field name="validated_at"/><field name="client_shared"/></list>
+            <list>
+                <field name="dossier_id"/>
+                <field name="category"/>
+                <field name="version"/>
+                <field name="disposition"/>
+                <field name="validated_at"/>
+                <field name="client_shared"/>
+            </list>
         </field>
     </record>
     <record id="view_training_proof_form" model="ir.ui.view">
@@ -30,9 +54,30 @@
             <form duplicate="false" delete="false">
                 <header><button name="action_validate" type="object" string="Validate Evidence / Exemption" invisible="validated_at" groups="training_management.group_training_quality"/></header>
                 <sheet>
-                    <group><field name="dossier_id"/><field name="category"/><field name="version"/><field name="previous_id"/><field name="source"/><field name="author"/><field name="produced_at"/><field name="disposition"/><field name="reason" invisible="disposition == 'file'"/><field name="filename" invisible="1"/><field name="data" filename="filename" invisible="disposition != 'file'"/><field name="confidentiality"/><field name="client_shared"/></group>
-                    <group invisible="category != 'assessment'"><field name="score"/><field name="threshold"/></group>
-                    <group><field name="validated_by_id"/><field name="validated_at"/><field name="sha256"/></group>
+                    <group>
+                        <field name="dossier_id"/>
+                        <field name="category"/>
+                        <field name="version"/>
+                        <field name="previous_id"/>
+                        <field name="source"/>
+                        <field name="author"/>
+                        <field name="produced_at"/>
+                        <field name="disposition"/>
+                        <field name="reason" invisible="disposition == 'file'"/>
+                        <field name="filename" invisible="1"/>
+                        <field name="data" filename="filename" invisible="disposition != 'file'"/>
+                        <field name="confidentiality"/>
+                        <field name="client_shared"/>
+                    </group>
+                    <group invisible="category != 'assessment'">
+                        <field name="score"/>
+                        <field name="threshold"/>
+                    </group>
+                    <group>
+                        <field name="validated_by_id"/>
+                        <field name="validated_at"/>
+                        <field name="sha256"/>
+                    </group>
                 </sheet>
             </form>
         </field>
@@ -41,7 +86,12 @@
         <field name="name">training.closure.list</field>
         <field name="model">training.closure</field>
         <field name="arch" type="xml">
-            <list><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id"/><field name="state"/></list>
+            <list>
+                <field name="enrollment_id" options="{'no_open': True}"/>
+                <field name="delivery_id" options="{'no_open': True}"/>
+                <field name="quality_id"/>
+                <field name="state"/>
+            </list>
         </field>
     </record>
     <record id="view_training_closure_form" model="ir.ui.view">
@@ -62,21 +112,47 @@
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status">A complete dossier does not constitute Qualiopi certification.</div>
-                    <div class="alert alert-info" role="note"><strong>Certificate conditions</strong><p>Participation: validated attendance or activity evidence. Completion: controlled completion evidence. Achievement: a validated learning assessment meeting its threshold.</p><p>Complete and validate the missing evidence below before closing the dossier.</p></div><group><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id" readonly="id"/><field name="retention_id"/><field name="customer_id"/><field name="client_contact_ids" widget="many2many_tags"/><field name="share_certificates"/><field name="verify_certificates"/><field name="frozen"/></group>
-                    <group><field name="missing" readonly="1"/><field name="closed_by_id"/><field name="closed_at"/></group>
+                    <div class="alert alert-info" role="note"><strong>Certificate conditions</strong><p>Participation: validated attendance or activity evidence. Completion: controlled completion evidence. Achievement: a validated learning assessment meeting its threshold.</p><p>Complete and validate the missing evidence below before closing the dossier.</p></div>
+                    <group>
+                        <field name="enrollment_id" options="{'no_open': True}"/>
+                        <field name="delivery_id" options="{'no_open': True}"/>
+                        <field name="quality_id" readonly="id"/>
+                        <field name="retention_id"/>
+                        <field name="customer_id"/>
+                        <field name="client_contact_ids" widget="many2many_tags"/>
+                        <field name="share_certificates"/>
+                        <field name="verify_certificates"/>
+                        <field name="frozen"/>
+                    </group>
+                    <group>
+                        <field name="missing" readonly="1"/>
+                        <field name="closed_by_id"/>
+                        <field name="closed_at"/>
+                    </group>
                     <notebook>
-                        <page string="Evidence"><field name="evidence_ids" context="{'default_dossier_id': id}" readonly="state == 'closed'"/></page>
+                        <page string="Evidence">
+                            <field name="evidence_ids" context="{'default_dossier_id': id}" readonly="state == 'closed'"/>
+                        </page>
                         <page string="Dossier History">
                             <field name="event_ids" readonly="1">
                                 <list create="false" edit="false" delete="false">
-                                    <field name="occurred_at"/><field name="operation"/><field name="actor_id"/>
-                                    <field name="previous_quality_id"/><field name="quality_id"/><field name="reason"/>
-                                    <field name="closed_at"/><field name="closed_by_id"/>
+                                    <field name="occurred_at"/>
+                                    <field name="operation"/>
+                                    <field name="actor_id"/>
+                                    <field name="previous_quality_id"/>
+                                    <field name="quality_id"/>
+                                    <field name="reason"/>
+                                    <field name="closed_at"/>
+                                    <field name="closed_by_id"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Certificate Verification" groups="training_management.group_training_quality"><field name="verification_ids" readonly="1"/></page>
-                        <page string="Preserved Documents" groups="training_management.group_training_quality"><field name="output_ids" readonly="1"/></page>
+                        <page string="Certificate Verification" groups="training_management.group_training_quality">
+                            <field name="verification_ids" readonly="1"/>
+                        </page>
+                        <page string="Preserved Documents" groups="training_management.group_training_quality">
+                            <field name="output_ids" readonly="1"/>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
@@ -99,18 +175,31 @@
             </xpath>
         </field>
     </record>
-    <record id="action_training_closure" model="ir.actions.act_window"><field name="name">Closure Dossiers</field><field name="res_model">training.closure</field><field name="view_mode">list,form</field></record>
-    <record id="action_training_retention" model="ir.actions.act_window"><field name="name">Retention Policies</field><field name="res_model">training.retention.category</field><field name="view_mode">list,form</field></record>
+    <record id="action_training_closure" model="ir.actions.act_window">
+        <field name="name">Closure Dossiers</field>
+        <field name="res_model">training.closure</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_training_retention" model="ir.actions.act_window">
+        <field name="name">Retention Policies</field>
+        <field name="res_model">training.retention.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
     <menuitem id="menu_training_closure" name="Closure Dossiers" parent="menu_training_quality" action="action_training_closure" groups="training_management.group_training_coordinator,training_management.group_training_quality" sequence="50"/>
     <menuitem id="menu_training_retention" name="Retention Policies" parent="menu_training_configuration" action="action_training_retention" groups="training_management.group_training_quality" sequence="70"/>
     <template id="portal_documents" name="My Training Documents">
         <t t-call="portal.portal_layout">
-            <t t-call="training_management.portal_training_navigation"/><h1>My training documents</h1>
+            <t t-call="training_management.portal_training_navigation"/>
+            <h1>My training documents</h1>
             <p t-if="not rows">No authorized document is available.</p>
-            <ul><li t-foreach="rows" t-as="row"><a t-att-href="row['url']" t-out="row['name']"/></li></ul>
+            <ul>
+                <li t-foreach="rows" t-as="row"><a t-att-href="row['url']" t-out="row['name']"/></li>
+            </ul>
         </t>
     </template>
     <template id="portal_documents_link" inherit_id="training_management.portal_trainings" name="Training Documents Link">
-        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('documents')"><a href="/my/training-documents" class="btn btn-outline-primary">My training documents</a></t></xpath>
+        <xpath expr="//div[@id='training_personal_links']" position="inside">
+            <t t-if="training_links.get('documents')"><a href="/my/training-documents" class="btn btn-outline-primary">My training documents</a></t>
+        </xpath>
     </template>
 </odoo>

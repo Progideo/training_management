@@ -1,26 +1,121 @@
 <odoo>
-    <record id="view_feedback_list" model="ir.ui.view"><field name="name">training.feedback.list</field><field name="model">training.feedback</field><field name="arch" type="xml"><list><field name="name"/><field name="purpose"/><field name="version"/><field name="anonymous"/><field name="state"/></list></field></record>
-    <record id="view_feedback_form" model="ir.ui.view"><field name="name">training.feedback.form</field><field name="model">training.feedback</field><field name="arch" type="xml">
-        <form delete="false"><header><button name="action_publish" type="object" string="Publish Feedback" invisible="state != 'draft' or not questionnaire_available"/><button name="action_new_version" type="object" string="New Version" invisible="state != 'published'"/><field name="state" widget="statusbar"/></header><sheet><field name="questionnaire_available" invisible="1"/><div class="alert alert-info" role="status" invisible="questionnaire_available">Install the native Surveys integration to collect feedback.</div><group readonly="state == 'published'"><field name="name" readonly="state == 'published'"/><field name="program_id" readonly="state == 'published'"/><field name="purpose" readonly="state == 'published'"/><field name="version" readonly="state == 'published'"/><field name="anonymous" readonly="state == 'published'"/><field name="criteria" readonly="state == 'published'"/><field name="previous_id" readonly="1"/></group></sheet></form>
-    </field></record>
-    <record id="view_feedback_campaign_list" model="ir.ui.view"><field name="name">training.feedback.campaign.list</field><field name="model">training.feedback.campaign</field><field name="arch" type="xml"><list delete="false"><field name="name"/><field name="delivery_id"/><field name="purpose"/><field name="anonymous"/><field name="opens_at"/><field name="due_at"/><field name="state"/></list></field></record>
-    <record id="view_feedback_campaign_form" model="ir.ui.view"><field name="name">training.feedback.campaign.form</field><field name="model">training.feedback.campaign</field><field name="arch" type="xml">
-        <form delete="false"><header>
+    <record id="view_feedback_list" model="ir.ui.view">
+        <field name="name">training.feedback.list</field>
+        <field name="model">training.feedback</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="purpose"/>
+                <field name="version"/>
+                <field name="anonymous"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_feedback_form" model="ir.ui.view">
+        <field name="name">training.feedback.form</field>
+        <field name="model">training.feedback</field>
+        <field name="arch" type="xml">
+            <form delete="false">
+                <header><button name="action_publish" type="object" string="Publish Feedback" invisible="state != 'draft' or not questionnaire_available"/><button name="action_new_version" type="object" string="New Version" invisible="state != 'published'"/><field name="state" widget="statusbar"/></header>
+                <sheet>
+                    <field name="questionnaire_available" invisible="1"/>
+                    <div class="alert alert-info" role="status" invisible="questionnaire_available">Install the native Surveys integration to collect feedback.</div>
+                    <group readonly="state == 'published'">
+                        <field name="name" readonly="state == 'published'"/>
+                        <field name="program_id" readonly="state == 'published'"/>
+                        <field name="purpose" readonly="state == 'published'"/>
+                        <field name="version" readonly="state == 'published'"/>
+                        <field name="anonymous" readonly="state == 'published'"/>
+                        <field name="criteria" readonly="state == 'published'"/>
+                        <field name="previous_id" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_feedback_campaign_list" model="ir.ui.view">
+        <field name="name">training.feedback.campaign.list</field>
+        <field name="model">training.feedback.campaign</field>
+        <field name="arch" type="xml">
+            <list delete="false">
+                <field name="name"/>
+                <field name="delivery_id"/>
+                <field name="purpose"/>
+                <field name="anonymous"/>
+                <field name="opens_at"/>
+                <field name="due_at"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_feedback_campaign_form" model="ir.ui.view">
+        <field name="name">training.feedback.campaign.form</field>
+        <field name="model">training.feedback.campaign</field>
+        <field name="arch" type="xml">
+            <form delete="false">
+                <header>
             <button name="action_open" type="object" string="Open Campaign" invisible="state != 'draft'" groups="training_management.group_training_coordinator"/>
             <button name="action_invite" type="object" string="Invite" invisible="state != 'open'" groups="training_management.group_training_coordinator"/>
             <button name="action_remind" type="object" string="Remind Eligible Recipients" invisible="state != 'open'" groups="training_management.group_training_coordinator"/>
             <button name="action_close" type="object" string="Close and Freeze Summary" invisible="state != 'open'" groups="training_management.group_training_coordinator"/>
             <button name="action_new_collection" type="object" string="New Collection" invisible="state != 'closed'" groups="training_management.group_training_coordinator"/>
             <button name="action_export_proof" type="object" string="Create Closure Evidence" invisible="state != 'closed'" groups="training_management.group_training_coordinator,training_management.group_training_quality"/><field name="state" widget="statusbar"/>
-        </header><sheet><group><field name="name" readonly="state != 'draft'"/><field name="feedback_id" readonly="state != 'draft'" options="{'no_open': True}" domain="[('state','=','published')]"/><field name="delivery_id" readonly="state != 'draft'" options="{'no_open': True}"/><field name="population" readonly="state != 'draft'"/><field name="retention_id" readonly="state != 'draft'" options="{'no_create': True}"/><field name="opens_at" readonly="state != 'draft'"/><field name="due_at" readonly="state != 'draft'"/><field name="reminder_days" readonly="state != 'draft'"/><field name="anonymous"/><field name="closed_at"/><field name="previous_id" options="{'no_open': True}"/></group>
-        <p invisible="not anonymous">Anonymous collection; individual response tracking unavailable. Summary after closure, minimum 3 responses.</p>
-        <notebook><page string="Population" groups="training_management.group_training_coordinator"><field name="recipient_ids" context="{'active_test': False}" readonly="state == 'closed'"><list editable="bottom" delete="false"><field name="user_id" readonly="id"/><field name="role" readonly="id"/><field name="enrollment_id" readonly="id"/><field name="active"/><field name="exclusion_reason"/><field name="response_state"/></list></field></page>
-        <page string="Invitations" groups="training_management.group_training_coordinator"><field name="notice_ids"><list create="false" edit="false" delete="false"><field name="recipient_id"/><field name="occurrence"/><field name="distribution_state"/><field name="failure"/></list></field></page>
-        <page string="Summary"><field name="summary" nolabel="1"/><button type="object" name="action_summary" string="Open Summary" class="btn-link"/></page></notebook>
-        </sheet></form>
-    </field></record>
-    <record id="action_feedback" model="ir.actions.act_window"><field name="name">Feedback Versions</field><field name="res_model">training.feedback</field><field name="view_mode">list,form</field></record>
-    <record id="action_feedback_campaign" model="ir.actions.act_window"><field name="name">Feedback Campaigns</field><field name="res_model">training.feedback.campaign</field><field name="view_mode">list,form</field></record>
+        </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state != 'draft'"/>
+                        <field name="feedback_id" readonly="state != 'draft'" options="{'no_open': True}" domain="[('state','=','published')]"/>
+                        <field name="delivery_id" readonly="state != 'draft'" options="{'no_open': True}"/>
+                        <field name="population" readonly="state != 'draft'"/>
+                        <field name="retention_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                        <field name="opens_at" readonly="state != 'draft'"/>
+                        <field name="due_at" readonly="state != 'draft'"/>
+                        <field name="reminder_days" readonly="state != 'draft'"/>
+                        <field name="anonymous"/>
+                        <field name="closed_at"/>
+                        <field name="previous_id" options="{'no_open': True}"/>
+                    </group>
+                    <p invisible="not anonymous">Anonymous collection; individual response tracking unavailable. Summary after closure, minimum 3 responses.</p>
+                    <notebook>
+                        <page string="Population" groups="training_management.group_training_coordinator">
+                            <field name="recipient_ids" context="{'active_test': False}" readonly="state == 'closed'">
+                                <list editable="bottom" delete="false">
+                                    <field name="user_id" readonly="id"/>
+                                    <field name="role" readonly="id"/>
+                                    <field name="enrollment_id" readonly="id"/>
+                                    <field name="active"/>
+                                    <field name="exclusion_reason"/>
+                                    <field name="response_state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Invitations" groups="training_management.group_training_coordinator">
+                            <field name="notice_ids">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="recipient_id"/>
+                                    <field name="occurrence"/>
+                                    <field name="distribution_state"/>
+                                    <field name="failure"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Summary"><field name="summary" nolabel="1"/><button type="object" name="action_summary" string="Open Summary" class="btn-link"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_feedback" model="ir.actions.act_window">
+        <field name="name">Feedback Versions</field>
+        <field name="res_model">training.feedback</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_feedback_campaign" model="ir.actions.act_window">
+        <field name="name">Feedback Campaigns</field>
+        <field name="res_model">training.feedback.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
     <menuitem id="menu_feedback" name="Feedback Versions" parent="menu_training_configuration" action="action_feedback" groups="training_management.group_training_coordinator" sequence="30"/>
     <menuitem id="menu_feedback_campaign" name="Feedback Campaigns" parent="menu_training_pedagogy" action="action_feedback_campaign" groups="training_management.group_training_coordinator,training_management.group_training_supervisor,training_management.group_training_quality" sequence="40"/>
 </odoo>

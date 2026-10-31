@@ -1,6 +1,7 @@
 <odoo>
     <record id="orientation_form_view" model="ir.ui.view">
-        <field name="name">survey.survey.orientation.form</field><field name="model">survey.survey</field>
+        <field name="name">survey.survey.orientation.form</field>
+        <field name="model">survey.survey</field>
         <field name="arch" type="xml">
             <form string="Orientation Diagnostic">
                 <header>
@@ -8,44 +9,102 @@
                     <button name="action_orientation_open" type="object" string="Open Diagnostic" invisible="not orientation_published or not active"/>
                     <button name="action_orientation_publish" type="object" string="Publish Diagnostic" class="btn-primary" invisible="orientation_published"/></header>
                 <sheet>
-                    <group><field name="title" readonly="orientation_published"/><field name="orientation_company_id" readonly="id"/><field name="orientation_published"/><field name="active"/><field name="orientation_contact" readonly="orientation_published"/></group>
+                    <group>
+                        <field name="title" readonly="orientation_published"/>
+                        <field name="orientation_company_id" readonly="id"/>
+                        <field name="orientation_published"/>
+                        <field name="active"/>
+                        <field name="orientation_contact" readonly="orientation_published"/>
+                    </group>
                     <p>Optional advice before purchase. Responses are processed only to display a recommendation and are never recorded. Use fixed single-choice questions without personal data.</p>
                     <p>Each rule describes a coherent profile with one answer per question. Missing answers, no matching rule or several matching rules lead to human advice. Publication freezes the diagnostic; duplicate it to revise.</p>
                     <field name="question_and_page_ids" readonly="orientation_published" context="{'default_question_type': 'simple_choice', 'form_view_ref': 'training_management_survey.orientation_question_form'}">
-                        <list><field name="sequence" widget="handle"/><field name="title"/><field name="question_type"/></list>
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="title"/>
+                            <field name="question_type"/>
+                        </list>
                     </field>
                     <p invisible="orientation_published">After adding or changing questions, click Define Recommendations to save them before selecting answers.</p>
                     <field name="orientation_rule_ids" readonly="orientation_published" invisible="not id">
-                        <list><field name="level"/><field name="program_id"/><field name="path_id"/><field name="explanation"/></list>
-                        <form string="Orientation Recommendation"><group>
-                            <field name="survey_id" invisible="1"/>
-                            <field name="answer_ids" domain="[('question_id.survey_id', '=', survey_id)]" context="{'list_view_ref': 'training_management_survey.orientation_answer_list'}" options="{'no_create': True}">
-                                <list create="0" edit="0"><field name="question_id"/><field name="value"/></list>
-                            </field>
-                            <field name="level"/><field name="program_id" options="{'no_create': True}"/><field name="path_id" options="{'no_create': True}"/><field name="explanation"/>
-                        </group></form>
+                        <list>
+                            <field name="level"/>
+                            <field name="program_id"/>
+                            <field name="path_id"/>
+                            <field name="explanation"/>
+                        </list>
+                        <form string="Orientation Recommendation">
+                            <group>
+                                <field name="survey_id" invisible="1"/>
+                                <field name="answer_ids" domain="[('question_id.survey_id', '=', survey_id)]" context="{'list_view_ref': 'training_management_survey.orientation_answer_list'}" options="{'no_create': True}">
+                                    <list create="0" edit="0">
+                                        <field name="question_id"/>
+                                        <field name="value"/>
+                                    </list>
+                                </field>
+                                <field name="level"/>
+                                <field name="program_id" options="{'no_create': True}"/>
+                                <field name="path_id" options="{'no_create': True}"/>
+                                <field name="explanation"/>
+                            </group>
+                        </form>
                     </field>
                 </sheet>
             </form>
         </field>
     </record>
     <record id="orientation_question_form" model="ir.ui.view">
-        <field name="name">survey.question.orientation.form</field><field name="model">survey.question</field>
-        <field name="inherit_id" ref="survey.survey_question_form"/><field name="mode">primary</field><field name="priority">90</field>
+        <field name="name">survey.question.orientation.form</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">90</field>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='question_type']" position="attributes"><attribute name="invisible">True</attribute></xpath>
-            <xpath expr="//field[@name='description']" position="attributes"><attribute name="invisible">True</attribute></xpath>
-            <xpath expr="//page[@name='options']" position="attributes"><attribute name="invisible">True</attribute></xpath>
+            <xpath expr="//field[@name='question_type']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//page[@name='options']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
             <xpath expr="//field[@name='suggested_answer_ids']/list" position="replace">
-                <list editable="bottom"><field name="sequence" widget="handle"/><field name="value" string="Choices" required="True"/></list>
+                <list editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="value" string="Choices" required="True"/>
+                </list>
             </xpath>
         </field>
     </record>
-    <record id="orientation_list_view" model="ir.ui.view"><field name="name">survey.survey.orientation.list</field><field name="model">survey.survey</field><field name="arch" type="xml"><list><field name="title"/><field name="orientation_company_id"/><field name="orientation_published"/><field name="active"/></list></field></record>
-    <record id="orientation_answer_list" model="ir.ui.view"><field name="name">survey.question.answer.orientation.list</field><field name="model">survey.question.answer</field><field name="arch" type="xml"><list create="0" edit="0"><field name="question_id"/><field name="value"/></list></field></record>
+    <record id="orientation_list_view" model="ir.ui.view">
+        <field name="name">survey.survey.orientation.list</field>
+        <field name="model">survey.survey</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="title"/>
+                <field name="orientation_company_id"/>
+                <field name="orientation_published"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="orientation_answer_list" model="ir.ui.view">
+        <field name="name">survey.question.answer.orientation.list</field>
+        <field name="model">survey.question.answer</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="question_id"/>
+                <field name="value"/>
+            </list>
+        </field>
+    </record>
     <record id="orientation_action" model="ir.actions.act_window">
-        <field name="name">Orientation Diagnostics</field><field name="res_model">survey.survey</field><field name="view_mode">list,form</field>
-        <field name="domain">[('orientation_company_id', '!=', False)]</field><field name="context">{'default_orientation_company_id': allowed_company_ids[0], 'default_scoring_type': 'no_scoring'}</field>
+        <field name="name">Orientation Diagnostics</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('orientation_company_id', '!=', False)]</field>
+        <field name="context">{'default_orientation_company_id': allowed_company_ids[0], 'default_scoring_type': 'no_scoring'}</field>
         <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('orientation_list_view')}), (0, 0, {'view_mode': 'form', 'view_id': ref('orientation_form_view')})]"/>
     </record>
     <menuitem id="orientation_menu" name="Orientation Diagnostics" parent="training_management.menu_training_catalogue" action="orientation_action" sequence="61" groups="training_management.group_training_coordinator"/>
