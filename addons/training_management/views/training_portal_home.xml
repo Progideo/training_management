@@ -4,16 +4,16 @@
     </template>
     <template id="portal_trainings" name="My Training">
         <t t-call="portal.portal_layout" additional_title.translate="My training"><h1>My training</h1>
-            <h2>Current training</h2>
-            <p t-if="not enrollments">No training is currently available. Contact your coordinator if needed.</p>
+            <h2 t-if="enrollments">My enrollments</h2>
+            <p t-if="not enrollments and not any(training_links.values())">No training is currently available. Contact your coordinator if needed.</p>
             <ul class="list-group"><li t-foreach="enrollments" t-as="enrollment" class="list-group-item">
                 <a t-att-href="'/my/trainings/%s' % enrollment['id']" t-out="enrollment['name']"/><div t-out="enrollment['programme']"/>
             </li></ul><t t-call="portal.pager"/>
             <section class="my-4" t-if="any(training_links.get(k) for k in ('paths', 'practice', 'evaluations', 'documents', 'exams', 'feedback', 'bookings', 'publications', 'complaints'))">
-                <h2>My actions and history</h2><div id="training_personal_links" class="d-flex flex-wrap gap-3"/>
+                <h2>My actions and history</h2><div id="training_personal_links" class="tm_navigation"/>
             </section>
             <section class="my-4" t-if="any(training_links.get(k) for k in ('sessions', 'tutoring', 'dashboard', 'company'))">
-                <h2>My responsibilities</h2><div id="training_responsibility_links" class="d-flex flex-wrap gap-3"/>
+                <h2>My responsibilities</h2><div id="training_responsibility_links" class="tm_navigation"/>
             </section>
         </t>
     </template>

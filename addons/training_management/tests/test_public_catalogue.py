@@ -108,7 +108,10 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
 
         self.env["res.lang"]._activate_lang("fr_FR")
         program = self.new_program(public_catalogue=True, title="English catalogue title")
-        program.with_context(lang="fr_FR").title = "Titre français du catalogue"
+        # Set both stored translations even when the database defaults to French.
+        program.update_field_translations(
+            "title", {"en_US": "English catalogue title", "fr_FR": "Titre français du catalogue"}
+        )
         program.action_validate()
         program.action_publish()
         raw = bytes(program.pdf_attachment_id.raw)

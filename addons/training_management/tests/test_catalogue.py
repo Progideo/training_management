@@ -100,7 +100,7 @@ class TestCatalogue(CatalogueCase):
             "menu_training_path_assignments": "pedagogy",
             "menu_practice_actions": "pedagogy",
             "menu_practice_summaries": "pedagogy",
-            "menu_project_rubrics": "pedagogy",
+            "menu_project_rubrics": "configuration",
             "menu_complaint": "quality",
             "menu_training_categories": "configuration",
         }
@@ -108,7 +108,7 @@ class TestCatalogue(CatalogueCase):
             menu = self.env.ref("training_management." + xmlid)
             self.assertEqual(menu.parent_id, self.env.ref("training_management.menu_training_" + folder))
             self.assertTrue(menu.action)
-        for xmlid, folder in (("exam_menu", "pedagogy"), ("orientation_menu", "catalogue")):
+        for xmlid, folder in (("exam_menu", "configuration"), ("orientation_menu", "catalogue")):
             menu = self.env.ref("training_management_survey." + xmlid, raise_if_not_found=False)
             if menu:
                 self.assertEqual(menu.parent_id, self.env.ref("training_management.menu_training_" + folder))

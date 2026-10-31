@@ -1,9 +1,10 @@
-from odoo import http
+from odoo import fields, http
 from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 from .material_portal import TrainingParticipantPortal
+from .portal_utils import session_navigation
 
 
 class AttendancePortal(http.Controller):
@@ -25,7 +26,9 @@ class AttendancePortal(http.Controller):
                         accepted=post.get("accepted") == "yes",
                         definition=post.get("definition"),
                     )
-                    return TrainingParticipantPortal._private(request.redirect(request.httprequest.path))
+                    return TrainingParticipantPortal._private(
+                        request.redirect(request.httprequest.path + "?saved=1#attendance-feedback")
+                    )
                 except (ValueError, ValidationError) as exc:
                     error = str(exc) if isinstance(exc, ValidationError) else request.env._("Choose a valid session.")
             sessions = enrollment.delivery_id.session_ids.filtered(lambda s: not s.cancelled)
@@ -37,7 +40,14 @@ class AttendancePortal(http.Controller):
         return TrainingParticipantPortal._private(
             request.render(
                 "training_management.portal_attendance",
-                {"rows": rows, "error": error, "trainer": False, "name": enrollment.delivery_id.name},
+                {
+                    "rows": rows,
+                    "error": error,
+                    "saved": post.get("saved") == "1",
+                    "trainer": False,
+                    "name": enrollment.delivery_id.name,
+                    "attendance_back": f"/my/trainings/{enrollment.id}",
+                },
             )
         )
 
@@ -79,7 +89,11 @@ class AttendancePortal(http.Controller):
                         definition=post.get("definition"),
                         reason=post.get("reason", ""),
                     )
-                    return TrainingParticipantPortal._private(request.redirect(request.httprequest.path))
+                    return TrainingParticipantPortal._private(
+                        request.redirect(
+                            request.httprequest.path + "?saved=1&" + session_navigation(post) + "#attendance-feedback"
+                        )
+                    )
                 except (ValueError, ValidationError) as exc:
                     error = (
                         str(exc) if isinstance(exc, ValidationError) else request.env._("Choose a valid participant.")
@@ -93,7 +107,14 @@ class AttendancePortal(http.Controller):
         return TrainingParticipantPortal._private(
             request.render(
                 "training_management.portal_attendance",
-                {"rows": rows, "error": error, "trainer": True, "name": session.name},
+                {
+                    "rows": rows,
+                    "error": error,
+                    "saved": post.get("saved") == "1",
+                    "trainer": True,
+                    "name": session.name,
+                    "attendance_back": f"/my/training-sessions/{session.id}?{session_navigation(post)}",
+                },
             )
         )
 
@@ -131,7 +152,7 @@ class AttendancePortal(http.Controller):
             if row["period_key"] == post.get("period_key") and (
                 not trainer or str(row["enrollment_id"]) == post.get("enrollment_id")
             ):
-                row.update(absent=post.get("attendance") == "absent", reason=post.get("reason", ""))
+                row.update(absent=post.get("attendance") == "absent", reason=post.get("reason", ""), error=True)
 
     def _participant_rows(self, sessions, enrollment):
         service = request.env["training.attendance.service"]
@@ -152,12 +173,25 @@ class AttendancePortal(http.Controller):
                 history=[event for r in rows for event in r["history"]],
                 wording=" ".join(dict.fromkeys(r["wording"] for r in rows)),
                 definition=service._day_definition(day_sessions),
-                state=request.env._("Validated")
-                if all(r["validated"] for r in rows)
-                else request.env._("Pending Review"),
+                state=self._group_state(rows),
+                elapsed=all(r["elapsed"] for r in rows),
             )
             result.append(row)
         return result
+
+    @staticmethod
+    def _group_state(rows):
+        if all(row["validated"] for row in rows):
+            return request.env._("Validated")
+        if any(row["validated"] for row in rows):
+            return request.env._("Partially validated")
+        if any(row["invalidated"] for row in rows):
+            return request.env._("Declaration invalidated")
+        if all(row["has_source"] for row in rows):
+            return request.env._("Pending Review")
+        if all(row["mode"] == "paper" for row in rows):
+            return request.env._("Signed paper expected")
+        return request.env._("To declare")
 
     def _rows(self, sessions, enrollment):
         rows = []
@@ -179,6 +213,9 @@ class AttendancePortal(http.Controller):
                 events = presence.event_ids.sorted("id")
                 last = events[-1:]
                 invalidation = events.filtered(lambda e: e.kind == "invalidation")[-1:]
+                sources = events.filtered(
+                    lambda event: event.kind in ("declaration", "paper") and event.id > (invalidation.id or 0)
+                )
                 tz = session.timezone
                 rows.append(
                     {
@@ -195,6 +232,12 @@ class AttendancePortal(http.Controller):
                         "revision": presence.revision if presence else 0,
                         "absent": bool(last.absent),
                         "reason": "",
+                        "error": False,
+                        "has_source": bool(sources),
+                        "invalidated": last.kind == "invalidation",
+                        "elapsed": fields.Datetime.now() >= period["end"],
+                        "can_review": enrollment.user_id != request.env.user
+                        and request.env.user not in sources.actor_id,
                         "minutes": presence.minutes if presence else 0,
                         "state": dict(presence._fields["state"]._description_selection(request.env)).get(
                             presence.state, request.env._("Not Declared")

@@ -21,7 +21,7 @@
         </field>
     </record>
     <record id="action_training_export_audit" model="ir.actions.act_window">
-        <field name="name">My Export Manifests</field><field name="res_model">training.export.audit</field><field name="view_mode">list,form</field>
+        <field name="name">My Export History</field><field name="res_model">training.export.audit</field><field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_training_export_audit" name="My Export Manifests" parent="menu_training_configuration" action="action_training_export_audit" groups="base.group_user" sequence="80"/>
+    <menuitem id="menu_training_export_audit" name="My Export History" parent="menu_training_root" action="action_training_export_audit" groups="base.group_user" sequence="80"/>
 </odoo>

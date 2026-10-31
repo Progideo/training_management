@@ -1,57 +1,59 @@
 <odoo>
     <template id="company_trainings" name="Company training dossiers">
         <t t-call="portal.portal_layout">
-            <main class="container py-4">
+            <t t-call="training_management.portal_training_navigation"/><div class="container py-4">
                 <h1>Formations de mon entreprise</h1>
                 <p>Seuls les dossiers expressément habilités sont présentés. Aucun score, réponse ou échange pédagogique privé n’est partagé.</p>
                 <ul>
                     <li t-foreach="rows" t-as="r">
                         <a t-att-href="'/my/company-trainings/%s' % r['id']">
-                            <t t-out="r['customer']" /> — <t t-out="r['name']" />
-                        </a> · <t t-out="r['state']" />
+                            <t t-out="r['customer']"/> — <t t-out="r['name']"/>
+                        </a> · <t t-out="r['state']"/>
                     </li>
                 </ul>
                 <p t-if="not rows">Aucun dossier de session habilité.</p>
                 <h2>Demandes de mon entreprise</h2>
                 <ul>
                     <li t-foreach="requests" t-as="r">
-                        <t t-out="r['name']" /> · <t t-out="r['stage']" />
+                        <t t-out="r['name']"/> · <t t-out="r['stage']"/>
                     </li>
                 </ul>
-            </main>
+            </div>
         </t>
     </template>
     <template id="company_training" name="Company training dossier">
         <t t-call="portal.portal_layout">
-            <main class="container py-4">
+            <t t-call="training_management.portal_training_navigation"/><div class="container py-4">
                 <a href="/my/company-trainings">Mes dossiers entreprise</a>
-                <h1 t-out="name" />
-                <p t-out="program" />
+                <h1 t-out="name"/>
+                <div class="card p-3 mb-3"><p><strong><t t-out="lot_quantity"/></strong> places in this allocation · <strong><t t-out="lot_remaining"/></strong> places not yet assigned.</p><p><t t-out="pending_nominations"/> participant proposals awaiting coordination.</p><p t-if="lot_deadline">Reservation deadline: <t t-out="lot_deadline"/></p></div>
+                <div t-if="saved" id="company-feedback" class="alert alert-success o_training_feedback" tabindex="-1" role="status">Participant proposal recorded. Coordination must still confirm the enrollment.</div>
+                <p t-out="program"/>
                 <h2>Séances</h2>
                 <ul>
                     <li t-foreach="sessions" t-as="s">
-                        <t t-out="s['name']" /> · <t t-out="s['start']" /> — <t t-out="s['end']" /> (<t t-out="s['timezone']" />)</li>
+                        <t t-out="s['name']"/> · <t t-out="s['start']"/> — <t t-out="s['end']"/> (<t t-out="s['timezone']"/>)</li>
                 </ul>
                 <h2>Participants de mon lot</h2>
                 <ul>
                     <li t-foreach="participants" t-as="p">
-                        <t t-out="p['name']" /> · <t t-out="p['state']" />
+                        <t t-out="p['name']"/> · <t t-out="p['state']"/>
                     </li>
                 </ul>
                 <h2>Proposer un participant</h2>
                 <p>La coordination vérifie l’inscription et ouvre séparément les accès. Cette proposition ne donne aucun accès au cours.</p>
-                <div t-if="error" class="alert alert-danger" role="alert" t-out="error" />
-                <form method="post">
-                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <div t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
+                <p t-if="not can_nominate" role="status">This allocation no longer accepts participant proposals. Contact coordination.</p><form t-if="can_nominate" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <label for="participant_name">Nom du participant</label>
-                    <input id="participant_name" name="name" class="form-control mb-3" required="required" maxlength="200" t-att-value="values['name']" />
+                    <input id="participant_name" name="name" class="form-control mb-3" required="required" maxlength="200" t-att-value="values['name']"/>
                     <label for="participant_email">Email du participant (facultatif)</label>
-                    <input id="participant_email" name="email" type="email" class="form-control mb-3" maxlength="254" t-att-value="values['email']" />
+                    <input id="participant_email" name="email" type="email" class="form-control mb-3" maxlength="254" t-att-value="values['email']"/>
                     <button class="btn btn-primary">Proposer</button>
                 </form>
                 <ul class="mt-3">
                     <li t-foreach="nominations" t-as="n">
-                        <t t-out="n['name']" /> · <t t-out="n['state']" />
+                        <t t-out="n['name']"/> · <t t-out="n['state']"/>
                     </li>
                 </ul>
                 <h2>Synthèses de mise en pratique autorisées</h2>
@@ -61,33 +63,33 @@
                 <h2>Documents autorisés</h2>
                 <ul>
                     <li t-foreach="documents" t-as="d">
-                        <a t-att-href="'/my/company-trainings/%s/documents/%s' % (allocation_id, d['id'])" t-out="d['name']" />
+                        <a t-att-href="'/my/company-trainings/%s/documents/%s' % (allocation_id, d['id'])" t-out="d['name']"/>
                     </li>
                 </ul>
                 <h2>Versions du dossier intra</h2>
                 <section t-foreach="versions" t-as="v" class="border rounded p-3 my-3">
-                    <h3>Version <t t-out="v['version']" />
+                    <h3>Version <t t-out="v['version']"/>
                     </h3>
-                    <p>Programme standard : <t t-out="v['program']" />
+                    <p>Programme standard : <t t-out="v['program']"/>
                     </p>
                     <p t-if="v['selected']">
                         <strong>Version confirmée pour cette réalisation</strong>
                     </p>
                     <h4>Objectifs client</h4>
-                    <p style="white-space:pre-wrap" t-out="v['objectives']" />
+                    <p style="white-space:pre-wrap" t-out="v['objectives']"/>
                     <h4>Cas métiers</h4>
-                    <p style="white-space:pre-wrap" t-out="v['cases']" />
+                    <p style="white-space:pre-wrap" t-out="v['cases']"/>
                     <h4>Consignes</h4>
-                    <p style="white-space:pre-wrap" t-out="v['instructions']" />
+                    <p style="white-space:pre-wrap" t-out="v['instructions']"/>
                     <a t-if="v['pdf']" t-att-href="'/my/company-trainings/%s/versions/%s/pdf' % (allocation_id, v['id'])">Document confidentiel de cette version</a>
-                    <p t-if="v['approved_at']">Accord de <t t-out="v['contact']" /> enregistré le <t t-out="v['approved_at']" /> (UTC).</p>
+                    <p t-if="v['approved_at']">Accord de <t t-out="v['contact']"/> enregistré le <t t-out="v['approved_at']"/> (UTC).</p>
                     <form t-if="v['state'] == 'submitted'" method="post" t-att-action="'/my/company-trainings/%s/versions/%s/approve' % (allocation_id, v['id'])">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                         <p>L’accord porte sur les objectifs, cas, consignes et document de cette version précise.</p>
                         <button class="btn btn-primary">Enregistrer mon accord sur cette version</button>
                     </form>
                 </section>
-            </main>
+            </div>
         </t>
     </template>
     <template id="company_portal_home" inherit_id="training_management.portal_trainings">

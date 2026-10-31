@@ -38,7 +38,7 @@
                     <button name="action_close" type="object" string="Close Complaint" invisible="state != 'resolved'"/>
                     <button name="action_new_improvement" type="object" string="New Improvement"/>
                     <button name="action_decision" type="object" string="Reopen / Withdraw Access"/>
-                    <button name="action_export_proof" type="object" string="Approved Summary for S08"/>
+                    <button name="action_export_proof" type="object" string="Approved Closure Summary"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -168,7 +168,7 @@
                     <button name="action_implement" type="object" string="Record Implementation" invisible="state != 'planned'"/>
                     <button name="action_check_effectiveness" type="object" string="Check Effectiveness" invisible="state != 'done'"/>
                     <button name="action_decision" type="object" string="Effectiveness Decision / Replan" invisible="state not in ('checking','ineffective')"/>
-                    <button name="action_export_proof" type="object" string="Approved Summary for S08"/>
+                    <button name="action_export_proof" type="object" string="Approved Closure Summary"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

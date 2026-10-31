@@ -117,6 +117,18 @@ class DashboardLine(models.Model):
     def _search_overdue(self, operator, value):
         return self._search_flag("overdue", operator, value)
 
+    @api.model
+    def action_open_training(self):
+        if not self.env.user.has_group("base.group_user"):
+            raise AccessError(self.env._("An internal user account is required."))
+        if not self.env["training.dashboard.service"]._deliveries():
+            sales = self.env.ref("sales_team.group_sale_salesman", raise_if_not_found=False)
+            if self.env.user.has_group("training_management.group_training_reader") or (
+                sales and sales in self.env.user.all_group_ids
+            ):
+                return self.env["ir.actions.actions"]._for_xml_id("training_management.action_training_courses")
+        return self.env["ir.actions.actions"]._for_xml_id("training_management.action_training_dashboard")
+
     def action_delivery_dashboard(self):
         self.ensure_one()
         self.check_access("read")

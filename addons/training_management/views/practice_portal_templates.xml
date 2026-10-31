@@ -8,10 +8,10 @@
     </template>
     <template id="practice_portal" name="My Practice Plans">
         <t t-call="portal.portal_layout" additional_title.translate="My practice plans">
-            <main class="container py-4">
+            <div class="container py-4">
                 <a href="/my/trainings">My training</a><h1>My practice plans</h1>
                 <p>Optional evidence and trainer comments remain private. Your employer receives only a separately agreed and authorized summary.</p>
-                <div t-if="error" id="practice_error" role="alert" tabindex="-1" autofocus="autofocus" class="alert alert-danger" t-out="error"/>
+                <div t-if="error" id="practice_error" role="alert" tabindex="-1" autofocus="autofocus" class="alert alert-danger o_training_feedback" t-out="error"/>
                 <p t-if="not rows">No practice action is currently assigned.</p>
                 <section t-foreach="rows" t-as="row" class="border rounded p-3 my-3 text-break">
                     <h2 class="h4" t-out="row['name']"/><p><t t-out="row['training']"/> · <t t-out="row['participant']"/></p>
@@ -30,7 +30,7 @@
                         <button class="btn btn-primary"><t t-if="row['role'] == 'participant'">Mark as done</t><t t-else="">Record trainer comment</t></button>
                     </form>
                 </section>
-            </main>
+            </div>
         </t>
     </template>
 </odoo>

@@ -9,7 +9,7 @@ from odoo.tools.binary import BinaryBytes
 
 class QualityExport(models.TransientModel):
     _name = "training.quality.export"
-    _description = "Approved Private Quality Summary for S08"
+    _description = "Approved Private Quality Summary for Closure"
 
     complaint_id = fields.Many2one("training.complaint")
     improvement_id = fields.Many2one("training.improvement")
@@ -33,7 +33,7 @@ class QualityExport(models.TransientModel):
         dossier._authorize(quality=True)
         dossier._serialize()
         if dossier.state == "closed" or not source.delivery_id or dossier.delivery_id != source.delivery_id:
-            raise ValidationError(self.env._("Choose an open S08 dossier in the same delivery."))
+            raise ValidationError(self.env._("Choose an open closure dossier in the same training."))
         fingerprint = hashlib.sha256(self.summary.encode()).hexdigest()
         event = source.event_ids.sorted("id")[-1:]
         origin = "%s:%s; event:%s; summary:%s; S093-QWEB-1" % (source._name, source.id, event.id, fingerprint)

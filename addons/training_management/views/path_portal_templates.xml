@@ -24,7 +24,7 @@
     </template>
     <template id="portal_training_path" name="My Learning Path">
         <t t-call="portal.portal_layout" additional_title.translate="My learning paths">
-            <a href="/my/training-paths">My learning paths</a><h1 t-out="path['name']"/>
+            <t t-call="training_management.portal_training_navigation"/><a href="/my/training-paths">My learning paths</a><h1 t-out="path['name']"/>
             <p><t t-out="path['completed']"/> / <t t-out="path['total']"/> completed steps</p>
             <progress t-att-value="str(path['completed'])" t-att-max="str(path['total'])" t-att-aria-label="path['name']" class="w-100"/>
             <p><t t-out="path['hours']"/> estimated learning hours</p>

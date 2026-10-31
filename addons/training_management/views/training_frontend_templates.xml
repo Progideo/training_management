@@ -1,0 +1,12 @@
+<odoo>
+    <template id="portal_training_navigation" name="Training navigation">
+        <nav aria-label="Training navigation" class="mb-3 o_not_editable"><a href="/my/trainings">My training</a></nav>
+    </template>
+    <template id="public_training_navigation" name="Public training navigation" inherit_id="portal.frontend_layout">
+        <xpath expr="//header" position="after">
+            <nav id="training_catalogue_navigation" t-if="'homepage_url' not in request.env['website']._fields and request.httprequest.path.startswith(('/formations', '/my/training', '/my/company-trainings'))" aria-label="Training catalogue" class="container py-2">
+                <a href="/formations">Training catalogue</a>
+            </nav>
+        </xpath>
+    </template>
+</odoo>

@@ -22,7 +22,7 @@ class AttendanceSession(models.Model):
     attendance_after = fields.Integer(string="Declaration Closes After Session (Minutes)", default=30)
     attendance_wording = fields.Text(
         required=True,
-        default=lambda self: self.env._("I confirm that I attended the interval indicated for this session."),
+        default=lambda self: self.env._("I confirm that I was present for this half-day."),
     )
     attendance_ids = fields.One2many("training.attendance", "session_id", readonly=True, groups=COORDINATOR)
 
@@ -430,7 +430,13 @@ class AttendanceService(models.AbstractModel):
                 if presence.enrollment_id.user_id == self.env.user:
                     raise AccessError(self.env._("A trainer cannot validate their own attendance."))
                 sources = presence.event_ids.filtered(lambda e: e.kind in ("declaration", "paper"))
-                if (not sources and not absent) or self.env.user in sources.actor_id:
+                if not sources and not absent:
+                    raise ValidationError(
+                        self.env._(
+                            "The participant must declare attendance before you can confirm presence. You may record an absence."
+                        )
+                    )
+                if self.env.user in sources.actor_id:
                     raise ValidationError(
                         self.env._("Trainer validation must be separate from the source declaration.")
                     )

@@ -3,7 +3,9 @@ from odoo.http import request
 
 
 class TrainingCertificateVerification(http.Controller):
-    @http.route("/training/verify/<string:token>", type="http", auth="public", methods=["GET"], sitemap=False)
+    @http.route(
+        "/training/verify/<string:token>", type="http", auth="public", website=True, methods=["GET"], sitemap=False
+    )
     def verify(self, token, **kwargs):
         values = request.env["training.certificate.verification"]._public_values(token)
         response = request.render("training_management.certificate_verification", {"certificate": values})

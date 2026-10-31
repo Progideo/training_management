@@ -38,7 +38,7 @@ class TrainingPortalNavigation(models.AbstractModel):
                     [
                         ("instructor_id", "=", user.partner_id.id),
                         ("company_id", "in", user.company_ids.ids),
-                        ("delivery_id.state", "in", ("confirmed", "ongoing")),
+                        ("delivery_id.state", "in", ("confirmed", "ongoing", "delivered")),
                         ("cancelled", "=", False),
                     ],
                     limit=1,

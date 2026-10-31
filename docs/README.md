@@ -22,7 +22,8 @@ Une divergence entre pièce jointe, dépôt et décision doit être signalée et
 version de référence identifiée avant correction. Ne pas synchroniser
 automatiquement des sources externes ni modifier silencieusement une exigence.
 
-Voir également [les parcours et optimisations de la revue](review-experience-performance.md).
+Voir également [les parcours et optimisations de la revue](review-experience-performance.md)
+et [la navigation et les thèmes](usability-theme.md).
 
 ## Validation continue
 

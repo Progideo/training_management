@@ -7,7 +7,7 @@ from odoo.tools.binary import BinaryBytes
 
 class FeedbackExport(models.TransientModel):
     _name = "training.feedback.export"
-    _description = "Attach Feedback Summary to S08"
+    _description = "Attach Feedback Summary to Closure Dossier"
 
     campaign_id = fields.Many2one("training.feedback.campaign", required=True)
     dossier_id = fields.Many2one("training.closure", required=True)

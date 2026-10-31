@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from io import BytesIO
+from lxml import html
 from psycopg2.errors import CheckViolation
 from PIL import Image
 from odoo.tools.binary import BinaryBytes
@@ -629,6 +630,9 @@ class TestMockExamHttp(ExamCase, HttpCase):
         self.assertEqual(page.status_code, 200)
         csrf = re.search(r'name="csrf_token" value="([^"]+)"', page.text).group(1)
         first = self.url_open(start_url, data={"csrf_token": csrf})
+        markup = html.fromstring(first.content)
+        self.assertEqual(len(markup.xpath("//main")), 1)
+        self.assertEqual(len(markup.xpath("//*[@id='wrap']")), 1)
         attempt = self.env["survey.user_input"].sudo().search([("training_enrollment_id", "=", enrollment.id)])
         for q in (q1, q2):
             response = self.url_open(

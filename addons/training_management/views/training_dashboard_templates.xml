@@ -11,9 +11,9 @@
                 <details t-if="a['history']"><summary>Attendance history</summary><ul><li t-foreach="a['history']" t-as="event"><t t-out="event['date']"/> · <t t-out="event['kind']"/> · <t t-out="event['reason']"/><a t-if="event['evidence_url']" t-att-href="event['evidence_url']"> Authorized attendance evidence</a></li></ul></details>
             </li></ul>
             <h4>Questionnaires</h4><p t-if="not row['feedback']">No participant questionnaire assigned in this scope.</p>
-            <ul><li t-foreach="row['feedback']" t-as="f"><t t-out="f['label']"/> · deadline (UTC): <t t-out="f['due']"/><strong t-if="f['late']"> — Overdue</strong></li></ul>
+            <ul><li t-foreach="row['feedback']" t-as="f"><t t-out="f['label']"/> · deadline: <t t-out="f['due']"/><strong t-if="f['late']"> — Overdue</strong></li></ul>
             <h4>Evaluations outside exercises</h4><p t-if="not row['evaluations']">No evaluation assigned in this scope.</p>
-            <ul><li t-foreach="row['evaluations']" t-as="e"><t t-out="e['label']"/> · deadline (UTC): <t t-out="e['due']"/> · attempt <t t-out="e['attempt']"/> · revision <t t-out="e['revision']"/>
+            <ul><li t-foreach="row['evaluations']" t-as="e"><t t-out="e['label']"/> · deadline: <t t-out="e['due']"/> · attempt <t t-out="e['attempt']"/> · revision <t t-out="e['revision']"/>
                 <span t-if="e['score'] is not None"> · score <t t-out="e['score']"/> % / threshold <t t-out="e['threshold']"/> %</span><span t-elif="e['scored']"> — Not evaluated; no score</span><span t-else=""> — Unscored evaluation</span>
                 <strong t-if="e['late']"> — Overdue</strong><a t-att-href="'/my/training-evaluations/%s' % e['id']"> Open authorized evaluation</a>
             </li></ul>
@@ -22,12 +22,12 @@
         </section>
     </template>
     <template id="portal_dashboard_link" inherit_id="training_management.portal_trainings" name="Operational training dashboard link"><xpath expr="//div[@id='training_responsibility_links']" position="inside"><t t-if="training_links.get('dashboard')"><a href="/my/training-dashboard" class="d-block py-2">Operational training dashboard</a></t></xpath></template>
-    <template id="portal_dashboard_deliveries" name="Operational Training Dashboards"><t t-call="portal.portal_layout"><div class="container py-3"><h1>Operational training dashboard</h1><p t-if="not deliveries">No assigned delivery available.</p><ul><li t-foreach="deliveries" t-as="d"><a t-att-href="'/my/training-dashboard/%s' % d['id']" t-out="d['name']"/></li></ul></div></t></template>
-    <template id="portal_dashboard" name="Operational Training Dashboard"><t t-call="portal.portal_layout"><div class="container py-3 text-break">
+    <template id="portal_dashboard_deliveries" name="Operational Training Dashboards"><t t-call="portal.portal_layout"><t t-call="training_management.portal_training_navigation"/><div class="container py-3"><h1>Operational training dashboard</h1><p t-if="not deliveries">No assigned delivery available.</p><ul><li t-foreach="deliveries" t-as="d"><a t-att-href="'/my/training-dashboard/%s' % d['id']" t-out="d['name']"/></li></ul></div></t></template>
+    <template id="portal_dashboard" name="Operational Training Dashboard"><t t-call="portal.portal_layout"><t t-call="training_management.portal_training_navigation"/><div class="container py-3 text-break">
         <a href="/my/training-dashboard">Assigned deliveries</a><h1 t-out="name"/><p><t t-out="program"/> · <t t-out="company"/></p>
-        <p t-if="not filter_error">Situation extracted at (UTC): <t t-out="extracted_at"/>. Formula version: S10-1. Population after filters: <strong t-out="population"/> enrollments.</p>
+        <p t-if="not filter_error">Situation extracted at: <t t-out="extracted_at"/>. Formula version: S10-1. Population after filters: <strong t-out="population"/> enrollments.</p>
         <p>The period filters session start dates and evaluation/questionnaire deadlines. Enrollment status is current; no historical situation is reconstructed.</p>
-        <p t-if="filter_error" role="alert" class="alert alert-danger" t-out="filter_error"/>
+        <p t-if="filter_error" role="alert" class="alert alert-danger o_training_feedback" t-out="filter_error" tabindex="-1"/>
         <form method="get" class="row g-3 mb-4">
             <div class="col-sm-4"><label for="dashboard_state" class="form-label">Enrollment status</label><select id="dashboard_state" name="state" class="form-select"><option value="all" t-att-selected="state == 'all'">All, including abandoned and cancelled</option><option t-foreach="states" t-as="s" t-att-value="s[0]" t-att-selected="s[0] == state" t-out="s[1]"/></select></div>
             <div class="col-sm-4"><label for="dashboard_session" class="form-label">Scheduled Session</label><select id="dashboard_session" name="session_id" class="form-select"><option value="0">All authorized sessions</option><option t-foreach="sessions" t-as="s" t-att-value="s['id']" t-att-selected="session_id == s['id']" t-out="s['name']"/></select></div>
@@ -41,14 +41,14 @@
             <t t-if="'count' in m"><t t-out="m['count']"/></t><t t-else=""><t t-out="m['numerator']"/> / <t t-out="m['denominator']"/><span t-if="m['rate'] is not None"> = <t t-out="m['rate_text']"/> %</span><span t-else=""> — Not calculable</span> · population <t t-out="m['population']"/> · <t t-out="m['formula']"/> · <t t-out="m['version']"/></t>
         </li></ul>
         <h2>One row per participant</h2><p t-if="not rows">No enrollment matches these filters.</p>
-        <div t-foreach="rows" t-as="row" class="border rounded p-3 mb-3"><t t-call="training_management.dashboard_participant"/></div><t t-call="portal.pager"/>
-        <h2>Delivery questionnaire summaries</h2><p>Trainer and sponsor feedback remains at delivery level. Anonymous responses are never shown individually.</p>
+        <details t-foreach="rows" t-as="row" class="border rounded p-3 mb-3"><summary><strong t-out="row['name']"/> · <t t-out="row['state']"/><span t-if="row['attendance_incomplete']"> · Attendance to review</span><span t-if="row['overdue']"> · Overdue</span></summary><div class="mt-3"><t t-call="training_management.dashboard_participant"/></div></details><t t-call="portal.pager"/>
+        <h2 t-if="campaigns">Delivery questionnaire summaries</h2><p t-if="campaigns">Trainer and sponsor feedback remains at delivery level. Anonymous responses are never shown individually.</p>
         <section t-foreach="campaigns" t-as="campaign" class="border rounded p-3 mb-3"><h3><t t-out="campaign['name']"/> · <t t-out="campaign['version']"/> · <t t-out="campaign['purpose']"/></h3><p t-out="campaign['population']"/><p t-out="campaign['summary']"/>
             <t t-if="campaign['snapshot']"><t t-set="snapshot" t-value="campaign['snapshot']"/><p>Received / applicable: <t t-out="snapshot['received']"/> / <t t-out="snapshot['applicable']"/> · expected: <t t-out="snapshot['expected']"/> · <t t-out="snapshot['formula']"/></p><p t-if="'rate' in snapshot">Favorable / valid: <t t-out="snapshot['favorable']"/> / <t t-out="snapshot['valid']"/><span t-if="snapshot['rate'] is not None"> = <t t-out="campaign['rate_text']"/> %</span><span t-else=""> — Not calculable</span></p></t>
         </section>
         <t t-if="quality"><h2>Authorized quality scope</h2><p>Only records already readable by your role; provider registers are company-level.</p><ul><li t-foreach="quality" t-as="q"><t t-out="q['name']"/>: <t t-out="q.get('count', q.get('numerator'))"/><span t-if="q.get('open_count') is not None"> · Open: <t t-out="q['open_count']"/></span><span t-if="q.get('overdue_count') is not None"> · Overdue: <t t-out="q['overdue_count']"/></span><span t-if="'denominator' in q"> / <t t-out="q['denominator']"/></span><ul t-if="q.get('states')"><li t-foreach="q['states']" t-as="detail"><a t-att-href="detail['url']" t-out="detail['name']"/> — <t t-out="detail['state']"/></li></ul></li></ul></t>
         <t t-if="commercial"><h2>Commercial indicators by currency</h2><ul><li t-foreach="commercial" t-as="c"><t t-out="c['label']"/><ul><li t-foreach="c['details']" t-as="detail"><a t-att-href="detail['url']" t-out="detail['name']"/></li></ul></li></ul></t>
-        <p>Forecast margin: <t t-out="margin"/></p>
+        <p t-if="commercial">Forecast margin: <t t-out="margin"/></p>
         <t t-if="notifications"><h2>Notification distribution journal</h2><p>Existing native mail queue; individual messages, no collective addresses. Private learning exchanges are excluded.</p><ul><li t-foreach="notifications" t-as="n"><t t-out="n['date']"/> · <t t-out="n['kind']"/> · <t t-out="n['recipient']"/> · <t t-out="n['template']"/> · <t t-out="n['state']"/><span t-if="n['failure']"> — <t t-out="n['failure']"/></span></li></ul></t>
     </t></div></t></template>
 </odoo>

@@ -785,7 +785,7 @@ class ClosureDocumentPolicy(models.AbstractModel):
     @api.private
     def _check_send(self, document, partners, **kwargs):
         if document and document._name in ("training.proof", "training.document"):
-            raise ValidationError(self.env._("Download S08 documents through authenticated access only."))
+            raise ValidationError(self.env._("Download training documents through authenticated access only."))
         return super()._check_send(document, partners, **kwargs)
 
 

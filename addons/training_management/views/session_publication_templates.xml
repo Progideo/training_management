@@ -5,7 +5,7 @@
         </xpath>
     </template>
     <template id="public_session_dates" name="Public session dates">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a t-att-href="'/formations/%s' % program_id">Fiche formation</a>
             <h1>Sessions : <t t-out="title"/></h1><p t-out="mode"/>
             <p>Les disponibilités sont vérifiées à la consultation. Une demande ne réserve pas de place et n’ouvre aucun accès pédagogique.</p>
@@ -18,12 +18,12 @@
             <a class="btn btn-outline-primary" t-att-href="'/formations/%s/date-alert' % program_id">M’alerter des nouvelles dates</a>
             <p class="mt-2">Abonnement volontaire depuis votre compte existant.</p>
             <a href="/my/training-date-alerts">Gérer mes alertes ou me désabonner</a>
-        </main></t>
+        </div></t>
     </template>
     <template id="session_date_consent" name="New date alert consent">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <h1>Nouvelles dates : <t t-out="title"/></h1>
-            <p t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+            <p t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
             <p t-if="policy">Finalité : vous prévenir des nouvelles dates de cette formation. Conservation des preuves prévue par la politique approuvée : <t t-out="policy['days']"/> jours. Pour une demande de suppression, contactez l’organisme. Le désabonnement est immédiat et ne supprime pas les preuves de votre choix.</p>
             <p t-else="">Les alertes ne sont pas encore disponibles pour cette formation. Contactez l’organisme.</p>
             <form t-if="policy" method="post">
@@ -34,10 +34,10 @@
                 <button class="btn btn-primary">Activer mon alerte</button>
             </form>
             <a class="d-inline-block mt-3" href="/my/training-date-alerts">Mes alertes et désabonnement</a>
-        </main></t>
+        </div></t>
     </template>
     <template id="session_date_subscriptions" name="My new date subscriptions">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <h1>Mes alertes de nouvelles dates</h1>
             <p>Ces alertes sont indépendantes de vos inscriptions et convocations. Le désabonnement prend effet aussi sur les courriels encore en attente d’envoi.</p>
             <p t-if="not rows">Vous n’avez aucun abonnement aux nouvelles dates.</p>
@@ -49,6 +49,6 @@
                 <a t-if="not row['active'] and row['subscribe_url']" t-att-href="row['subscribe_url']" class="btn btn-outline-primary">Me réabonner</a>
             </li></ul>
             <a class="d-inline-block mt-3" href="/formations">Catalogue</a>
-        </main></t>
+        </div></t>
     </template>
 </odoo>

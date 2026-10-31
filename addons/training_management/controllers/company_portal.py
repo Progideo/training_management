@@ -4,6 +4,7 @@ from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 from .material_portal import TrainingParticipantPortal
+from .portal_utils import portal_datetime
 from .public_catalogue import TrainingPublicCatalogue
 
 
@@ -36,7 +37,7 @@ class TrainingCompanyPortal(http.Controller):
                     request.env["training.company.service"]._nominate(
                         allocation_id, post.get("name"), post.get("email")
                     )
-                return request.redirect(f"/my/company-trainings/{allocation_id}")
+                return request.redirect(f"/my/company-trainings/{allocation_id}?saved=1#company-feedback")
             except ValidationError as exc:
                 error = str(exc)
         delivery = allocation.delivery_id
@@ -63,6 +64,13 @@ class TrainingCompanyPortal(http.Controller):
                 {
                     "practice_summaries": request.env["training.practice.summary"]._client_rows(allocation),
                     "allocation_id": allocation.id,
+                    "saved": post.get("saved") == "1",
+                    "lot_quantity": allocation.quantity,
+                    "lot_remaining": allocation.unnamed_seats,
+                    "lot_deadline": portal_datetime(allocation.expires_at) if allocation.state == "reserved" else False,
+                    "can_nominate": allocation._available()
+                    and delivery.state not in ("closed", "cancelled", "delivered"),
+                    "pending_nominations": len(nominations.filtered(lambda nomination: nomination.state == "proposed")),
                     "name": delivery.name,
                     "program": delivery.program_id.title,
                     "error": error,
@@ -175,4 +183,4 @@ class TrainingCompanyPortal(http.Controller):
         version = self._version(allocation_id, version_id)
         # Exact current allocation/company/client grant has been checked above.
         version._approve(request.env.user, request.env.user.partner_id)
-        return request.redirect(f"/my/company-trainings/{allocation_id}")
+        return request.redirect(f"/my/company-trainings/{allocation_id}?saved=1#company-feedback")

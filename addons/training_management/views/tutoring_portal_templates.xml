@@ -1,17 +1,17 @@
 <odoo>
     <template id="tutoring_home_link" inherit_id="training_management.portal_trainings" name="Tutoring Reservations"><xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('bookings')"><div class="card p-3 my-2"><a href="/my/training-bookings">Tutoring reservations</a></div></t></xpath></template>
-    <template id="tutoring_training_link" inherit_id="portal_training" name="Reserve Tutoring"><xpath expr="//t[@t-call='training_management.portal_materials']" position="after"><p class="mt-3"><a t-att-href="'/my/trainings/%s/tutoring' % learning['id']">Reserve tutoring</a></p></xpath></template>
+    <template id="tutoring_training_link" inherit_id="portal_training" name="Reserve Tutoring"><xpath expr="//t[@t-call='training_management.portal_materials']" position="after"><p t-if="has_tutoring" class="mt-3"><a t-att-href="'/my/trainings/%s/tutoring' % learning['id']">Reserve tutoring</a></p></xpath></template>
     <template id="tutoring_home" name="Tutoring Reservations"><t t-call="portal.portal_layout" additional_title.translate="Tutoring reservations">
-        <h1>Tutoring reservations</h1><p t-if="not enrollments and not appointments">No current tutoring reservation.</p>
+        <t t-call="training_management.portal_training_navigation"/><h1>Tutoring reservations</h1><p t-if="not enrollments and not appointments">No current tutoring reservation.</p>
         <ul class="list-group mb-4"><li t-foreach="enrollments" t-as="e" class="list-group-item"><a t-att-href="'/my/trainings/%s/tutoring' % e['id']" t-out="e['name']"/></li></ul>
         <section t-if="appointments"><h2>My tutoring appointments</h2><p><span>Timezone:</span> <t t-out="timezone"/></p>
             <div t-foreach="appointments" t-as="a" class="card p-3 mb-3"><h3 t-out="a['name']"/><p t-out="a['participant']"/><p t-out="a['start']"/><p t-if="a['state'] == 'cancelled'">Cancelled</p><a t-if="a['meeting_url']" t-att-href="a['meeting_url']" rel="noopener noreferrer">Join tutoring</a></div>
         </section>
     </t></template>
     <template id="tutoring_slots" name="Reserve Tutoring"><t t-call="portal.portal_layout" additional_title.translate="Tutoring reservations">
-        <a href="/my/training-bookings">Tutoring reservations</a><h1 t-out="name"/>
+        <t t-call="training_management.portal_training_navigation"/><a href="/my/training-bookings">Tutoring reservations</a><h1 t-out="name"/>
         <p><span>Timezone:</span> <t t-out="timezone"/></p>
-        <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+        <div t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
         <p><span>Included reservations:</span> <t t-out="included"/> · <span>Consumed:</span> <t t-out="used"/></p>
         <p>One confirmed reservation consumes one unit, regardless of its duration.</p>
         <h2>Available tutoring slots</h2><p t-if="not rows">No available tutoring slot.</p>

@@ -6,6 +6,7 @@ from odoo.http import request
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 
 from .material_portal import TrainingParticipantPortal
+from .portal_utils import local_deadline, portal_datetime
 
 
 class EvaluationPortal(http.Controller):
@@ -34,7 +35,7 @@ class EvaluationPortal(http.Controller):
                             "state": service._state_label(row),
                             "scored": row.evaluation_id.scored,
                             "validated": row.state == "validated",
-                            "due": row.due_at,
+                            "due": portal_datetime(row.due_at),
                             "has_score": row.result_available,
                             "score": row.score,
                         }
@@ -75,7 +76,9 @@ class EvaluationPortal(http.Controller):
                                 row.id,
                                 revision=int(post["revision"]),
                                 reason=post.get("reason"),
-                                due_at=post.get("due_at"),
+                                due_at=local_deadline(post.get("due_at_local"), request.env.user.tz or "UTC")
+                                if "due_at_local" in post
+                                else post.get("due_at"),
                             )
                         elif operation in ("save", "submit"):
                             service._portal_answers(
@@ -117,7 +120,8 @@ class EvaluationPortal(http.Controller):
                     or (operation == "reopen" and values["can_reopen"])
                 ) and post.get("revision") == str(values["revision"]):
                     values["form_values"] = {
-                        key: post.get(key, "") for key in ("score", "conclusion", "source", "reason", "due_at")
+                        key: post.get(key, "")
+                        for key in ("score", "conclusion", "source", "reason", "due_at", "due_at_local")
                     }
             else:
                 values["message"] = {
@@ -131,6 +135,10 @@ class EvaluationPortal(http.Controller):
                     values["message"] = request.env._(
                         "The deadline has passed. Only previously saved answers were submitted."
                     )
+            values["timezone"] = request.env.user.tz or "UTC"
+            values["due"] = portal_datetime(values["due"])
+            for item in values["history"]:
+                item["date"] = portal_datetime(item["date"])
             return TrainingParticipantPortal._private(request.render("training_management.portal_evaluation", values))
         except (AccessError, MissingError):
             raise request.not_found() from None

@@ -10,6 +10,8 @@ Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer
 `training_management` (dépend de `base` et `mail`) et, pour le circuit commercial,
 `training_management_sale` (dépend des Ventes et du CRM). Données de test fictives
 uniquement. Les tests et la CI installent et mettent à jour des bases jetables.
+Avec Website, le pont `training_management_website` ajoute le menu natif du catalogue,
+sans rendre Website obligatoire pour le socle. Voir [navigation et thèmes](docs/usability-theme.md).
 
 ## Périmètre du module
 
