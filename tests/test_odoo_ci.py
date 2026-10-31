@@ -56,6 +56,12 @@ def normalize_migration(text):
         + "\n"
     )
     text = re.sub(r" --test-enable| --test-tags=[^\s\\]+", "", text)
+    # The pre-upgrade S08 capture must use its matching historical registry.
+    # Preserve its source revision, fixture, probe and every comparison verbatim.
+    text = text.replace(
+        "\nS08_PHASE=prepare step fixture_baseline run_odoo",
+        '\nTM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step fixture_baseline run_odoo',
+    )
     return (
         text.replace("real Odoo tests and concurrent reservations", "migration and concurrent reservations").rstrip()
         + "\n"

@@ -39,6 +39,10 @@ exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
 ## Migrations, conservation et concurrence
 
+Le relevé S08 antérieur à la mise à jour utilise le code de sa révision historique,
+afin que le préchargement ORM ne demande pas des colonnes ajoutées depuis.
+Ses données, sa sonde et ses comparaisons complètes restent inchangées.
+
 Un contrôle commun conserve les vingt parcours historiques et ajoute P09 : installation progressive,
 installation Ventes, reprises S02/S03, Website, catalogue avec/sans Website,
 protection documentaire, préparation, supports, activités, examens, présences,
