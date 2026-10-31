@@ -40,8 +40,8 @@
         <field name="name">training.learning.activity.exam</field><field name="model">training.learning.activity</field>
         <field name="inherit_id" ref="training_management.view_learning_activity_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='evaluation_threshold']" position="after"><field name="training_exam_id" invisible="criterion != 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/></xpath>
-            <xpath expr="//div[@role='status'][@invisible]" position="replace"><p invisible="criterion != 'evaluation'">Assign a published mock exam. Its authoritative result determines completion.</p></xpath>
+            <xpath expr="//field[@name='evaluation_threshold']" position="after"><field name="training_exam_id" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/></xpath>
+            <xpath expr="//div[@name='evaluation_dependency_notice']" position="replace"><p invisible="criterion != 'evaluation'">Assign a published mock exam. Its authoritative result determines completion.</p></xpath>
         </field>
     </record>
     <record id="exam_action" model="ir.actions.act_window">

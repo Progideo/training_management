@@ -78,7 +78,10 @@ Le parcours `p20` part du main fusionné `92b0c3d` (#103/#104) : anciens PDF et
 preuves comparés intégralement, aucune publication rétroactive, nouveau PDF/registre
 conservés après mise à jour, émissions et révocations concurrentes avec reprise
 après conflit. Il rejoint le même job de migrations ; les tests P20 sont découverts
-automatiquement dans les huit configurations.
+automatiquement dans les huit configurations. Le parcours `closure_continuity`
+part de `149a303` (P20 fusionné) : dossier clos et responsable archivé, comparaison
+exacte des PDF et preuves, réaffectation et rectification, seconde mise à jour,
+puis concurrence réelle entre transfert/révocation et deux rectifications.
 Le parcours P01–P06 part du main `1db3b95`, conserve
 programmes/PDF, supports privés, demandes et inscriptions, vérifie l’absence
 d’exposition implicite et ajoute des soumissions/nominations concurrentes réelles.

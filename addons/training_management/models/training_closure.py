@@ -251,6 +251,7 @@ class ClosureDossier(models.Model):
             super(ClosureDossier, dossier).write(
                 {"state": "closed", "closed_at": fields.Datetime.now(), "closed_by_id": self.env.uid}
             )
+            dossier._record_lifecycle("close")
         return True
 
     def action_certificate_participation(self):

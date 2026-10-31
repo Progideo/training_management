@@ -46,6 +46,26 @@ class LearningActivity(models.Model):
     )
     progress_ids = fields.One2many("training.learning.progress", "activity_id", readonly=True, copy=False)
 
+    @api.model
+    def _supports_mock_exams(self):
+        return False
+
+    @api.model
+    def fields_get(self, allfields=None, attributes=None):
+        result = super().fields_get(allfields=allfields, attributes=attributes)
+        if not self._supports_mock_exams() and "selection" in result.get("criterion", {}):
+            result["criterion"]["selection"] = [
+                item for item in result["criterion"]["selection"] if item[0] != "evaluation"
+            ]
+        return result
+
+    @api.constrains("criterion")
+    def _check_evaluation_configuration(self):
+        if any(activity.criterion == "evaluation" for activity in self):
+            raise ValidationError(
+                self.env._("Install the native Surveys integration before choosing a mock exam criterion.")
+            )
+
     @api.constrains(
         "dependency_ids", "delivery_id", "optional", "due_days", "evaluation_threshold", "material_assignment_id"
     )
@@ -59,6 +79,7 @@ class LearningActivity(models.Model):
                 raise ValidationError(self.env._("Prerequisite activities must belong to the same delivery."))
             if not activity.optional and any(activity.dependency_ids.mapped("optional")):
                 raise ValidationError(self.env._("An optional activity cannot block a required activity."))
+            activity.dependency_ids._check_evaluation_configuration()
             todo, seen = activity.dependency_ids, self.browse()
             while todo:
                 if activity in todo:

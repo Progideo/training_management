@@ -542,6 +542,25 @@
         "verification_preserved",
         "concurrency"
       ]
+    },
+    {
+      "id": "closure_continuity",
+      "script": "tests/ci/run_closure_continuity.sh",
+      "args": [],
+      "steps": [
+        "baseline",
+        "catalogue_prepare",
+        "learning_prepare",
+        "attendance_prepare",
+        "closure_prepare",
+        "exact_prepare",
+        "upgrade",
+        "legacy_preserved",
+        "rectification_prepare",
+        "second_update",
+        "rectification_preserved",
+        "concurrency"
+      ]
     }
   ],
   "relocated_steps": {

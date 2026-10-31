@@ -1,0 +1,25 @@
+<odoo>
+    <record id="view_training_closure_change" model="ir.ui.view">
+        <field name="name">training.closure.change.form</field>
+        <field name="model">training.closure.change</field>
+        <field name="arch" type="xml">
+            <form string="Change Closure Dossier">
+                <group>
+                    <field name="dossier_id"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="operation"/>
+                    <field name="expected_quality_id" invisible="1" force_save="1"/>
+                    <field name="expected_closure_event_id" invisible="1" force_save="1"/>
+                    <field name="quality_id" invisible="operation != 'reassign'" required="operation == 'reassign'"
+                           options="{'no_create': True}"/>
+                    <field name="reason"/>
+                </group>
+                <p invisible="operation != 'rectify'">Previous closures, validated evidence and PDFs remain unchanged. Add new evidence versions, issue the corrected certificate, replace the old one and close the dossier again.</p>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

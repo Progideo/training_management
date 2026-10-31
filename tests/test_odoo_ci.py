@@ -95,7 +95,7 @@ class Coverage(unittest.TestCase):
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
             else:
                 self.assertEqual(path.read_text(), original(name))
-        self.assertEqual(len(PLAN["migrations"]), 24)
+        self.assertEqual(len(PLAN["migrations"]), 25)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
         base = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]

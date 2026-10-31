@@ -68,3 +68,4 @@ from . import training_session_publication
 from . import training_session_alert
 
 from . import training_certificate_verification
+from . import training_closure_continuity

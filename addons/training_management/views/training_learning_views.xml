@@ -11,7 +11,7 @@
                 <field name="material_assignment_id" domain="[('delivery_id', '=', delivery_id)]" options="{'no_create': True}" readonly="progress_ids"/>
                 <field name="dependency_ids" widget="many2many_tags" domain="[('delivery_id', '=', delivery_id), ('id', '!=', id)]" options="{'no_create': True}" readonly="progress_ids"/>
             </group><label for="instructions"/><field name="instructions" readonly="progress_ids"/>
-            <div class="alert alert-info" role="status" invisible="criterion != 'evaluation'">Evaluation completion awaits an authoritative result from the S06 exams integration.</div>
+            <div name="evaluation_dependency_notice" class="alert alert-info" role="status" invisible="criterion != 'evaluation'">This criterion requires the native Surveys integration and a published mock exam.</div>
         </sheet></form></field>
     </record>
     <record id="view_delivery_learning" model="ir.ui.view">

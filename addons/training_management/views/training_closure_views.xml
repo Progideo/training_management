@@ -51,6 +51,8 @@
             <form duplicate="false" delete="false">
                 <header>
                     <button name="action_close" type="object" string="Close Dossier" invisible="state == 'closed'" groups="training_management.group_training_quality"/>
+                    <button name="action_rectify" type="object" string="Rectify Closed Dossier" invisible="state != 'closed'" groups="training_management.group_training_quality"/>
+                    <button name="action_reassign_quality" type="object" string="Reassign Quality Reviewer" groups="training_management.group_training_coordinator"/>
                     <button name="action_export_internal" type="object" string="Internal Export" groups="training_management.group_training_quality"/>
                     <button name="action_export_client" type="object" string="Client Export" groups="training_management.group_training_quality"/>
                     <button name="action_certificate_participation" type="object" string="Participation Certificate" invisible="state == 'closed'" groups="training_management.group_training_quality"/>
@@ -60,9 +62,18 @@
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status">A complete dossier does not constitute Qualiopi certification.</div>
-                    <group><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id"/><field name="retention_id"/><field name="customer_id"/><field name="client_contact_ids" widget="many2many_tags"/><field name="share_certificates"/><field name="verify_certificates"/><field name="frozen"/></group>
+                    <group><field name="enrollment_id" options="{'no_open': True}"/><field name="delivery_id" options="{'no_open': True}"/><field name="quality_id" readonly="id"/><field name="retention_id"/><field name="customer_id"/><field name="client_contact_ids" widget="many2many_tags"/><field name="share_certificates"/><field name="verify_certificates"/><field name="frozen"/></group>
                     <group><field name="missing" readonly="1"/><field name="closed_by_id"/><field name="closed_at"/></group>
                     <notebook>
+                        <page string="Dossier History">
+                            <field name="event_ids" readonly="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="occurred_at"/><field name="operation"/><field name="actor_id"/>
+                                    <field name="previous_quality_id"/><field name="quality_id"/><field name="reason"/>
+                                    <field name="closed_at"/><field name="closed_by_id"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Evidence"><field name="evidence_ids" context="{'default_dossier_id': id}" readonly="state == 'closed'"/></page>
                         <page string="Certificate Verification" groups="training_management.group_training_quality"><field name="verification_ids" readonly="1"/></page>
                         <page string="Preserved Documents" groups="training_management.group_training_quality"><field name="output_ids" readonly="1"/></page>

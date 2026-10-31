@@ -171,17 +171,14 @@ class TestLearning(LearningCase):
         submitted = self.activity(enrollment.delivery_id, criterion="submission")
         self.post(enrollment, activity_id=submitted.id)
         self.assertTrue(self.service()._complete(enrollment, submitted))
-        evaluated = self.activity(enrollment.delivery_id, criterion="evaluation", evaluation_threshold=75)
-        self.assertFalse(self.service()._complete(enrollment, evaluated))
-        with self.assertRaises(ValidationError):
-            self.service()._declare(enrollment.id, evaluated.id)
-        with self.assertRaises(ValidationError):
-            self.post(enrollment, activity_id=evaluated.id)
-        # The only provider is the future S06 authoritative result, never RPC data.
-        with patch.object(type(self.service()), "_evaluation_result", return_value=74):
-            self.assertFalse(self.service()._complete(enrollment, evaluated))
-        with patch.object(type(self.service()), "_evaluation_result", return_value=75):
-            self.assertTrue(self.service()._complete(enrollment, evaluated))
+        # Reject an impossible configuration both with and without Surveys.
+        # Real authoritative scores are covered by the native exam tests.
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            self.activity(enrollment.delivery_id, criterion="evaluation", evaluation_threshold=75)
+        with self.assertRaises(ValidationError), self.cr.savepoint():
+            activity.write({"criterion": "evaluation"})
+        choices = dict(activity.fields_get(["criterion"])["criterion"]["selection"])
+        self.assertEqual("evaluation" in choices, "training_exam_id" in activity._fields)
         self.assertFalse(self.service()._complete(enrollment, activity))
 
     def test_idempotency_and_stale_submission_rejected(self):

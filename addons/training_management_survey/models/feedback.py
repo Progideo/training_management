@@ -21,6 +21,9 @@ class Feedback(models.Model):
     indicator_question_id = fields.Many2one("survey.question", string="Satisfaction Indicator")
     favorable_answer_ids = fields.Many2many("survey.question.answer", string="Favorable Choices")
 
+    def _compute_questionnaire_available(self):
+        self.questionnaire_available = True
+
     def action_questionnaire(self):
         self.ensure_one()
         self.env["training.delivery"]._require_coordinator()
