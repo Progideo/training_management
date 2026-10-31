@@ -12293,6 +12293,7 @@ msgstr "Enregistrer le retour du formateur"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_practice.py:0
+#: code:addons/training_management/models/training_learning_service.py:0
 msgid "Select a named file of at most 20 MB."
 msgstr "Choisissez un fichier nommé de 20 Mo maximum."
 

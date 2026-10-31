@@ -402,6 +402,11 @@ Après une remise, le portail revient sur l’activité et confirme l’enregist
 avec un lien vers la version remise. Le formulaire de nouvelle version est replié ;
 une erreur conserve la saisie et laisse le formulaire ouvert, sans confirmation
 de succès. La confirmation d’enregistrement ne vaut pas validation pédagogique.
+Les fichiers de remise, correction et aide privée sont limités à 20 Mo
+(20 × 1 024 × 1 024 octets), comme ceux de mise en pratique. Le contrôleur lit
+au plus cette limite plus un octet, puis le service refuse tout dépassement avant
+de créer une preuve. Le texte et les notes saisis restent affichés ; le fichier
+doit être sélectionné à nouveau après correction de l’erreur.
 
 ### Recette du complément
 
@@ -416,3 +421,6 @@ de succès. La confirmation d’enregistrement ne vaut pas validation pédagogiq
 5. Configurer une relance sur données fictives, vérifier son journal et son courriel
    générique ; terminer l'activité obligatoire et vérifier l'absence de nouvelle relance.
    Contrôler les parcours français, mobile et clavier.
+6. Remettre un fichier de 20 Mo, puis dépasser cette limite : refus sans nouvelle
+   preuve, texte conservé. Répéter côté formateur et vérifier que l’ancien fichier
+   et les commentaires restent consultables.

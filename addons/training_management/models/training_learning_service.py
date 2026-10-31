@@ -14,6 +14,8 @@ from odoo.fields import Domain
 from odoo.tools.binary import BinaryBytes
 from odoo.tools import SQL
 
+MAX_LEARNING_UPLOAD_SIZE = 20 * 1024 * 1024
+
 
 class LearningService(models.AbstractModel):
     _name = "training.learning.service"
@@ -175,6 +177,8 @@ class LearningService(models.AbstractModel):
         filename = filename.replace("\\", "/").split("/")[-1] if data else ""
         if (not body and not data and kind != "correction") or (data and not filename):
             raise ValidationError(self.env._("Enter a message or select a named file."))
+        if len(data) > MAX_LEARNING_UPLOAD_SIZE:
+            raise ValidationError(self.env._("Select a named file of at most 20 MB."))
         if kind == "correction" and decision not in ("accepted", "changes"):
             raise ValidationError(self.env._("Choose Accepted or Changes Requested."))
         payload = {
@@ -207,8 +211,6 @@ class LearningService(models.AbstractModel):
             project_snapshot = (
                 self._project_snapshot(enrollment, activity, kind, project_ratings, body) if activity else False
             )
-            if project_snapshot and len(data) > 20 * 1024 * 1024:
-                raise ValidationError(self.env._("Le fichier du projet est limité à 20 Mo."))
             parent = entries.browse(parent_id).exists() if parent_id else entries.browse()
             if parent_id and (not parent or parent.enrollment_id != enrollment or parent.activity_id != activity):
                 raise AccessError(self.env._("This private learning record is unavailable."))
