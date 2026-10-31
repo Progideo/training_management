@@ -234,15 +234,15 @@ Limite de vérification : les pages 20.0 et le code cible n'ont pas pu être con
 
 ## PRE01 Collecter les présences
 
-Priorité MVP. Par séance, choisir papier, électronique ou mixte. Enregistrer intervalle réellement suivi, retard, absence, source et validation formateur. Le temps présent est borné par le temps prévu, sans double compte.
+Priorité MVP. Par séance, choisir papier, électronique ou mixte. L’émargement se fait par demi-journée (matin ou après-midi), sans saisie d’heure d’arrivée ni de départ. Enregistrer présence ou absence, source et validation distincte du formateur. Une demi-journée présente et validée compte pour sa durée prévue au planning ; aucune durée forfaitaire ni aucun double compte. Les anciennes preuves d’intervalles restent conservées.
 
-Acceptation — Nominal : un participant présent 90 minutes sur 120 compte pour 90 minutes. Erreur ou limite : papier et électronique pour la même présence ne produisent pas 240 minutes.
+Acceptation — Nominal : une matinée prévue de trois heures compte pour trois heures après validation ; une après-midi déclarée absente compte pour zéro. Erreur ou limite : papier et électronique pour la même présence ne produisent pas 240 minutes.
 
 ## PRE02 Émarger en ligne
 
-Priorité MVP. Le participant authentifié confirme sa présence dans une fenêtre définie ; journaliser identité, séance, texte accepté, horodatage serveur et méthode. Le formateur valide séparément. Une signature tracée peut compléter ce processus.
+Priorité MVP. Le participant authentifié confirme son statut de présence par demi-journée écoulée ; journaliser identité, séances concernées, texte accepté, horodatage serveur et méthode. La régularisation reste possible avant clôture, avec accès encore valides, sans antidatage. Le formateur valide séparément. Une signature tracée peut compléter ce processus.
 
-Acceptation — Nominal : un émargement mobile est rattaché à la bonne séance. Erreur ou limite : un QR code collectif seul ne permet pas de signer au nom d'un autre ; hors fenêtre, traitement en anomalie.
+Acceptation — Nominal : un émargement mobile couvre les séances de la demi-journée affichée. Erreur ou limite : un QR code collectif seul ne permet pas de signer au nom d'un autre ; une demi-journée encore future est refusée.
 
 ## PRE03 Corriger avec traçabilité
 

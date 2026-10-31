@@ -14,6 +14,7 @@ export class TrainingExam extends Interaction {
         ".tm_next": { "t-on-click": () => this.show(this.current + 1) },
         ".tm_summary": { "t-on-click": this.onSummary },
         ".tm_submit": { "t-on-click": this.onSubmit },
+        ".tm_retry": { "t-on-click": this.onRetry },
         ".o_survey_timer": { "t-on-time_up": this.onExpired },
         _window: { "t-on-beforeunload": this.beforeUnload },
     };
@@ -21,7 +22,8 @@ export class TrainingExam extends Interaction {
         this.questions = [...this.el.querySelectorAll(".tm_question")];
         this.queue = Promise.resolve();
         this.failed = false;
-        this.pending = 0;
+        this.unsaved = new Map();
+        this.recovering = false;
         this.ending = false;
         this.current = 0;
     }
@@ -41,11 +43,17 @@ export class TrainingExam extends Interaction {
         for (const [key, value] of Object.entries(values)) {
             data.set(key, value);
         }
-        const response = await fetch(this.el.dataset.endpoint, { method: "POST", body: data });
-        if (!response.ok || !response.headers.get("Content-Type")?.includes("application/json")) {
-            throw new Error("Exam operation refused");
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        try {
+            const response = await fetch(this.el.dataset.endpoint, { method: "POST", body: data, signal: controller.signal });
+            if (!response.ok || !response.headers.get("Content-Type")?.includes("application/json")) {
+                throw new Error("Exam operation refused");
+            }
+            return await response.json();
+        } finally {
+            clearTimeout(timeout);
         }
-        return response.json();
     }
     onChange(ev) {
         this.save(ev.target.closest(".tm_question"));
@@ -56,34 +64,76 @@ export class TrainingExam extends Interaction {
         this.save(question);
     }
     save(question) {
-        if (this.ending || this.failed) {
-            this.status(_t("Not saved. Reload to recover answers already received by the server."), true);
-            return;
-        }
-        // Capture this change before queuing: later clicks cannot alter its payload.
+        if (this.ending) { return; }
+        // Keep the latest local value per question until its exact payload is acknowledged.
+        // It stays in this page only; no private answers are persisted in browser storage.
         const values = {
             question: question.dataset.question,
             choices: JSON.stringify([...question.querySelectorAll(".o_survey_form_choice_item:checked")].map((i) => Number(i.value))),
             marked: question.querySelector(".tm_review").checked ? "1" : "0",
         };
-        this.pending++;
-        this.status(_t("Saving…"));
-        this.queue = this.queue.then(async () => {
-            if (this.failed) { return; }
-            try {
-                const result = await this.send(values);
-                if (result.done) { window.location.reload(); return; }
-                this.pending--;
-                if (!this.pending) { this.status(_t("Saved on the server.")); }
-            } catch {
-                this.failed = true;
-                this.status(_t("Not saved. Check your connection. Reload to recover only answers already received by the server."), true);
-            }
-        });
+        this.unsaved.set(values.question, values);
+        this.refreshStatus();
+        this.flush();
         this.updatePalette();
     }
+    flush() {
+        this.queue = this.queue.then(async () => {
+            while (this.unsaved.size && !this.failed) {
+                const [key, values] = this.unsaved.entries().next().value;
+                try {
+                    const result = await this.send(values);
+                    if (result.done) { this.finished(); return; }
+                    if (this.unsaved.get(key) === values) { this.unsaved.delete(key); }
+                } catch {
+                    this.failed = true;
+                }
+                this.refreshStatus();
+                this.updatePalette();
+            }
+        });
+        return this.queue;
+    }
+    refreshStatus() {
+        this.el.querySelector(".tm_retry").hidden = !this.failed;
+        this.el.querySelector(".tm_retry").disabled = this.recovering;
+        if (this.failed) {
+            this.status(_t("%s question(s) not confirmed on the server. Check your connection, then retry saving. Keep this page open.", this.unsaved.size), true);
+        } else {
+            this.status(this.unsaved.size ? _t("Saving %s question(s)…", this.unsaved.size) : _t("Saved on the server."));
+        }
+    }
+    freeze(value) {
+        this.ending = value;
+        this.questions.forEach((question) => { question.disabled = value; });
+        this.el.querySelector(".tm_submit").disabled = value;
+    }
+    finished() {
+        this.freeze(true);
+        this.unsaved.clear();
+        this.failed = false;
+        window.location.reload();
+    }
+    async onRetry() {
+        if (this.ending || this.recovering) { return; }
+        this.recovering = true;
+        this.refreshStatus();
+        await this.queue;
+        try {
+            // Recheck the server deadline before replaying local answers.
+            const result = await this.send({ kind: "status" });
+            if (result.done) { this.finished(); return; }
+            this.failed = false;
+            await this.flush();
+        } catch {
+            this.failed = true;
+        } finally {
+            this.recovering = false;
+            this.refreshStatus();
+        }
+    }
     beforeUnload(ev) {
-        if (this.pending || this.failed) { ev.preventDefault(); ev.returnValue = ""; }
+        if (this.unsaved.size || this.failed) { ev.preventDefault(); ev.returnValue = ""; }
     }
     show(index, focus = true) {
         this.current = Math.max(0, Math.min(this.questions.length - 1, index));
@@ -99,6 +149,7 @@ export class TrainingExam extends Interaction {
             const question = this.questions[index];
             const answered = !!question.querySelector(".o_survey_form_choice_item:checked");
             const review = question.querySelector(".tm_review").checked;
+            question.querySelector(".tm_question_save_state").textContent = this.unsaved.has(question.dataset.question) ? _t("Changes not yet confirmed on the server") : _t("Saved on the server.");
             button.querySelector(".tm_question_state").textContent = (answered ? " ✓" : " ○") + (review ? " ⚑" : "");
             button.setAttribute("aria-label", _t("Question %s", index + 1) + ": " + (answered ? _t("Answered") : _t("Unanswered")) + (review ? ", " + _t("Marked for review") : ""));
             button.setAttribute("aria-current", index === this.current ? "step" : "false");
@@ -112,31 +163,37 @@ export class TrainingExam extends Interaction {
         this.el.querySelector(".tm_submit").focus();
     }
     async onSubmit() {
-        if (this.ending) { return; }
+        if (this.ending || this.recovering) { return; }
+        this.freeze(true);
         await this.queue;
-        if (this.failed || this.pending) {
-            this.status(_t("Submission blocked: some answers are not saved. Reload and verify your saved answers."), true);
+        if (this.failed || this.unsaved.size) {
+            this.freeze(false);
+            this.status(_t("Before submitting, retry saving the unconfirmed answers."), true);
             return;
         }
-        this.ending = true;
         try {
             await this.send({ kind: "submit" });
-            window.location.reload();
+            this.finished();
         } catch {
-            this.ending = false;
+            this.freeze(false);
             this.status(_t("Submission not confirmed. Check your connection and retry."), true);
         }
     }
     async onExpired() {
         // A native timer event prompts the server; only the server decides expiry.
         // Pending unsent answers are not replayed after the deadline.
+        if (this.ending || this.recovering) { return; }
+        this.freeze(true);
+        await this.queue;
         try {
             const result = await this.send({ kind: "status" });
-            if (result.done) { this.pending = 0; this.failed = false; }
-            window.location.reload();
+            if (result.done) { this.finished(); return; }
         } catch {
+            this.failed = true;
+            this.refreshStatus();
             this.status(_t("Time elapsed. Only answers received before the server deadline are retained. Reconnect to see the result."), true);
         }
+        this.freeze(false);
     }
 }
 registry.category("public.interactions").add("training_management_survey.exam", TrainingExam);

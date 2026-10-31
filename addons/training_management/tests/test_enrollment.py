@@ -401,7 +401,7 @@ class TestEnrollment(EnrollmentCase):
         self.assertEqual(state["confirmed"], "Confirmée")
         self.assertEqual(
             self.env.ref("training_management.action_training_deliveries").with_context(lang="fr_FR").name,
-            "Réalisations",
+            "Formations organisées",
         )
 
 

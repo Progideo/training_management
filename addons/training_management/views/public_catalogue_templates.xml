@@ -1,6 +1,6 @@
 <odoo>
     <template id="public_catalogue" name="Training catalogue">
-        <t t-call="portal.frontend_layout" additional_title.translate="Formations"><main class="container py-4">
+        <t t-call="portal.frontend_layout" additional_title.translate="Formations"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <h1>Formations</h1>
             <form method="get" action="/formations" class="row g-3 mb-4">
                 <div class="col-md-4"><label for="search">Rechercher</label><input id="search" name="search" class="form-control" t-att-value="search"/></div>
@@ -10,10 +10,10 @@
             </form>
             <p t-if="not programs">Aucune formation publiée.</p>
             <ul class="list-group"><li t-foreach="programs" t-as="p" class="list-group-item"><a t-att-href="'/formations/%s' % p['id']"><t t-out="p['title']"/> — <t t-out="p['version']"/></a></li></ul>
-        </main></t>
+        </div></t>
     </template>
     <template id="public_programme" name="Public programme">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a><h1 t-out="program['title']"/>
             <p>Version <t t-out="program['version']"/> · <t t-out="program['duration']"/> h · <t t-out="program['mode']"/></p>
             <p>Prix sur devis.</p>
@@ -27,6 +27,6 @@
                     <button class="btn btn-primary">Voir la correction de démonstration</button>
                 </form>
             </section>
-        </main></t>
+        </div></t>
     </template>
 </odoo>

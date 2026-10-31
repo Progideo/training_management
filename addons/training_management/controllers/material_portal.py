@@ -7,6 +7,8 @@ from odoo.http import request
 from odoo.http.stream import content_disposition
 from odoo.tools.misc import format_datetime
 
+from .portal_utils import portal_datetime
+
 
 class TrainingParticipantPortal(http.Controller):
     @http.route(
@@ -21,7 +23,14 @@ class TrainingParticipantPortal(http.Controller):
             for e in active[pager["offset"] : pager["offset"] + 40]
         ]
         return self._private(
-            request.render("training_management.portal_trainings", {"enrollments": rows, "pager": pager})
+            request.render(
+                "training_management.portal_trainings",
+                {
+                    "enrollments": rows,
+                    "pager": pager,
+                    "training_links": request.env["training.portal.navigation"]._links(),
+                },
+            )
         )
 
     @http.route("/my/trainings/<int:enrollment_id>", type="http", auth="user", website=True, methods=["GET"])
@@ -51,6 +60,13 @@ class TrainingParticipantPortal(http.Controller):
             if enrollment.program_id.pdf_attachment_id
             else False,
             "materials": self._material_rows(delivery),
+            "enrollment_id": enrollment.id,
+            "access_end": portal_datetime(enrollment.access_end, timezone=tz) if enrollment.access_end else False,
+            "has_tutoring": bool(
+                request.env["training.tutoring.entitlement"]
+                .sudo()
+                .search_count([("enrollment_id", "=", enrollment.id)], limit=1)
+            ),
         }
         # Import lazily: the tutoring controller reuses the participant response
         # and privacy headers without copying its programme/schedule workflow.

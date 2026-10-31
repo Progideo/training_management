@@ -60,6 +60,9 @@ class TrainingPublicRequest(http.Controller):
             values["kind"] = values["kind"] if values["kind"] in ("group", "individual") else "group"
             values["request_type"] = values["request_type"] or ("catalogue" if values["program"] else "custom")
             values["count"] = values["count"] or "1"
+            selected = programs.filtered(lambda program: str(program.id) == values["program"])
+            if selected and not values["mode"]:
+                values["mode"] = selected.delivery_mode
         return TrainingParticipantPortal._private(
             request.render(
                 "training_management_sale.public_request",

@@ -27,7 +27,7 @@ n’est ajouté ; le contrôleur ne retourne qu’une projection explicite.
 Le responsable qualité affecté ouvre la vérification depuis le dossier, puis
 choisit « Révoquer » ou « Remplacer », avec un motif. Le remplacement exige une
 attestation vérifiable encore valide du même dossier et du même type. Il faut
-l’émettre au préalable après correction des critères. La décision conserve auteur,
+l’émettre au préalable après correction des critères. Si le dossier est clos, utiliser la [rectification motivée](review-access-continuity.md), puis le clôturer à nouveau. La décision conserve auteur,
 date et lien interne vers le remplacement. Révocation et remplacement sont définitifs,
 restent possibles après clôture, ne réécrivent aucun PDF et ne rétablissent jamais
 silencieusement un statut. Une correction S07 seule ne révoque pas les anciens PDF.
@@ -45,7 +45,9 @@ Cette vérification ne constitue aucune certification officielle ou Qualiopi.
 Community `20.0-20261015`, image épinglée par la CI : `ir.actions.report.barcode`
 génère le QR et QWeb l’intègre au PDF sans appel externe. Les rapports Surveys
 portent une tentative et ne remplacent pas les attestations de formation S08.
-Aucune dépendance ni application supplémentaire. Les contrôles d’accès réévaluent
+Aucune dépendance ni application supplémentaire. La page publique utilise le layout
+minimal et les CSS natifs, sans les scripts de suivi Website
+([navigation et thèmes](usability-theme.md)). Les contrôles d’accès réévaluent
 le rôle qualité affecté et la société autorisée, même sur un recordset élevé.
 Les écritures libres, copies et suppressions du registre sont interdites. Le verrou
 S03/S08 commun sérialise émissions et changements de statut ; une transaction

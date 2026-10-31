@@ -26,13 +26,32 @@ class ExamService(models.AbstractModel):
             and enrollment.access_state == "active"
         ):
             raise AccessError(self.env._("This private exam is unavailable."))
-        if finish and enrollment._effective_state() not in ("active", "expired"):
+        if enrollment._effective_state() not in ("active", "expired"):
             raise AccessError(self.env._("This private exam is unavailable."))
         if lock:
             enrollment.delivery_id._serialize()
             enrollment.invalidate_recordset()
             return self._enrollment(enrollment_id, history=history, finish=finish)
         return enrollment
+
+    @api.private
+    def _history_enrollments(self):
+        user = self.env.user
+        enrollments = self.env["training.enrollment"].sudo()
+        if not user.active or user._is_public():
+            return enrollments.browse()
+        candidates = enrollments.search(
+            [
+                ("user_id", "=", user.id),
+                ("participant_id", "=", user.partner_id.id),
+                ("company_id", "in", user.company_ids.ids),
+                ("state", "=", "confirmed"),
+                ("access_state", "=", "active"),
+            ]
+        )
+        # Expiry keeps history; every other withdrawal uses the same effective
+        # policy as direct result/image reads, including inherited path gates.
+        return candidates.filtered(lambda e: e._effective_state() in ("active", "expired"))
 
     @api.private
     def _start(self, enrollment_id, activity_id):
@@ -184,14 +203,21 @@ class LearningActivity(models.Model):
     criterion = fields.Selection(selection_add=[("evaluation", "Mock Exam Threshold")])
     training_exam_id = fields.Many2one("survey.survey", ondelete="restrict", string="Mock Exam Version")
 
+    @api.model
+    def _supports_mock_exams(self):
+        return True
+
     @api.constrains("training_exam_id", "delivery_id", "criterion")
-    def _check_training_exam(self):
+    def _check_evaluation_configuration(self):
         for activity in self:
             exam = activity.training_exam_id
-            if exam and (
-                activity.criterion != "evaluation"
-                or exam.training_state != "published"
-                or exam.training_program_id != activity.delivery_id.program_id
+            if (activity.criterion == "evaluation" and not exam) or (
+                exam
+                and (
+                    activity.criterion != "evaluation"
+                    or exam.training_state != "published"
+                    or exam.training_program_id != activity.delivery_id.program_id
+                )
             ):
                 raise ValidationError(
                     self.env._("Assign a published exam from this programme to an evaluation activity.")

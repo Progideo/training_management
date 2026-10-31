@@ -63,8 +63,9 @@ class DashboardLine(models.Model):
     def _compute_projection(self):
         self.check_access("read")
         service = self.env["training.dashboard.service"]
+        batch = service._batch(self.env["training.enrollment"].sudo().browse(self.mapped("enrollment_id")))
         for line in self:
-            row = service._participant(line.enrollment_id)
+            row = service._participant(line.enrollment_id, batch=batch)
             line.attendance = "\n".join(r["label"] for r in row["attendance"])
             line.questionnaires = "\n".join(r["label"] for r in row["feedback"])
             line.evaluations = "\n".join(
@@ -90,10 +91,18 @@ class DashboardLine(models.Model):
     def _search_flag(self, name, operator, value):
         if operator not in ("=", "!=") or not isinstance(value, bool):
             raise ValidationError(self.env._("Choose a boolean dashboard filter."))
-        # Evaluate the complete authorized population before filtering, without truncation.
-        rows = self.search([("company_id", "in", self.env.companies.ids)])
+        lines = self.search([("company_id", "in", self.env.companies.ids)])
+        service = self.env["training.dashboard.service"]
+        batch = service._batch(self.env["training.enrollment"].sudo().browse(lines.mapped("enrollment_id")))
+        expected = value if operator == "=" else not value
         return Domain(
-            "id", "in", rows.filtered(lambda r: bool(r[name]) == (value if operator == "=" else not value)).ids
+            "id",
+            "in",
+            [
+                line.id
+                for line in lines
+                if bool(service._participant(line.enrollment_id, batch=batch, details=False)[name]) == expected
+            ],
         )
 
     def _search_attendance(self, operator, value):
@@ -107,6 +116,18 @@ class DashboardLine(models.Model):
 
     def _search_overdue(self, operator, value):
         return self._search_flag("overdue", operator, value)
+
+    @api.model
+    def action_open_training(self):
+        if not self.env.user.has_group("base.group_user"):
+            raise AccessError(self.env._("An internal user account is required."))
+        if not self.env["training.dashboard.service"]._deliveries():
+            sales = self.env.ref("sales_team.group_sale_salesman", raise_if_not_found=False)
+            if self.env.user.has_group("training_management.group_training_reader") or (
+                sales and sales in self.env.user.all_group_ids
+            ):
+                return self.env["ir.actions.actions"]._for_xml_id("training_management.action_training_courses")
+        return self.env["ir.actions.actions"]._for_xml_id("training_management.action_training_dashboard")
 
     def action_delivery_dashboard(self):
         self.ensure_one()
@@ -170,51 +191,133 @@ class DashboardService(models.AbstractModel):
         return sessions if broad else sessions.filtered(lambda s: s.instructor_id == user.partner_id)
 
     @api.private
-    def _eligible_at(self, enrollment, when):
-        # Historical state is read from controlled S03 transitions; an absent sheet
-        # never becomes a validated absence, and cancellation before start is excluded.
-        if enrollment.requested_at > when:
-            return False
-        history = (
+    def _batch(self, enrollments):
+        # Authorize the complete scope once before any elevated batched reads.
+        deliveries = enrollments.delivery_id
+        for delivery in deliveries:
+            self._delivery(delivery.id)
+        sessions = {d.id: self._sessions(d) for d in deliveries}
+        session_ids = [session.id for rows in sessions.values() for session in rows]
+        operations = (
             self.env["training.operation"]
             .sudo()
             .search(
                 [
                     ("model_name", "=", "training.enrollment"),
-                    ("record_id", "=", enrollment.id),
-                    ("occurred_at", "<=", when),
+                    ("record_id", "in", enrollments.ids),
                 ],
                 order="occurred_at, id",
             )
         )
+        presences = (
+            self.env["training.attendance"]
+            .sudo()
+            .search(
+                [
+                    ("enrollment_id", "in", enrollments.ids),
+                    ("session_id", "in", session_ids),
+                ]
+            )
+        )
+        # Prefetch evidence metadata across the population; never fetch binary content.
+        presences.event_ids.fetch(["kind", "start_at", "end_at", "absent", "anomaly"])
+        campaigns = self.env["training.feedback.campaign"].sudo().search([("delivery_id", "in", deliveries.ids)])
+        recipients = (
+            self.env["training.feedback.recipient"]
+            .sudo()
+            .with_context(active_test=False)
+            .search(
+                [
+                    ("campaign_id", "in", campaigns.ids),
+                    ("enrollment_id", "in", enrollments.ids),
+                    ("role", "=", "participant"),
+                ]
+            )
+        )
+        named = recipients.filtered(lambda r: not r.campaign_id.anonymous)
+        return {
+            "enrollments": enrollments,
+            "by_id": {row.id: row for row in enrollments},
+            "sessions": sessions,
+            "operations": operations.grouped("record_id"),
+            "presences": presences.grouped(lambda r: (r.enrollment_id.id, r.session_id.id)),
+            "campaigns": campaigns.grouped("delivery_id"),
+            "recipients": recipients.grouped(lambda r: (r.enrollment_id.id, r.campaign_id.id)),
+            "feedback_states": self.env["training.feedback.service"]._nominative_states(named),
+            "assignments": self.env["training.evaluation.assignment"]
+            .sudo()
+            .search(
+                [
+                    ("enrollment_id", "in", enrollments.ids),
+                ]
+            )
+            .grouped("enrollment_id"),
+        }
+
+    @api.private
+    def _eligible_at(self, enrollment, when, batch=None):
+        # Historical state is read from controlled S03 transitions; an absent sheet
+        # never becomes a validated absence, and cancellation before start is excluded.
+        if enrollment.requested_at > when:
+            return False
+        history = (
+            batch["operations"].get(enrollment.id, self.env["training.operation"])
+            if batch is not None
+            else (
+                self.env["training.operation"]
+                .sudo()
+                .search(
+                    [
+                        ("model_name", "=", "training.enrollment"),
+                        ("record_id", "=", enrollment.id),
+                        ("occurred_at", "<=", when),
+                    ],
+                    order="occurred_at, id",
+                )
+            )
+        )
         state = "requested"
         for event in history:
+            if event.occurred_at > when:
+                break
             state = json.loads(event.after or "{}").get("state", state)
         return state == "confirmed"
 
     @api.private
-    def _attendance(self, enrollment, sessions):
+    def _attendance(self, enrollment, sessions, batch=None, details=True):
         result = []
         now = fields.Datetime.now()
         for session in sessions:
-            applicable = self._eligible_at(enrollment, min(now, session.start_at))
+            applicable = self._eligible_at(enrollment, min(now, session.start_at), batch)
             presence = (
-                self.env["training.attendance"]
-                .sudo()
-                .search([("session_id", "=", session.id), ("enrollment_id", "=", enrollment.id)], limit=1)
+                batch["presences"].get((enrollment.id, session.id), self.env["training.attendance"])
+                if batch is not None
+                else (
+                    self.env["training.attendance"]
+                    .sudo()
+                    .search([("session_id", "=", session.id), ("enrollment_id", "=", enrollment.id)])
+                )
             )
             events = presence.event_ids.sorted("id")
-            decisions = events.filtered(lambda e: e.kind in ("validation", "correction"))
+            validated = presence.filtered(lambda r: r.state == "validated")
+            expected = {p["key"] for p in self.env["training.attendance.service"]._periods(session)}
+            complete = bool(validated.filtered(lambda r: r.period_key == "legacy")) or expected <= set(
+                validated.mapped("period_key")
+            )
             if not applicable:
                 state = self.env._("Not applicable: not confirmed at session start")
-            elif presence and presence.state == "validated":
-                state = self.env._("Validated absence") if presence.absent else self.env._("Validated presence")
-            elif presence and presence.state == "anomaly":
+            elif complete:
+                state = (
+                    self.env._("Validated absence")
+                    if all(validated.mapped("absent"))
+                    else self.env._("Validated presence")
+                )
+            elif presence.filtered(lambda r: r.state == "anomaly"):
                 state = self.env._("Anomaly — review required")
             elif session.attendance_mode == "paper" or events.filtered(lambda e: e.kind == "paper"):
                 state = (
                     self.env._("Paper deposited — awaiting review")
-                    if events.filtered("data")
+                    if events.with_context(bin_size=True).filtered("data")
                     else self.env._("Paper to deposit")
                 )
             else:
@@ -228,10 +331,10 @@ class DashboardService(models.AbstractModel):
                     "state": state,
                     "label": "%s: %s" % (session.name, state),
                     "applicable": applicable,
-                    "validated": bool(applicable and decisions),
-                    "minutes": presence.minutes if applicable and decisions else None,
+                    "validated": bool(applicable and complete),
+                    "minutes": sum(validated.mapped("minutes")) if applicable and validated else None,
                     "planned": (session.end_at - session.start_at).total_seconds() / 60 if applicable else 0,
-                    "revision": presence.revision if presence else 0,
+                    "revision": max(presence.mapped("revision"), default=0),
                     "history": [
                         {
                             "kind": self._label(e, "kind"),
@@ -242,7 +345,9 @@ class DashboardService(models.AbstractModel):
                             else "",
                         }
                         for e in events
-                    ],
+                    ]
+                    if details
+                    else [],
                 }
             )
         return result
@@ -252,21 +357,36 @@ class DashboardService(models.AbstractModel):
         return self.env["training.feedback.campaign"].sudo().search([("delivery_id", "=", delivery.id)])
 
     @api.private
-    def _feedback(self, enrollment):
+    def _feedback(self, enrollment, batch=None):
         result = []
-        for campaign in self._campaigns(enrollment.delivery_id):
-            recipients = campaign.with_context(active_test=False).recipient_ids.filtered(
-                lambda r: r.role == "participant" and r.enrollment_id == enrollment
+        campaigns = (
+            batch["campaigns"].get(enrollment.delivery_id, self.env["training.feedback.campaign"])
+            if batch is not None
+            else self._campaigns(enrollment.delivery_id)
+        )
+        for campaign in campaigns:
+            recipients = (
+                batch["recipients"].get((enrollment.id, campaign.id), self.env["training.feedback.recipient"])
+                if batch is not None
+                else campaign.with_context(active_test=False).recipient_ids.filtered(
+                    lambda r: r.role == "participant" and r.enrollment_id == enrollment
+                )
             )
             if not recipients:
                 continue
             recipient = recipients[:1]
             # Never call response state or touch answer tables for an anonymous row.
-            code = "anonymous" if campaign.anonymous else recipient._nominative_state()
+            code = (
+                "anonymous"
+                if campaign.anonymous
+                else batch["feedback_states"][recipient.id]
+                if batch is not None
+                else recipient._nominative_state()
+            )
             state = (
                 self.env._("Anonymous collection — individual tracking unavailable")
                 if campaign.anonymous
-                else self._label(recipient, "response_state")
+                else dict(recipient._fields["response_state"]._description_selection(self.env))[code]
             )
             result.append(
                 {
@@ -285,11 +405,14 @@ class DashboardService(models.AbstractModel):
         return result
 
     @api.private
-    def _evaluations(self, enrollment):
+    def _evaluations(self, enrollment, batch=None):
         result = []
-        for assignment in (
-            self.env["training.evaluation.assignment"].sudo().search([("enrollment_id", "=", enrollment.id)])
-        ):
+        assignments = (
+            batch["assignments"].get(enrollment, self.env["training.evaluation.assignment"])
+            if batch is not None
+            else self.env["training.evaluation.assignment"].sudo().search([("enrollment_id", "=", enrollment.id)])
+        )
+        for assignment in assignments:
             definition = assignment.evaluation_id
             state = self._label(assignment, "state")
             result.append(
@@ -314,18 +437,26 @@ class DashboardService(models.AbstractModel):
         return result
 
     @api.private
-    def _exams(self, enrollment):
+    def _exams(self, enrollment, batch=None):
         return []  # optional native Surveys integration supplies scored mock exams
 
     @api.private
-    def _participant(self, enrollment_id):
-        enrollment = self.env["training.enrollment"].sudo().browse(enrollment_id).exists()
+    def _participant(self, enrollment_id, batch=None, details=True):
+        enrollment = (
+            batch["by_id"].get(enrollment_id)
+            if batch is not None
+            else self.env["training.enrollment"].sudo().browse(enrollment_id).exists()
+        )
         if not enrollment:
             raise AccessError(self.env._("This training dashboard is unavailable."))
-        delivery = self._delivery(enrollment.delivery_id.id)
-        attendance = self._attendance(enrollment, self._sessions(delivery))
-        feedback = self._feedback(enrollment)
-        evaluations = self._evaluations(enrollment)
+        if batch is None:
+            batch = self._batch(enrollment)
+        if enrollment not in batch["enrollments"]:
+            raise AccessError(self.env._("This training dashboard is unavailable."))
+        delivery = enrollment.delivery_id
+        attendance = self._attendance(enrollment, batch["sessions"][delivery.id], batch, details)
+        feedback = self._feedback(enrollment, batch)
+        evaluations = self._evaluations(enrollment, batch)
         return {
             "id": enrollment.id,
             "name": enrollment.participant_id.name,
@@ -336,7 +467,7 @@ class DashboardService(models.AbstractModel):
             "attendance_missing": delivery.kind != "autonomous" and not delivery.session_ids,
             "feedback": feedback,
             "evaluations": evaluations,
-            "exams": self._exams(enrollment),
+            "exams": self._exams(enrollment, batch) if details else [],
             "attendance_incomplete": (delivery.kind != "autonomous" and not delivery.session_ids)
             or any(r["applicable"] and not r["validated"] for r in attendance),
             "feedback_pending": any(
@@ -482,7 +613,7 @@ class DashboardService(models.AbstractModel):
         return result
 
     @api.private
-    def _cohort_metrics(self, delivery, enrollments, start, end):
+    def _cohort_metrics(self, delivery, enrollments, start, end, batch=None):
         now = fields.Datetime.now()
         started = enrollments.filtered(
             lambda e: (
@@ -492,7 +623,7 @@ class DashboardService(models.AbstractModel):
                 and (not end or (delivery.start_at or e.access_start).date() <= end)
                 and (
                     (delivery.kind == "autonomous" and e.access_start)
-                    or self._eligible_at(e, delivery.start_at or e.access_start)
+                    or self._eligible_at(e, delivery.start_at or e.access_start, batch)
                 )
             )
         )
@@ -560,7 +691,9 @@ class DashboardService(models.AbstractModel):
         return []
 
     @api.private
-    def _dashboard(self, delivery_id, *, state="all", session_id=0, start=None, end=None, issue="all"):
+    def _dashboard(
+        self, delivery_id, *, state="all", session_id=0, start=None, end=None, issue="all", page=None, step=40
+    ):
         delivery = self._delivery(delivery_id)
         if state != "all" and state not in dict(STATES):
             raise ValidationError(self.env._("Choose a valid enrollment status."))
@@ -584,9 +717,10 @@ class DashboardService(models.AbstractModel):
         enrollments = delivery.enrollment_ids
         if state != "all":
             enrollments = enrollments.filtered(lambda e: e.state == state)
+        batch = self._batch(enrollments)
         rows = []
         for enrollment in enrollments:
-            row = self._participant(enrollment.id)
+            row = self._participant(enrollment.id, batch=batch, details=False)
             row["attendance"] = [r for r in row["attendance"] if r["session_id"] in sessions.ids]
             for key in ("feedback", "evaluations"):
                 row[key] = [
@@ -650,9 +784,7 @@ class DashboardService(models.AbstractModel):
             coverage_numerator=sum(bool(a["validated"]) for a in attendance),
             coverage_denominator=sum(bool(a["applicable"]) for a in attendance),
         )
-        cohort_metrics = self._cohort_metrics(
-            delivery, enrollments.filtered(lambda e: e.id in [r["id"] for r in rows]), start, end
-        )
+        cohort_metrics = self._cohort_metrics(delivery, enrollments.browse([r["id"] for r in rows]), start, end, batch)
         campaigns = []
         for campaign in self._campaigns(delivery):
             if (start and campaign.due_at.date() < start) or (end and campaign.due_at.date() > end):
@@ -674,6 +806,19 @@ class DashboardService(models.AbstractModel):
                     else None,
                 }
             )
+        population = len(rows)
+        if page is not None:
+            page = max(1, min(page, max(1, (population + step - 1) // step)))
+            rows = rows[(page - 1) * step : page * step]
+        # Rich history, file links and exam attempts are loaded only for the visible page.
+        visible = enrollments.browse([row["id"] for row in rows])
+        detail_batch = self._batch(visible)
+        for row in rows:
+            full = self._participant(row["id"], batch=detail_batch)
+            histories = {a["session_id"]: a["history"] for a in full["attendance"]}
+            for attendance_row in row["attendance"]:
+                attendance_row["history"] = histories[attendance_row["session_id"]]
+            row["exams"] = full["exams"]
         current = fields.Datetime.now()
         return {
             "delivery_id": delivery.id,
@@ -686,7 +831,7 @@ class DashboardService(models.AbstractModel):
             "state": state,
             "issue": issue,
             "session_id": session_id,
-            "population": len(rows),
+            "population": population,
             "rows": rows,
             "sessions": [{"id": s.id, "name": s.name} for s in self._sessions(delivery)],
             "metrics": metrics,

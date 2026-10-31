@@ -1,11 +1,12 @@
 <odoo>
-    <template id="portal_path_home" inherit_id="portal.portal_my_home" name="Participant Learning Paths">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+    <template id="portal_path_home" inherit_id="training_management.portal_trainings" name="Participant Learning Paths">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('paths')">
             <div class="card p-3 my-2"><a href="/my/training-paths">My learning paths</a></div>
-        </xpath>
+        </t></xpath>
     </template>
     <template id="portal_paths_from_trainings" inherit_id="portal_trainings" name="Learning Paths Navigation">
-        <xpath expr="//h1" position="after"><p><a href="/my/training-paths">My learning paths</a></p></xpath>
+        <!-- Preserve the existing view id on upgrade; portal_path_home supplies the authorized link. -->
+        <xpath expr="//h1" position="after"><t/></xpath>
     </template>
     <template id="portal_training_paths" name="My Learning Paths">
         <t t-call="portal.portal_layout" additional_title.translate="My learning paths">
@@ -23,7 +24,7 @@
     </template>
     <template id="portal_training_path" name="My Learning Path">
         <t t-call="portal.portal_layout" additional_title.translate="My learning paths">
-            <a href="/my/training-paths">My learning paths</a><h1 t-out="path['name']"/>
+            <t t-call="training_management.portal_training_navigation"/><a href="/my/training-paths">My learning paths</a><h1 t-out="path['name']"/>
             <p><t t-out="path['completed']"/> / <t t-out="path['total']"/> completed steps</p>
             <progress t-att-value="str(path['completed'])" t-att-max="str(path['total'])" t-att-aria-label="path['name']" class="w-100"/>
             <p><t t-out="path['hours']"/> estimated learning hours</p>

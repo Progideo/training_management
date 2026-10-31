@@ -46,7 +46,7 @@ def learning_values(enrollment):
         "id": enrollment.id,
         "has_tutor": bool(enrollment.learning_tutor_id or enrollment.delivery_id.learning_tutor_id),
         "activities": rows,
-        "entries": entries,
+        "entries": list(reversed(entries)),
         "required": len(required),
         "complete": sum(r["complete"] for r in required),
         "key": str(uuid4()),

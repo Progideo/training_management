@@ -1,9 +1,12 @@
+from urllib.parse import urlencode
+
 from odoo import fields, http
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 from .material_portal import TrainingParticipantPortal
+from .portal_utils import session_navigation
 
 
 class TrainingTrainerPortal(http.Controller):
@@ -27,18 +30,23 @@ class TrainingTrainerPortal(http.Controller):
             total=sessions.search_count(domain),
             page=page,
             step=40,
-            url_args={"filterby": filterby},
+            url_args={"filterby": filterby, "page": page},
         )
         records = sessions.search(domain, limit=40, offset=pager["offset"])
         return TrainingParticipantPortal._private(
             request.render(
                 "training_management.portal_trainer_sessions",
-                {"sessions": self._session_rows(records), "pager": pager, "filterby": filterby},
+                {"sessions": self._session_rows(records), "pager": pager, "filterby": filterby, "page": page},
             )
         )
 
     @http.route("/my/training-sessions/<int:session_id>", type="http", auth="user", website=True, methods=["GET"])
-    def session(self, session_id, **kwargs):
+    def session(self, session_id, filterby="upcoming", page=1, **kwargs):
+        filterby = filterby if filterby in ("upcoming", "past", "all") else "upcoming"
+        try:
+            page = max(1, int(page))
+        except (TypeError, ValueError):
+            page = 1
         records = (
             request.env["training.session"].sudo().search(self._session_domain() + [("id", "=", session_id)], limit=1)
         )
@@ -46,7 +54,12 @@ class TrainingTrainerPortal(http.Controller):
             raise request.not_found()
         return TrainingParticipantPortal._private(
             request.render(
-                "training_management.portal_trainer_session", {"session": self._session_rows(records, details=True)[0]}
+                "training_management.portal_trainer_session",
+                {
+                    "session": self._session_rows(records, details=True)[0],
+                    "session_back": "/my/training-sessions?" + urlencode({"filterby": filterby, "page": page}),
+                    "session_query": session_navigation({"filterby": filterby, "page": page}),
+                },
             )
         )
 
@@ -55,7 +68,7 @@ class TrainingTrainerPortal(http.Controller):
         return [
             ("instructor_id", "=", user.partner_id.id),
             ("company_id", "in", user.company_ids.ids),
-            ("delivery_id.state", "in", ("confirmed", "ongoing")),
+            ("delivery_id.state", "in", ("confirmed", "ongoing", "delivered")),
             ("cancelled", "=", False),
         ]
 

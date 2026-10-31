@@ -15,3 +15,4 @@ from . import training_publication_inspection
 from . import training_session_publication_inspection
 
 from . import training_certificate_change
+from . import training_closure_change

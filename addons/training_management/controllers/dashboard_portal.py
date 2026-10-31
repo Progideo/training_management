@@ -6,6 +6,7 @@ from odoo.http import request
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 
 from .material_portal import TrainingParticipantPortal
+from .portal_utils import portal_datetime
 
 
 class DashboardPortal(http.Controller):
@@ -37,6 +38,7 @@ class DashboardPortal(http.Controller):
             try:
                 values = service._dashboard(
                     delivery_id,
+                    page=page,
                     state=kwargs.get("state", "all"),
                     session_id=session_id,
                     start=kwargs.get("start"),
@@ -65,7 +67,6 @@ class DashboardPortal(http.Controller):
                     step=40,
                     url_args={k: kwargs[k] for k in ("state", "session_id", "start", "end", "issue") if k in kwargs},
                 )
-                values["rows"] = values["rows"][pager["offset"] : pager["offset"] + 40]
                 values.update(pager=pager, filter_error=False)
             values.update(
                 states=request.env["training.enrollment"]._fields["state"]._description_selection(request.env),
@@ -76,6 +77,17 @@ class DashboardPortal(http.Controller):
                     ("overdue", request.env._("Overdue")),
                 ],
             )
+            if not values["filter_error"]:
+                values["extracted_at"] = portal_datetime(values["extracted_at"])
+                for row in values["rows"]:
+                    for attendance in row["attendance"]:
+                        attendance["date"] = portal_datetime(attendance["date"])
+                        for event in attendance["history"]:
+                            event["date"] = portal_datetime(event["date"])
+                    for item in row["feedback"] + row["evaluations"]:
+                        item["due"] = portal_datetime(item["due"])
+                for notice in values["notifications"]:
+                    notice["date"] = portal_datetime(notice["date"])
             return TrainingParticipantPortal._private(
                 request.render(
                     "training_management.portal_dashboard", values, status=400 if values["filter_error"] else 200

@@ -1,18 +1,18 @@
 <odoo>
     <template id="publication_home" name="Publication requests">
-        <t t-call="portal.frontend_layout" additional_title.translate="Publication requests"><main class="container py-4">
+        <t t-call="portal.frontend_layout" additional_title.translate="Publication requests"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <h1>Publication requests</h1>
             <p>Giving an opinion or authorizing a customer case is optional. Private satisfaction surveys remain separate.</p>
             <p t-if="not rows">No publication request.</p>
             <ul><li t-foreach="rows" t-as="r"><a t-att-href="'/my/training-publications/%s' % r['id']" t-out="r['context']"/> — <span t-out="r['state']"/></li></ul>
-        </main></t>
+        </div></t>
     </template>
     <template id="publication_form" name="Exact publication authorization">
-        <t t-call="portal.frontend_layout" additional_title.translate="Publication authorization"><main class="container py-4" style="max-width:50rem">
+        <t t-call="portal.frontend_layout" additional_title.translate="Publication authorization"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/my/training-publications">Publication requests</a>
             <h1>Publication authorization</h1>
             <p t-out="row['state']"/>
-            <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+            <div t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
             <h2>Public context</h2><p t-out="row['context']"/>
             <p><span>Participation month:</span> <span t-out="row['month']"/>. <span>Verified participation may be partial; it does not certify completion or success.</span></p>
             <p t-if="not row['can_consent']" style="white-space:pre-wrap" t-out="row['body']"/>
@@ -44,10 +44,10 @@
                 <button type="submit" class="btn btn-outline-danger">Withdraw my publication authorization</button>
             </form>
             <p class="mt-3">Withdrawal removes the publication from this catalogue. Copies made by third parties cannot be recalled. Contact coordination for a deletion request.</p>
-        </main></t>
+        </div></t>
     </template>
     <template id="publication_public" name="Verified reviews and customer cases">
-        <t t-call="portal.frontend_layout"><main class="container py-4">
+        <t t-call="portal.frontend_layout"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a t-att-href="'/formations/%s' % program_id">Back to programme</a>
             <h1>Verified reviews and customer cases</h1><h2 t-out="title"/>
             <p>Participant reviews require verified participation, explicit consent and moderation. Participation may be partial; an opinion is not a certificate or a satisfaction rate.</p>
@@ -57,14 +57,14 @@
                 <p><span>Participation month:</span> <span t-out="r['month']"/> — <span>Authorized on:</span> <time t-att-datetime="r['date']" t-out="r['date']"/></p>
                 <p style="white-space:pre-wrap" t-out="r['body']"/>
             </article>
-        </main></t>
+        </div></t>
     </template>
     <template id="public_programme_publications" inherit_id="training_management.public_programme">
         <xpath expr="//h1" position="after"><p><a t-att-href="'/formations/%s/avis' % program['id']">Verified reviews and customer cases</a></p></xpath>
     </template>
-    <template id="portal_publications_link" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+    <template id="portal_publications_link" inherit_id="training_management.portal_trainings">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('publications')">
             <p><a href="/my/training-publications">Publication requests</a></p>
-        </xpath>
+        </t></xpath>
     </template>
 </odoo>

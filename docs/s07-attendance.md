@@ -10,8 +10,9 @@ mais uniquement avant la clôture de la formation et avec les accès existants e
 valides. Aucun accès expiré, suspendu ou révoqué n’est rouvert. Le texte de
 confirmation est configurable. Les anciennes séances ne reçoivent aucune présence inventée à la mise à jour.
 
-Depuis « Mes formations », le participant authentifié déclare son propre intervalle
-écoulé et accepte le texte affiché. Le serveur conserve identité, séance, texte,
+Depuis « Mes formations », le participant authentifié confirme son statut présent ou absent par demi-journée
+écoulée et accepte le texte affiché. Le [parcours par demi-journée](review-experience-performance.md)
+définit le découpage, le regroupement des séances et la conservation des anciens intervalles. Le serveur conserve identité, séance, texte,
 méthode et date réelle de déclaration. Une déclaration tardive conserve son
 horodatage réel, sans antidatage ; les intervalles futurs ou hors séance sont refusés.
 Un lien collectif ne porte aucun droit de signature. Les accès S03 doivent être
@@ -20,10 +21,9 @@ Un formulaire devenu périmé après modification du planning ou du texte est re
 le participant doit relire et confirmer les informations actualisées. L'empreinte
 du formulaire détecte ce changement ; elle ne donne aucun droit d'accès.
 
-Depuis ses séances affectées, le formateur contrôle les intervalles après la fin
-de séance, valide séparément et peut constater une absence sans déclaration.
+Depuis ses séances affectées, le formateur contrôle les demi-journées écoulées, valide séparément et peut constater une absence sans déclaration.
 Il ne valide ni sa propre présence ni une déclaration dont il est l'auteur.
-Une absence papier reste cochée au contrôle. En cas d'erreur, l'intervalle et le
+Une absence papier reste cochée au contrôle. En cas d'erreur, le choix de présence et le
 commentaire saisis sont conservés sur le seul formulaire concerné.
 Le formateur affecté ou un coordinateur habilité peut invalider une déclaration
 erronée avec un motif obligatoire. Une décision immuable conserve auteur, date,
@@ -33,13 +33,14 @@ distincte peuvent régulariser la présence. Les décisions périmées sont refu
 La clôture de la formation bloque déclaration, validation et invalidation.
 
 Le coordinateur importe un papier signé depuis la séance en indiquant la personne,
-l'intervalle et la provenance ; ce dépôt attend le contrôle du formateur.
+la demi-journée et la provenance ; ce dépôt attend le contrôle du formateur.
 Un fichier collectif reste réservé aux coordinateurs de la société exploitante :
 aucune diffusion aux autres participants ni au client.
 
-Une ligne unique par inscription et séance porte la durée retenue. La dernière
+Une ligne unique par inscription, séance et demi-journée porte la durée retenue. La dernière
 validation, correction ou invalidation fait autorité : les sources ne s'additionnent jamais.
-90 minutes sur 120 donnent 90 minutes ; retard et absence restent distincts.
+Une présence validée retient la durée prévue au planning ; une absence retient zéro.
+Les anciens intervalles et retards restent historiques.
 Une correction exige un motif et un justificatif, conserve avant/après, auteur,
 date serveur et toutes les déclarations et pièces initiales. Aucun antidatage.
 Les décisions périmées sont refusées avec demande de rechargement.
@@ -80,10 +81,10 @@ les activités S05, sans séance fictive ; les attestations relèvent de S08.
 
 ## Recette courte
 
-1. Créer une séance mixte de 120 minutes et régler le texte.
-2. Participant : déclarer 30 → 120, puis rejouer ; une déclaration, zéro minute
+1. Créer une séance mixte de 120 minutes le matin et régler le texte.
+2. Participant : confirmer la matinée présente, puis rejouer ; une déclaration, zéro minute
    validée avant le contrôle. Refuser accès d'un autre participant ou d'une autre société.
-3. Formateur affecté : valider ; vérifier 90 minutes et 30 de retard. Tester
+3. Formateur affecté : valider ; vérifier les 120 minutes prévues au planning. Tester
    absence, déclaration tardive, décision périmée et auto-validation.
    Invalider avec motif sous formateur puis coordinateur ; contrôler les historiques,
    le refus des autres profils et la nouvelle signature. Tester accès expiré et clôture.

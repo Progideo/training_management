@@ -254,3 +254,21 @@ class TestCertificateVerificationHttp(VerificationCase, HttpCase):
             self.assertEqual(response.headers["Referrer-Policy"], "no-referrer")
             self.assertIn("noindex", response.headers["X-Robots-Tag"])
         self.assertEqual(self.url_open(path, data={"probe": "1"}).status_code, 405)
+
+    def test_verification_uses_native_theme_styles_without_website_trackers(self):
+        _dossier, _document, verification = self.issue()
+        if "google_analytics_key" in self.env["website"]._fields:
+            self.env.ref("base.default_website").google_analytics_key = "G-UXFICTIONAL"
+        self.authenticate(None, None)
+        page = self.url_open("/training/verify/" + verification.token)
+        from lxml import html
+
+        tree = html.fromstring(page.content)
+        self.assertEqual(page.status_code, 200)
+        self.assertEqual(len(tree.xpath("//html")), 1)
+        self.assertEqual(len(tree.xpath("//main")), 1)
+        self.assertTrue(tree.xpath("//link[@rel='stylesheet'][contains(@href, '/web/assets/')]"))
+        self.assertFalse(tree.xpath("//style"))
+        self.assertFalse(tree.xpath("//script[@src]"))
+        self.assertNotIn("G-UXFICTIONAL", page.text)
+        self.assertNotIn("tracking_code", page.text)

@@ -2,6 +2,8 @@
 
 import json
 
+from odoo.addons.training_management.controllers.portal_utils import portal_datetime
+
 from werkzeug.exceptions import BadRequest
 
 from odoo import http, fields
@@ -98,13 +100,9 @@ class ExamPortal(http.Controller):
         methods=["GET"],
     )
     def history(self, page=1, **kwargs):
-        user = request.env.user
+        enrollments = request.env["training.exam.service"]._history_enrollments()
         domain = [
-            ("training_enrollment_id.user_id", "=", user.id),
-            ("training_enrollment_id.participant_id", "=", user.partner_id.id),
-            ("training_enrollment_id.company_id", "in", user.company_ids.ids),
-            ("training_enrollment_id.access_state", "=", "active"),
-            ("training_enrollment_id.state", "=", "confirmed"),
+            ("training_enrollment_id", "in", enrollments.ids),
             ("training_evaluation_assignment_id", "=", False),
         ]
         model = request.env["survey.user_input"].sudo()
@@ -114,7 +112,10 @@ class ExamPortal(http.Controller):
             request.render(
                 "training_management_survey.exam_history",
                 {
-                    "attempts": [{"id": a.id, "title": a.survey_id.title, "date": a.start_datetime} for a in attempts],
+                    "attempts": [
+                        {"id": a.id, "title": a.survey_id.title, "date": portal_datetime(a.start_datetime)}
+                        for a in attempts
+                    ],
                     "pager": pager,
                 },
             )
@@ -154,7 +155,9 @@ class ExamPortal(http.Controller):
                 "can_start": bool(activity.training_exam_id.active)
                 and enrollment._effective_state() == "active"
                 and request.env["training.learning.service"]._available(enrollment, activity),
-                "attempts": [{"id": a.id, "date": a.start_datetime, "done": a.state == "done"} for a in attempts],
+                "attempts": [
+                    {"id": a.id, "date": portal_datetime(a.start_datetime), "done": a.state == "done"} for a in attempts
+                ],
                 "has_active": any(a.state != "done" and a.deadline > fields.Datetime.now() for a in attempts),
                 "back": f"/my/trainings/{enrollment.id}",
             }

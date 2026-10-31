@@ -1,9 +1,9 @@
 <odoo>
-    <template id="exam_home" inherit_id="portal.portal_my_home" name="My Mock Exams">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/training-exams">My mock exam attempts</a></div></xpath>
+    <template id="exam_home" inherit_id="training_management.portal_trainings" name="My Mock Exams">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('exams')"><div class="card p-3 my-2"><a href="/my/training-exams">My mock exam attempts</a></div></t></xpath>
     </template>
     <template id="exam_history" name="My Mock Exam Attempts">
-        <t t-call="portal.portal_layout"><h1>My mock exam attempts</h1><p>Previous results remain available after access expiry. Suspension or revocation blocks access.</p>
+        <t t-call="portal.portal_layout"><t t-call="training_management.portal_training_navigation"/><h1>My mock exam attempts</h1><p>Previous results remain available after access expiry. Suspension or revocation blocks access.</p>
         <p t-if="not attempts">No attempt yet.</p><ul><li t-foreach="attempts" t-as="a"><a t-att-href="'/my/training-exams/%s' % a['id']"><span t-out="a['title']"/> — <span t-out="a['date']"/></a></li></ul><t t-call="portal.pager"/></t>
     </template>
     <template id="learning_exam_link" inherit_id="training_management.portal_learning_content" name="Mock Exam Access">
@@ -15,7 +15,7 @@
         </xpath>
     </template>
     <template id="exam_start" name="Mock Exam Attempts">
-        <t t-call="portal.portal_layout"><div class="container py-4">
+        <t t-call="portal.portal_layout"><t t-call="training_management.portal_training_navigation"/><div class="container py-4">
             <a t-att-href="back">My training</a><h1 t-out="title"/>
             <p>Mock exam — no official certification.</p><p>Duration: <t t-out="duration"/> minutes. Time runs continuously after confirmation, including while disconnected.</p>
             <form t-if="can_start" method="post"><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -42,7 +42,7 @@
         <xpath expr="//span[@t-field='label.value']" position="attributes"><attribute name="t-field">label.value_label</attribute></xpath>
     </template>
     <template id="exam_attempt" name="Private Mock Exam">
-        <t t-call="survey.layout"><div class="container py-4">
+        <t t-call="survey.layout"><div class="container py-4 o_not_editable">
             <a t-att-href="back">My attempts / retake the mock exam</a><h1 t-out="survey.title"/>
             <p>Mock exam — no official certification.</p>
             <t t-if="result">
@@ -59,6 +59,7 @@
                     <div class="o_survey_form_content_data d-none" t-att-data-server-time="server_time" t-att-data-timer="answer.start_datetime.isoformat()" t-att-data-time-limit-minutes="survey.time_limit"/>
                     <p class="o_survey_timer_container">Time remaining: <strong class="o_survey_timer" role="timer"/></p>
                     <p class="tm_save_status alert alert-info" role="status" aria-live="polite">Answers received by the server are saved. Unsaved changes will be reported here.</p>
+                    <button type="button" class="tm_retry btn btn-warning mb-3" hidden="hidden">Retry saving / check the result</button>
                     <nav aria-label="Question palette" class="d-flex flex-wrap gap-2 mb-3">
                         <button t-foreach="answer.predefined_question_ids.sorted(lambda q: (q.sequence, q.id))" t-as="question" type="button" class="btn btn-outline-secondary tm_question_link" t-att-data-question="question.id"><t t-out="question_index + 1"/><span class="tm_question_state"/></button>
                     </nav>
@@ -70,8 +71,9 @@
                         <t t-else="" t-call="training_management_survey.exam_multiple_choice"/>
                         <label class="mt-3 d-block"><input type="checkbox" class="tm_review form-check-input me-2" t-att-checked="question in answer.training_review_ids"/>Mark for review</label>
                         <button type="button" class="tm_clear btn btn-link">Clear answer</button>
+                        <p class="tm_question_save_state small" role="status"/>
                     </fieldset>
-                    <div class="d-flex gap-2 my-3"><button type="button" class="tm_previous btn btn-outline-secondary">Previous</button><button type="button" class="tm_next btn btn-outline-secondary">Next</button><button type="button" class="tm_summary btn btn-secondary">Review and submit</button></div>
+                    <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 my-3"><button type="button" class="tm_previous btn btn-outline-secondary">Previous</button><button type="button" class="tm_next btn btn-outline-secondary">Next</button><button type="button" class="tm_summary btn btn-secondary">Review and submit</button></div>
                     <div class="tm_recap card p-3" hidden="hidden"><h2>Submission summary</h2><p class="tm_recap_text"/>
                         <p>Submitting ends this attempt. Its answers cannot then be changed.</p><button type="button" class="tm_submit btn btn-primary">Confirm final submission</button>
                     </div>
@@ -87,9 +89,9 @@
         <t t-if="result['revisions']"><p>Initial result preserved: <t t-out="round(result['original_percentage'], 2)"/> %.</p>
             <ul><li t-foreach="result['revisions']" t-as="revision"><span t-out="revision['date']"/>: <t t-out="revision['reason']"/></li></ul>
         </t>
-        <h3>Results by theme</h3><table class="table"><thead><tr><th>Theme</th><th>Points</th><th>Score</th></tr></thead><tbody>
+        <h3>Results by theme</h3><div class="table-responsive" role="region" aria-label="Results by theme" tabindex="0"><table class="table"><thead><tr><th>Theme</th><th>Points</th><th>Score</th></tr></thead><tbody>
             <tr t-foreach="result['themes'].items()" t-as="theme"><th t-out="theme[0]"/><td><span t-out="theme[1]['points']"/> / <span t-out="theme[1]['maximum']"/></td><td><t t-if="theme[1]['maximum']"><span t-out="round(100 * theme[1]['points'] / theme[1]['maximum'], 2)"/> %</t><t t-else="">Not evaluated</t></td></tr>
-        </tbody></table>
+        </tbody></table></div>
         <section t-foreach="result['questions']" t-as="q" class="card p-3 my-3">
             <h3 class="h5" t-out="q['title']"/><p>Your answers: <span t-out="', '.join(q['selected']) or '—'"/></p>
             <p>Expected answers: <span t-out="', '.join(q['correct'])"/></p><p><span t-out="q['points']"/> / <span t-out="q['maximum']"/></p>

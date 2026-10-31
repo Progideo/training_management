@@ -41,7 +41,7 @@
         <field name="res_model">training.company.authorization</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_company_authorization" name="Company Portal Authorizations" parent="menu_training_configuration" action="action_company_authorization" groups="training_management.group_training_coordinator"  sequence="40"/>
+    <menuitem id="menu_company_authorization" name="Company Portal Authorizations" parent="menu_training_organisation" action="action_company_authorization" groups="training_management.group_training_coordinator"  sequence="40"/>
     <record id="view_company_nomination_list" model="ir.ui.view">
         <field name="name">training.company.nomination.list</field>
         <field name="model">training.company.nomination</field>
@@ -113,7 +113,7 @@
         <field name="res_model">training.company.document</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_company_document" name="Authorized Client Documents" parent="menu_training_configuration" action="action_company_document" groups="training_management.group_training_coordinator"  sequence="50"/>
+    <menuitem id="menu_company_document" name="Authorized Client Documents" parent="menu_training_organisation" action="action_company_document" groups="training_management.group_training_coordinator"  sequence="50"/>
     <record id="view_intra_version_list" model="ir.ui.view">
         <field name="name">training.intra.version.list</field>
         <field name="model">training.intra.version</field>

@@ -56,6 +56,12 @@ def normalize_migration(text):
         + "\n"
     )
     text = re.sub(r" --test-enable| --test-tags=[^\s\\]+", "", text)
+    # The pre-upgrade S08 capture must use its matching historical registry.
+    # Preserve its source revision, fixture, probe and every comparison verbatim.
+    text = text.replace(
+        "\nS08_PHASE=prepare step fixture_baseline run_odoo",
+        '\nTM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step fixture_baseline run_odoo',
+    )
     return (
         text.replace("real Odoo tests and concurrent reservations", "migration and concurrent reservations").rstrip()
         + "\n"
@@ -80,6 +86,17 @@ class Coverage(unittest.TestCase):
                 self.assertEqual(path.read_text().split("\nelse:\n")[0], original(name).split("\nelse:\n")[0])
                 self.assertIn("assert actual == expected", path.read_text())
                 self.assertIn("assert after.pop(column) is None", path.read_text())
+            elif name in ("tests/probes/s07_history.py", "tests/probes/c06_attendance_history.py"):
+                # New half-day keys must identify old rows as legacy; all original
+                # columns, fixtures and comparisons remain byte-for-byte checked.
+                addition = (
+                    '        if table == "training_attendance":\n'
+                    "            for row in records[table]:\n"
+                    '                if "period_key" in row:\n'
+                    '                    assert row.pop("period_key") == "legacy"\n'
+                )
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(path.read_text().replace(addition, ""), original(name))
             elif name == "tests/probes/s08_history.py":
                 # P20 admits only its disabled opt-in on historical dossiers.
                 # All original comparisons and the absence of public registration stay checked.
@@ -95,7 +112,7 @@ class Coverage(unittest.TestCase):
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
             else:
                 self.assertEqual(path.read_text(), original(name))
-        self.assertEqual(len(PLAN["migrations"]), 24)
+        self.assertEqual(len(PLAN["migrations"]), 25)
 
     def test_migration_phases_match_historical_contracts_except_relocated_tests(self):
         base = json.loads((ROOT / "tests/ci/coverage.json").read_text())["scenarios"]

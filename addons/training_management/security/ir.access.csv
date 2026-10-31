@@ -204,3 +204,8 @@ rule_publication_notice_company,P14 invitation company,training.publication.noti
 access_p20_verification_quality,P20 assigned quality,training.certificate.verification,training_management.group_training_quality,r,"[('dossier_id.quality_id', '=', user.id)]"
 rule_p20_verification_company,P20 company,training.certificate.verification,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_p20_change_quality,P20 change certificate status,training.certificate.change,training_management.group_training_quality,crud,
+access_closure_event_coordinator,Closure history coordinator,training.closure.event,training_management.group_training_coordinator,r,
+access_closure_event_quality,Closure history assigned quality,training.closure.event,training_management.group_training_quality,r,"[('dossier_id.quality_id', '=', user.id)]"
+rule_closure_event_company,Closure history company,training.closure.event,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_closure_change_coordinator,Change closure coordinator,training.closure.change,training_management.group_training_coordinator,crud,
+access_closure_change_quality,Change closure quality,training.closure.change,training_management.group_training_quality,crud,

@@ -213,10 +213,10 @@ class PracticeAction(models.Model):
         return True
 
     @api.private
-    def _portal_rows(self):
+    def _portal_actions(self):
         user = self.env.user
         if not user.active or user._is_public():
-            return []
+            return self.browse()
         candidates = self.sudo().search(
             [
                 ("company_id", "in", user.company_ids.ids),
@@ -227,8 +227,17 @@ class PracticeAction(models.Model):
                 ("delivery_id.learning_tutor_id", "=", user.id),
             ]
         )
+        return candidates.filtered(
+            lambda action: (
+                action.with_user(user)._eligible("participant") or action.with_user(user)._eligible("trainer")
+            )
+        )
+
+    @api.private
+    def _portal_rows(self):
+        user = self.env.user
         rows = []
-        for action in candidates:
+        for action in self._portal_actions():
             participant = action.with_user(user)._eligible("participant")
             if not participant and not action.with_user(user)._eligible("trainer"):
                 continue

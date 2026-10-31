@@ -2,7 +2,7 @@
 {
     "name": "Training Management",
     "summary": "Standard training catalogue and controlled programme versions",
-    "version": "20.0.2.8.0",
+    "version": "20.0.2.10.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
@@ -24,6 +24,8 @@
         "wizard/training_action_reason_views.xml",
         "views/training_enrollment_actions.xml",
         "views/training_preparation_views.xml",
+        "views/training_frontend_templates.xml",
+        "views/training_portal_home.xml",
         "views/trainer_portal_templates.xml",
         "views/training_material_views.xml",
         "views/material_portal_templates.xml",
@@ -36,6 +38,7 @@
         "views/training_closure_views.xml",
         "views/training_certificate_verification_views.xml",
         "wizard/training_certificate_change_views.xml",
+        "wizard/training_closure_change_views.xml",
         "views/training_evaluation_views.xml",
         "report/training_evaluation.xml",
         "views/training_feedback_views.xml",
@@ -63,5 +66,12 @@
         "views/training_session_publication_views.xml",
         "views/session_publication_templates.xml",
     ],
+    "assets": {
+        "web.assets_frontend": [
+            "training_management/static/src/portal.scss",
+            "training_management/static/src/feedback.js",
+            "training_management/static/src/attendance.js",
+        ]
+    },
     "application": True,
 }

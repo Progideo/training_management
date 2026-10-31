@@ -1,0 +1,19 @@
+// Keep native Portal and Website colours, type, buttons and focus indicators.
+body.o_portal_portal_my_home,
+body[class*="o_training_management"] {
+    .tm_navigation {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        @media (min-width: 768px) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        @media (min-width: 1200px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        gap: 1rem;
+        > * { margin: 0 !important; }
+        > a { padding: 1rem; border: var(--border-width, 1px) solid var(--border-color, currentColor); border-radius: var(--border-radius, .375rem); }
+    }
+    .o_training_feedback { scroll-margin-top: 6rem; }
+    @media (max-width: 575.98px) {
+        #wrapwrap > header .navbar-expand > .container { flex-wrap: wrap; gap: .5rem; }
+        #wrapwrap > header .navbar-expand #top_menu { min-width: 0; max-width: 100%; flex-shrink: 1; }
+        #wrapwrap > header .navbar-expand .dropdown-toggle { white-space: normal; overflow-wrap: anywhere; }
+    }
+}

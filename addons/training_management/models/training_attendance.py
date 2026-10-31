@@ -22,7 +22,7 @@ class AttendanceSession(models.Model):
     attendance_after = fields.Integer(string="Declaration Closes After Session (Minutes)", default=30)
     attendance_wording = fields.Text(
         required=True,
-        default=lambda self: self.env._("I confirm that I attended the interval indicated for this session."),
+        default=lambda self: self.env._("I confirm that I was present for this half-day."),
     )
     attendance_ids = fields.One2many("training.attendance", "session_id", readonly=True, groups=COORDINATOR)
 
@@ -121,8 +121,21 @@ class Attendance(models.Model):
     late_minutes = fields.Float(compute="_compute_result")
     absent = fields.Boolean(compute="_compute_result")
     revision = fields.Integer(compute="_compute_result")
+    period_key = fields.Char(string="Half-day", required=True, default="legacy", readonly=True)
+    period_label = fields.Char(string="Half-day", compute="_compute_period_label")
+
+    @api.depends("period_key", "session_id")
+    @api.depends_context("lang")
+    def _compute_period_label(self):
+        for record in self:
+            record.period_label = (
+                self.env._("Historical attendance")
+                if record.period_key == "legacy"
+                else self.env["training.attendance.service"]._period(record.session_id, record.period_key)["label"]
+            )
+
     _one_presence = models.Constraint(
-        "UNIQUE(session_id, enrollment_id)", "One attendance record per participant and session."
+        "UNIQUE(session_id, enrollment_id, period_key)", "One attendance record per participant, session and half-day."
     )
 
     @api.depends("event_ids")
@@ -146,7 +159,7 @@ class Attendance(models.Model):
             record.absent = bool(retained and last.absent)
             record.late_minutes = (
                 max(0, (last.start_at - record.session_id.start_at).total_seconds() / 60)
-                if retained and not last.absent
+                if retained and not last.absent and record.period_key == "legacy"
                 else 0
             )
 
@@ -197,7 +210,7 @@ class AttendanceService(models.AbstractModel):
     @api.private
     def _definition(self, session):
         """Detect a stale displayed session; this digest never grants access."""
-        values = {key: session[key] for key in (*SETTINGS, "name", "start_at", "end_at")}
+        values = {key: session[key] for key in (*SETTINGS, "name", "start_at", "end_at", "timezone")}
         values["id"] = session.id
         return hashlib.sha256(json.dumps(values, sort_keys=True, default=str).encode()).hexdigest()
 
@@ -228,7 +241,7 @@ class AttendanceService(models.AbstractModel):
         return session
 
     @api.private
-    def _invalidate(self, session_id, enrollment_id, *, reason="", revision=0, definition=None):
+    def _invalidate(self, session_id, enrollment_id, *, reason="", revision=0, definition=None, period_key="legacy"):
         with self.env.cr.savepoint():
             session = self._session(
                 session_id,
@@ -236,7 +249,7 @@ class AttendanceService(models.AbstractModel):
                 lock=True,
             )
             self._check_definition(session, definition)
-            presence = self._presence(session, enrollment_id)
+            presence = self._presence(session, enrollment_id, period_key)
             if presence.enrollment_id.user_id == self.env.user:
                 raise AccessError(self.env._("You cannot review your own attendance."))
             if not reason.strip():
@@ -251,16 +264,26 @@ class AttendanceService(models.AbstractModel):
             return presence
 
     @api.private
-    def _presence(self, session, enrollment_id):
+    def _presence(self, session, enrollment_id, period_key="legacy"):
         enrollment = self.env["training.enrollment"].sudo().browse(enrollment_id).exists()
         if not enrollment or enrollment.delivery_id != session.delivery_id or enrollment.state != "confirmed":
             raise AccessError(self.env._("This attendance record is unavailable."))
         presence = (
             self.env["training.attendance"]
             .sudo()
-            .search([("session_id", "=", session.id), ("enrollment_id", "=", enrollment.id)], limit=1)
+            .search(
+                [
+                    ("session_id", "=", session.id),
+                    ("enrollment_id", "=", enrollment.id),
+                    ("period_key", "=", period_key),
+                ],
+                limit=1,
+            )
         )
-        return presence or presence._append({"session_id": session.id, "enrollment_id": enrollment.id})
+        self._check_period_transition(session, enrollment.id, period_key)
+        return presence or presence._append(
+            {"session_id": session.id, "enrollment_id": enrollment.id, "period_key": period_key}
+        )
 
     @api.private
     def _interval(self, session, start, end, absent=False):
@@ -304,7 +327,13 @@ class AttendanceService(models.AbstractModel):
                 "end_at": last,
                 "absent": bool(absent),
                 "anomaly": bool(anomaly),
-                "wording": presence.session_id.attendance_wording if kind == "declaration" else False,
+                "wording": (
+                    self.env._("I confirm that I was absent for this half-day.")
+                    if absent and presence.period_key != "legacy"
+                    else presence.session_id.attendance_wording
+                )
+                if kind == "declaration"
+                else False,
                 "reason": reason,
                 "before": before.after if before else False,
                 "after": after,
@@ -314,7 +343,18 @@ class AttendanceService(models.AbstractModel):
         )
 
     @api.private
-    def _declare(self, enrollment_id, session_id, start, end, accepted=False, *, definition=None):
+    def _declare(
+        self,
+        enrollment_id,
+        session_id,
+        start,
+        end,
+        accepted=False,
+        *,
+        definition=None,
+        period_key="legacy",
+        absent=False,
+    ):
         with self.env.cr.savepoint():
             enrollment = self.env["training.learning.service"]._enrollment(enrollment_id, lock=True)
             session = self.env["training.session"].sudo().browse(session_id).exists()
@@ -329,17 +369,17 @@ class AttendanceService(models.AbstractModel):
             if not accepted:
                 raise ValidationError(self.env._("Accept the session confirmation text."))
             self._check_definition(session, definition)
-            first, last = self._interval(session, start, end)
-            presence = self._presence(session, enrollment_id)
+            first, last = self._period_interval(session, period_key, start, end, absent)
+            presence = self._presence(session, enrollment_id, period_key)
             invalidation = presence.event_ids.filtered(lambda e: e.kind == "invalidation").sorted("id")[-1:]
             previous = presence.event_ids.filtered(lambda e: e.kind == "declaration" and e.id > (invalidation.id or 0))
             if previous:
-                if previous.start_at != first or previous.end_at != last:
+                if previous.start_at != first or previous.end_at != last or previous.absent != absent:
                     raise ValidationError(
                         self.env._("Your declaration is recorded. Ask the coordinator for a correction.")
                     )
                 return presence
-            self._event(presence, "declaration", first, last)
+            self._event(presence, "declaration", first, last, absent=absent)
             return presence
 
     @api.private
@@ -358,14 +398,15 @@ class AttendanceService(models.AbstractModel):
         data=b"",
         filename="",
         definition=None,
+        period_key="legacy",
     ):
         with self.env.cr.savepoint():
             session = self._session(session_id, coordinator=paper or correction, lock=True)
             self._check_definition(session, definition)
-            presence = self._presence(session, enrollment_id)
+            presence = self._presence(session, enrollment_id, period_key)
             if presence.revision != revision:
                 raise ValidationError(self.env._("Attendance changed. Reload before recording your decision."))
-            if fields.Datetime.now() < session.end_at:
+            if fields.Datetime.now() < self._period_end(session, period_key):
                 raise ValidationError(self.env._("Review attendance after the session ends."))
             if paper and session.attendance_mode == "electronic":
                 raise ValidationError(self.env._("Choose paper or mixed collection for signed paper."))
@@ -389,13 +430,19 @@ class AttendanceService(models.AbstractModel):
                 if presence.enrollment_id.user_id == self.env.user:
                     raise AccessError(self.env._("A trainer cannot validate their own attendance."))
                 sources = presence.event_ids.filtered(lambda e: e.kind in ("declaration", "paper"))
-                if (not sources and not absent) or self.env.user in sources.actor_id:
+                if not sources and not absent:
+                    raise ValidationError(
+                        self.env._(
+                            "The participant must declare attendance before you can confirm presence. You may record an absence."
+                        )
+                    )
+                if self.env.user in sources.actor_id:
                     raise ValidationError(
                         self.env._("Trainer validation must be separate from the source declaration.")
                     )
                 if presence.event_ids.filtered("anomaly") and not reason.strip():
                     raise ValidationError(self.env._("Explain how the out-of-window anomaly was checked."))
-            first, last = self._interval(session, start, end, absent)
+            first, last = self._period_interval(session, period_key, start, end, absent)
             self._event(
                 presence,
                 "correction" if correction else "paper" if paper else "validation",

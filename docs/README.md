@@ -22,6 +22,9 @@ Une divergence entre pièce jointe, dépôt et décision doit être signalée et
 version de référence identifiée avant correction. Ne pas synchroniser
 automatiquement des sources externes ni modifier silencieusement une exigence.
 
+Voir également [les parcours et optimisations de la revue](review-experience-performance.md)
+et [la navigation et les thèmes](usability-theme.md).
+
 ## Validation continue
 
 Voir [CI Odoo : scénarios, couverture, diagnostic et mesures](ci.md).
@@ -111,6 +114,7 @@ SHA-256 de la spécification amendée (y compris P20, #105) :
 | P12 — projet pratique évalué | [p12-assessed-projects.md](p12-assessed-projects.md) |
 | P13 — réservation de tutorat | [p13-tutoring-booking.md](p13-tutoring-booking.md) |
 | P14 — avis vérifiés et cas clients | [p14-verified-reviews.md](p14-verified-reviews.md) |
+| Corrections avant recette — accès et continuité | [review-access-continuity.md](review-access-continuity.md) |
 | P20 — attestations vérifiables | [p20-verifiable-certificates.md](p20-verifiable-certificates.md) |
 | P16 — préparation des statuts et alertes | [p16-session-status-alerts.md](p16-session-status-alerts.md) |
 | C06 — paramètres natifs au déploiement | [c06-launch-settings.md](c06-launch-settings.md) |

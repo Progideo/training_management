@@ -32,6 +32,10 @@ class Feedback(models.Model):
         [("draft", "Draft"), ("published", "Published")], default="draft", readonly=True, copy=False
     )
     previous_id = fields.Many2one("training.feedback", readonly=True, copy=False, ondelete="restrict")
+    questionnaire_available = fields.Boolean(compute="_compute_questionnaire_available")
+
+    def _compute_questionnaire_available(self):
+        self.questionnaire_available = False
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -406,6 +410,10 @@ class FeedbackService(models.AbstractModel):
     @api.private
     def _build_snapshot(self, campaign):
         raise ValidationError(self.env._("Install the native Surveys integration to collect feedback."))
+
+    @api.private
+    def _nominative_states(self, recipients):
+        return {recipient.id: self._nominative_state(recipient) for recipient in recipients}
 
     @api.private
     def _nominative_state(self, recipient):

@@ -60,9 +60,9 @@ EXA05 se limite à reprendre une tentative active ; un index unique natif protè
 cette unicité. Aucun dispositif général de gestion de concurrence n’est ajouté.
 
 Chaque changement reçu est sauvegardé, y compris un effacement ou un marquage.
-L’écran distingue sauvegarde en cours, reçue et échouée. Une coupure ne permet
-pas de récupérer les changements que le serveur n’a pas reçus ; la remise
-manuelle attend la fin des sauvegardes. À expiration, seules les réponses déjà
+L’écran distingue sauvegarde en cours, reçue et échouée. Une coupure conserve les derniers changements dans la page ouverte ; la reprise
+explicite les réessaie après contrôle de l’échéance serveur. La remise manuelle
+attend la fin des sauvegardes. Un rechargement perd les changements non reçus. À expiration, seules les réponses déjà
 reçues avant l’échéance comptent. Un rechargement reprend la même tentative.
 
 Une tentative commencée avec des droits valides peut être terminée jusqu’à son

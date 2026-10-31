@@ -189,5 +189,5 @@
         <field name="res_model">training.provider.dossier</field>
         <field name="view_mode">list,form</field>
     </record>
-    <menuitem id="menu_provider_dossier" name="Instructors, Subcontracting and Watch" parent="menu_training_organisation" action="action_provider_dossier" groups="training_management.group_training_coordinator,training_management.group_training_quality"  sequence="60"/>
+    <menuitem id="menu_provider_dossier" name="Instructors, Subcontracting and Watch" parent="menu_training_quality" action="action_provider_dossier" groups="training_management.group_training_coordinator,training_management.group_training_quality"  sequence="60"/>
 </odoo>
