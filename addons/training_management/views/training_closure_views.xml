@@ -110,7 +110,7 @@
             <ul><li t-foreach="rows" t-as="row"><a t-att-href="row['url']" t-out="row['name']"/></li></ul>
         </t>
     </template>
-    <template id="portal_documents_link" inherit_id="portal.portal_my_home" name="Training Documents Link">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><a href="/my/training-documents" class="btn btn-outline-primary">My training documents</a></xpath>
+    <template id="portal_documents_link" inherit_id="training_management.portal_trainings" name="Training Documents Link">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('documents')"><a href="/my/training-documents" class="btn btn-outline-primary">My training documents</a></t></xpath>
     </template>
 </odoo>

@@ -1,15 +1,4 @@
 <odoo>
-    <template id="portal_participant_home" inherit_id="portal.portal_my_home" name="Participant Training">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/trainings">My training</a></div></xpath>
-    </template>
-    <template id="portal_trainings" name="My Training">
-        <t t-call="portal.portal_layout" additional_title.translate="My training"><h1>My training</h1>
-            <p t-if="not enrollments">No training is currently available. Contact your coordinator if needed.</p>
-            <ul class="list-group"><li t-foreach="enrollments" t-as="enrollment" class="list-group-item">
-                <a t-att-href="'/my/trainings/%s' % enrollment['id']" t-out="enrollment['name']"/><div t-out="enrollment['programme']"/>
-            </li></ul><t t-call="portal.pager"/>
-        </t>
-    </template>
     <template id="portal_materials" name="Private PDFs">
         <h2>Private PDFs</h2><p t-if="not materials">No private PDF is currently available.</p>
         <ul class="list-group"><li t-foreach="materials" t-as="material" class="list-group-item">

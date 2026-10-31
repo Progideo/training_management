@@ -1,6 +1,6 @@
 <odoo>
-    <template id="exam_home" inherit_id="portal.portal_my_home" name="My Mock Exams">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/training-exams">My mock exam attempts</a></div></xpath>
+    <template id="exam_home" inherit_id="training_management.portal_trainings" name="My Mock Exams">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('exams')"><div class="card p-3 my-2"><a href="/my/training-exams">My mock exam attempts</a></div></t></xpath>
     </template>
     <template id="exam_history" name="My Mock Exam Attempts">
         <t t-call="portal.portal_layout"><h1>My mock exam attempts</h1><p>Previous results remain available after access expiry. Suspension or revocation blocks access.</p>
@@ -59,6 +59,7 @@
                     <div class="o_survey_form_content_data d-none" t-att-data-server-time="server_time" t-att-data-timer="answer.start_datetime.isoformat()" t-att-data-time-limit-minutes="survey.time_limit"/>
                     <p class="o_survey_timer_container">Time remaining: <strong class="o_survey_timer" role="timer"/></p>
                     <p class="tm_save_status alert alert-info" role="status" aria-live="polite">Answers received by the server are saved. Unsaved changes will be reported here.</p>
+                    <button type="button" class="tm_retry btn btn-warning mb-3" hidden="hidden">Retry saving / check the result</button>
                     <nav aria-label="Question palette" class="d-flex flex-wrap gap-2 mb-3">
                         <button t-foreach="answer.predefined_question_ids.sorted(lambda q: (q.sequence, q.id))" t-as="question" type="button" class="btn btn-outline-secondary tm_question_link" t-att-data-question="question.id"><t t-out="question_index + 1"/><span class="tm_question_state"/></button>
                     </nav>
@@ -70,6 +71,7 @@
                         <t t-else="" t-call="training_management_survey.exam_multiple_choice"/>
                         <label class="mt-3 d-block"><input type="checkbox" class="tm_review form-check-input me-2" t-att-checked="question in answer.training_review_ids"/>Mark for review</label>
                         <button type="button" class="tm_clear btn btn-link">Clear answer</button>
+                        <p class="tm_question_save_state small" role="status"/>
                     </fieldset>
                     <div class="d-flex gap-2 my-3"><button type="button" class="tm_previous btn btn-outline-secondary">Previous</button><button type="button" class="tm_next btn btn-outline-secondary">Next</button><button type="button" class="tm_summary btn btn-secondary">Review and submit</button></div>
                     <div class="tm_recap card p-3" hidden="hidden"><h2>Submission summary</h2><p class="tm_recap_text"/>

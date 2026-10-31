@@ -1681,3 +1681,38 @@ msgstr "Publiez et activez le diagnostic avant d’ouvrir sa page publique."
 #: code:addons/training_management_survey/models/orientation.py:0
 msgid "The recommendation company is derived from its diagnostic."
 msgstr "La société de la recommandation est déterminée par son diagnostic."
+
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "%s question(s) not confirmed on the server. Check your connection, then retry saving. Keep this page open."
+msgstr "%s question(s) non confirmée(s) sur le serveur. Vérifiez votre connexion, puis réessayez la sauvegarde. Gardez cette page ouverte."
+
+#. module: training_management_survey
+#: model:ir.model,name:training_management_survey.model_training_portal_navigation
+msgid "Authorized Training Portal Navigation"
+msgstr "Navigation du portail selon les droits de formation"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Before submitting, retry saving the unconfirmed answers."
+msgstr "Avant de remettre la tentative, réessayez la sauvegarde des réponses non confirmées."
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Changes not yet confirmed on the server"
+msgstr "Modifications pas encore confirmées sur le serveur"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_attempt
+msgid "Retry saving / check the result"
+msgstr "Réessayer la sauvegarde / consulter le résultat"
+
+#. module: training_management_survey
+#. odoo-javascript
+#: code:addons/training_management_survey/static/src/exam.js:0
+msgid "Saving %s question(s)…"
+msgstr "Sauvegarde de %s question(s)…"

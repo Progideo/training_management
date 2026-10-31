@@ -1,8 +1,8 @@
 <odoo>
-    <template id="portal_complaint_link" inherit_id="portal.portal_my_home" name="Own Complaints">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+    <template id="portal_complaint_link" inherit_id="training_management.portal_trainings" name="Own Complaints">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('complaints')">
             <a href="/my/training-complaints" class="btn btn-outline-primary">My confidential complaints</a>
-        </xpath>
+        </t></xpath>
     </template>
     <template id="portal_complaints" name="Own Complaints">
         <t t-call="portal.portal_layout">

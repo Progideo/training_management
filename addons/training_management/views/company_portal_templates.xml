@@ -90,11 +90,11 @@
             </main>
         </t>
     </template>
-    <template id="company_portal_home" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+    <template id="company_portal_home" inherit_id="training_management.portal_trainings">
+        <xpath expr="//div[@id='training_responsibility_links']" position="inside"><t t-if="training_links.get('company')">
             <div class="col-12">
                 <a class="btn btn-outline-primary my-2" href="/my/company-trainings">Formations de mon entreprise</a>
             </div>
-        </xpath>
+        </t></xpath>
     </template>
 </odoo>

@@ -412,6 +412,10 @@ class FeedbackService(models.AbstractModel):
         raise ValidationError(self.env._("Install the native Surveys integration to collect feedback."))
 
     @api.private
+    def _nominative_states(self, recipients):
+        return {recipient.id: self._nominative_state(recipient) for recipient in recipients}
+
+    @api.private
     def _nominative_state(self, recipient):
         return "not_applicable" if recipient.exclusion_reason else "not_invited"
 

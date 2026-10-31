@@ -1393,6 +1393,8 @@ msgstr "Valider"
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_evaluation_assignment__state__validated
 #: model:ir.model.fields.selection,name:training_management.selection__training_path__state__validated
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
 msgid "Validated"
 msgstr "Validé"
 
@@ -5774,6 +5776,8 @@ msgstr "Déclaration du participant"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance__state__pending
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
 msgid "Pending Review"
 msgstr "À contrôler"
 
@@ -14157,3 +14161,126 @@ msgstr "Le responsable qualité a changé. Rechargez le dossier."
 #: model_terms:ir.ui.view,arch_db:training_management.view_learning_activity_form
 msgid "This criterion requires the native Surveys integration and a published mock exam."
 msgstr "Ce critère nécessite l’intégration native Sondages et un examen blanc publié."
+
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_period.py:0
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__halfday__pm
+msgid "Afternoon"
+msgstr "Après-midi"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_portal_navigation
+msgid "Authorized Training Portal Navigation"
+msgstr "Navigation du portail selon les droits de formation"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_period.py:0
+#: code:addons/training_management/wizard/training_attendance_edit.py:0
+msgid "Choose a half-day from the current schedule."
+msgstr "Choisissez une demi-journée du planning actuel."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
+msgid "Choose present or absent for this half-day."
+msgstr "Choisissez présent ou absent pour cette demi-journée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_period.py:0
+msgid "Confirm attendance after this half-day ends."
+msgstr "Confirmez la présence après la fin de cette demi-journée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Confirm attendance for this half-day. Validated attendance counts for its scheduled duration."
+msgstr "Confirmez votre présence pour cette demi-journée. La présence validée compte pour sa durée prévue au planning."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "Current training"
+msgstr "Formations en cours"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__period_date
+msgid "Date"
+msgstr "Date"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__period_key
+#: model:ir.model.fields,field_description:training_management.field_training_attendance__period_label
+msgid "Half-day"
+msgstr "Demi-journée"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__halfday
+msgid "Halfday"
+msgstr "Demi-journée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+#: code:addons/training_management/models/training_attendance_period.py:0
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__halfday__legacy
+msgid "Historical attendance"
+msgstr "Présence historique"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "I confirm that I was absent for this half-day."
+msgstr "Je confirme mon absence pour cette demi-journée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_period.py:0
+msgid "Invalidate the historical attendance with a reason before replacing it with half-days."
+msgstr "Invalidez la présence historique avec un motif avant de la remplacer par des demi-journées."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_period.py:0
+#: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__halfday__am
+msgid "Morning"
+msgstr "Matin"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My actions and history"
+msgstr "Mes actions et historiques"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My responsibilities"
+msgstr "Mes responsabilités"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_attendance_one_presence
+msgid "One attendance record per participant, session and half-day."
+msgstr "Une seule présence par participant, séance et demi-journée."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_edit__period_key
+msgid "Period Key"
+msgstr "Clé de demi-journée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Present"
+msgstr "Présent"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_portal.py:0
+msgid "There is no historical declaration to validate."
+msgstr "Aucune déclaration historique à valider."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_period.py:0
+msgid "Use the half-day attendance records for this session."
+msgstr "Utilisez les présences par demi-journée pour cette séance."

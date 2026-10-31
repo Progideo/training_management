@@ -12,3 +12,5 @@ from . import feedback
 from . import dashboard
 from . import security
 from . import orientation
+
+from . import portal_navigation

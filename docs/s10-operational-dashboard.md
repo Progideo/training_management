@@ -81,7 +81,7 @@ correction appelle une nouvelle revue. Il ne certifie pas l’accessibilité du 
    deux séances électronique/papier et un formateur/superviseur affectés. Ouvrir
    le tableau : une ligne par inscription ; filtres réalisation/état/séance/période
    et éléments à terminer concordants avec les sources.
-2. Déclarer une présence partielle, déposer un papier, valider une absence puis
+2. Déclarer une demi-journée présente, déposer un papier, valider une absence puis
    corriger une présence. Vérifier états, minutes, historique et liens autorisés.
    Contrôler aussi un asynchrone sans séance et une annulation avant démarrage.
 3. Affecter des évaluations non commencées, soumises et validées, dont un score nul.
@@ -99,3 +99,6 @@ correction appelle une nouvelle revue. Il ne certifie pas l’accessibilité du 
    ouvrir un détail et revenir. Vérifier focus, défilement et erreurs textuelles.
 8. Consigner un contrôle humain de PDF avec écarts ; vérifier empreinte et immutabilité.
    Contrôler séparément le PDF avec les outils et lecteurs adaptés au public visé.
+
+Les [règles de lecture par lots et de pagination](review-experience-performance.md)
+conservent les agrégats globaux et limitent les détails à la page visible.

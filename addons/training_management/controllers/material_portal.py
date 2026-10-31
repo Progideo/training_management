@@ -21,7 +21,14 @@ class TrainingParticipantPortal(http.Controller):
             for e in active[pager["offset"] : pager["offset"] + 40]
         ]
         return self._private(
-            request.render("training_management.portal_trainings", {"enrollments": rows, "pager": pager})
+            request.render(
+                "training_management.portal_trainings",
+                {
+                    "enrollments": rows,
+                    "pager": pager,
+                    "training_links": request.env["training.portal.navigation"]._links(),
+                },
+            )
         )
 
     @http.route("/my/trainings/<int:enrollment_id>", type="http", auth="user", website=True, methods=["GET"])

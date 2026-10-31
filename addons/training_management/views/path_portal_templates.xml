@@ -1,11 +1,12 @@
 <odoo>
-    <template id="portal_path_home" inherit_id="portal.portal_my_home" name="Participant Learning Paths">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+    <template id="portal_path_home" inherit_id="training_management.portal_trainings" name="Participant Learning Paths">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('paths')">
             <div class="card p-3 my-2"><a href="/my/training-paths">My learning paths</a></div>
-        </xpath>
+        </t></xpath>
     </template>
     <template id="portal_paths_from_trainings" inherit_id="portal_trainings" name="Learning Paths Navigation">
-        <xpath expr="//h1" position="after"><p><a href="/my/training-paths">My learning paths</a></p></xpath>
+        <!-- Preserve the existing view id on upgrade; portal_path_home supplies the authorized link. -->
+        <xpath expr="//h1" position="after"><t/></xpath>
     </template>
     <template id="portal_training_paths" name="My Learning Paths">
         <t t-call="portal.portal_layout" additional_title.translate="My learning paths">

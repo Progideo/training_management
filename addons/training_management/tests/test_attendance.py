@@ -95,13 +95,12 @@ class TestAttendance(AttendanceCase):
                 form.operation = "correction"
                 form.reason = "Fictional correction through native assistant"
                 form.data = BinaryBytes(PDF)
-                self.assertEqual(form.start_minutes, 30)
-                self.assertEqual(form.end_minutes, 120)
-                form.start_minutes = 90
+                self.assertEqual(form.halfday, "legacy")
+                form.absent = True
             wizard = form.record
             self.assertEqual(wizard.revision, presence.revision)
             wizard.action_apply()
-            self.assertEqual(presence.minutes, 30)
+            self.assertEqual(presence.minutes, 0)
             self.assertEqual(original, presence.event_ids[:1])
             with self.assertRaises(ValidationError):
                 self.declare(session, enrollment, 0, 120)
@@ -510,10 +509,14 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         path = f"/my/trainings/{enrollment.id}/attendance"
         page = html.fromstring(self.url_open(path).content)
         payload = {item.get("name"): item.get("value", "") for item in page.xpath("//form//input[@name]")}
-        payload.update(start="30", end="110", accepted="yes")
+        payload.update(attendance="present", accepted="yes")
         self.assertEqual(self.url_open(path, data=payload).status_code, 200)
         self.env.invalidate_all()
-        self.assertEqual(len(presence.event_ids.filtered(lambda e: e.kind == "declaration")), 2)
+        self.assertEqual(len(presence.event_ids.filtered(lambda e: e.kind == "declaration")), 1)
+        halfdays = self.env["training.attendance"].search(
+            [("enrollment_id", "=", enrollment.id), ("period_key", "!=", "legacy")]
+        )
+        self.assertEqual(len(halfdays.event_ids.filtered(lambda e: e.kind == "declaration")), 1)
         enrollment.action_suspend_access(reason="Fictional restricted access")
         self.assertEqual(self.url_open(path).status_code, 404)
         self.assertEqual(self.url_open(path, data=payload).status_code, 404)
@@ -524,7 +527,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         path = f"/my/trainings/{enrollment.id}/attendance"
         form = html.fromstring(self.url_open(path).content).xpath("//form[@method='post']")[0]
         payload = {item.get("name"): item.get("value", "") for item in form.xpath(".//input[@type='hidden']")}
-        payload.update(accepted="yes", start="30", end="120")
+        payload.update(accepted="yes", attendance="present")
         session._apply_schedule({"start_hour": 8.5}, reason="Fictional schedule change")
         response = self.url_open(path, data=payload)
         self.env.invalidate_all()
@@ -544,7 +547,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         response = self.url_open(path)
         form = html.fromstring(response.content).xpath("//form[@method='post']")[0]
         payload = {item.get("name"): item.get("value", "") for item in form.xpath(".//input[@type='hidden']")}
-        payload.update(accepted="yes", start="30", end="120")
+        payload.update(accepted="yes", attendance="present")
         session._apply_schedule(
             {"attendance_wording": "Fictional changed confirmation text"}, reason="Fictional text change"
         )
@@ -568,12 +571,12 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         path = f"/my/training-sessions/{session.id}/attendance"
         response = self.url_open(path)
         page = html.fromstring(response.content)
-        self.assertTrue(page.xpath("//input[@name='absent' and @checked]"))
+        self.assertTrue(page.xpath("//option[@value='absent' and @selected]"))
         payload = {
             item.get("name"): item.get("value", "")
             for item in page.xpath("//form[not(input[@name='operation'])]//input[@type='hidden']")
         }
-        payload.update(absent="yes", start="0", end="120")
+        payload.update(attendance="absent")
         self.assertEqual(self.url_open(path, data=payload).status_code, 200)
         self.env.invalidate_all()
         presence = self.env["training.attendance"].search([("session_id", "=", session.id)])
@@ -619,34 +622,28 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         self.assertEqual(self.url_open(url).status_code, 404)
 
     def test_review_errors_preserve_the_trainers_interval_and_comment(self):
+        """The new half-day choice replaces the former interval input."""
         _, session, enrollment = self.scheduled()
-        with patch("odoo.fields.Datetime.now", return_value=session.end_at + timedelta(hours=4)):
-            presence = self.declare(session, enrollment)
-            self.authenticate(self.portal_b.login, self.portal_b.login)
-            path = f"/my/training-sessions/{session.id}/attendance"
-            page = html.fromstring(self.url_open(path).content)
-            csrf = page.xpath("//input[@name='csrf_token']/@value")[0]
-            payload = {
-                "csrf_token": csrf,
-                "enrollment_id": enrollment.id,
-                "revision": presence.revision,
-                "definition": page.xpath("//input[@name='definition']/@value")[0],
-                "start": "500",
-                "end": "501",
-            }
-            response = self.url_open(path, data=payload)
-            self.assertIn("alert-danger", response.text)
-            page = html.fromstring(response.content)
-            self.assertEqual(page.xpath("//input[@name='start']/@value"), ["500"])
-            self.assertEqual(page.xpath("//input[@name='end']/@value"), ["501"])
-            payload.update(start="500", end="501", reason="Fictional review <private>")
-            response = self.url_open(path, data=payload)
-            page = html.fromstring(response.content)
-            self.assertEqual(page.xpath("//textarea[@name='reason']/text()"), [payload["reason"]])
-            payload.update(start="45", end="110")
-            self.assertEqual(self.url_open(path, data=payload).status_code, 200)
-            self.env.invalidate_all()
-            self.assertEqual(presence.minutes, 65)
+        presence = self.declare(session, enrollment)
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        path = f"/my/training-sessions/{session.id}/attendance"
+        page = html.fromstring(self.url_open(path).content)
+        payload = {
+            item.get("name"): item.get("value", "")
+            for item in page.xpath("//form[not(input[@name='operation'])]//input[@type='hidden']")
+        }
+        revision = payload["revision"]
+        payload.update(revision="0", attendance="absent", reason="Fictional review <private>")
+        response = self.url_open(path, data=payload)
+        self.assertIn("alert-danger", response.text)
+        page = html.fromstring(response.content)
+        self.assertTrue(page.xpath("//option[@value='absent' and @selected]"))
+        self.assertEqual(page.xpath("//textarea[@name='reason']/text()")[0], payload["reason"])
+        payload["revision"] = revision
+        self.assertEqual(self.url_open(path, data=payload).status_code, 200)
+        self.env.invalidate_all()
+        self.assertEqual(presence.minutes, 0)
+        self.assertTrue(presence.absent)
 
     def test_trainer_can_record_an_absence_from_an_empty_native_form(self):
         _, session, enrollment = self.scheduled()
@@ -655,7 +652,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         response = self.url_open(path)
         page = html.fromstring(response.content)
         self.assertEqual(page.xpath("//input[@name='revision']/@value"), ["0"])
-        self.assertEqual(page.xpath("//input[@name='start']/@value"), ["0"])
+        self.assertFalse(page.xpath("//input[@name='start' or @name='end']"))
         csrf = page.xpath("//input[@name='csrf_token']/@value")[0]
         response = self.url_open(
             path,
@@ -664,9 +661,8 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
                 "enrollment_id": enrollment.id,
                 "revision": "0",
                 "definition": page.xpath("//input[@name='definition']/@value")[0],
-                "absent": "yes",
-                "start": "0",
-                "end": "120",
+                "attendance": "absent",
+                "period_key": page.xpath("//input[@name='period_key']/@value")[0],
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -678,7 +674,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
     def test_native_http_scope_csrf_and_evidence_tokens(self):
         _, session, enrollment = self.scheduled()
         with patch("odoo.fields.Datetime.now", return_value=session.end_at):
-            presence = self.paper(session, enrollment)
+            presence = self.paper(session, enrollment, period_key=self.service()._periods(session)[0]["key"])
         event = presence.event_ids
         path = f"/my/trainings/{enrollment.id}/attendance"
         self.authenticate(self.portal.login, self.portal.login)
@@ -699,8 +695,8 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
                 "definition": definition,
                 "session_id": session.id,
                 "accepted": "yes",
-                "start": 30,
-                "end": 120,
+                "period_key": presence.period_key,
+                "attendance": "present",
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -728,13 +724,13 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
                 "enrollment_id": enrollment.id,
                 "revision": presence.revision,
                 "definition": html.fromstring(response.content).xpath("//input[@name='definition']/@value")[0],
-                "start": 30,
-                "end": 120,
+                "period_key": presence.period_key,
+                "attendance": "present",
             },
         )
         self.assertEqual(response.status_code, 200)
         self.env.invalidate_all()
-        self.assertEqual(presence.minutes, 90)
+        self.assertEqual(presence.minutes, 120)
         self.assertEqual(self.url_open(url).status_code, 404)
         self.authenticate(self.coordinator.login, self.coordinator.login)
         response = self.url_open(url)

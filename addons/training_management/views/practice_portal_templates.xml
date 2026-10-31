@@ -1,9 +1,10 @@
 <odoo>
-    <template id="practice_home" inherit_id="portal.portal_my_home" name="Post-training Practice Navigation">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/training-practice">My practice plans</a></div></xpath>
+    <template id="practice_home" inherit_id="training_management.portal_trainings" name="Post-training Practice Navigation">
+        <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('practice')"><div class="card p-3 my-2"><a href="/my/training-practice">My practice plans</a></div></t></xpath>
     </template>
     <template id="practice_from_trainings" inherit_id="portal_trainings" name="Practice Plans Navigation">
-        <xpath expr="//h1" position="after"><p><a href="/my/training-practice">My practice plans</a></p></xpath>
+        <!-- Preserve the existing view id on upgrade; practice_home supplies the authorized link. -->
+        <xpath expr="//h1" position="after"><t/></xpath>
     </template>
     <template id="practice_portal" name="My Practice Plans">
         <t t-call="portal.portal_layout" additional_title.translate="My practice plans">

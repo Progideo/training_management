@@ -30,6 +30,10 @@ def snapshot():
             f"SELECT to_jsonb(t) FROM {table} t WHERE {column}=%s ORDER BY id", [value]
         )  # fixed identifiers above; synthetic fixtures only
         records[table] = [row[0] for row in env.cr.fetchall()]
+        if table == "training_attendance":
+            for row in records[table]:
+                if "period_key" in row:
+                    assert row.pop("period_key") == "legacy"
     records["minutes"] = presence.minutes
     records["file"] = hashlib.sha256(presence.event_ids.filtered("filename").data.content).hexdigest()
     return json.dumps(records, sort_keys=True, default=str)

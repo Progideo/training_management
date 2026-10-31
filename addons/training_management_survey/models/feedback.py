@@ -300,13 +300,33 @@ class FeedbackService(models.AbstractModel):
         return True
 
     @api.private
-    def _nominative_state(self, recipient):
-        if recipient.exclusion_reason:
-            return "not_applicable"
+    def _nominative_states(self, recipients):
+        # Exclude anonymous campaigns before reading any answer metadata.
+        recipients = recipients.filtered(lambda r: not r.campaign_id.anonymous)
         answers = (
             self.env["survey.user_input"]
             .sudo()
-            .search([("training_feedback_recipient_id", "=", recipient.id)], limit=1)
+            .search(
+                [
+                    ("training_feedback_recipient_id", "in", recipients.ids),
+                ]
+            )
+            .grouped("training_feedback_recipient_id")
+        )
+        return {r.id: self._nominative_state(r, answers.get(r, self.env["survey.user_input"])[:1]) for r in recipients}
+
+    @api.private
+    def _nominative_state(self, recipient, answers=None):
+        if recipient.exclusion_reason:
+            return "not_applicable"
+        answers = (
+            answers
+            if answers is not None
+            else (
+                self.env["survey.user_input"]
+                .sudo()
+                .search([("training_feedback_recipient_id", "=", recipient.id)], limit=1)
+            )
         )
         if answers and answers.state == "done":
             return "received"

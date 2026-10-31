@@ -21,7 +21,7 @@
             <ul><li t-foreach="row['exams']" t-as="exam"><t t-out="exam['label']"/></li></ul>
         </section>
     </template>
-    <template id="portal_dashboard_link" inherit_id="portal.portal_my_home" name="Operational training dashboard link"><xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><a href="/my/training-dashboard" class="d-block py-2">Operational training dashboard</a></xpath></template>
+    <template id="portal_dashboard_link" inherit_id="training_management.portal_trainings" name="Operational training dashboard link"><xpath expr="//div[@id='training_responsibility_links']" position="inside"><t t-if="training_links.get('dashboard')"><a href="/my/training-dashboard" class="d-block py-2">Operational training dashboard</a></t></xpath></template>
     <template id="portal_dashboard_deliveries" name="Operational Training Dashboards"><t t-call="portal.portal_layout"><div class="container py-3"><h1>Operational training dashboard</h1><p t-if="not deliveries">No assigned delivery available.</p><ul><li t-foreach="deliveries" t-as="d"><a t-att-href="'/my/training-dashboard/%s' % d['id']" t-out="d['name']"/></li></ul></div></t></template>
     <template id="portal_dashboard" name="Operational Training Dashboard"><t t-call="portal.portal_layout"><div class="container py-3 text-break">
         <a href="/my/training-dashboard">Assigned deliveries</a><h1 t-out="name"/><p><t t-out="program"/> · <t t-out="company"/></p>

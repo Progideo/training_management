@@ -8,10 +8,23 @@ class DashboardService(models.AbstractModel):
     _inherit = "training.dashboard.service"
 
     @api.private
-    def _exams(self, enrollment):
+    def _exams(self, enrollment, batch=None):
         self._delivery(enrollment.delivery_id.id)
+        if batch is not None and "exams" not in batch:
+            batch["exams"] = (
+                self.env["survey.user_input"]
+                .sudo()
+                .search([("training_enrollment_id", "in", batch["enrollments"].ids)], order="id")
+                .grouped("training_enrollment_id")
+            )
         attempts = (
-            self.env["survey.user_input"].sudo().search([("training_enrollment_id", "=", enrollment.id)], order="id")
+            batch["exams"].get(enrollment, self.env["survey.user_input"])
+            if batch is not None
+            else (
+                self.env["survey.user_input"]
+                .sudo()
+                .search([("training_enrollment_id", "=", enrollment.id)], order="id")
+            )
         )
         result = []
         for survey in attempts.survey_id:

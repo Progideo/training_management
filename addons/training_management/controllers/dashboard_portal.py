@@ -37,6 +37,7 @@ class DashboardPortal(http.Controller):
             try:
                 values = service._dashboard(
                     delivery_id,
+                    page=page,
                     state=kwargs.get("state", "all"),
                     session_id=session_id,
                     start=kwargs.get("start"),
@@ -65,7 +66,6 @@ class DashboardPortal(http.Controller):
                     step=40,
                     url_args={k: kwargs[k] for k in ("state", "session_id", "start", "end", "issue") if k in kwargs},
                 )
-                values["rows"] = values["rows"][pager["offset"] : pager["offset"] + 40]
                 values.update(pager=pager, filter_error=False)
             values.update(
                 states=request.env["training.enrollment"]._fields["state"]._description_selection(request.env),

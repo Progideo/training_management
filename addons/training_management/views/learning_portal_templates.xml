@@ -1,6 +1,6 @@
 <odoo>
-    <template id="portal_learning_home" inherit_id="portal.portal_my_home" name="Learning Tutoring">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/training-tutoring">My tutoring assignments</a></div></xpath>
+    <template id="portal_learning_home" inherit_id="training_management.portal_trainings" name="Learning Tutoring">
+        <xpath expr="//div[@id='training_responsibility_links']" position="inside"><t t-if="training_links.get('tutoring')"><div class="card p-3 my-2"><a href="/my/training-tutoring">My tutoring assignments</a></div></t></xpath>
     </template>
     <template id="portal_learning_participant" inherit_id="portal_training" name="Participant Learning">
         <xpath expr="//t[@t-call='training_management.portal_materials']" position="after">
