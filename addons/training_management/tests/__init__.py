@@ -42,3 +42,4 @@ from . import test_testimonial
 from . import test_session_publication
 
 from . import test_certificate_verification
+from . import test_closure_continuity

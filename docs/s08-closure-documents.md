@@ -82,7 +82,7 @@ sont figés dans l’export ; le téléchargement exige aussi leur habilitation 
 La liste « Mes documents de formation » présente seulement les fichiers autorisés
 au participant ou au contact client. Aucun droit ne vient d’un changement d’employeur.
 
-Un dossier clôturé et ses versions sont conservés. Le gel est explicite ; aucune
+Un dossier clôturé et ses versions sont conservés. La [continuité du dossier](review-access-continuity.md) prévoit une réaffectation qualité et une réouverture motivée pour rectification, sans réécrire les preuves validées ni les anciens documents. Le gel est explicite ; aucune
 purge automatique n’existe, même à échéance de conservation. Une demande de
 suppression exige une instruction humaine distincte. Les exports antérieurs ne
 sont pas régénérés. Les verrous S03 et leur révision protègent émission, validation,

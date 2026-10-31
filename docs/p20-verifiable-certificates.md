@@ -27,7 +27,7 @@ n’est ajouté ; le contrôleur ne retourne qu’une projection explicite.
 Le responsable qualité affecté ouvre la vérification depuis le dossier, puis
 choisit « Révoquer » ou « Remplacer », avec un motif. Le remplacement exige une
 attestation vérifiable encore valide du même dossier et du même type. Il faut
-l’émettre au préalable après correction des critères. La décision conserve auteur,
+l’émettre au préalable après correction des critères. Si le dossier est clos, utiliser la [rectification motivée](review-access-continuity.md), puis le clôturer à nouveau. La décision conserve auteur,
 date et lien interne vers le remplacement. Révocation et remplacement sont définitifs,
 restent possibles après clôture, ne réécrivent aucun PDF et ne rétablissent jamais
 silencieusement un statut. Une correction S07 seule ne révoque pas les anciens PDF.

@@ -98,13 +98,9 @@ class ExamPortal(http.Controller):
         methods=["GET"],
     )
     def history(self, page=1, **kwargs):
-        user = request.env.user
+        enrollments = request.env["training.exam.service"]._history_enrollments()
         domain = [
-            ("training_enrollment_id.user_id", "=", user.id),
-            ("training_enrollment_id.participant_id", "=", user.partner_id.id),
-            ("training_enrollment_id.company_id", "in", user.company_ids.ids),
-            ("training_enrollment_id.access_state", "=", "active"),
-            ("training_enrollment_id.state", "=", "confirmed"),
+            ("training_enrollment_id", "in", enrollments.ids),
             ("training_evaluation_assignment_id", "=", False),
         ]
         model = request.env["survey.user_input"].sudo()

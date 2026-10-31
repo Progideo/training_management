@@ -175,6 +175,8 @@ msgstr ""
 "Les tarifs commerciaux seront gérés par les produits et devis standards "
 "Odoo."
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__company_id
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__company_id
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__company_id
@@ -281,6 +283,8 @@ msgstr "Consignes de contact conservées dans cette version du programme."
 msgid "Content"
 msgstr "Contenu"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__create_uid
@@ -360,6 +364,8 @@ msgstr "Contenu"
 msgid "Created by"
 msgstr "Créé par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__create_date
@@ -454,6 +460,8 @@ msgstr ""
 msgid "Delivery Mode"
 msgstr "Modalité"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__display_name
@@ -620,6 +628,8 @@ msgstr "Prolonger l’échéance"
 msgid "Formations"
 msgstr "Formations"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__id
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__id
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__id
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__id
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__id
@@ -734,6 +744,8 @@ msgstr "ID"
 msgid "Labels"
 msgstr "Libellés"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__write_uid
@@ -813,6 +825,8 @@ msgstr "Libellés"
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_practice_action__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_practice_entry__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_practice_notice__write_date
@@ -1463,6 +1477,7 @@ msgstr "Le nouveau brouillon conserve le contenu source et ses traductions."
 msgid "Create Draft"
 msgstr "Créer le brouillon"
 
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_change
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_extend
@@ -1592,6 +1607,7 @@ msgstr ""
 "L’accès exige une inscription confirmée et autorisée ainsi qu’un compte "
 "personnel actif."
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__actor_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_operation__actor_id
 #: model:ir.model.fields,field_description:training_management.field_training_adaptation_history__actor_id
@@ -1666,6 +1682,7 @@ msgstr ""
 "Une prolongation nécessite une inscription confirmée et une nouvelle "
 "échéance postérieure."
 
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_change
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_action_reason
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_allocation_extend
@@ -2136,6 +2153,7 @@ msgstr "Nouvelle inscription demandée"
 msgid "Occupied Seats"
 msgstr "Places occupées"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__occurred_at
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__occurred_at
 #: model:ir.model.fields,field_description:training_management.field_training_operation__occurred_at
@@ -2194,6 +2212,8 @@ msgstr "Ouvrir / reprendre l’accès"
 msgid "Opening Threshold"
 msgstr "Seuil d’ouverture"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__operation
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__operation
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__operation
 #: model:ir.model.fields,field_description:training_management.field_training_quality_operation__operation
@@ -2267,6 +2287,8 @@ msgstr "Proposer ou réserver une place"
 msgid "Quantity"
 msgstr "Nombre de places"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__reason
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__reason
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_event__reason
 #: model:ir.model.fields,field_description:training_management.field_training_quality_operation__reason
@@ -3188,6 +3210,7 @@ msgstr "Indiquez un motif pour ajouter des séances après confirmation."
 msgid "Equipment"
 msgstr "Équipements"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure__event_ids
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_complaint__event_ids
 #: model:ir.model.fields,field_description:training_management.field_training_improvement__event_ids
@@ -6014,6 +6037,7 @@ msgstr "Règles d’archivage"
 msgid "Assessment score and threshold must be between 0 and 100."
 msgstr "Le score et le seuil doivent être compris entre 0 et 100."
 
+#: code:addons/training_management/models/training_closure_continuity.py:0
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_closure.py:0
@@ -6205,6 +6229,8 @@ msgstr "Règles de suppression"
 msgid "Disposition"
 msgstr "Traitement de la pièce"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__dossier_id
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__dossier_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_quality_export__dossier_id
 #: model:ir.model.fields,field_description:training_management.field_training_document__dossier_id
@@ -6520,6 +6546,7 @@ msgstr "Produit le"
 msgid "Purpose"
 msgstr "Finalité"
 
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__quality_id
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_closure__quality_id
 msgid "Quality"
@@ -13978,3 +14005,155 @@ msgstr "Lien de vérification"
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
 msgid "Certificate Verification"
 msgstr "Vérification des attestations"
+
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_closure_change
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_change
+msgid "Change Closure Dossier"
+msgstr "Modifier le dossier de clôture"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_closure_event
+msgid "Closure Dossier History"
+msgstr "Historique du dossier de clôture"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure_event__operation__close
+msgid "Dossier Closed"
+msgstr "Dossier clôturé"
+
+#. module: training_management
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Dossier History"
+msgstr "Historique du dossier"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__expected_closure_event_id
+msgid "Expected Closure Event"
+msgstr "Clôture de référence"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__expected_quality_id
+msgid "Expected Quality"
+msgstr "Responsable qualité de référence"
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+msgid "Explain the reviewer reassignment."
+msgstr "Indiquez le motif de la réaffectation du responsable qualité."
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+msgid "Explain why this closed dossier needs rectification."
+msgstr "Indiquez pourquoi ce dossier clôturé doit être rectifié."
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_learning.py:0
+msgid "Install the native Surveys integration before choosing a mock exam criterion."
+msgstr "Installez l’intégration native Sondages avant de choisir un critère fondé sur un examen blanc."
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure_change__quality_id
+msgid "New Quality Reviewer"
+msgstr "Nouveau responsable qualité"
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+msgid "Only a coordinator may reassign the quality reviewer."
+msgstr "Seul un coordinateur peut réaffecter le responsable qualité."
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__previous_quality_id
+msgid "Previous Quality"
+msgstr "Ancien responsable qualité"
+
+#. module: training_management
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_change
+msgid "Previous closures, validated evidence and PDFs remain unchanged. Add new evidence versions, issue the corrected certificate, replace the old one and close the dossier again."
+msgstr "Les clôtures précédentes, les preuves validées et les PDF restent inchangés. Ajoutez les nouvelles versions de preuves, émettez l’attestation corrigée, remplacez l’ancienne puis clôturez à nouveau le dossier."
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_feedback__questionnaire_available
+msgid "Questionnaire Available"
+msgstr "Questionnaire disponible"
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure_change__operation__reassign
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Reassign Quality Reviewer"
+msgstr "Réaffecter le responsable qualité"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__closed_by_id
+msgid "Recorded Closure Author"
+msgstr "Auteur de la clôture enregistrée"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_closure_event__closed_at
+msgid "Recorded Closure Date"
+msgstr "Date de la clôture enregistrée"
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure_change__operation__rectify
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_closure_form
+msgid "Rectify Closed Dossier"
+msgstr "Rectifier le dossier clôturé"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure_event__operation__rectify
+msgid "Reopened for Rectification"
+msgstr "Rouvert pour rectification"
+
+#. module: training_management
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_closure_event__operation__reassign
+msgid "Reviewer Reassigned"
+msgstr "Responsable qualité réaffecté"
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+msgid "The dossier was closed again. Reload it before rectifying."
+msgstr "Le dossier a été clôturé à nouveau. Rechargez-le avant de le rectifier."
+
+#. module: training_management
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure_continuity.py:0
+msgid "The reviewer has changed. Reload the dossier."
+msgstr "Le responsable qualité a changé. Rechargez le dossier."
+
+#. module: training_management
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_learning_activity_form
+msgid "This criterion requires the native Surveys integration and a published mock exam."
+msgstr "Ce critère nécessite l’intégration native Sondages et un examen blanc publié."

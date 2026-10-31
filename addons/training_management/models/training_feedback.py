@@ -32,6 +32,10 @@ class Feedback(models.Model):
         [("draft", "Draft"), ("published", "Published")], default="draft", readonly=True, copy=False
     )
     previous_id = fields.Many2one("training.feedback", readonly=True, copy=False, ondelete="restrict")
+    questionnaire_available = fields.Boolean(compute="_compute_questionnaire_available")
+
+    def _compute_questionnaire_available(self):
+        self.questionnaire_available = False
 
     @api.model_create_multi
     def create(self, vals_list):
