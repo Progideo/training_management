@@ -49,29 +49,55 @@
         <field name="domain">[('create_uid', '=', user.id)]</field>
     </record>
     <record id="view_delivery_public_session" model="ir.ui.view">
-        <field name="name">training.delivery.public.session</field><field name="model">training.delivery</field>
+        <field name="name">training.delivery.public.session</field>
+        <field name="model">training.delivery</field>
         <field name="inherit_id" ref="view_training_delivery_form"/>
-        <field name="arch" type="xml"><xpath expr="//notebook" position="inside"><page string="Public Session" groups="training_management.group_training_coordinator">
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Public Session" groups="training_management.group_training_coordinator">
             <p>Publication, commercial opening and guaranteed departure require explicit decisions. No private client or participant information is published.</p>
-            <group><field name="session_public"/><field name="session_sales_open"/><field name="session_first_published_at"/><field name="session_guaranteed"/></group>
+            <group>
+                        <field name="session_public"/>
+                        <field name="session_sales_open"/>
+                        <field name="session_first_published_at"/>
+                        <field name="session_guaranteed"/>
+                    </group>
             <button name="action_open_reason" type="object" string="Publish and Open Session" context="{'reason_action': 'action_publish_session'}" invisible="kind != 'session' or state not in ('preparation', 'confirmed') or (session_public and session_sales_open)"/>
             <button name="action_open_reason" type="object" string="Withdraw Public Session" context="{'reason_action': 'action_withdraw_session'}" invisible="not session_public"/>
             <button name="action_open_reason" type="object" string="Close Session Sales" context="{'reason_action': 'action_close_session_sales'}" invisible="not session_sales_open"/>
             <button name="action_open_reason" type="object" string="Guarantee Departure" context="{'reason_action': 'action_guarantee_session'}" invisible="session_guaranteed or kind != 'session' or state not in ('preparation', 'confirmed')"/>
             <button name="action_open_reason" type="object" string="Revoke Departure Guarantee" context="{'reason_action': 'action_revoke_session_guarantee'}" invisible="not session_guaranteed"/>
-            <field name="session_alert_notice_ids" readonly="1"><list create="0" edit="0" delete="0"><field name="recipient_id"/><field name="recipient_email"/><field name="distribution_state"/><field name="not_queued_reason"/></list></field>
-        </page></xpath></field>
+            <field name="session_alert_notice_ids" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="recipient_id"/>
+                            <field name="recipient_email"/>
+                            <field name="distribution_state"/>
+                            <field name="not_queued_reason"/>
+                        </list>
+                    </field>
+        </page>
+            </xpath>
+        </field>
     </record>
     <record id="access_session_alert_subscription_coordinator" model="ir.access">
-        <field name="name">Date alert subscription internal read</field><field name="model_id" ref="model_training_session_alert_subscription"/>
-        <field name="group_id" ref="group_training_coordinator"/><field name="operation">r</field><field name="domain">[('company_id', 'in', company_ids)]</field>
+        <field name="name">Date alert subscription internal read</field>
+        <field name="model_id" ref="model_training_session_alert_subscription"/>
+        <field name="group_id" ref="group_training_coordinator"/>
+        <field name="operation">r</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
     </record>
     <record id="access_session_alert_event_coordinator" model="ir.access">
-        <field name="name">Date alert event internal read</field><field name="model_id" ref="model_training_session_alert_event"/>
-        <field name="group_id" ref="group_training_coordinator"/><field name="operation">r</field><field name="domain">[('company_id', 'in', company_ids)]</field>
+        <field name="name">Date alert event internal read</field>
+        <field name="model_id" ref="model_training_session_alert_event"/>
+        <field name="group_id" ref="group_training_coordinator"/>
+        <field name="operation">r</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
     </record>
     <record id="access_session_alert_notice_coordinator" model="ir.access">
-        <field name="name">Date alert notice internal read</field><field name="model_id" ref="model_training_session_alert_notice"/>
-        <field name="group_id" ref="group_training_coordinator"/><field name="operation">r</field><field name="domain">[('company_id', 'in', company_ids)]</field>
+        <field name="name">Date alert notice internal read</field>
+        <field name="model_id" ref="model_training_session_alert_notice"/>
+        <field name="group_id" ref="group_training_coordinator"/>
+        <field name="operation">r</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
     </record>
 </odoo>

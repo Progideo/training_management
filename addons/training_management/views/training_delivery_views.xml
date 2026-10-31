@@ -214,10 +214,11 @@
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status" groups="training_management.group_training_coordinator" invisible="state != 'confirmed' or effective_access == 'active'">
-    <p invisible="commercially_authorized">Commercial authorization is required before opening access.</p>
-    <p invisible="not commercially_authorized or not user_id or access_state != 'unopened'">Commercial authorization is recorded. Open access when the participant is ready.</p>
-    <p invisible="user_id">Assign an active user account before opening access.</p>
-</div><group>
+                        <p invisible="commercially_authorized">Commercial authorization is required before opening access.</p>
+                        <p invisible="not commercially_authorized or not user_id or access_state != 'unopened'">Commercial authorization is recorded. Open access when the participant is ready.</p>
+                        <p invisible="user_id">Assign an active user account before opening access.</p>
+                    </div>
+                    <group>
                         <field name="company_id" invisible="1"/>
                         <field name="delivery_id"/>
                         <field name="program_id"/>

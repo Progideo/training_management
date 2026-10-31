@@ -1,28 +1,50 @@
 <odoo>
-    <template id="tutoring_home_link" inherit_id="training_management.portal_trainings" name="Tutoring Reservations"><xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('bookings')"><div class="card p-3 my-2"><a href="/my/training-bookings">Tutoring reservations</a></div></t></xpath></template>
-    <template id="tutoring_training_link" inherit_id="portal_training" name="Reserve Tutoring"><xpath expr="//t[@t-call='training_management.portal_materials']" position="after"><p t-if="has_tutoring" class="mt-3"><a t-att-href="'/my/trainings/%s/tutoring' % learning['id']">Reserve tutoring</a></p></xpath></template>
-    <template id="tutoring_home" name="Tutoring Reservations"><t t-call="portal.portal_layout" additional_title.translate="Tutoring reservations">
-        <t t-call="training_management.portal_training_navigation"/><h1>Tutoring reservations</h1><p t-if="not enrollments and not appointments">No current tutoring reservation.</p>
-        <ul class="list-group mb-4"><li t-foreach="enrollments" t-as="e" class="list-group-item"><a t-att-href="'/my/trainings/%s/tutoring' % e['id']" t-out="e['name']"/></li></ul>
-        <section t-if="appointments"><h2>My tutoring appointments</h2><p><span>Timezone:</span> <t t-out="timezone"/></p>
-            <div t-foreach="appointments" t-as="a" class="card p-3 mb-3"><h3 t-out="a['name']"/><p t-out="a['participant']"/><p t-out="a['start']"/><p t-if="a['state'] == 'cancelled'">Cancelled</p><a t-if="a['meeting_url']" t-att-href="a['meeting_url']" rel="noopener noreferrer">Join tutoring</a></div>
-        </section>
-    </t></template>
-    <template id="tutoring_slots" name="Reserve Tutoring"><t t-call="portal.portal_layout" additional_title.translate="Tutoring reservations">
+    <template id="tutoring_home_link" inherit_id="training_management.portal_trainings" name="Tutoring Reservations">
+        <xpath expr="//div[@id='training_personal_links']" position="inside">
+            <t t-if="training_links.get('bookings')">
+                <div class="card p-3 my-2"><a href="/my/training-bookings">Tutoring reservations</a></div>
+            </t>
+        </xpath>
+    </template>
+    <template id="tutoring_training_link" inherit_id="portal_training" name="Reserve Tutoring">
+        <xpath expr="//t[@t-call='training_management.portal_materials']" position="after">
+            <p t-if="has_tutoring" class="mt-3"><a t-att-href="'/my/trainings/%s/tutoring' % learning['id']">Reserve tutoring</a></p>
+        </xpath>
+    </template>
+    <template id="tutoring_home" name="Tutoring Reservations">
+        <t t-call="portal.portal_layout" additional_title.translate="Tutoring reservations">
+            <t t-call="training_management.portal_training_navigation"/>
+            <h1>Tutoring reservations</h1>
+            <p t-if="not enrollments and not appointments">No current tutoring reservation.</p>
+            <ul class="list-group mb-4">
+                <li t-foreach="enrollments" t-as="e" class="list-group-item"><a t-att-href="'/my/trainings/%s/tutoring' % e['id']" t-out="e['name']"/></li>
+            </ul>
+            <section t-if="appointments">
+                <h2>My tutoring appointments</h2>
+                <p><span>Timezone:</span> <t t-out="timezone"/></p>
+                <div t-foreach="appointments" t-as="a" class="card p-3 mb-3"><h3 t-out="a['name']"/><p t-out="a['participant']"/><p t-out="a['start']"/><p t-if="a['state'] == 'cancelled'">Cancelled</p><a t-if="a['meeting_url']" t-att-href="a['meeting_url']" rel="noopener noreferrer">Join tutoring</a></div>
+            </section>
+        </t>
+    </template>
+    <template id="tutoring_slots" name="Reserve Tutoring">
+        <t t-call="portal.portal_layout" additional_title.translate="Tutoring reservations">
         <t t-call="training_management.portal_training_navigation"/><a href="/my/training-bookings">Tutoring reservations</a><h1 t-out="name"/>
         <p><span>Timezone:</span> <t t-out="timezone"/></p>
         <div t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
         <p><span>Included reservations:</span> <t t-out="included"/> · <span>Consumed:</span> <t t-out="used"/></p>
         <p>One confirmed reservation consumes one unit, regardless of its duration.</p>
         <h2>Available tutoring slots</h2><p t-if="not rows">No available tutoring slot.</p>
-        <article t-foreach="rows" t-as="s" class="card p-3 mb-3"><h3 t-out="s['name']"/>
-            <p><t t-out="s['start']"/> → <t t-out="s['end']"/> · <span>Hours:</span> <t t-out="s['duration']"/></p>
-            <p><span t-if="s['kind'] == 'individual'">Individual</span><span t-else="">Collective</span> · <span>Capacity:</span> <t t-out="s['capacity']"/></p>
-            <p class="text-break" style="white-space: pre-wrap" t-out="s['terms']"/>
-            <p t-if="s['refund']"><span>Quota refunded when cancelled no later than:</span> <t t-out="s['deadline']"/></p><p t-else="">Cancellation does not refund the consumed unit.</p>
-            <p t-if="s['booked']">Already booked</p><p t-elif="s['full']">Full</p>
-            <form t-if="s['can_book']" method="post" t-att-action="'/my/trainings/%s/tutoring' % enrollment_id"><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="action" value="reserve"/><input type="hidden" name="slot_id" t-att-value="s['id']"/><input type="hidden" name="request_key" t-att-value="s['key']"/><button type="submit" class="btn btn-primary">Confirm reservation — one unit</button></form>
-        </article>
+        <article t-foreach="rows" t-as="s" class="card p-3 mb-3">
+                <h3 t-out="s['name']"/>
+                <p><t t-out="s['start']"/> → <t t-out="s['end']"/> · <span>Hours:</span> <t t-out="s['duration']"/></p>
+                <p><span t-if="s['kind'] == 'individual'">Individual</span><span t-else="">Collective</span> · <span>Capacity:</span> <t t-out="s['capacity']"/></p>
+                <p class="text-break" style="white-space: pre-wrap" t-out="s['terms']"/>
+                <p t-if="s['refund']"><span>Quota refunded when cancelled no later than:</span> <t t-out="s['deadline']"/></p>
+                <p t-else="">Cancellation does not refund the consumed unit.</p>
+                <p t-if="s['booked']">Already booked</p>
+                <p t-elif="s['full']">Full</p>
+                <form t-if="s['can_book']" method="post" t-att-action="'/my/trainings/%s/tutoring' % enrollment_id"><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="action" value="reserve"/><input type="hidden" name="slot_id" t-att-value="s['id']"/><input type="hidden" name="request_key" t-att-value="s['key']"/><button type="submit" class="btn btn-primary">Confirm reservation — one unit</button></form>
+            </article>
         <h2>My reservations</h2><article t-foreach="bookings" t-as="b" class="card p-3 mb-3"><h3 t-out="b['name']"/><p t-out="b['start']"/>
             <p t-if="b['state'] == 'confirmed'">Confirmed</p><p t-else="">Cancelled</p>
             <p t-if="b['refunded']">Unit refunded</p>
@@ -31,5 +53,6 @@
             <p t-if="b['location']" t-out="b['location']"/><a t-if="b['meeting_url']" t-att-href="b['meeting_url']" rel="noopener noreferrer">Join tutoring</a>
             <form t-if="b['can_cancel']" method="post" t-att-action="'/my/trainings/%s/tutoring' % enrollment_id"><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><input type="hidden" name="action" value="cancel"/><input type="hidden" name="booking_id" t-att-value="b['id']"/><button type="submit" class="btn btn-outline-danger">Cancel reservation</button></form>
         </article>
-    </t></template>
+    </t>
+    </template>
 </odoo>

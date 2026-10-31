@@ -1,6 +1,7 @@
 <odoo>
     <record id="exam_form" model="ir.ui.view">
-        <field name="name">survey.survey.training.exam</field><field name="model">survey.survey</field>
+        <field name="name">survey.survey.training.exam</field>
+        <field name="model">survey.survey</field>
         <field name="inherit_id" ref="survey.survey_survey_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
@@ -13,7 +14,9 @@
             <xpath expr="//sheet" position="inside">
                 <group string="Training Mock Exam" groups="training_management.group_training_coordinator" invisible="not training_program_id and not context.get('training_exam_editor')">
                     <field name="training_program_id" readonly="training_program_id"/>
-                    <field name="training_evaluation_id" readonly="1"/><field name="training_state" readonly="1"/><field name="training_origin_id" readonly="1"/>
+                    <field name="training_evaluation_id" readonly="1"/>
+                    <field name="training_state" readonly="1"/>
+                    <field name="training_origin_id" readonly="1"/>
                     <field name="training_version" readonly="training_state == 'published'"/>
                     <field name="training_revision_reason" readonly="training_state == 'published'"/>
                     <p>Published exams preserve their questions, correction, themes and duration. Create a new version to change them. Mock exams never deliver official certificates.</p>
@@ -22,48 +25,83 @@
         </field>
     </record>
     <record id="question_form" model="ir.ui.view">
-        <field name="name">survey.question.training.exam</field><field name="model">survey.question</field>
+        <field name="name">survey.question.training.exam</field>
+        <field name="model">survey.question</field>
         <field name="inherit_id" ref="survey.survey_question_form"/>
-        <field name="arch" type="xml"><xpath expr="//sheet" position="inside">
-            <group string="Training Mock Exam" groups="training_management.group_training_coordinator" invisible="not training_program_id">
-                <field name="answer_score"/><field name="training_theme"/><field name="training_explanation"/>
-                <field name="training_material_id" options="{'no_create': True}"/>
-            </group>
-        </xpath>
-        <xpath expr="//field[@name='suggested_answer_ids']/list/field[@name='answer_score']" position="attributes">
-            <attribute name="column_invisible">parent.training_program_id or parent.scoring_type == 'no_scoring' or parent.question_type == 'matrix'</attribute>
-        </xpath>
-        <xpath expr="//sheet" position="inside"><field name="training_program_id" invisible="1"/></xpath>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Training Mock Exam" groups="training_management.group_training_coordinator" invisible="not training_program_id">
+                    <field name="answer_score"/>
+                    <field name="training_theme"/>
+                    <field name="training_explanation"/>
+                    <field name="training_material_id" options="{'no_create': True}"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='suggested_answer_ids']/list/field[@name='answer_score']" position="attributes">
+                <attribute name="column_invisible">parent.training_program_id or parent.scoring_type == 'no_scoring' or parent.question_type == 'matrix'</attribute>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="training_program_id" invisible="1"/>
+            </xpath>
         </field>
     </record>
     <record id="activity_form" model="ir.ui.view">
-        <field name="name">training.learning.activity.exam</field><field name="model">training.learning.activity</field>
+        <field name="name">training.learning.activity.exam</field>
+        <field name="model">training.learning.activity</field>
         <field name="inherit_id" ref="training_management.view_learning_activity_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='evaluation_threshold']" position="after"><field name="training_exam_id" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/></xpath>
-            <xpath expr="//div[@name='evaluation_dependency_notice']" position="replace"><p invisible="criterion != 'evaluation'">Assign a published mock exam. Its authoritative result determines completion.</p></xpath>
+            <xpath expr="//field[@name='evaluation_threshold']" position="after">
+                <field name="training_exam_id" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/>
+            </xpath>
+            <xpath expr="//div[@name='evaluation_dependency_notice']" position="replace">
+                <p invisible="criterion != 'evaluation'">Assign a published mock exam. Its authoritative result determines completion.</p>
+            </xpath>
         </field>
     </record>
     <record id="exam_action" model="ir.actions.act_window">
-        <field name="name">Mock Exams</field><field name="res_model">survey.survey</field><field name="view_mode">list,form</field>
-        <field name="domain">[('training_program_id', '!=', False), ('training_evaluation_id', '=', False)]</field><field name="context">{'training_exam_editor': True}</field>
+        <field name="name">Mock Exams</field>
+        <field name="res_model">survey.survey</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('training_program_id', '!=', False), ('training_evaluation_id', '=', False)]</field>
+        <field name="context">{'training_exam_editor': True}</field>
     </record>
     <menuitem id="exam_menu" name="Mock Exams" parent="training_management.menu_training_configuration" action="exam_action" sequence="60" groups="training_management.group_training_coordinator"/>
     <record id="course_exam_form" model="ir.ui.view">
-        <field name="name">training.program.exam</field><field name="model">training.program.version</field>
+        <field name="name">training.program.exam</field>
+        <field name="model">training.program.version</field>
         <field name="inherit_id" ref="training_management.view_training_program_form"/>
-        <field name="arch" type="xml"><xpath expr="//header" position="inside"><button name="action_training_exam" type="object" string="Create Mock Exam" groups="training_management.group_training_coordinator"/></xpath></field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside"><button name="action_training_exam" type="object" string="Create Mock Exam" groups="training_management.group_training_coordinator"/></xpath>
+        </field>
     </record>
     <record id="revise_form" model="ir.ui.view">
-        <field name="name">training.exam.revise.form</field><field name="model">training.exam.revise</field>
-        <field name="arch" type="xml"><form string="Motivated Result Revision"><group><field name="attempt_id" readonly="1"/><field name="reason"/></group>
-            <field name="line_ids"><list editable="bottom" create="false" delete="false"><field name="question_id" readonly="1" force_save="1"/><field name="previous_points" readonly="1" force_save="1"/><field name="maximum" readonly="1" force_save="1"/><field name="points"/></list></field>
-            <footer><button name="action_apply" type="object" string="Record Revision" class="btn-primary"/><button special="cancel" string="Cancel"/></footer>
-        </form></field>
+        <field name="name">training.exam.revise.form</field>
+        <field name="model">training.exam.revise</field>
+        <field name="arch" type="xml">
+            <form string="Motivated Result Revision">
+                <group>
+                    <field name="attempt_id" readonly="1"/>
+                    <field name="reason"/>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom" create="false" delete="false">
+                        <field name="question_id" readonly="1" force_save="1"/>
+                        <field name="previous_points" readonly="1" force_save="1"/>
+                        <field name="maximum" readonly="1" force_save="1"/>
+                        <field name="points"/>
+                    </list>
+                </field>
+                <footer><button name="action_apply" type="object" string="Record Revision" class="btn-primary"/><button special="cancel" string="Cancel"/></footer>
+            </form>
+        </field>
     </record>
     <record id="revise_action" model="ir.actions.act_window">
-        <field name="name">Revise Exam Result</field><field name="res_model">training.exam.revise</field><field name="view_mode">form</field><field name="target">new</field>
-        <field name="binding_model_id" ref="survey.model_survey_user_input"/><field name="binding_view_types">form</field>
+        <field name="name">Revise Exam Result</field>
+        <field name="res_model">training.exam.revise</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="survey.model_survey_user_input"/>
+        <field name="binding_view_types">form</field>
         <field name="group_ids" eval="[(4, ref('training_management.group_training_coordinator'))]"/>
     </record>
 </odoo>

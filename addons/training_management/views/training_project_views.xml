@@ -1,56 +1,111 @@
 <odoo>
     <record id="view_project_rubric_form" model="ir.ui.view">
-        <field name="name">training.project.rubric.form</field><field name="model">training.project.rubric</field>
-        <field name="arch" type="xml"><form><header>
+        <field name="name">training.project.rubric.form</field>
+        <field name="model">training.project.rubric</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
             <button name="action_publish" type="object" string="Publier la grille" class="btn-primary" invisible="state != 'draft'"/>
             <button name="action_new_version" type="object" string="Nouvelle version" invisible="state != 'published'"/>
             <field name="state" widget="statusbar"/>
-        </header><sheet><group><field name="name" readonly="state != 'draft'"/><field name="company_id" readonly="state != 'draft'" groups="base.group_multi_company"/><field name="previous_id" readonly="1"/></group>
-            <field name="criterion_ids" readonly="state != 'draft'"><list editable="bottom"><field name="sequence" widget="handle"/><field name="name"/><field name="level_0"/><field name="level_1"/><field name="level_2"/><field name="level_3"/></list></field>
-            <p>Chaque critère décrit les quatre niveaux. Publier fige cette version ; une nouvelle version conserve la précédente.</p>
-        </sheet></form></field>
+        </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="state != 'draft'"/>
+                        <field name="company_id" readonly="state != 'draft'" groups="base.group_multi_company"/>
+                        <field name="previous_id" readonly="1"/>
+                    </group>
+                    <field name="criterion_ids" readonly="state != 'draft'">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="level_0"/>
+                            <field name="level_1"/>
+                            <field name="level_2"/>
+                            <field name="level_3"/>
+                        </list>
+                    </field>
+                    <p>Chaque critère décrit les quatre niveaux. Publier fige cette version ; une nouvelle version conserve la précédente.</p>
+                </sheet>
+            </form>
+        </field>
     </record>
-    <record id="view_project_rubric_list" model="ir.ui.view"><field name="name">training.project.rubric.list</field><field name="model">training.project.rubric</field><field name="arch" type="xml"><list><field name="name"/><field name="state"/><field name="previous_id"/><field name="company_id" groups="base.group_multi_company"/></list></field></record>
-    <record id="action_project_rubrics" model="ir.actions.act_window"><field name="name">Grilles de projets pratiques</field><field name="res_model">training.project.rubric</field><field name="view_mode">list,form</field></record>
+    <record id="view_project_rubric_list" model="ir.ui.view">
+        <field name="name">training.project.rubric.list</field>
+        <field name="model">training.project.rubric</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="previous_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_project_rubrics" model="ir.actions.act_window">
+        <field name="name">Grilles de projets pratiques</field>
+        <field name="res_model">training.project.rubric</field>
+        <field name="view_mode">list,form</field>
+    </record>
     <menuitem id="menu_project_rubrics" name="Grilles de projets pratiques" parent="menu_training_configuration" action="action_project_rubrics" groups="training_management.group_training_coordinator" sequence="65"/>
     <record id="view_learning_project" model="ir.ui.view">
-        <field name="name">training.learning.activity.project</field><field name="model">training.learning.activity</field><field name="inherit_id" ref="view_learning_activity_form"/>
-        <field name="arch" type="xml"><xpath expr="//label[@for='instructions']" position="before">
-            <group string="Projet pratique évalué (facultatif)">
-                <field name="project_rubric_id" domain="[('state', '=', 'published'), ('company_id', '=', company_id)]" options="{'no_create': True}" readonly="progress_ids"/>
-                <field name="project_deliverable" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
-                <field name="project_service_reference" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
-                <field name="project_retention_id" domain="[('approved_at', '!=', False), ('company_id', '=', company_id)]" options="{'no_create': True}" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
-                <p invisible="not project_rubric_id">Choisir Validation du tuteur. Le tuteur affecté doit aussi avoir une mission pédagogique et une habilitation Projet pratique en cours. Les remises simples restent disponibles sans grille.</p>
-            </group>
-        </xpath></field>
+        <field name="name">training.learning.activity.project</field>
+        <field name="model">training.learning.activity</field>
+        <field name="inherit_id" ref="view_learning_activity_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='instructions']" position="before">
+                <group string="Projet pratique évalué (facultatif)">
+                    <field name="project_rubric_id" domain="[('state', '=', 'published'), ('company_id', '=', company_id)]" options="{'no_create': True}" readonly="progress_ids"/>
+                    <field name="project_deliverable" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
+                    <field name="project_service_reference" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
+                    <field name="project_retention_id" domain="[('approved_at', '!=', False), ('company_id', '=', company_id)]" options="{'no_create': True}" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
+                    <p invisible="not project_rubric_id">Choisir Validation du tuteur. Le tuteur affecté doit aussi avoir une mission pédagogique et une habilitation Projet pratique en cours. Les remises simples restent disponibles sans grille.</p>
+                </group>
+            </xpath>
+        </field>
     </record>
     <template id="portal_project_content" inherit_id="portal_learning_content" name="Projets pratiques privés">
         <xpath expr="//h3[@t-out=&quot;a['name']&quot;]" position="after">
             <t t-if="a['project']">
-                <h4>Livrable attendu</h4><p class="text-break" style="white-space: pre-wrap" t-out="a['project_deliverable']"/>
+                <h4>Livrable attendu</h4>
+                <p class="text-break" style="white-space: pre-wrap" t-out="a['project_deliverable']"/>
                 <p>Grille : <t t-out="a['project_grid']['name']"/> · version <t t-out="a['project_grid']['id']"/></p>
-                <ul class="list-group mb-2"><li class="list-group-item" t-foreach="a['project_grid']['criteria']" t-as="c">
-                    <strong t-out="c['name']"/><ul><li t-foreach="a['project_levels']" t-as="level"><t t-out="level[1]"/> : <t t-out="c['levels'][int(level[0])]"/></li></ul>
-                </li></ul>
+                <ul class="list-group mb-2">
+                    <li class="list-group-item" t-foreach="a['project_grid']['criteria']" t-as="c">
+                    <strong t-out="c['name']"/><ul>
+                            <li t-foreach="a['project_levels']" t-as="level"><t t-out="level[1]"/> : <t t-out="c['levels'][int(level[0])]"/></li>
+                        </ul>
+                </li>
+                </ul>
                 <p t-if="is_tutor and not a['project_allowed']" role="status">Une habilitation Projet pratique en cours est requise pour consulter et évaluer les travaux.</p>
             </t>
         </xpath>
-        <xpath expr="//div[@t-if=&quot;learning['error']&quot;]" position="attributes"><attribute name="id">learning-feedback</attribute><attribute name="tabindex">-1</attribute><attribute name="autofocus">autofocus</attribute></xpath>
+        <xpath expr="//div[@t-if=&quot;learning['error']&quot;]" position="attributes">
+            <attribute name="id">learning-feedback</attribute>
+            <attribute name="tabindex">-1</attribute>
+            <attribute name="autofocus">autofocus</attribute>
+        </xpath>
         <xpath expr="//div[@t-out=&quot;entry['body']&quot;]" position="after">
             <t t-if="entry['project_snapshot']">
                 <p>Grille conservée : <t t-out="entry['project_snapshot']['rubric']['name']"/> · version <t t-out="entry['project_snapshot']['rubric']['id']"/></p>
-                <ul t-if="entry['project_snapshot']['ratings']"><li t-foreach="entry['project_snapshot']['rubric']['criteria']" t-as="c">
+                <ul t-if="entry['project_snapshot']['ratings']">
+                    <li t-foreach="entry['project_snapshot']['rubric']['criteria']" t-as="c">
                     <strong t-out="c['name']"/> : <t t-out="entry['project_snapshot']['rubric']['level_labels'][int(entry['project_snapshot']['ratings'][str(c['id'])])]"/> — <t t-out="c['levels'][int(entry['project_snapshot']['ratings'][str(c['id'])])]"/>
-                </li></ul>
+                </li>
+                </ul>
             </t>
         </xpath>
     </template>
     <template id="portal_project_work_form" inherit_id="portal_learning_work_form" name="Private Project Assessment Form">
-        <xpath expr="//form[contains(@t-if, &quot;a['criterion'] in&quot;)]" position="attributes"><attribute name="t-if">a['available'] and a['project_allowed'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])</attribute></xpath>
-        <xpath expr="//textarea[@name='body'][contains(@t-att-id, 'work-')]" position="attributes"><attribute name="t-att-required">is_tutor and a['project']</attribute></xpath>
+        <xpath expr="//form[contains(@t-if, &quot;a['criterion'] in&quot;)]" position="attributes">
+            <attribute name="t-if">a['available'] and a['project_allowed'] and a['criterion'] in ('submission', 'validation') and (not is_tutor or a['latest_submission'])</attribute>
+        </xpath>
+        <xpath expr="//textarea[@name='body'][contains(@t-att-id, 'work-')]" position="attributes">
+            <attribute name="t-att-required">is_tutor and a['project']</attribute>
+        </xpath>
         <xpath expr="//textarea[@name='body'][contains(@t-att-id, 'work-')]" position="after">
-            <fieldset t-if="is_tutor and a['project']" class="my-3"><legend>Évaluation par critère</legend>
+            <fieldset t-if="is_tutor and a['project']" class="my-3">
+                <legend>Évaluation par critère</legend>
                 <div t-foreach="a['project_grid']['criteria']" t-as="c" class="mb-2">
                     <label t-att-for="'project-rating-%s-%s' % (a['id'], c['id'])" class="form-label" t-out="c['name']"/>
                     <select required="required" class="form-select" t-att-id="'project-rating-%s-%s' % (a['id'], c['id'])" t-att-name="'project_rating_%s' % c['id']">

@@ -1,9 +1,12 @@
 <odoo>
     <template id="portal_materials" name="Private PDFs">
-        <h2 id="training-materials">Private PDFs</h2><p t-if="not materials">No private PDF is currently available.</p>
-        <ul class="list-group"><li t-foreach="materials" t-as="material" class="list-group-item">
+        <h2 id="training-materials">Private PDFs</h2>
+        <p t-if="not materials">No private PDF is currently available.</p>
+        <ul class="list-group">
+            <li t-foreach="materials" t-as="material" class="list-group-item">
             <a t-att-href="material['url']"><t t-out="material['name']"/> — <t t-out="material['version']"/></a>
-        </li></ul>
+        </li>
+        </ul>
     </template>
     <template id="portal_training" name="My Training Details">
         <t t-call="portal.portal_layout" additional_title.translate="My training"><a href="/my/trainings">My training</a><h1 t-out="name"/>
@@ -11,21 +14,31 @@
             <nav aria-label="Training sections" class="d-flex flex-wrap gap-3 mb-3">
                 <a href="#training-activities">Activities</a><a href="#training-schedule">Schedule</a><a href="#training-materials">PDFs</a><a href="#training-help">Private help</a>
             </nav>
-            <div class="card p-3 mb-4"><h2 class="h5">Activities to complete</h2>
+            <div class="card p-3 mb-4">
+                <h2 class="h5">Activities to complete</h2>
                 <p t-if="not any(a['available'] and not a['complete'] for a in learning['activities'])">No available activity is waiting for completion.</p>
-                <ul class="mb-0"><t t-foreach="learning['activities']" t-as="a"><li t-if="a['available'] and not a['complete']"><a t-att-href="'#learning-activity-%s' % a['id']" t-out="a['name']"/><span t-if="a['deadline']"> · <t t-out="a['deadline']"/></span></li></t></ul>
+                <ul class="mb-0">
+                    <t t-foreach="learning['activities']" t-as="a">
+                        <li t-if="a['available'] and not a['complete']"><a t-att-href="'#learning-activity-%s' % a['id']" t-out="a['name']"/><span t-if="a['deadline']"> · <t t-out="a['deadline']"/></span></li>
+                    </t>
+                </ul>
             </div>
             <h2>Applicable programme</h2><p t-out="programme"/>
             <a t-if="programme_url" t-att-href="programme_url" class="btn btn-outline-primary mb-3">Download Programme PDF</a>
             <h2 id="training-schedule">Schedule</h2><p t-if="not sessions" class="o_training_empty_schedule">No scheduled session.</p>
-            <ul class="list-group mb-3"><li t-foreach="sessions" t-as="session" class="list-group-item">
+            <ul class="list-group mb-3">
+                <li t-foreach="sessions" t-as="session" class="list-group-item">
                 <strong t-out="session['name']"/><p><t t-out="session['start']"/> → <t t-out="session['end']"/> (<t t-out="session['timezone']"/>)</p>
                 <p>Reference timezone: <t t-out="session['reference_timezone']"/></p><p t-out="session['location']"/>
                 <a t-if="session['meeting_url']" t-att-href="session['meeting_url']" rel="noopener noreferrer">Join remote session</a>
-            </li></ul><t t-call="training_management.portal_materials"/>
+            </li>
+            </ul><t t-call="training_management.portal_materials"/>
         </t>
     </template>
     <template id="portal_trainer_materials" inherit_id="portal_trainer_session" name="Assigned Session PDFs">
-        <xpath expr="//h2" position="before"><t t-set="materials" t-value="session['materials']"/><t t-call="training_management.portal_materials"/></xpath>
+        <xpath expr="//h2" position="before">
+            <t t-set="materials" t-value="session['materials']"/>
+            <t t-call="training_management.portal_materials"/>
+        </xpath>
     </template>
 </odoo>

@@ -1,27 +1,44 @@
 <odoo>
     <template id="orientation_catalogue" inherit_id="training_management.public_catalogue">
-        <xpath expr="//h1" position="after"><p><a href="/formations/orientation">Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif</a></p></xpath>
+        <xpath expr="//h1" position="after">
+            <p><a href="/formations/orientation">Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif</a></p>
+        </xpath>
     </template>
     <template id="orientation_list" name="Orientation diagnostics">
-        <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
+        <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a><h1>Diagnostic d’orientation</h1>
             <p>Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez aussi consulter directement le catalogue.</p>
             <p t-if="not diagnostics">Aucun questionnaire disponible. Consultez les fiches formation pour demander conseil.</p>
-            <ul><li t-foreach="diagnostics" t-as="d"><a t-att-href="'/formations/orientation/%s' % d[0]" t-out="d[1]"/></li></ul>
-        </div></t>
+            <ul>
+                    <li t-foreach="diagnostics" t-as="d"><a t-att-href="'/formations/orientation/%s' % d[0]" t-out="d[1]"/></li>
+                </ul>
+        </div>
+        </t>
     </template>
     <template id="orientation_form" name="Optional orientation diagnostic">
-        <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation"><div class="container py-4 o_training_public_page o_not_editable" id="wrap">
+        <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a><h1 t-out="diagnostic['title']"/>
             <p>Facultatif, avant achat. Finalité : vous proposer une orientation expliquée. Vos réponses sont traitées pour afficher ce résultat uniquement, sans enregistrement, sans conservation ni transmission à un conseiller.</p>
             <p>Ce diagnostic ne vaut ni positionnement pédagogique, ni validation des prérequis, ni admission, ni ouverture d’accès. Il ne garantit aucun résultat.</p>
             <section t-if="submitted" aria-live="polite" class="alert alert-info">
-                <t t-if="result"><h2>Orientation conseillée : <t t-out="result['name']"/></h2><p t-out="result['explanation']"/>
-                    <p>Cette recommandation s’appuie sur :</p><ul><li t-foreach="result['criteria']" t-as="criterion"><t t-out="criterion[0]"/> : <t t-out="criterion[1]"/></li></ul>
-                    <ul><li t-foreach="result['programs']" t-as="p"><a t-att-href="'/formations/%s' % p[0]" t-out="p[1]"/></li></ul>
-                </t>
-                <t t-else=""><h2>Demandons conseil à une personne</h2><p>Les réponses sont insuffisantes, contradictoires ou ne permettent pas de proposer une orientation disponible sans ambiguïté. Un échange humain vous aidera à choisir.</p></t>
-            </section>
+                    <t t-if="result">
+                        <h2>Orientation conseillée : <t t-out="result['name']"/></h2>
+                        <p t-out="result['explanation']"/>
+                        <p>Cette recommandation s’appuie sur :</p>
+                        <ul>
+                            <li t-foreach="result['criteria']" t-as="criterion"><t t-out="criterion[0]"/> : <t t-out="criterion[1]"/></li>
+                        </ul>
+                        <ul>
+                            <li t-foreach="result['programs']" t-as="p"><a t-att-href="'/formations/%s' % p[0]" t-out="p[1]"/></li>
+                        </ul>
+                    </t>
+                    <t t-else="">
+                        <h2>Demandons conseil à une personne</h2>
+                        <p>Les réponses sont insuffisantes, contradictoires ou ne permettent pas de proposer une orientation disponible sans ambiguïté. Un échange humain vous aidera à choisir.</p>
+                    </t>
+                </section>
             <p>Pour un conseil humain : <span t-out="diagnostic['contact']"/>.
                 <a t-if="guided_request" href="/formations/demande?advice=1&amp;kind=individual">Demander conseil</a>
             </p>
@@ -34,6 +51,7 @@
                 </fieldset>
                 <button class="btn btn-primary">Voir mon orientation</button>
             </form>
-        </div></t>
+        </div>
+        </t>
     </template>
 </odoo>

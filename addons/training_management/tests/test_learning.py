@@ -8,6 +8,8 @@ from unittest.mock import patch
 from uuid import uuid4
 
 from PIL import Image
+from lxml import html
+from werkzeug.datastructures import FileStorage
 
 from odoo import Command
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -15,6 +17,7 @@ from odoo.tests import Form, HttpCase, new_test_user, tagged
 from odoo.tools.misc import limited_field_access_token
 
 from .test_material import PDF, MaterialCase
+from ..models.training_learning_service import MAX_LEARNING_UPLOAD_SIZE
 
 
 class LearningCase(MaterialCase):
@@ -470,6 +473,79 @@ class TestLearning(LearningCase):
 
 @tagged("post_install", "-at_install")
 class TestLearningHttp(LearningCase, HttpCase):
+    def test_upload_boundaries_and_oversize_submission_keep_draft(self):
+        self.authenticate(self.portal.login, self.portal.login)
+        for delta in (-1, 0, 1):
+            with self.subTest(delta=delta):
+                _, activity, enrollment = self.setup_learning()
+                size = MAX_LEARNING_UPLOAD_SIZE + delta
+                data = b"x" * size
+                calls = []
+
+                def bounded_read(upload, requested=-1):
+                    self.assertEqual(requested, MAX_LEARNING_UPLOAD_SIZE + 1)
+                    calls.append(requested)
+                    return upload.stream.read(requested)
+
+                with patch.object(FileStorage, "read", bounded_read, create=True):
+                    response = self.url_open(
+                        f"/my/trainings/{enrollment.id}/learning",
+                        data={
+                            "csrf_token": self.csrf_token(),
+                            "kind": "submission",
+                            "activity_id": activity.id,
+                            "request_key": str(uuid4()),
+                            "body": "Fictional draft <keep this text>",
+                        },
+                        files={"file": ("work.txt", BytesIO(data), "text/plain")},
+                        allow_redirects=False,
+                    )
+                self.assertEqual(calls, [MAX_LEARNING_UPLOAD_SIZE + 1])
+                entries = self.env["training.learning.entry"].search([("enrollment_id", "=", enrollment.id)])
+                if delta <= 0:
+                    self.assertEqual(response.status_code, 303)
+                    self.assertEqual(len(entries), 1)
+                    self.assertEqual(entries.sha256, hashlib.sha256(data).hexdigest())
+                    self.assertEqual(len(entries.data.content), size)
+                else:
+                    self.assertEqual(response.status_code, 400)
+                    self.assertFalse(entries)
+                    page = html.fromstring(response.content)
+                    self.assertIn("20", page.xpath("//*[@role='alert']")[0].text_content())
+                    self.assertEqual(
+                        page.xpath(f"//textarea[@id='work-{activity.id}']")[0].text_content(),
+                        "Fictional draft <keep this text>",
+                    )
+                    self.assertFalse(self.service()._progress(enrollment, activity).latest_submission_id)
+
+    def test_oversize_correction_keeps_tutor_draft_and_original_work(self):
+        _, activity, enrollment = self.setup_learning()
+        entry = self.post(enrollment, activity_id=activity.id, data=PDF, filename="work.pdf")
+        progress = self.service()._progress(enrollment, activity)
+        revision = progress.revision
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        response = self.url_open(
+            f"/my/training-tutoring/{enrollment.id}/learning",
+            data={
+                "csrf_token": self.csrf_token(),
+                "kind": "correction",
+                "activity_id": activity.id,
+                "parent_id": entry.id,
+                "revision": revision,
+                "decision": "accepted",
+                "request_key": str(uuid4()),
+                "body": "Fictional tutor draft kept after oversize upload",
+            },
+            files={"file": ("correction.txt", BytesIO(b"x" * (MAX_LEARNING_UPLOAD_SIZE + 1)), "text/plain")},
+            allow_redirects=False,
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Fictional tutor draft kept after oversize upload", response.text)
+        self.assertEqual(progress.revision, revision)
+        self.assertEqual(progress.latest_submission_id, entry)
+        self.assertEqual(entry.data.content, PDF)
+        self.assertEqual(self.env["training.learning.entry"].search_count([("enrollment_id", "=", enrollment.id)]), 1)
+
     def form_post(self, enrollment, *, tutor=False, kind="question", **values):
         path = "/my/training-tutoring/%s/learning" if tutor else "/my/trainings/%s/learning"
         return self.url_open(

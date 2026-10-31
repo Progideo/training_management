@@ -9,6 +9,7 @@ from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 from .material_portal import TrainingParticipantPortal
+from ..models.training_learning_service import MAX_LEARNING_UPLOAD_SIZE
 
 
 def learning_values(enrollment):
@@ -141,7 +142,8 @@ class LearningPortal(http.Controller):
                         if k.startswith("project_rating_")
                     }
                     or None,
-                    data=uploaded.read() if uploaded else b"",
+                    # Read one extra byte to detect oversize files without loading the rest.
+                    data=uploaded.read(MAX_LEARNING_UPLOAD_SIZE + 1) if uploaded else b"",
                     filename=uploaded.filename if uploaded else "",
                 )
         except (AccessError, MissingError):

@@ -1,3 +1,13 @@
 <odoo>
-    <record id="view_evaluation_survey" model="ir.ui.view"><field name="name">training.evaluation.survey</field><field name="model">training.evaluation</field><field name="inherit_id" ref="training_management.view_evaluation_form"/><field name="arch" type="xml"><xpath expr="//header" position="inside"><button name="action_questionnaire" type="object" string="Questionnaire" groups="training_management.group_training_coordinator"/></xpath><xpath expr="//field[@name='criteria']" position="after"><field name="survey_id" readonly="1" options="{'no_open': True}"/></xpath></field></record>
+    <record id="view_evaluation_survey" model="ir.ui.view">
+        <field name="name">training.evaluation.survey</field>
+        <field name="model">training.evaluation</field>
+        <field name="inherit_id" ref="training_management.view_evaluation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside"><button name="action_questionnaire" type="object" string="Questionnaire" groups="training_management.group_training_coordinator"/></xpath>
+            <xpath expr="//field[@name='criteria']" position="after">
+                <field name="survey_id" readonly="1" options="{'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
