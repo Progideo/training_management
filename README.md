@@ -1,17 +1,36 @@
 # Training Management
 
 Module de gestion de formations pour Odoo Community `20.0-20261015`.
-Il est livré par incréments (S01 catalogue, S02 circuit commercial, S03 réalisations
-et inscriptions, S03.1 corrections de revue) ; le détail est dans l'[index documentaire](docs/README.md).
+Il couvre le catalogue, les inscriptions, les parcours pédagogiques, les présences,
+les attestations et le suivi qualité, avec des espaces internes et portail.
+Le socle, P01 à P14, P16 et P20 sont livrés ; P15 est annulé et P17 à P19 restent
+reportés. Le détail et les décisions sont dans l'[index documentaire](docs/README.md).
 
 ## Installation
 
 Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer
-`training_management` (dépend de `base` et `mail`) et, pour le circuit commercial,
-`training_management_sale` (dépend des Ventes et du CRM). Données de test fictives
-uniquement. Les tests et la CI installent et mettent à jour des bases jetables.
-Avec Website, le pont `training_management_website` ajoute le menu natif du catalogue,
-sans rendre Website obligatoire pour le socle. Voir [navigation et thèmes](docs/usability-theme.md).
+`training_management` et les intégrations nécessaires. Dépendances directes des manifests :
+
+| Addon | Usage | Dépendances |
+| --- | --- | --- |
+| `training_management` | Socle et portail de formation | `base`, `mail`, `resource`, `portal`, `web`, `base_report_wkhtmltox` |
+| `training_management_sale` | Ventes et CRM | `training_management`, `sale_management`, `sale_crm` |
+| `training_management_survey` | Examens blancs et questionnaires natifs | `training_management`, `survey` |
+| `training_management_website` | Menu du catalogue dans Website | `training_management`, `website` |
+| `sale_invoice_address_fiscal` | Option fiscale indépendante, selon l’adresse de facturation | `sale_management` |
+
+Le pont Website s’installe automatiquement avec le socle et Website ; Website
+reste facultatif. Voir [navigation et thèmes](docs/usability-theme.md).
+L’option fiscale s’installe séparément et n’est requise par aucun addon de formation.
+
+## Validation du module
+
+La [recette de livraison L01](docs/l01-launch-acceptance.md) est clôturée dans
+[#31](https://github.com/Progideo/training_management/issues/31). Les tests techniques,
+la recette humaine et les conditions d’exploitation constituent des preuves
+distinctes. Les réserves humaines restantes sont explicites dans L01 ; sa clôture
+ne vaut ni validation universelle de compatibilité ni autorisation de production.
+Les tests et la [CI](docs/ci.md) utilisent des données fictives et des bases jetables.
 
 ## Périmètre du module
 

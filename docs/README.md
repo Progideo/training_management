@@ -73,10 +73,10 @@ P09–P16 se lisent avec cette annulation. Les fichiers synchronisés sous `sour
 ne sont pas modifiés : la divergence avec l’import d’origine est volontaire et tracée.
 
 Les empreintes ci-dessus restent celles de l’import initial. Empreinte courante
-SHA-256 de la spécification amendée (y compris P20, #105) :
+SHA-256 de la spécification amendée (y compris P20, #105, et l’émargement par demi-journée) :
 
 ```text
-56a3f02dcb753128c56638808f9f5b991d63d2322e27aa9f937d17b568bbdf91  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+9b1fc343686a52ecafa368edfbed02a17423275f94928da0ca6c73d40faf4144  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments
@@ -119,7 +119,7 @@ SHA-256 de la spécification amendée (y compris P20, #105) :
 | P16 — préparation des statuts et alertes | [p16-session-status-alerts.md](p16-session-status-alerts.md) |
 | C06 — paramètres natifs au déploiement | [c06-launch-settings.md](c06-launch-settings.md) |
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
-| L01 — recette intégrée de lancement | [l01-launch-acceptance.md](l01-launch-acceptance.md) |
+| L01 — recette intégrée du module | [l01-launch-acceptance.md](l01-launch-acceptance.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et

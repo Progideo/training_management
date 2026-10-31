@@ -1,9 +1,12 @@
-# L01 — Recette intégrée du lancement
+# L01 — Recette intégrée du module
 
 Référence : [#31](https://github.com/Progideo/training_management/issues/31),
-R01–R09 et P01–P08. Les résultats et écarts d’exécution restent dans l’issue et
-les pull requests. Odoo 19 demeure la référence opérationnelle jusqu’à validation
-d’Odoo 20 ; cette recette n’autorise ni reprise réelle ni ouverture de production.
+R01–R09, P01–P14 et P16 ; P15 est annulé. La recette de livraison du module est
+clôturée dans cette issue. Les résultats et écarts d’exécution restent dans les
+issues et pull requests, notamment [#100](https://github.com/Progideo/training_management/pull/100).
+P20 dispose de sa [recette complémentaire](p20-verifiable-certificates.md).
+La bascule de chaque organisme depuis Odoo 19 relève de son exploitation ; cette
+clôture n’autorise ni reprise réelle ni ouverture de production.
 
 ## Méthode
 
@@ -61,8 +64,10 @@ Réutiliser les preuves CI du même arbre fonctionnel pour les cas unitaires,
 HTTP, droits, dates/DST, migrations et courses. Ne relancer que les parcours
 affectés ou un risque nouvellement identifié. Les résultats, écarts et limites
 de chaque exécution restent dans la PR, avec commit, profils et journaux.
-La recette de développement ne clôture pas C06, M01 ou L01 et n’autorise aucune
-fusion, ouverture, migration réelle ni activation d’envoi.
+Une exécution de développement ne vaut pas visa humain et n’autorise aucune
+fusion, ouverture, migration réelle ni activation d’envoi. Les exigences de
+présence courantes sont celles de l’[émargement par demi-journée](s07-attendance.md) ;
+les scénarios de présence partielle vérifient la conservation des anciennes preuves.
 
 ## Qualification des preuves
 
@@ -72,6 +77,17 @@ comportement JavaScript, l’ergonomie clavier/mobile ni une vraie coupure rése
 compléter ces points par une recette navigateur bornée et qualifier les limites.
 L’extraction de texte des PDF vérifie leur lecture, pas toute leur mise en page.
 
-L01 reste ouvert tant que la reprise réelle nécessaire, la seconde vérification
-humaine, les paramètres C06 et les conditions d’exploitation ne sont pas validés.
-Un visa simulé par des comptes de test n’est pas un contrôle humain indépendant.
+La session humaine guidée décrite dans #100 couvre une partie des parcours.
+Les opérations financières et entreprise, l’émargement électronique en direct
+et l’ensemble des attestations n’y ont pas été contrôlés intégralement. La clôture
+de #31 ne transforme pas leurs preuves automatisées en validation humaine.
+Les évolutions ultérieures, dont les demi-journées et P20, conservent leurs propres
+critères de recette. Un visa simulé par des comptes de test n’est pas un contrôle
+humain indépendant.
+
+La reprise réelle, les paramètres d’envoi, l’hébergement, les sauvegardes, le PV
+de bascule et les obligations locales d’un organisme sont suivis dans son dossier
+d’exploitation, conformément à [#101](https://github.com/Progideo/training_management/pull/101).
+Leur séparation ne les déclare pas achevés. Les tests et la sécurité du module
+restent dans ce dépôt ; la [préparation de reprise](m01-migration-preparation.md)
+et les [paramètres natifs](c06-launch-settings.md) restent des références techniques.
