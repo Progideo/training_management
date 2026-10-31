@@ -27,7 +27,8 @@ et [la navigation et les thèmes](usability-theme.md).
 
 ## Validation continue
 
-Voir [CI Odoo : scénarios, couverture, diagnostic et mesures](ci.md).
+Voir [CI Odoo : scénarios, couverture, diagnostic et mesures](ci.md) et
+[les parcours navigateur exclusivement manuels](manual-browser.md).
 
 ## Provenance et statut des documents importés
 
