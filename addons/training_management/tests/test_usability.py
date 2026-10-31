@@ -118,11 +118,11 @@ class TestUsability(AttendanceCase, HttpCase):
         _delivery, _session, enrollment = self.scheduled()
         action = self.env.ref("training_management.action_enrollment_postpone")
         context = {"active_model": enrollment._name, "active_id": enrollment.id, "active_ids": enrollment.ids}
-        window = action.with_user(self.coordinator).with_context(context).run()
+        window = action.with_user(self.coordinator).with_context(**context).run()
         self.assertEqual(window["res_model"], "training.enrollment.operation")
         self.assertEqual(enrollment.state, "confirmed")
         with self.assertRaises(AccessError):
-            action.with_user(self.portal).with_context(context).run()
+            action.with_user(self.portal).with_context(**context).run()
 
     def test_native_entry_opens_catalogue_for_reader_without_teaching_mission(self):
         action = self.env["training.dashboard.line"].with_user(self.reader).action_open_training()
