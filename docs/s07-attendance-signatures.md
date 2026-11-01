@@ -97,7 +97,8 @@ La mise à jour ajoute un profil privé et des champs facultatifs aux événemen
 Elle ne crée aucune signature pour les anciennes déclarations ou pièces papier.
 Les attestations et minutes existantes restent calculées sur les décisions S07.
 
-1. Enregistrer un dessin pour un participant et un formateur ; signer une matinée
+1. Avec des comptes sans signature préenregistrée, enregistrer un premier dessin
+   pour un participant et un formateur et vérifier sa conservation après rechargement ; signer une matinée
    présente et une après-midi absente. Vérifier pastille et dessin avant contrôle.
 2. Contrôler les parties avec deux formateurs ; vérifier x/y puis état final,
    minutes, détail et refus hors affectation ou auto-validation.
