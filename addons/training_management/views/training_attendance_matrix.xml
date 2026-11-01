@@ -59,7 +59,7 @@
             <div t-if="has_signature"><p>Current signature</p><img src="/my/training-signature/image" alt="My saved signature" width="240" height="80" class="object-fit-contain"/></div>
             <form method="post" class="my-3">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                <input type="hidden" name="version" t-att-value="version"/>
+                <input type="hidden" name="version" t-att-value="str(version)"/>
                 <input type="hidden" name="drawing"/>
                 <p>Draw your signature, or upload a PNG drawing as an accessible alternative.</p>
                 <owl-component name="training_management.PersonalSignature"/>

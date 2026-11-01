@@ -183,8 +183,43 @@ class TestAttendanceSignatures(AttendanceCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         self.env.invalidate_all()
         self.assertFalse(self.env["training.attendance.signature"].with_user(self.portal)._current().drawing)
+
         response = self.url_open(
             path, data={**payload, "operation": "save", "accepted": "yes", "drawing": self.signature_png}
         )
         self.assertIn("alert-danger", response.text)
         self.assertFalse(self.env["training.attendance.signature"].with_user(self.portal)._current().drawing)
+
+    def test_first_signature_uses_rendered_zero_version_and_survives_reload(self):
+        path = "/my/training-signature"
+        for existing_empty_profile in (False, True):
+            user = new_test_user(
+                self.env, login=f"first_signature_{existing_empty_profile}", groups="base.group_portal"
+            )
+            personal = self.env["training.attendance.signature"].with_user(user)
+            if existing_empty_profile:
+                personal._current(lock=True)
+            self.authenticate(user.login, user.login)
+            response = self.url_open(path)
+            tree = html.fromstring(response.content)
+            payload = {i.get("name"): i.get("value", "") for i in tree.xpath("//form//input[@type='hidden']")}
+            self.assertEqual(payload["version"], "0")
+            response = self.url_open(
+                path, data={**payload, "operation": "save", "accepted": "yes", "drawing": self.signature_png}
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("saved=1", response.url)
+            self.env.invalidate_all()
+            saved = personal._current()
+            self.assertEqual(saved.version, 1)
+            original = bytes(saved.drawing)
+            page = self.url_open(path)
+            self.assertTrue(html.fromstring(page.content).xpath("//img[@src='/my/training-signature/image']"))
+            self.assertEqual(self.url_open(path + "/image").content, original)
+            stale = self.url_open(
+                path, data={**payload, "operation": "save", "accepted": "yes", "drawing": self.signature_png}
+            )
+            self.assertIn("alert-danger", stale.text)
+            self.env.invalidate_all()
+            self.assertEqual(personal._current().version, 1)
+            self.assertEqual(bytes(personal._current().drawing), original)
