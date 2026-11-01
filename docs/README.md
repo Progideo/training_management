@@ -4,6 +4,12 @@ Point d’entrée documentaire pour le dépôt `Progideo/training_management`.
 Les besoins et leur avancement restent dans les issues ; les changements et
 leurs validations dans les pull requests ; les décisions durables dans la documentation.
 
+## Manuel utilisateur
+
+Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,
+flux, règles métier et captures récentes sur données fictives réalistes.
+Il complète les décisions techniques ci-dessous.
+
 ## Ordre de lecture et autorité
 
 1. [AGENTS.md](../AGENTS.md) : consignes applicables au dépôt.
