@@ -5,8 +5,9 @@ Version documentée
 ------------------
 
 Ce manuel décrit le dépôt ``Progideo/training_management`` au commit
-``27e9e96b8164a69d9adaaba3982c34572cd97f0f``, identique au sommet de la branche
-principale vérifié le 1 novembre 2026. Les règles sont relues dans la
+``27e9e96b8164a69d9adaaba3982c34572cd97f0f``. Le chapitre des présences est
+actualisé pour la version ``20.0.2.11.0``, livrée par la PR #112 au commit
+``8393622d9e8978f7f1baabf4efff10d4b56bb7f9`` le 1 novembre 2026. Les règles sont relues dans la
 spécification amendée, les décisions durables, les modèles, vues et traductions
 du dépôt. Les spécifications historiques ne sont pas traitées comme une liste
 de boutons disponibles.
@@ -54,7 +55,7 @@ de retrouver le détail des règles sans dupliquer les documents techniques.
    * - Examens blancs
      - ``s06-mock-exams.md`` ; modèles, contrôleurs et vues de ``training_management_survey``.
    * - Formateur et présences
-     - ``s04-preparation-sessions.md``, ``s07-attendance.md``, ``review-experience-performance.md``, ``review-access-continuity.md``.
+     - ``s04-preparation-sessions.md``, ``s07-attendance.md``, ``s07-attendance-signatures.md`` (#111/#112), ``review-experience-performance.md``, ``review-access-continuity.md``.
    * - Évaluations et retours
      - ``s091-evaluations.md``, ``s092-feedback.md`` ; services d'évaluation et de campagnes.
    * - Après formation et publications
@@ -70,7 +71,10 @@ Captures et données de démonstration
 ------------------------------------
 
 Les captures du manuel sont produites à nouveau le **1 novembre 2026** sur
-une base locale isolée, avec le même code de référence. Les tâches planifiées
+une base locale isolée, avec le code de référence indiqué dans ``screenshots.json``. Les deux
+captures de signatures utilisent le code de la PR #112, identique pour les
+addons au commit de livraison ci-dessus ; leurs libellés sont en anglais et
+leurs comptes et dessins sont fictifs. Les tâches planifiées
 et serveurs de courrier sortant sont désactivés pour cette base. Elle n'utilise
 ni export client, ni sauvegarde de production, ni coordonnées réelles.
 

@@ -9,7 +9,7 @@
   <title>Références et périmètre du manuel &mdash; Documentation utilisateur Training Management</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/manual.css?v=a0cb5b2b" />
+      <link rel="stylesheet" type="text/css" href="_static/manual.css?v=36458dd4" />
 
 
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -136,6 +136,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="presences.html">Déclarer et contrôler les présences</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="presences.html#preparer-la-collecte">Préparer la collecte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presences.html#enregistrer-sa-signature-personnelle">Enregistrer sa signature personnelle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presences.html#lire-le-tableau-des-presences">Lire le tableau des présences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="presences.html#declarer-sa-presence-comme-participant">Déclarer sa présence comme participant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="presences.html#valider-comme-formateur">Valider comme formateur</a></li>
 <li class="toctree-l2"><a class="reference internal" href="presences.html#importer-un-papier-et-corriger-une-erreur">Importer un papier et corriger une erreur</a></li>
@@ -223,8 +225,9 @@
 <section id="version-documentee">
 <h2>Version documentée<a class="headerlink" href="#version-documentee" title="Lien vers cette rubrique"></a></h2>
 <p>Ce manuel décrit le dépôt <code class="docutils literal notranslate"><span class="pre">Progideo/training_management</span></code> au commit
-<code class="docutils literal notranslate"><span class="pre">27e9e96b8164a69d9adaaba3982c34572cd97f0f</span></code>, identique au sommet de la branche
-principale vérifié le 1 novembre 2026. Les règles sont relues dans la
+<code class="docutils literal notranslate"><span class="pre">27e9e96b8164a69d9adaaba3982c34572cd97f0f</span></code>. Le chapitre des présences est
+actualisé pour la version <code class="docutils literal notranslate"><span class="pre">20.0.2.11.0</span></code>, livrée par la PR #112 au commit
+<code class="docutils literal notranslate"><span class="pre">8393622d9e8978f7f1baabf4efff10d4b56bb7f9</span></code> le 1 novembre 2026. Les règles sont relues dans la
 spécification amendée, les décisions durables, les modèles, vues et traductions
 du dépôt. Les spécifications historiques ne sont pas traitées comme une liste
 de boutons disponibles.</p>
@@ -278,7 +281,7 @@ de retrouver le détail des règles sans dupliquer les documents techniques.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">s06-mock-exams.md</span></code> ; modèles, contrôleurs et vues de <code class="docutils literal notranslate"><span class="pre">training_management_survey</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p>Formateur et présences</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">s04-preparation-sessions.md</span></code>, <code class="docutils literal notranslate"><span class="pre">s07-attendance.md</span></code>, <code class="docutils literal notranslate"><span class="pre">review-experience-performance.md</span></code>, <code class="docutils literal notranslate"><span class="pre">review-access-continuity.md</span></code>.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">s04-preparation-sessions.md</span></code>, <code class="docutils literal notranslate"><span class="pre">s07-attendance.md</span></code>, <code class="docutils literal notranslate"><span class="pre">s07-attendance-signatures.md</span></code> (#111/#112), <code class="docutils literal notranslate"><span class="pre">review-experience-performance.md</span></code>, <code class="docutils literal notranslate"><span class="pre">review-access-continuity.md</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p>Évaluations et retours</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">s091-evaluations.md</span></code>, <code class="docutils literal notranslate"><span class="pre">s092-feedback.md</span></code> ; services d’évaluation et de campagnes.</p></td>
@@ -299,7 +302,10 @@ de retrouver le détail des règles sans dupliquer les documents techniques.</p>
 <section id="captures-et-donnees-de-demonstration">
 <h2>Captures et données de démonstration<a class="headerlink" href="#captures-et-donnees-de-demonstration" title="Lien vers cette rubrique"></a></h2>
 <p>Les captures du manuel sont produites à nouveau le <strong>1 novembre 2026</strong> sur
-une base locale isolée, avec le même code de référence. Les tâches planifiées
+une base locale isolée, avec le code de référence indiqué dans <code class="docutils literal notranslate"><span class="pre">screenshots.json</span></code>. Les deux
+captures de signatures utilisent le code de la PR #112, identique pour les
+addons au commit de livraison ci-dessus ; leurs libellés sont en anglais et
+leurs comptes et dessins sont fictifs. Les tâches planifiées
 et serveurs de courrier sortant sont désactivés pour cette base. Elle n’utilise
 ni export client, ni sauvegarde de production, ni coordonnées réelles.</p>
 <p>L’organisme <strong>Atelier Horizon — démonstration</strong>, l’entreprise <strong>Société Démo

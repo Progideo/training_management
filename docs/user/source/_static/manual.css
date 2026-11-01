@@ -32,6 +32,7 @@ p, li { line-height: 1.65; }
   .wy-nav-content { padding: 1.4rem; }
   h1 { font-size: 1.7rem; }
   .rst-content .wy-table-responsive table { min-width: 560px; }
+  .rst-content .wy-table-responsive table.attendance-legend { min-width: 0; width: 100%; }
 }
 @media print {
   .wy-nav-side, .wy-nav-top, .rst-footer-buttons, .wy-breadcrumbs { display: none; }

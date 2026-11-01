@@ -39,6 +39,9 @@ de fichier privé à un tiers ou de capture contenant les données d'un autre pa
    * - La présence déclarée compte zéro minute
      - Faire effectuer le contrôle distinct du formateur. Une déclaration seule n'est pas validée ; une invalidation remet aussi les minutes à zéro.
      - Formateur affecté
+   * - Signature absente ou remplacée
+     - Ouvrir Ma signature, enregistrer son dessin personnel puis recharger la déclaration ou le contrôle et relire le texte avant de signer. Les anciennes preuves restent inchangées.
+     - Personne signataire
    * - Formulaire périmé ou décision concurrente
      - Recharger puis relire la situation avant d'agir. Vérifier qu'un autre intervenant ou une nouvelle remise n'a pas changé le dossier.
      - Responsable de l'action

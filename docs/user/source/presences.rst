@@ -13,13 +13,71 @@ et le texte de confirmation. Vérifier participants, horaires et durée du plann
 avant la collecte : une présence validée retient cette durée prévue, une absence zéro.
 L'asynchrone reste suivi par ses activités, sans création de séances fictives.
 
+Enregistrer sa signature personnelle
+-------------------------------------
+
+#. Depuis **Mes formations**, ouvrir **Ma signature** ; ce lien est aussi
+   disponible dans le contrôle des présences du formateur.
+#. Dessiner sa signature ou charger un dessin **PNG** comme alternative accessible.
+#. Cocher l'accord personnel puis enregistrer.
+
+Chaque personne utilise sa propre signature. Elle est réutilisée seulement après
+une confirmation explicite pour chaque déclaration ou contrôle. Enregistrer le
+dessin ne signe aucune demi-journée automatiquement.
+
+Remplacer ou supprimer le dessin ne modifie pas les preuves déjà signées.
+Recharger les formulaires ouverts avant ce changement. Les anciennes présences
+et pièces papier ne reçoivent aucune signature inventée lors de la mise à jour.
+
+.. figure:: images/signature-personnelle.png
+   :alt: Signature de démonstration enregistrée, avec possibilité de dessiner ou charger un PNG.
+   :width: 100%
+
+   Ma signature ; capture en anglais sur un compte de test fictif.
+
+Lire le tableau des présences
+-----------------------------
+
+Le participant voit une ligne par jour et deux colonnes **matin / après-midi**.
+Dans le suivi d'une réalisation, le tableau collectif présente les participants
+par ligne et les demi-journées par date. Ses filtres jour, semaine ou tous les
+jours limitent aussi les compteurs affichés. Le contrôle par séance conserve
+ses actions et un lien vers le tableau collectif.
+
+.. list-table:: Pastilles et statut
+   :class: attendance-legend
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Pastille
+     - Signification
+   * - Verte
+     - Présence validée par le formateur.
+   * - Orange
+     - Déclaration en attente, validation partielle x/y, ou présence mixte après contrôle de toutes les séances. Lire le libellé et le détail.
+   * - Rouge
+     - Absence validée, déclaration invalidée ou anomalie ; le libellé distingue ces cas.
+   * - Grise
+     - Demi-journée à venir, à signer ou papier attendu.
+   * - Contour vide
+     - Aucune séance planifiée.
+
+La signature de l'apprenant apparaît dès sa déclaration active, avant contrôle
+formateur. Elle ne prouve pas la validation finale. La cellule distingue présent
+et absent déclarés, et affiche les minutes validées. Développer les séances et
+actions pour retrouver horaires, fuseaux et historique. Les anciens intervalles
+restent accessibles séparément.
+
+Sur petit écran, faire défiler le tableau horizontalement. Au clavier, placer
+le focus sur la zone de défilement puis utiliser les flèches.
+
 Déclarer sa présence comme participant
 --------------------------------------
 
 #. Ouvrir **Mes formations**, choisir la formation, puis **Mes présences**.
-#. Repérer la demi-journée écoulée et vérifier date, horaires et fuseau.
+#. Repérer la demi-journée écoulée, développer ses séances et actions, puis ouvrir la déclaration et vérifier date, horaires et fuseau.
 #. Choisir présent ou absent, lire et accepter le texte affiché.
-#. Confirmer puis vérifier le statut et la date de déclaration.
+#. Cliquer sur **Signer cette demi-journée**, puis vérifier dessin, statut et date de déclaration.
 
 Les demi-journées futures ou étrangères à la séance sont refusées. La
 régularisation après séance reste possible sans délai arbitraire, avant clôture
@@ -36,23 +94,21 @@ Valider comme formateur
 #. Depuis sa séance affectée, ouvrir **Contrôler les présences**.
 #. Vérifier la personne, la demi-journée et la déclaration reçue.
 #. Choisir la décision et renseigner le commentaire requis en cas d'anomalie.
-#. Valider puis vérifier les minutes retenues et l'historique.
+#. Accepter le texte et cliquer sur **Signer et valider**, puis vérifier les minutes retenues et l'historique.
 
 Le formateur peut constater une absence sans déclaration. Il ne valide pas
 sa propre présence ni une déclaration qu'il a lui-même créée. En cas d'erreur
 de saisie, les valeurs du formulaire concerné restent disponibles pour correction.
 
-.. figure:: images/controle-presences.jpg
-   :alt: Contrôle de présence par le formateur sur une demi-journée, avec état courant, minutes validées et commentaire d'anomalie.
+Le superviseur consulte les réalisations affectées sans recevoir d'action de
+validation par ce rôle. Le formateur ne contrôle que ses séances affectées.
+Constater une absence sans déclaration ne fabrique aucune signature de l'apprenant.
+
+.. figure:: images/tableau-presences-signe.png
+   :alt: Tableau collectif avec une absence validée en rouge, zéro minute et signature de déclaration de l'apprenant.
    :width: 100%
 
-   Contrôle distinct de la déclaration du participant.
-
-.. figure:: images/presence-validee.jpg
-   :alt: Après contrôle distinct du formateur, la demi-journée est validée pour 120 minutes.
-   :width: 100%
-
-   Après validation : 120 minutes retenues pour la durée prévue de la séance.
+   Absence signée puis contrôlée séparément ; capture en anglais sur des données fictives.
 
 Importer un papier et corriger une erreur
 -----------------------------------------
@@ -83,4 +139,4 @@ La clôture bloque déclaration, validation et invalidation. Une correction
 ultérieure ne réécrit jamais les attestations déjà émises : suivre le circuit
 de rectification et remplacement dans :doc:`attestations`.
 Ce dispositif est une déclaration et un contrôle internes ; il ne revendique
-ni signature dessinée ni certification juridique.
+aucune qualification ou certification juridique de la signature.

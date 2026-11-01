@@ -23,15 +23,6 @@
       "retouched": false
     },
     {
-      "file": "source/images/controle-presences.jpg",
-      "captured_at_utc": "2026-11-01T10:52:45+00:00",
-      "role": "Formateur",
-      "screen": "controle presences",
-      "sha256": "39c573511ab53aa17bdb8c47ac14918fc01c17c922cb8248ed5d4c4b2262252a",
-      "data": "synthetic",
-      "retouched": false
-    },
-    {
       "file": "source/images/demande-equipe.jpg",
       "captured_at_utc": "2026-11-01T10:48:13+00:00",
       "role": "Visiteur, demande intra",
@@ -140,15 +131,6 @@
       "retouched": false
     },
     {
-      "file": "source/images/presence-validee.jpg",
-      "captured_at_utc": "2026-11-01T10:52:45+00:00",
-      "role": "Formateur",
-      "screen": "presence validee",
-      "sha256": "c77e793f31a7c9ef3596eaecddac2322c8e44faf63587ad7f3d989fb42f7a409",
-      "data": "synthetic",
-      "retouched": false
-    },
-    {
       "file": "source/images/projet-remise.jpg",
       "captured_at_utc": "2026-11-01T10:48:56+00:00",
       "role": "Participant",
@@ -165,6 +147,31 @@
       "sha256": "a7d778573822f0b8a9a8747cc0385a9e5aef9fb1653333639051c52059734d70",
       "data": "synthetic",
       "retouched": false
+    },
+    {
+      "file": "source/images/signature-personnelle.png",
+      "capture_date": "2026-11-01",
+      "role": "Participant portail",
+      "screen": "signature-personnelle",
+      "code_commit": "40fa7140c1eda3f0532aa55758d3a3ed458c29e7",
+      "sha256": "e0c256a453dbf27c358c656cf63213115fdad7ab3ff680cff29572ec7aff542d",
+      "data": "synthetic",
+      "retouched": false,
+      "language": "en"
+    },
+    {
+      "file": "source/images/tableau-presences-signe.png",
+      "capture_date": "2026-11-01",
+      "role": "Formateur affecté",
+      "screen": "tableau-presences-signe",
+      "code_commit": "40fa7140c1eda3f0532aa55758d3a3ed458c29e7",
+      "sha256": "4119bc6b34427b4b80fb1061a79225646fb5c13da868f18dbd4db9607006a76e",
+      "data": "synthetic",
+      "retouched": false,
+      "language": "en"
     }
-  ]
+  ],
+  "chapter_code_commits": {
+    "presences": "8393622d9e8978f7f1baabf4efff10d4b56bb7f9"
+  }
 }

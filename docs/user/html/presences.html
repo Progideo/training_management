@@ -9,7 +9,7 @@
   <title>Déclarer et contrôler les présences &mdash; Documentation utilisateur Training Management</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/manual.css?v=a0cb5b2b" />
+      <link rel="stylesheet" type="text/css" href="_static/manual.css?v=36458dd4" />
 
 
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -137,6 +137,8 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Déclarer et contrôler les présences</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#preparer-la-collecte">Préparer la collecte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enregistrer-sa-signature-personnelle">Enregistrer sa signature personnelle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lire-le-tableau-des-presences">Lire le tableau des présences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#declarer-sa-presence-comme-participant">Déclarer sa présence comme participant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#valider-comme-formateur">Valider comme formateur</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#importer-un-papier-et-corriger-une-erreur">Importer un papier et corriger une erreur</a></li>
@@ -231,13 +233,79 @@ et le texte de confirmation. Vérifier participants, horaires et durée du plann
 avant la collecte : une présence validée retient cette durée prévue, une absence zéro.
 L’asynchrone reste suivi par ses activités, sans création de séances fictives.</p>
 </section>
+<section id="enregistrer-sa-signature-personnelle">
+<h2>Enregistrer sa signature personnelle<a class="headerlink" href="#enregistrer-sa-signature-personnelle" title="Lien vers cette rubrique"></a></h2>
+<ol class="arabic simple">
+<li><p>Depuis <strong>Mes formations</strong>, ouvrir <strong>Ma signature</strong> ; ce lien est aussi
+disponible dans le contrôle des présences du formateur.</p></li>
+<li><p>Dessiner sa signature ou charger un dessin <strong>PNG</strong> comme alternative accessible.</p></li>
+<li><p>Cocher l’accord personnel puis enregistrer.</p></li>
+</ol>
+<p>Chaque personne utilise sa propre signature. Elle est réutilisée seulement après
+une confirmation explicite pour chaque déclaration ou contrôle. Enregistrer le
+dessin ne signe aucune demi-journée automatiquement.</p>
+<p>Remplacer ou supprimer le dessin ne modifie pas les preuves déjà signées.
+Recharger les formulaires ouverts avant ce changement. Les anciennes présences
+et pièces papier ne reçoivent aucune signature inventée lors de la mise à jour.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/signature-personnelle.png"><img alt="Signature de démonstration enregistrée, avec possibilité de dessiner ou charger un PNG." src="_images/signature-personnelle.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Ma signature ; capture en anglais sur un compte de test fictif.</span><a class="headerlink" href="#id1" title="Lien vers cette image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="lire-le-tableau-des-presences">
+<h2>Lire le tableau des présences<a class="headerlink" href="#lire-le-tableau-des-presences" title="Lien vers cette rubrique"></a></h2>
+<p>Le participant voit une ligne par jour et deux colonnes <strong>matin / après-midi</strong>.
+Dans le suivi d’une réalisation, le tableau collectif présente les participants
+par ligne et les demi-journées par date. Ses filtres jour, semaine ou tous les
+jours limitent aussi les compteurs affichés. Le contrôle par séance conserve
+ses actions et un lien vers le tableau collectif.</p>
+<table class="attendance-legend docutils align-default" id="id2">
+<caption><span class="caption-text">Pastilles et statut</span><a class="headerlink" href="#id2" title="Lien vers ce tableau"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Pastille</p></th>
+<th class="head"><p>Signification</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Verte</p></td>
+<td><p>Présence validée par le formateur.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Orange</p></td>
+<td><p>Déclaration en attente, validation partielle x/y, ou présence mixte après contrôle de toutes les séances. Lire le libellé et le détail.</p></td>
+</tr>
+<tr class="row-even"><td><p>Rouge</p></td>
+<td><p>Absence validée, déclaration invalidée ou anomalie ; le libellé distingue ces cas.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Grise</p></td>
+<td><p>Demi-journée à venir, à signer ou papier attendu.</p></td>
+</tr>
+<tr class="row-even"><td><p>Contour vide</p></td>
+<td><p>Aucune séance planifiée.</p></td>
+</tr>
+</tbody>
+</table>
+<p>La signature de l’apprenant apparaît dès sa déclaration active, avant contrôle
+formateur. Elle ne prouve pas la validation finale. La cellule distingue présent
+et absent déclarés, et affiche les minutes validées. Développer les séances et
+actions pour retrouver horaires, fuseaux et historique. Les anciens intervalles
+restent accessibles séparément.</p>
+<p>Sur petit écran, faire défiler le tableau horizontalement. Au clavier, placer
+le focus sur la zone de défilement puis utiliser les flèches.</p>
+</section>
 <section id="declarer-sa-presence-comme-participant">
 <h2>Déclarer sa présence comme participant<a class="headerlink" href="#declarer-sa-presence-comme-participant" title="Lien vers cette rubrique"></a></h2>
 <ol class="arabic simple">
 <li><p>Ouvrir <strong>Mes formations</strong>, choisir la formation, puis <strong>Mes présences</strong>.</p></li>
-<li><p>Repérer la demi-journée écoulée et vérifier date, horaires et fuseau.</p></li>
+<li><p>Repérer la demi-journée écoulée, développer ses séances et actions, puis ouvrir la déclaration et vérifier date, horaires et fuseau.</p></li>
 <li><p>Choisir présent ou absent, lire et accepter le texte affiché.</p></li>
-<li><p>Confirmer puis vérifier le statut et la date de déclaration.</p></li>
+<li><p>Cliquer sur <strong>Signer cette demi-journée</strong>, puis vérifier dessin, statut et date de déclaration.</p></li>
 </ol>
 <p>Les demi-journées futures ou étrangères à la séance sont refusées. La
 régularisation après séance reste possible sans délai arbitraire, avant clôture
@@ -253,23 +321,19 @@ relire et confirmer les nouvelles informations. La déclaration ne doit pas
 <li><p>Depuis sa séance affectée, ouvrir <strong>Contrôler les présences</strong>.</p></li>
 <li><p>Vérifier la personne, la demi-journée et la déclaration reçue.</p></li>
 <li><p>Choisir la décision et renseigner le commentaire requis en cas d’anomalie.</p></li>
-<li><p>Valider puis vérifier les minutes retenues et l’historique.</p></li>
+<li><p>Accepter le texte et cliquer sur <strong>Signer et valider</strong>, puis vérifier les minutes retenues et l’historique.</p></li>
 </ol>
 <p>Le formateur peut constater une absence sans déclaration. Il ne valide pas
 sa propre présence ni une déclaration qu’il a lui-même créée. En cas d’erreur
 de saisie, les valeurs du formulaire concerné restent disponibles pour correction.</p>
-<figure class="align-default" id="id1">
-<a class="reference internal image-reference" href="_images/controle-presences.jpg"><img alt="Contrôle de présence par le formateur sur une demi-journée, avec état courant, minutes validées et commentaire d'anomalie." src="_images/controle-presences.jpg" style="width: 100%;" />
+<p>Le superviseur consulte les réalisations affectées sans recevoir d’action de
+validation par ce rôle. Le formateur ne contrôle que ses séances affectées.
+Constater une absence sans déclaration ne fabrique aucune signature de l’apprenant.</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/tableau-presences-signe.png"><img alt="Tableau collectif avec une absence validée en rouge, zéro minute et signature de déclaration de l'apprenant." src="_images/tableau-presences-signe.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Contrôle distinct de la déclaration du participant.</span><a class="headerlink" href="#id1" title="Lien vers cette image"></a></p>
-</figcaption>
-</figure>
-<figure class="align-default" id="id2">
-<a class="reference internal image-reference" href="_images/presence-validee.jpg"><img alt="Après contrôle distinct du formateur, la demi-journée est validée pour 120 minutes." src="_images/presence-validee.jpg" style="width: 100%;" />
-</a>
-<figcaption>
-<p><span class="caption-text">Après validation : 120 minutes retenues pour la durée prévue de la séance.</span><a class="headerlink" href="#id2" title="Lien vers cette image"></a></p>
+<p><span class="caption-text">Absence signée puis contrôlée séparément ; capture en anglais sur des données fictives.</span><a class="headerlink" href="#id3" title="Lien vers cette image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -298,7 +362,7 @@ papier complémentaire ne porte pas le total à 240. Une invalidation le ramène
 ultérieure ne réécrit jamais les attestations déjà émises : suivre le circuit
 de rectification et remplacement dans <a class="reference internal" href="attestations.html"><span class="doc">Constituer le dossier, délivrer et vérifier les attestations</span></a>.
 Ce dispositif est une déclaration et un contrôle internes ; il ne revendique
-ni signature dessinée ni certification juridique.</p>
+aucune qualification ou certification juridique de la signature.</p>
 </section>
 </section>
 
