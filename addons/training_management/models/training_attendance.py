@@ -304,7 +304,20 @@ class AttendanceService(models.AbstractModel):
         return first, last
 
     @api.private
-    def _event(self, presence, kind, first, last, *, absent=False, anomaly=False, reason=False, data=b"", filename=""):
+    def _event(
+        self,
+        presence,
+        kind,
+        first,
+        last,
+        *,
+        absent=False,
+        anomaly=False,
+        reason=False,
+        data=b"",
+        filename="",
+        signature=None,
+    ):
         before = presence.event_ids.sorted("id")[-1:]
         if kind in ("correction", "invalidation"):
             before = (
@@ -319,6 +332,7 @@ class AttendanceService(models.AbstractModel):
         )
         return self.env["training.attendance.event"]._append(
             {
+                **(signature or {}),
                 "attendance_id": presence.id,
                 "kind": kind,
                 "actor_id": self.env.uid,
@@ -327,12 +341,14 @@ class AttendanceService(models.AbstractModel):
                 "end_at": last,
                 "absent": bool(absent),
                 "anomaly": bool(anomaly),
-                "wording": (
+                "wording": self.env._("I confirm the attendance status shown for this participant and half-day.")
+                if kind == "validation"
+                else (
                     self.env._("I confirm that I was absent for this half-day.")
                     if absent and presence.period_key != "legacy"
                     else presence.session_id.attendance_wording
                 )
-                if kind == "declaration"
+                if kind in ("declaration", "validation")
                 else False,
                 "reason": reason,
                 "before": before.after if before else False,
@@ -354,6 +370,7 @@ class AttendanceService(models.AbstractModel):
         definition=None,
         period_key="legacy",
         absent=False,
+        signature=None,
     ):
         with self.env.cr.savepoint():
             enrollment = self.env["training.learning.service"]._enrollment(enrollment_id, lock=True)
@@ -379,7 +396,7 @@ class AttendanceService(models.AbstractModel):
                         self.env._("Your declaration is recorded. Ask the coordinator for a correction.")
                     )
                 return presence
-            self._event(presence, "declaration", first, last, absent=absent)
+            self._event(presence, "declaration", first, last, absent=absent, signature=signature)
             return presence
 
     @api.private
@@ -399,6 +416,7 @@ class AttendanceService(models.AbstractModel):
         filename="",
         definition=None,
         period_key="legacy",
+        signature=None,
     ):
         with self.env.cr.savepoint():
             session = self._session(session_id, coordinator=paper or correction, lock=True)
@@ -451,6 +469,7 @@ class AttendanceService(models.AbstractModel):
                 absent=absent,
                 reason=reason.strip(),
                 data=data,
+                signature=signature,
                 filename=filename.replace("\\", "/").split("/")[-1],
             )
             return presence

@@ -147,17 +147,24 @@
             <h2 t-else="">My attendance</h2>
             <div t-if="error and not any(row['error'] for row in rows)" class="alert alert-danger o_training_feedback" role="alert" tabindex="-1" t-out="error"/>
             <div t-if="saved" id="attendance-feedback" tabindex="-1" class="alert alert-success o_training_feedback" role="status">Your attendance decision has been recorded.</div>
+            <p><a href="/my/training-signature">My signature</a><a t-if="trainer" t-att-href="matrix_url" class="ms-3">All attendance by day and half-day</a></p>
+            <t t-call="training_management.attendance_matrix_table"/>
             <p t-if="not rows">No scheduled session.</p>
-            <section t-foreach="rows" t-as="row" class="card p-3 my-3">
+            <details t-foreach="rows" t-as="row" t-att-id="row['anchor']" t-att-open="row['error'] or None" class="card p-3 my-3 tm_attendance_details">
+                <summary><t t-out="row['participant'] if trainer else row['name']"/> — <t t-out="row['period']"/> — <t t-out="row['state']"/></summary>
                 <div t-if="row['error']" class="alert alert-danger o_training_feedback" role="alert" tabindex="-1" t-out="error"/>
                 <h3 t-out="row['participant'] if trainer else row['name']"/>
                 <p><t t-out="row['period']"/> (<t t-out="row['timezone']"/>)</p>
+                <ul><li t-foreach="row['schedule']" t-as="part"><t t-out="part['name']"/> — <t t-out="part['start']"/> → <t t-out="part['end']"/> (<t t-out="part['timezone']"/>)</li></ul>
                 <p><strong t-out="row['state']"/> — <t t-out="row['minutes']"/> validated minutes</p>
                 <p t-if="not row['elapsed']" role="status">This half-day has not ended yet. Attendance can be recorded afterwards.</p>
                 <p t-if="trainer and not row['can_review'] and not row['validated']" role="status">Another assigned trainer must review this attendance.</p>
                 <form t-if="row['elapsed'] and ((trainer and row['can_review'] and not row['validated']) or (not trainer and not row['declared'] and row['mode'] != 'paper' and row['period_key'] != 'legacy'))" method="post" class="o_training_attendance_form">
                     <input type="hidden" name="period_key" t-att-value="row['period_key']"/><input type="hidden" name="definition" t-att-value="row['definition']"/><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <input type="hidden" name="session_id" t-att-value="row['session_id']"/><input type="hidden" name="enrollment_id" t-att-value="row['enrollment_id']"/><input type="hidden" name="revision" t-att-value="str(row['revision'])"/>
+                    <input type="hidden" name="signature_version" t-att-value="signature_version"/>
+                    <div t-if="has_signature" class="my-2"><p>Your signature for this confirmation</p><img src="/my/training-signature/image" alt="My saved signature" width="180" height="60" class="object-fit-contain"/></div>
+                    <p t-else=""><a href="/my/training-signature">Save your personal signature, then return and reload this page.</a></p>
                     <p>Confirm attendance for this half-day. Validated attendance counts for its scheduled duration.</p>
                     <p t-if="trainer and not row['has_source']" role="status">A participant declaration is needed to confirm presence. You may record an absence.</p>
                     <label class="d-block mb-2">Attendance status
@@ -167,9 +174,9 @@
                             <option value="absent" t-att-selected="row['absent']">Absent</option>
                         </select>
                     </label>
-                    <t t-if="trainer"><label class="d-block">Review comment (required for an anomaly)<textarea name="reason" class="form-control mb-2" t-out="row['reason']"/></label></t>
+                    <t t-if="trainer"><p>I confirm the attendance status shown for this participant and half-day.</p><label class="d-block">Review comment (required for an anomaly)<textarea name="reason" class="form-control mb-2" t-out="row['reason']"/></label></t>
                     <label t-else="" class="d-block mb-2"><input type="checkbox" name="accepted" value="yes" required="required"/> <span class="tm_attendance_wording" t-att-data-present="row['wording']" t-att-data-absent="request.env._('I confirm that I was absent for this half-day.')"><t t-if="row['absent']">I confirm that I was absent for this half-day.</t><t t-else="" t-out="row['wording']"/></span></label>
-                    <button class="btn btn-primary" type="submit"><t t-if="trainer">Validate attendance</t><t t-else="">Save my declaration</t></button>
+                    <button class="btn btn-primary" type="submit" t-att-disabled="not has_signature or None"><t t-if="trainer">Sign and validate</t><t t-else="">Sign this half-day</t></button>
                 </form>
                 <form t-if="trainer and row['can_invalidate']" method="post">
                     <input type="hidden" name="operation" value="invalidate"/>
@@ -185,10 +192,10 @@
                 <details t-if="row['history']" class="mt-3">
                     <summary>Declaration and review history</summary>
                     <ul>
-                        <li t-foreach="row['history']" t-as="event"><t t-out="event['kind']"/> — <t t-out="event['date']"/> — <t t-out="event['actor']"/><strong t-if="event['anomaly']"> — Outside declaration window</strong><p t-out="event['reason']"/></li>
+                        <li t-foreach="row['history']" t-as="event"><t t-out="event['kind']"/> — <t t-out="event['date']"/> — <t t-out="event['actor']"/><strong t-if="event['anomaly']"> — Outside declaration window</strong><strong t-if="event['status']"> · <t t-out="event['status']"/></strong><p t-if="event['wording']" t-out="event['wording']"/><p t-out="event['reason']"/><img t-if="event['signature_id']" t-att-src="'/my/training-attendance-signature/%s' % event['signature_id']" t-att-alt="event['actor']" width="150" height="50" class="object-fit-contain" loading="lazy"/></li>
                     </ul>
                 </details>
-            </section>
+            </details>
         </t>
     </template>
 </odoo>

@@ -23,3 +23,5 @@ from . import publication_portal
 from . import session_publication
 
 from . import certificate_verification
+
+from . import attendance_matrix

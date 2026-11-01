@@ -17,3 +17,18 @@ body[class*="o_training_management"] {
         #wrapwrap > header .navbar-expand .dropdown-toggle { white-space: normal; overflow-wrap: anywhere; }
     }
 }
+
+.tm_attendance_matrix {
+    td { min-width: 12rem; }
+    th { white-space: nowrap; }
+}
+.tm_attendance_dot {
+    display: inline-block; width: .8rem; height: .8rem; border-radius: 50%;
+    margin-inline-end: .4rem; background: #6c757d;
+    &.tm_attendance_validated { background: #198754; }
+    &.tm_attendance_absent, &.tm_attendance_invalidated, &.tm_attendance_anomaly { background: #dc3545; }
+    &.tm_attendance_pending, &.tm_attendance_partial { background: #fd7e14; }
+    &.tm_attendance_none { background: transparent; border: 1px solid currentColor; }
+}
+.tm_attendance_signature img { object-fit: contain; }
+.tm_attendance_details:target { outline: 2px solid var(--primary, #0d6efd); }

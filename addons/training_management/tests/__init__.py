@@ -46,3 +46,5 @@ from . import test_closure_continuity
 
 from . import test_review_experience
 from . import test_usability
+
+from . import test_attendance_signature

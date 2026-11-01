@@ -377,6 +377,7 @@ msgstr "Contenu"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_subscription__create_uid
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__create_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
@@ -469,6 +470,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_subscription__create_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__create_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__create_date
 msgid "Created on"
 msgstr "Créé le"
 
@@ -609,6 +611,7 @@ msgstr "Modalité"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_subscription__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__display_name
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_service__display_name
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__display_name
 msgid "Display Name"
 msgstr "Nom affiché"
 
@@ -791,6 +794,7 @@ msgstr "Formations"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_subscription__id
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__id
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_service__id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__id
 msgid "ID"
 msgstr "ID"
 
@@ -888,6 +892,7 @@ msgstr "Libellés"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_subscription__write_uid
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__write_uid
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__write_uid
 msgid "Last Updated by"
 msgstr "Dernière modification par"
 
@@ -980,6 +985,7 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_notice__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_alert_subscription__write_date
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__write_date
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__write_date
 msgid "Last Updated on"
 msgstr "Dernière modification le"
 
@@ -1777,6 +1783,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_enrollment_operation
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_dates
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_change
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
 msgid "Apply"
 msgstr "Appliquer"
 
@@ -2338,6 +2345,7 @@ msgstr "L’historique des opérations est immuable."
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__name
 #: model:ir.model.fields,field_description:training_management.field_training_path_assignment__participant_id
 #: model:ir.model.fields,field_description:training_management.field_training_publication_inspection__participant_id
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
 msgid "Participant"
 msgstr "Participant"
 
@@ -2764,6 +2772,7 @@ msgstr "Utilisez le circuit de la réalisation pour modifier son état."
 #: model:ir.model.fields,field_description:training_management.field_training_evaluation_authorization__user_id
 #: model:ir.model.fields,field_description:training_management.field_training_feedback_recipient__user_id
 #: model:ir.model.fields,field_description:training_management.field_training_company_authorization__user_id
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__user_id
 msgid "User"
 msgstr "Compte utilisateur"
 
@@ -4048,6 +4057,7 @@ msgstr "Indisponibilité"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+#: code:addons/training_management/controllers/attendance_matrix.py:0
 msgid "Upcoming"
 msgstr "À venir"
 
@@ -4742,6 +4752,7 @@ msgstr "Utilisez le champ PDF d’une nouvelle version de support privé."
 #: model_terms:ir.ui.view,arch_db:training_management.public_programme
 #: model:ir.model.fields,field_description:training_management.field_training_intra_version__version
 #: model_terms:ir.ui.view,arch_db:training_management.company_training
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__version
 msgid "Version"
 msgstr "Version"
 
@@ -5645,6 +5656,7 @@ msgstr "Arrivée (minutes après le début)"
 #: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__attendance
 #: model_terms:ir.ui.view,arch_db:training_management.dashboard_participant
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
 msgid "Attendance"
 msgstr "Présences"
 
@@ -6058,6 +6070,7 @@ msgstr "Séance"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
 msgid "validated minutes"
 msgstr "minutes validées"
 
@@ -14347,6 +14360,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/training_management/models/training_attendance_period.py:0
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__halfday__pm
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
 msgid "Afternoon"
 msgstr "Après-midi"
 
@@ -14409,6 +14423,7 @@ msgstr "Demi-journée"
 #: code:addons/training_management/models/training_attendance.py:0
 #: code:addons/training_management/models/training_attendance_period.py:0
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__halfday__legacy
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
 msgid "Historical attendance"
 msgstr "Présence historique"
 
@@ -14433,6 +14448,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/training_management/models/training_attendance_period.py:0
 #: model:ir.model.fields.selection,name:training_management.selection__training_attendance_edit__halfday__am
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
 msgid "Morning"
 msgstr "Matin"
 
@@ -14541,6 +14557,7 @@ msgstr "Présence"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
 msgid "Back to training"
 msgstr "Retour à la formation"
 
@@ -14597,6 +14614,7 @@ msgstr "Créer une preuve de clôture"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/controllers/attendance_portal.py:0
+#: code:addons/training_management/controllers/attendance_matrix.py:0
 msgid "Declaration invalidated"
 msgstr "Déclaration invalidée"
 
@@ -14699,6 +14717,7 @@ msgstr "Enregistrer ma déclaration"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/controllers/attendance_portal.py:0
+#: code:addons/training_management/controllers/attendance_matrix.py:0
 msgid "Signed paper expected"
 msgstr "Feuille papier signée attendue"
 
@@ -14803,3 +14822,351 @@ msgstr "· Présences à contrôler"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard
 msgid "· Overdue"
 msgstr "· En retard"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid ""
+"<span class=\"visually-hidden\">Participant declaration signature; trainer "
+"review is a separate step.</span>"
+msgstr ""
+"<span class=\"visually-hidden\">Signature de la déclaration de l’apprenant ;"
+" le contrôle formateur est une étape distincte.</span>"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Absence validated"
+msgstr "Absence validée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "All attendance by day and half-day"
+msgstr "Toutes les présences par jour et demi-journée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+msgid "All scheduled days"
+msgstr "Tous les jours planifiés"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Anomaly to review"
+msgstr "Anomalie à contrôler"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_dashboard_link
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+msgid "Attendance by day and half-day"
+msgstr "Présences par jour et demi-journée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Attendance validated"
+msgstr "Présence validée"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Choose a signature operation."
+msgstr "Choisissez une opération sur la signature."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Choose a valid date and attendance period."
+msgstr "Choisissez une date et une période de présence valides."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Confirm the personal use of this signature."
+msgstr "Confirmez l’utilisation personnelle de cette signature."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid "Current signature"
+msgstr "Signature actuelle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+msgid "Day"
+msgstr "Jour"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Declaration recorded — review expected"
+msgstr "Déclaration enregistrée — contrôle attendu"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "Declare / view history"
+msgstr "Déclarer / consulter l’historique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "Declared absent"
+msgstr "Absence déclarée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "Declared present"
+msgstr "Présence déclarée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid "Delete for future use"
+msgstr "Supprimer pour les usages futurs"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Draw or upload your personal signature."
+msgstr "Dessinez ou chargez votre signature personnelle."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid ""
+"Draw your signature, or upload a PNG drawing as an accessible alternative."
+msgstr ""
+"Dessinez votre signature, ou chargez un dessin PNG comme solution "
+"accessible."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_signature__drawing
+msgid "Drawing"
+msgstr "Dessin"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+msgid ""
+"Historical intervals are preserved separately; no half-day or signature is "
+"invented."
+msgstr ""
+"Les intervalles historiques sont conservés séparément ; aucune demi-journée "
+"ni signature n’est inventée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid ""
+"I confirm that this is my personal signature and authorize its use only on "
+"my explicit attendance confirmations."
+msgstr ""
+"Je confirme qu’il s’agit de ma signature personnelle et j’autorise son "
+"utilisation uniquement lors de mes confirmations explicites de présence."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance.py:0
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid ""
+"I confirm the attendance status shown for this participant and half-day."
+msgstr ""
+"Je confirme le statut de présence affiché pour cet apprenant et cette demi-"
+"journée."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Mixed attendance — all sessions reviewed"
+msgstr "Présence mixte — toutes les séances contrôlées"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid "My saved signature"
+msgstr "Ma signature enregistrée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+#: model_terms:ir.ui.view,arch_db:training_management.signature_home_link
+msgid "My signature"
+msgstr "Ma signature"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Not scheduled"
+msgstr "Non planifié"
+
+#. module: training_management
+#: model:ir.model.constraint,message:training_management.constraint_training_attendance_signature_one_owner
+msgid "One personal signature per user."
+msgstr "Une seule signature personnelle par utilisateur."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "Partially validated — %(done)s/%(total)s"
+msgstr "Validation partielle — %(done)s/%(total)s"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+msgid ""
+"Participant signatures show their declarations. The status shows the "
+"separate trainer review."
+msgstr ""
+"Les signatures des apprenants attestent leurs déclarations. Le statut "
+"indique le contrôle distinct du formateur."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+msgid "Period"
+msgstr "Période"
+
+#. module: training_management
+#: model:ir.model,name:training_management.model_training_attendance_signature
+msgid "Private Personal Attendance Signature"
+msgstr "Signature personnelle privée d’émargement"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "Review / view history"
+msgstr "Contrôler / consulter l’historique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid "Save my signature"
+msgstr "Enregistrer ma signature"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Save your personal signature, then return and reload this page."
+msgstr ""
+"Enregistrez votre signature personnelle, puis revenez et rechargez cette "
+"page."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_signature.py:0
+msgid "Save your signature, then reload and confirm the displayed signature."
+msgstr ""
+"Enregistrez votre signature, puis rechargez et confirmez la signature "
+"affichée."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "Sessions and actions"
+msgstr "Séances et actions"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Sign and validate"
+msgstr "Signer et valider"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_signature.py:0
+msgid "Sign in with your own active account."
+msgstr "Connectez-vous avec votre propre compte actif."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Sign this half-day"
+msgstr "Signer cette demi-journée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+msgid "Starting date"
+msgstr "Date de début"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "This attendance signature is unavailable."
+msgstr "Cette signature d’émargement n’est pas disponible."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid ""
+"This personal drawing is reused only when you explicitly sign an attendance "
+"declaration or review. Replacing or deleting it does not change previous "
+"evidence."
+msgstr ""
+"Ce dessin personnel est réutilisé uniquement lorsque vous signez "
+"explicitement une déclaration ou un contrôle de présence. Son remplacement "
+"ou sa suppression ne modifie pas les preuves antérieures."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/controllers/attendance_matrix.py:0
+msgid "To sign"
+msgstr "À signer"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_signature.py:0
+msgid "Use a non-empty PNG signature, at most 2000 × 1000 pixels."
+msgstr ""
+"Utilisez une signature PNG non vide, de 2000 × 1000 pixels au maximum."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/ir_binary.py:0
+msgid "Use the authorized attendance signature view."
+msgstr "Utilisez la vue autorisée des signatures d’émargement."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+msgid "View history"
+msgstr "Consulter l’historique"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+msgid "Week"
+msgstr "Semaine"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_attendance_signature.py:0
+msgid "Your signature changed. Reload before confirming."
+msgstr "Votre signature a changé. Rechargez avant de confirmer."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
+msgid "Your signature for this confirmation"
+msgstr "Votre signature pour cette confirmation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
+msgid "Your signature preference has been saved."
+msgstr "Votre choix de signature a été enregistré."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+msgid "anomalies"
+msgstr "anomalies"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "min"
+msgstr "min"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+msgid "to review ·"
+msgstr "à contrôler ·"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_table
+msgid "to sign / paper expected ·"
+msgstr "à signer / papier attendu ·"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__signature
+msgid "Signature"
+msgstr "Signature"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__signature_digest
+msgid "Signature Digest"
+msgstr "Empreinte de signature"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_attendance_event__signature_version
+msgid "Signature Version"
+msgstr "Version de signature"

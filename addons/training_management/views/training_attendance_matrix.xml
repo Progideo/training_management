@@ -1,0 +1,78 @@
+<odoo>
+    <template id="attendance_matrix_cell">
+        <span t-attf-class="tm_attendance_dot tm_attendance_#{cell['code']}" aria-hidden="true"/>
+        <strong t-out="cell['label']"/>
+        <p t-if="cell['rows']" class="small mb-1"><t t-out="cell['minutes']"/> validated minutes</p>
+        <div t-foreach="cell['signatures']" t-as="signature" class="tm_attendance_signature">
+            <img t-att-src="'/my/training-attendance-signature/%s' % signature['id']" t-att-alt="signature['actor']" width="150" height="50" loading="lazy"/>
+            <small class="d-block"><t t-if="signature['absent']">Declared absent</t><t t-else="">Declared present</t></small>
+            <span class="visually-hidden">Participant declaration signature; trainer review is a separate step.</span>
+        </div>
+        <details t-if="cell['rows']">
+            <summary>Sessions and actions</summary>
+            <ul class="ps-3">
+                <li t-foreach="cell['rows']" t-as="item">
+                    <t t-out="item['name']"/> — <t t-out="item['start']"/> → <t t-out="item['end']"/> (<t t-out="item['timezone']"/>)
+                    <p><t t-out="item['state']"/> · <t t-out="item['minutes']"/> min</p>
+                    <a t-if="not matrix['collective']" t-att-href="'#' + item['anchor']">Declare / view history</a>
+                    <a t-elif="item['review_url']" t-att-href="item['review_url']">Review / view history</a>
+                </li>
+            </ul>
+        </details>
+    </template>
+    <template id="attendance_matrix_table">
+        <p>Participant signatures show their declarations. The status shows the separate trainer review.</p>
+        <p><t t-out="matrix['counters']['declare']"/> to sign / paper expected · <t t-out="matrix['counters']['pending']"/> to review · <t t-out="matrix['counters']['anomaly']"/> anomalies</p>
+        <div class="table-responsive" tabindex="0" role="region" aria-label="Attendance by day and half-day">
+            <table class="table table-bordered align-middle tm_attendance_matrix">
+                <caption>Attendance by day and half-day</caption>
+                <thead t-if="matrix['collective']">
+                    <tr><th scope="col" rowspan="2">Participant</th><th t-foreach="matrix['columns']" t-as="day" scope="colgroup" colspan="2" t-out="day['label']"/></tr>
+                    <tr><t t-foreach="matrix['columns']" t-as="day"><th scope="col">Morning</th><th scope="col">Afternoon</th></t></tr>
+                </thead>
+                <thead t-else=""><tr><th scope="col">Day</th><th scope="col">Morning</th><th scope="col">Afternoon</th></tr></thead>
+                <tbody><tr t-foreach="matrix['lines']" t-as="line"><th scope="row" t-out="line['label']"/><td t-foreach="line['cells']" t-as="cell"><t t-call="training_management.attendance_matrix_cell"/></td></tr></tbody>
+            </table>
+        </div>
+        <p t-if="matrix['legacy']">Historical intervals are preserved separately; no half-day or signature is invented.</p>
+    </template>
+    <template id="portal_attendance_matrix">
+        <t t-call="portal.portal_layout">
+            <t t-call="training_management.portal_training_navigation"/>
+            <a t-att-href="attendance_back">Back to training</a><h1 t-out="name"/><h2>Attendance</h2>
+            <form method="get" class="d-flex flex-wrap gap-2 align-items-end mb-3">
+                <label>Starting date<input type="date" name="start" t-att-value="matrix['start']" class="form-control"/></label>
+                <label>Period<select name="view" class="form-select"><option value="day" t-att-selected="matrix['view'] == 'day'">Day</option><option value="week" t-att-selected="matrix['view'] == 'week'">Week</option><option value="all" t-att-selected="matrix['view'] == 'all'">All scheduled days</option></select></label>
+                <button class="btn btn-primary">Apply</button>
+            </form>
+            <t t-call="training_management.attendance_matrix_table"/>
+            <details t-if="matrix['legacy']"><summary>Historical attendance</summary><ul><li t-foreach="matrix['legacy']" t-as="item"><t t-out="item['participant']"/> — <t t-out="item['name']"/> — <t t-out="item['state']"/><a t-if="item['review_url']" t-att-href="item['review_url']"> View history</a></li></ul></details>
+        </t>
+    </template>
+    <template id="portal_personal_signature">
+        <t t-call="portal.portal_layout">
+            <t t-call="training_management.portal_training_navigation"/>
+            <h1>My signature</h1>
+            <p>This personal drawing is reused only when you explicitly sign an attendance declaration or review. Replacing or deleting it does not change previous evidence.</p>
+            <div t-if="error" role="alert" class="alert alert-danger" t-out="error"/>
+            <div t-if="saved" role="status" class="alert alert-success">Your signature preference has been saved.</div>
+            <div t-if="has_signature"><p>Current signature</p><img src="/my/training-signature/image" alt="My saved signature" width="240" height="80" class="object-fit-contain"/></div>
+            <form method="post" class="my-3">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="version" t-att-value="version"/>
+                <input type="hidden" name="drawing"/>
+                <p>Draw your signature, or upload a PNG drawing as an accessible alternative.</p>
+                <owl-component name="training_management.PersonalSignature"/>
+                <label class="d-block my-3"><input type="checkbox" name="accepted" value="yes" required="required"/> I confirm that this is my personal signature and authorize its use only on my explicit attendance confirmations.</label>
+                <button type="submit" name="operation" value="save" class="btn btn-primary">Save my signature</button>
+                <button t-if="has_signature" type="submit" name="operation" value="delete" class="btn btn-outline-danger">Delete for future use</button>
+            </form>
+        </t>
+    </template>
+    <template id="signature_home_link" inherit_id="training_management.portal_trainings">
+        <xpath expr="//h1" position="after"><p><a href="/my/training-signature">My signature</a></p></xpath>
+    </template>
+    <template id="attendance_dashboard_link" inherit_id="training_management.portal_dashboard">
+        <xpath expr="//h1" position="after"><p><a t-att-href="'/my/training-dashboard/%s/attendance' % delivery_id">Attendance by day and half-day</a></p></xpath>
+    </template>
+</odoo>
