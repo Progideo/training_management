@@ -16,3 +16,16 @@ export class TrainingAttendance extends Interaction {
     }
 }
 registry.category("public.interactions").add("training_management.attendance", TrainingAttendance);
+
+function openAttendanceTarget() {
+    const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    if (target?.classList.contains("tm_attendance_details")) {
+        target.open = true;
+    }
+}
+window.addEventListener("hashchange", openAttendanceTarget);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", openAttendanceTarget);
+} else {
+    openAttendanceTarget();
+}

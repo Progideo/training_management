@@ -34,6 +34,13 @@ def snapshot():
             for row in records[table]:
                 if "period_key" in row:
                     assert row.pop("period_key") == "legacy"
+        if table == "training_attendance_event":
+            for row in records[table]:
+                # New opt-in fields must stay empty on every historical event.
+                # Compare all original columns unchanged across the old baseline.
+                for added in ("signature", "signature_version", "signature_digest"):
+                    if added in row:
+                        assert row.pop(added) in (None, False, 0), (row["id"], added)
     records["minutes"] = presence.minutes
     records["file"] = hashlib.sha256(presence.event_ids.filtered("filename").data.content).hexdigest()
     return json.dumps(records, sort_keys=True, default=str)

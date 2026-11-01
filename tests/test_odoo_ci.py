@@ -96,7 +96,23 @@ class Coverage(unittest.TestCase):
                     '                    assert row.pop("period_key") == "legacy"\n'
                 )
                 self.assertIn(addition, path.read_text())
-                self.assertEqual(path.read_text().replace(addition, ""), original(name))
+                preserved = path.read_text().replace(addition, "")
+                if name == "tests/probes/s07_history.py":
+                    # Admit exactly the signature opt-in guard, including its
+                    # assertion that no old event acquired a signature. Keep the
+                    # original fixture and every original-column comparison frozen.
+                    signatures = (
+                        '        if table == "training_attendance_event":\n'
+                        "            for row in records[table]:\n"
+                        "                # New opt-in fields must stay empty on every historical event.\n"
+                        "                # Compare all original columns unchanged across the old baseline.\n"
+                        '                for added in ("signature", "signature_version", "signature_digest"):\n'
+                        "                    if added in row:\n"
+                        '                        assert row.pop(added) in (None, False, 0), (row["id"], added)\n'
+                    )
+                    self.assertIn(signatures, preserved)
+                    preserved = preserved.replace(signatures, "")
+                self.assertEqual(preserved, original(name))
             elif name == "tests/probes/s08_history.py":
                 # P20 admits only its disabled opt-in on historical dossiers.
                 # All original comparisons and the absence of public registration stay checked.
