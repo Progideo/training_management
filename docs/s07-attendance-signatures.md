@@ -3,6 +3,26 @@
 Référence : [#111](https://github.com/Progideo/training_management/issues/111),
 PRE01–PRE03 et UX01. Complète [S07](s07-attendance.md).
 
+## Utilisation
+
+1. Depuis « Mes formations », ouvrir « Ma signature ». Dessiner sa signature
+   ou charger un dessin PNG, cocher l'accord personnel et enregistrer.
+   Le formateur enregistre sa propre signature depuis son espace de contrôle.
+2. Participant : ouvrir la formation puis « Mes présences ». Dans la cellule
+   du jour et de la demi-journée, développer les séances et actions, puis ouvrir
+   la déclaration. Vérifier les horaires, choisir présent ou absent, accepter
+   le texte et cliquer sur « Signer cette demi-journée ».
+3. Formateur : ouvrir le contrôle de sa séance affectée, examiner la déclaration,
+   choisir la décision, accepter le texte puis cliquer sur « Signer et valider ».
+   Le tableau collectif est accessible depuis le suivi de la réalisation ou
+   depuis le contrôle d'une séance. Le superviseur le consulte sans valider.
+
+La signature enregistrée évite de redessiner à chaque fois ; chaque déclaration
+et chaque contrôle nécessitent toujours leur propre confirmation. Après un
+remplacement ou une suppression, recharger les formulaires déjà ouverts.
+Sur petit écran, faire défiler le tableau horizontalement ; au clavier, placer
+le focus sur sa zone de défilement et utiliser les flèches.
+
 ## Tableaux
 
 Le participant voit une ligne par jour et deux colonnes matin/après-midi.
@@ -25,6 +45,17 @@ validée, présence mixte contrôlée, invalidation ou anomalie. Une absence de
 déclaration ne devient jamais une absence validée. Les séances historiques
 à intervalles restent séparées. Les durées et le découpage du planning restent
 ceux du [parcours par demi-journée](review-experience-performance.md).
+
+| Pastille | Lecture du statut |
+| --- | --- |
+| Verte | Présence validée par le formateur. |
+| Orange | Déclaration en attente de contrôle, validation partielle ou présences et absences mélangées après contrôle de toutes les séances. Lire le libellé et le détail. |
+| Rouge | Absence validée, déclaration invalidée ou anomalie à examiner. Le libellé distingue ces situations. |
+| Grise | Demi-journée à venir, à signer ou papier attendu. |
+| Contour vide | Aucune séance planifiée. |
+
+La couleur complète toujours un libellé. Une signature visible avec une pastille
+orange correspond à une déclaration reçue, pas encore à une présence validée.
 
 Le superviseur consulte uniquement les réalisations affectées ; il ne reçoit
 aucune action de validation par ce rôle. Chaque formateur voit ses séances et
@@ -78,3 +109,8 @@ Les attestations et minutes existantes restent calculées sur les décisions S07
    changement planning/texte, concurrence et clôture.
 6. Installer sur base vierge puis mettre à jour une base avec historiques ;
    rapprocher les minutes et attestations. Les résultats restent dans la PR.
+
+Pour la recette tactile, utiliser un téléphone ou une tablette physique : tracer,
+enregistrer, signer une demi-journée, puis recharger et vérifier dessin et statut.
+Une largeur mobile simulée ne démontre pas le tracé au doigt. Consigner appareil,
+navigateur et résultat dans la PR, sans données personnelles réelles.

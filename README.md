@@ -6,6 +6,9 @@ les attestations et le suivi qualité, avec des espaces internes et portail.
 Le socle, P01 à P14, P16 et P20 sont livrés ; P15 est annulé et P17 à P19 restent
 reportés. Le détail et les décisions sont dans l'[index documentaire](docs/README.md).
 
+Pour l'émargement, consulter le [mode d'emploi des tableaux et signatures
+personnelles](docs/s07-attendance-signatures.md#utilisation).
+
 ## Installation
 
 Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer
