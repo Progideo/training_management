@@ -24,6 +24,11 @@ métier sont préférés aux positions dans la page. La suite ne prétend pas co
 les examens, le multi-société ou tous les rôles. L'émargement reste par
 demi-journée et la durée des attestations issue du planning.
 
+Les tableaux de présence et les signatures personnelles ne font pas partie de
+cette suite Robot. Leur [recette dédiée](s07-attendance-signatures.md#mise-à-jour-et-recette-courte)
+comprend clavier, chargement PNG, petit écran et tracé sur appareil tactile réel.
+Consigner ces vérifications séparément dans la PR concernée.
+
 ## Structure des tests
 
 La suite applique le Page Object Model avec des ressources Robot Framework,

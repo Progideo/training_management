@@ -699,3 +699,19 @@ native, seuil Survey natif, sélection fiscale native sur l’adresse retenue pa
 l’extension facultative et identité des notifications par modèles de courriel.
 Versions, quotas, bénéficiaires et confidentialité restent protégés. Les historiques
 ne sont pas recalculés ; aucun transport ni déploiement n’est activé par la mise à jour.
+
+
+## Complément validé — présences et signatures, 1 novembre 2026
+
+PRE01–PRE03 et UX01 : [#111](https://github.com/Progideo/training_management/issues/111).
+Présenter les présences dans un tableau par jour et demi-journée, avec pastille
+colorée, libellé et signature du participant dès sa déclaration signée. Distinguer
+cette déclaration du contrôle formateur et les validations partielles par séance.
+Le superviseur reste en consultation sur son périmètre.
+
+Chaque utilisateur peut enregistrer un dessin personnel et le réutiliser par
+une action explicite à chaque déclaration ou validation. Conserver une copie
+figée par événement, sans rétro-signature ni modification des preuves anciennes
+après remplacement/suppression du dessin. Les droits, durées, horodatages et
+contrôles distincts existants sont conservés. Cette image ne garantit pas seule
+l'identité ou l'intégrité. Voir les [règles et la recette](../s07-attendance-signatures.md).

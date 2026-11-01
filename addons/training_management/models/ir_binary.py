@@ -10,8 +10,15 @@ class IrBinary(models.AbstractModel):
     def _check_training_binary_access(self, record):
         self.env["training.document.policy"]._check_read(record)
 
+    def _check_signature_field(self, record, field):
+        if record._name == "training.attendance.signature" or (
+            record._name == "training.attendance.event" and field == "signature"
+        ):
+            raise AccessError(self.env._("Use the authorized attendance signature view."))
+
     def _find_record(self, xmlid=None, res_model="ir.attachment", res_id=None, access_token=None, field=None):
         record = super()._find_record(xmlid, res_model, res_id, access_token, field)
+        self._check_signature_field(record, field)
         self._check_training_binary_access(record)
         if record._name in ("training.proof", "training.document") and field != "data":
             raise AccessError(self.env._("Only the authorized preserved file can be downloaded."))
@@ -26,6 +33,7 @@ class IrBinary(models.AbstractModel):
         mimetype=None,
         default_mimetype="application/octet-stream",
     ):
+        self._check_signature_field(record, field_name)
         self._check_training_binary_access(record)
         if record._name in ("training.proof", "training.document") and field_name != "data":
             raise AccessError(self.env._("Only the authorized preserved file can be downloaded."))

@@ -12,6 +12,9 @@ Le [manuel utilisateur HTML](docs/user/README.md) décrit les parcours par profi
 les procédures et règles métier, avec de nouvelles captures sur données de démonstration.
 Point d’entrée après téléchargement : `docs/user/html/index.html`.
 
+Pour l'émargement, consulter le [mode d'emploi des tableaux et signatures
+personnelles](docs/s07-attendance-signatures.md#utilisation).
+
 ## Installation
 
 Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer

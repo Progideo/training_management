@@ -120,7 +120,7 @@ class AttendancePeriods(models.AbstractModel):
         return hashlib.sha256("|".join(self._definition(s) for s in sessions.sorted("id")).encode()).hexdigest()
 
     @api.private
-    def _declare_halfday(self, enrollment_id, key, *, absent=False, accepted=False, definition=None):
+    def _declare_halfday(self, enrollment_id, key, *, absent=False, accepted=False, definition=None, signature=None):
         with self.env.cr.savepoint():
             enrollment = self.env["training.learning.service"]._enrollment(enrollment_id, lock=True)
             sessions = self._day_sessions(enrollment, key).filtered(lambda s: s.attendance_mode != "paper")
@@ -137,6 +137,7 @@ class AttendancePeriods(models.AbstractModel):
                     0,
                     0,
                     accepted=accepted,
+                    signature=signature,
                     absent=absent,
                     period_key=key,
                     definition=self._definition(session),

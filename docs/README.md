@@ -80,10 +80,10 @@ P09–P16 se lisent avec cette annulation. Les fichiers synchronisés sous `sour
 ne sont pas modifiés : la divergence avec l’import d’origine est volontaire et tracée.
 
 Les empreintes ci-dessus restent celles de l’import initial. Empreinte courante
-SHA-256 de la spécification amendée (y compris P20, #105, et l’émargement par demi-journée) :
+SHA-256 de la spécification amendée (y compris P20, #105, l’émargement par demi-journée et les signatures, #111) :
 
 ```text
-9b1fc343686a52ecafa368edfbed02a17423275f94928da0ca6c73d40faf4144  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+d03e565ec89e73981315234d148204b05c16fae979b94087fca81bfa3ce6cb6a  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments
@@ -100,7 +100,7 @@ SHA-256 de la spécification amendée (y compris P20, #105, et l’émargement p
 | S02.1 — politique documentaire et protections natives | [s02-1-document-policy.md](s02-1-document-policy.md) |
 | S05 — supports privés, activités, progression et tutorat | [s05-private-materials.md](s05-private-materials.md) |
 | S06 — examens blancs, navigation et thèmes | [s06-mock-exams.md](s06-mock-exams.md) |
-| S07 — présences et émargement | [s07-attendance.md](s07-attendance.md) |
+| S07 — présences et émargement | [s07-attendance.md](s07-attendance.md), [tableau et signatures](s07-attendance-signatures.md) |
 | S08 — attestations, preuves et clôture | [s08-closure-documents.md](s08-closure-documents.md) |
 | S09 — évaluations, retours et qualité (cadrage validé) | [s09-evaluations-quality.md](s09-evaluations-quality.md) |
 | S09.1 — évaluations nominatives et droits | [s091-evaluations.md](s091-evaluations.md) |

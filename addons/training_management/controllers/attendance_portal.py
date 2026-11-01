@@ -19,9 +19,10 @@ class AttendancePortal(http.Controller):
             if request.httprequest.method == "POST":
                 try:
                     self._check_choice(post)
-                    service._declare_halfday(
+                    service._sign_halfday(
                         enrollment.id,
                         post.get("period_key"),
+                        signature_version=post.get("signature_version"),
                         absent=post.get("attendance") == "absent",
                         accepted=post.get("accepted") == "yes",
                         definition=post.get("definition"),
@@ -32,7 +33,8 @@ class AttendancePortal(http.Controller):
                 except (ValueError, ValidationError) as exc:
                     error = str(exc) if isinstance(exc, ValidationError) else request.env._("Choose a valid session.")
             sessions = enrollment.delivery_id.session_ids.filtered(lambda s: not s.cancelled)
-            rows = self._participant_rows(sessions, enrollment)
+            raw_rows = self._all_rows(sessions, enrollment)
+            rows = self._participant_rows(sessions, enrollment, raw_rows=raw_rows)
             if error:
                 self._draft(rows, post, trainer=False)
         except (AccessError, MissingError):
@@ -41,6 +43,7 @@ class AttendancePortal(http.Controller):
             request.render(
                 "training_management.portal_attendance",
                 {
+                    **self._table_values(raw_rows, trainer=False),
                     "rows": rows,
                     "error": error,
                     "saved": post.get("saved") == "1",
@@ -67,7 +70,7 @@ class AttendancePortal(http.Controller):
                 try:
                     if post.get("operation") != "invalidate":
                         self._check_choice(post)
-                    operation = service._invalidate if post.get("operation") == "invalidate" else service._review
+                    operation = service._invalidate if post.get("operation") == "invalidate" else service._sign_review
                     key = post.get("period_key", "")
                     interval = (
                         ()
@@ -77,7 +80,12 @@ class AttendancePortal(http.Controller):
                         else self._review_interval(session, int(post.get("enrollment_id", 0)), key)
                     )
                     options = (
-                        {} if post.get("operation") == "invalidate" else {"absent": post.get("attendance") == "absent"}
+                        {}
+                        if post.get("operation") == "invalidate"
+                        else {
+                            "absent": post.get("attendance") == "absent",
+                            "signature_version": post.get("signature_version"),
+                        }
                     )
                     operation(
                         session.id,
@@ -99,7 +107,7 @@ class AttendancePortal(http.Controller):
                         str(exc) if isinstance(exc, ValidationError) else request.env._("Choose a valid participant.")
                     )
             enrollments = session.delivery_id.enrollment_ids.filtered(lambda e: e.state == "confirmed")
-            rows = [row for enrollment in enrollments for row in self._rows(session, enrollment)]
+            rows = self._all_rows(session, enrollments)
             if error:
                 self._draft(rows, post, trainer=True)
         except (AccessError, MissingError):
@@ -108,6 +116,8 @@ class AttendancePortal(http.Controller):
             request.render(
                 "training_management.portal_attendance",
                 {
+                    **self._table_values(rows, trainer=True, enrollments=enrollments),
+                    "matrix_url": f"/my/training-dashboard/{session.delivery_id.id}/attendance",
                     "rows": rows,
                     "error": error,
                     "saved": post.get("saved") == "1",
@@ -154,10 +164,10 @@ class AttendancePortal(http.Controller):
             ):
                 row.update(absent=post.get("attendance") == "absent", reason=post.get("reason", ""), error=True)
 
-    def _participant_rows(self, sessions, enrollment):
+    def _participant_rows(self, sessions, enrollment, raw_rows=None):
         service = request.env["training.attendance.service"]
         grouped = {}
-        for row in self._rows(sessions, enrollment):
+        for row in raw_rows if raw_rows is not None else self._rows(sessions, enrollment):
             # Historical intervals remain separately reviewable; no history is reinterpreted.
             key = (row["period_key"], row["mode"] == "paper", row["session_id"] if row["period_key"] == "legacy" else 0)
             grouped.setdefault(key, []).append(row)
@@ -175,6 +185,8 @@ class AttendancePortal(http.Controller):
                 definition=service._day_definition(day_sessions),
                 state=self._group_state(rows),
                 elapsed=all(r["elapsed"] for r in rows),
+                signatures=[sig for r in rows for sig in r["signatures"]],
+                schedule=[part for r in rows for part in r["schedule"]],
             )
             result.append(row)
         return result
@@ -193,21 +205,65 @@ class AttendancePortal(http.Controller):
             return request.env._("Signed paper expected")
         return request.env._("To declare")
 
-    def _rows(self, sessions, enrollment):
+    def _table_values(self, rows, *, trainer, enrollments=None):
+        from .attendance_matrix import attendance_matrix
+
+        signature = request.env["training.attendance.signature"]._current()
+        return {
+            "matrix": attendance_matrix(
+                rows,
+                collective=trainer,
+                view="all",
+                people=[{"id": e.id, "name": e.participant_id.name} for e in enrollments or []],
+            ),
+            "signature_version": signature.version or 0,
+            "has_signature": bool(signature.drawing),
+        }
+
+    def _all_rows(self, sessions, enrollments):
+        # Read once for this already-authorized population; event fields prefetch
+        # across all records, rather than one search per participant/session.
+        presences = (
+            request.env["training.attendance"]
+            .sudo()
+            .search([("session_id", "in", sessions.ids), ("enrollment_id", "in", enrollments.ids)])
+        )
+        mapping = {(p.session_id.id, p.enrollment_id.id, p.period_key): p for p in presences}
+        return [row for enrollment in enrollments for row in self._rows(sessions, enrollment, mapping)]
+
+    def _rows(self, sessions, enrollment, mapping=None):
         rows = []
         service = request.env["training.attendance.service"]
         for session in sessions:
-            for period in service._visible_periods(session, enrollment.id):
+            legacy = mapping.get((session.id, enrollment.id, "legacy")) if mapping is not None else None
+            if mapping is None:
+                periods = service._visible_periods(session, enrollment.id)
+            elif legacy and legacy.event_ids and legacy.event_ids.sorted("id")[-1:].kind != "invalidation":
+                periods = [
+                    {
+                        "key": "legacy",
+                        "label": request.env._("Historical attendance"),
+                        "start": session.start_at,
+                        "end": session.end_at,
+                    }
+                ]
+            else:
+                periods = service._periods(session)
+            for period in periods:
                 presence = (
-                    request.env["training.attendance"]
-                    .sudo()
-                    .search(
-                        [
-                            ("session_id", "=", session.id),
-                            ("enrollment_id", "=", enrollment.id),
-                            ("period_key", "=", period["key"]),
-                        ],
-                        limit=1,
+                    mapping.get((session.id, enrollment.id, period["key"]), request.env["training.attendance"])
+                    if mapping is not None
+                    else (
+                        request.env["training.attendance"]
+                        .sudo()
+                        .search(
+                            [
+                                ("session_id", "=", session.id),
+                                ("enrollment_id", "=", enrollment.id),
+                                ("period_key", "=", period["key"]),
+                            ],
+                            limit=1,
+                        )
                     )
                 )
                 events = presence.event_ids.sorted("id")
@@ -219,6 +275,32 @@ class AttendancePortal(http.Controller):
                 tz = session.timezone
                 rows.append(
                     {
+                        "anchor": f"attendance-{enrollment.id}-{session.id}-{period['key']}",
+                        "review_url": f"/my/training-sessions/{session.id}/attendance#attendance-{enrollment.id}-{session.id}-{period['key']}"
+                        if session.instructor_id == request.env.user.partner_id
+                        else False,
+                        "schedule": [
+                            {
+                                "name": session.name,
+                                "start": format_datetime(request.env, period["start"], tz=session.timezone),
+                                "end": format_datetime(request.env, period["end"], tz=session.timezone),
+                                "timezone": session.timezone,
+                            }
+                        ],
+                        "start": format_datetime(request.env, period["start"], tz=session.timezone),
+                        "end": format_datetime(request.env, period["end"], tz=session.timezone),
+                        "signatures": [
+                            {
+                                "id": event.id,
+                                "digest": event.signature_digest,
+                                "actor": event.actor_id.name,
+                                "session": session.name,
+                                "absent": event.absent,
+                            }
+                            for event in sources
+                            if event.kind == "declaration" and event.signature
+                        ],
+                        "anomaly": presence.state == "anomaly" if presence else False,
                         "session_id": session.id,
                         "enrollment_id": enrollment.id,
                         "period_key": period["key"],
@@ -258,6 +340,11 @@ class AttendancePortal(http.Controller):
                                 "kind": dict(e._fields["kind"]._description_selection(request.env))[e.kind],
                                 "date": format_datetime(request.env, e.occurred_at, tz=tz),
                                 "actor": e.actor_id.name,
+                                "signature_id": e.id if e.signature else False,
+                                "wording": e.wording,
+                                "status": (request.env._("Absent") if e.absent else request.env._("Present"))
+                                if e.kind != "invalidation"
+                                else False,
                                 "anomaly": e.anomaly,
                                 "reason": e.reason,
                             }

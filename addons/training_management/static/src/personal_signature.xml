@@ -1,0 +1,5 @@
+<templates xml:space="preserve">
+    <t t-name="training_management.PersonalSignature">
+        <div t-ref="this.rootRef"><NameAndSignature t-props="this.signatureProps"/></div>
+    </t>
+</templates>

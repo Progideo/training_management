@@ -75,8 +75,9 @@ Le chargement des nouvelles vues sur une base équipée de Website réutilise le
 pont de migration ciblé S05 : défaut de visibilité natif limité à la transaction,
 puis restauration immédiate. Aucun changement de visibilité des vues existantes.
 
-Ce dispositif constitue une déclaration et un contrôle interne. Aucune signature
-dessinée ou certification juridique n'est ajoutée. L'asynchrone reste suivi par
+Ce dispositif constitue une déclaration et un contrôle interne. Le [complément
+tableau et signatures](s07-attendance-signatures.md) ajoute le dessin personnel
+réutilisable et ses copies figées ; aucune certification juridique n’est revendiquée. L'asynchrone reste suivi par
 les activités S05, sans séance fictive ; les attestations relèvent de S08.
 
 ## Recette courte

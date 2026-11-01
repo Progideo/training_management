@@ -1,5 +1,10 @@
 """PRE01–03 under restricted identities, including native binary routes."""
 
+import base64
+from io import BytesIO
+
+from PIL import Image, ImageDraw
+
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
@@ -20,6 +25,14 @@ class AttendanceCase(MaterialCase):
         clock = patch("odoo.fields.Datetime.now", return_value=datetime(2027, 1, 4, 11))
         clock.start()
         self.addCleanup(clock.stop)
+        # New portal confirmations reuse a drawing explicitly saved by each owner.
+        output = BytesIO()
+        image = Image.new("RGB", (160, 60), "white")
+        ImageDraw.Draw(image).line((10, 40, 120, 10), fill="black", width=3)
+        image.save(output, format="PNG")
+        self.signature_png = base64.b64encode(output.getvalue()).decode()
+        for owner in (self.portal, self.portal_b):
+            self.env["training.attendance.signature"].with_user(owner)._save_drawing(self.signature_png, 0)
 
     def scheduled(self, mode="mixed", instructor=None):
         delivery = self.delivery(kind="session", start_at="2027-01-01", end_at="2027-02-01", timezone="UTC")
@@ -658,6 +671,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
             path,
             data={
                 "csrf_token": csrf,
+                "signature_version": "1",
                 "enrollment_id": enrollment.id,
                 "revision": "0",
                 "definition": page.xpath("//input[@name='definition']/@value")[0],
@@ -692,6 +706,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
             path,
             data={
                 "csrf_token": csrf,
+                "signature_version": "1",
                 "definition": definition,
                 "session_id": session.id,
                 "accepted": "yes",
@@ -721,6 +736,7 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
             trainer_path,
             data={
                 "csrf_token": csrf,
+                "signature_version": "1",
                 "enrollment_id": enrollment.id,
                 "revision": presence.revision,
                 "definition": html.fromstring(response.content).xpath("//input[@name='definition']/@value")[0],
