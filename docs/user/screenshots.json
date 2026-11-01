@@ -1,0 +1,170 @@
+{
+  "code_commit": "27e9e96b8164a69d9adaaba3982c34572cd97f0f",
+  "odoo": "20.0-20261015 Community",
+  "environment": "local disposable database, loopback only, outgoing mail and cron disabled",
+  "capture_date": "2026-11-01",
+  "images": [
+    {
+      "file": "source/images/attestation-verification.jpg",
+      "captured_at_utc": "2026-11-01T10:56:42+00:00",
+      "role": "Projection publique",
+      "screen": "attestation verification",
+      "sha256": "f041ac645db49c526e762ecd18c174801d2e7179757f05aed8657a11b9281b06",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/catalogue.jpg",
+      "captured_at_utc": "2026-11-01T10:47:55+00:00",
+      "role": "Visiteur",
+      "screen": "catalogue",
+      "sha256": "4ff099022c451b25eb877ac0171c2d6e0cc3b7854191ac8be9df595e19ffbe1f",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/controle-presences.jpg",
+      "captured_at_utc": "2026-11-01T10:52:45+00:00",
+      "role": "Formateur",
+      "screen": "controle presences",
+      "sha256": "39c573511ab53aa17bdb8c47ac14918fc01c17c922cb8248ed5d4c4b2262252a",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/demande-equipe.jpg",
+      "captured_at_utc": "2026-11-01T10:48:13+00:00",
+      "role": "Visiteur, demande intra",
+      "screen": "demande equipe",
+      "sha256": "ddf07b5d6e3716294cf1d69ba9708dc43c471882067602f545a79b1d1feb7e55",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/dossier-cloture.jpg",
+      "captured_at_utc": "2026-11-01T10:55:50+00:00",
+      "role": "Responsable qualité affecté",
+      "screen": "dossier cloture",
+      "sha256": "acdcff998b38996e9a383e6994253123f12a5be826a71879b3be2b466d5b66af",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/examen-passation.jpg",
+      "captured_at_utc": "2026-11-01T10:49:10+00:00",
+      "role": "Participant",
+      "screen": "examen passation",
+      "sha256": "90d53c1101c929cfdb119cb931474b770c3fc09741cc611c846f414542e37a99",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/examen-resultat.jpg",
+      "captured_at_utc": "2026-11-01T10:49:28+00:00",
+      "role": "Participant",
+      "screen": "examen resultat",
+      "sha256": "b873d7756d72035e1cb2cd5361c409664489de02d0823bd0e52a0fb4a9596061",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/fiche-publique.jpg",
+      "captured_at_utc": "2026-11-01T10:48:00+00:00",
+      "role": "Visiteur",
+      "screen": "fiche publique",
+      "sha256": "b4bbb90f8c8b06c5fbbf14d2ac7c778fed02eba10dabdb413393a60b8b8ab29d",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/formation-participant.jpg",
+      "captured_at_utc": "2026-11-01T10:48:50+00:00",
+      "role": "Participant",
+      "screen": "formation participant",
+      "sha256": "bce8505fa4a6d600feaa193397cc10412b6e7c0cc3e11574b28da5e12cea9b79",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/inscription-actions.jpg",
+      "captured_at_utc": "2026-11-01T10:54:22+00:00",
+      "role": "Coordinateur",
+      "screen": "inscription actions",
+      "sha256": "5d7d0b3035ea1e0f6e9c31c00e199a78363e4bff9742cf6117938efbbf5285d5",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/mise-en-pratique.jpg",
+      "captured_at_utc": "2026-11-01T10:49:42+00:00",
+      "role": "Participant",
+      "screen": "mise en pratique",
+      "sha256": "385dc71c87c6dc75db6232d97e9a9482543306f0a4ab12cd26097337d5db7362",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/politique-conservation.jpg",
+      "captured_at_utc": "2026-11-01T10:56:53+00:00",
+      "role": "Responsable qualité",
+      "screen": "politique conservation",
+      "sha256": "1d2c18828901503d58b5d085ab2b0c9aa09a108b0c085292ef68694478509bed",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/portail-entreprise.jpg",
+      "captured_at_utc": "2026-11-01T10:50:50+00:00",
+      "role": "Représentant entreprise",
+      "screen": "portail entreprise",
+      "sha256": "c5172fb41fe123ba231e70a0b1894fd74e27f59c678a0de6230b21b1f3c67ffd",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/portail-formateur.jpg",
+      "captured_at_utc": "2026-11-01T10:51:21+00:00",
+      "role": "Formateur",
+      "screen": "portail formateur",
+      "sha256": "f4ff04248907e35ab2e54fe57bced7992dd3f7a2faf377798d1f2401b9176b2e",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/portail-participant.jpg",
+      "captured_at_utc": "2026-11-01T10:49:35+00:00",
+      "role": "Participant",
+      "screen": "portail participant",
+      "sha256": "fa964b073273322c3b36eb588a6f0a2bdc8070730d5455cc75508028543eca83",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/presence-validee.jpg",
+      "captured_at_utc": "2026-11-01T10:52:45+00:00",
+      "role": "Formateur",
+      "screen": "presence validee",
+      "sha256": "c77e793f31a7c9ef3596eaecddac2322c8e44faf63587ad7f3d989fb42f7a409",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/projet-remise.jpg",
+      "captured_at_utc": "2026-11-01T10:48:56+00:00",
+      "role": "Participant",
+      "screen": "projet remise",
+      "sha256": "a4d3cae0dc5fd42304f7306648de141a7229fdd32865095cc4226602e868749b",
+      "data": "synthetic",
+      "retouched": false
+    },
+    {
+      "file": "source/images/tableau-suivi.jpg",
+      "captured_at_utc": "2026-11-01T10:53:50+00:00",
+      "role": "Coordinateur",
+      "screen": "tableau suivi",
+      "sha256": "a7d778573822f0b8a9a8747cc0385a9e5aef9fb1653333639051c52059734d70",
+      "data": "synthetic",
+      "retouched": false
+    }
+  ]
+}

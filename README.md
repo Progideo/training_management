@@ -6,6 +6,12 @@ les attestations et le suivi qualité, avec des espaces internes et portail.
 Le socle, P01 à P14, P16 et P20 sont livrés ; P15 est annulé et P17 à P19 restent
 reportés. Le détail et les décisions sont dans l'[index documentaire](docs/README.md).
 
+## Documentation utilisateur
+
+Le [manuel utilisateur HTML](docs/user/README.md) décrit les parcours par profil,
+les procédures et règles métier, avec de nouvelles captures sur données de démonstration.
+Point d’entrée après téléchargement : `docs/user/html/index.html`.
+
 ## Installation
 
 Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer

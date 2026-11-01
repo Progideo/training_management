@@ -1,0 +1,42 @@
+:root { --tm-purple: #714b67; --tm-teal: #017e84; }
+body, .wy-nav-content { color: #24323c; }
+.wy-nav-content { max-width: 1080px; }
+.wy-nav-side { background: #f7f7f8; border-right: 1px solid #dedee2; }
+.wy-menu-vertical a { color: #39434b; }
+.wy-menu-vertical a:hover { background: #eee9ed; }
+.wy-menu-vertical p.caption { color: var(--tm-purple); font-weight: 700; }
+.wy-side-nav-search input[type=text] { border-color: #cbbec7; }
+.wy-side-nav-search>a { color: white; }
+.wy-nav-top { background: var(--tm-purple); }
+a, a:visited { color: #006b73; }
+h1, h2, h3 { font-family: system-ui, sans-serif; color: #263238; }
+h1 { font-size: 2.1rem; line-height: 1.22; }
+h2 { border-top: 1px solid #e3e4e7; padding-top: 1rem; margin-top: 2rem; }
+p, li { line-height: 1.65; }
+.rst-content .admonition { border-radius: 3px; box-shadow: none; }
+.rst-content .note { background: #eef7f8; }
+.rst-content .note .admonition-title { background: #017e84; }
+.rst-content .important { background: #f4edf2; }
+.rst-content .important .admonition-title { background: #714b67; }
+.rst-content .figure { margin: 1.5rem 0 2rem; }
+.rst-content .figure img { border: 1px solid #d9dce0; border-radius: 4px; }
+.rst-content .figure .caption { color: #52616c; font-size: .9rem; padding-top: .5rem; }
+.rst-content .wy-table-responsive table td,
+.rst-content .wy-table-responsive table th { white-space: normal; vertical-align: top; }
+.rst-content .wy-table-responsive { margin-bottom: 1.4rem; }
+.rst-content .menuselection { font-weight: 600; }
+.rst-content code { white-space: normal; overflow-wrap: anywhere; }
+.rst-content .section, .rst-content section { scroll-margin-top: 1rem; }
+@media (max-width: 768px) {
+  .wy-nav-content-wrap { margin-left: 0; }
+  .wy-nav-content { padding: 1.4rem; }
+  h1 { font-size: 1.7rem; }
+  .rst-content .wy-table-responsive table { min-width: 560px; }
+}
+@media print {
+  .wy-nav-side, .wy-nav-top, .rst-footer-buttons, .wy-breadcrumbs { display: none; }
+  .wy-nav-content-wrap { margin-left: 0; }
+  .wy-nav-content { max-width: none; padding: 0; }
+  a { color: inherit; }
+  .rst-content .figure img { max-height: 19cm; width: auto; }
+}
