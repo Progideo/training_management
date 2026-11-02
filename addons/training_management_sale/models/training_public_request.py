@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-from datetime import date
+from datetime import date, timedelta
 
 from psycopg2 import IntegrityError
 
@@ -10,6 +10,11 @@ from odoo import SUPERUSER_ID, api, fields, models
 from odoo.exceptions import AccessError, ConcurrencyError, ValidationError
 from odoo.tools import email_normalize
 from odoo.tools.binary import BinaryBytes
+
+
+DEFAULT_MAX_PER_EMAIL_HOUR = 5
+DEFAULT_MAX_PER_HOUR = 60
+DEFAULT_MAX_UPLOAD_MB_HOUR = 100
 
 
 class TrainingPublicRequest(models.Model):
@@ -29,6 +34,30 @@ class TrainingPublicRequest(models.Model):
     _unique_training_submission = models.Constraint(
         "UNIQUE(training_submission_key)", "This request was already recorded."
     )
+
+    @api.private
+    def _check_public_request_limits(self, email, upload_bytes):
+        # Anonymous form: bounded leads, acknowledgements and private files per hour.
+        # A per-address limit at the proxy remains the first line of defence.
+        params = self.env["ir.config_parameter"].sudo()
+        since = fields.Datetime.now() - timedelta(hours=1)
+        leads = self.with_context(active_test=False)
+        recent = [("training_request_kind", "!=", False), ("create_date", ">=", since)]
+        per_email = params.get_int("training_request.max_per_email_hour") or DEFAULT_MAX_PER_EMAIL_HOUR
+        per_hour = params.get_int("training_request.max_per_hour") or DEFAULT_MAX_PER_HOUR
+        if (
+            leads.search_count(recent + [("email_normalized", "=", email)], limit=per_email) >= per_email
+            or leads.search_count(recent, limit=per_hour) >= per_hour
+        ):
+            raise ValidationError(self.env._("Too many requests were received. Please try again in an hour."))
+        if upload_bytes:
+            per_hour_mb = params.get_int("training_request.max_upload_mb_hour") or DEFAULT_MAX_UPLOAD_MB_HOUR
+            rows = self.env["ir.attachment"]._read_group(
+                [("res_model", "=", "crm.lead"), ("res_id", "!=", 0), ("create_date", ">=", since)],
+                aggregates=["file_size:sum"],
+            )
+            if (rows[0][0] or 0) + upload_bytes > per_hour_mb * 1024 * 1024:
+                raise ValidationError(self.env._("Too many files were received. Please try again in an hour."))
 
     @api.private
     def _submit_public_request(self, company, values, key, file=None):
@@ -117,6 +146,7 @@ class TrainingPublicRequest(models.Model):
                     self.env._("This form was already submitted with different content. Start a new request.")
                 )
             return existing
+        self._check_public_request_limits(email, len(raw))
         data = {
             "name": self.env._("Training request — %s", values["contact"]),
             "type": "lead",

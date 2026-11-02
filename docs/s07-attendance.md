@@ -32,6 +32,11 @@ la déclaration ni les justificatifs. Une nouvelle déclaration puis une validat
 distincte peuvent régulariser la présence. Les décisions périmées sont refusées.
 La clôture de la formation bloque déclaration, validation et invalidation.
 
+Si le formateur affecté devient indisponible, le coordinateur réaffecte le contrôle
+de la séance à un remplaçant, avec un motif. Le planning et les preuves restent
+inchangés ; seul le remplaçant peut alors valider. Si aucun remplaçant n’est disponible,
+le coordinateur valide lui-même, avec motif et justificatif, sans contrôler sa propre présence.
+
 Le coordinateur importe un papier signé depuis la séance en indiquant la personne,
 la demi-journée et la provenance ; ce dépôt attend le contrôle du formateur.
 Un fichier collectif reste réservé aux coordinateurs de la société exploitante :

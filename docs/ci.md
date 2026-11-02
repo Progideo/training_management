@@ -37,6 +37,9 @@ Community `20.0-20261015` épinglée par digest et PostgreSQL 18.6. Les variante
 supplémentaire de la même suite, sans retirer leur couverture. Le job de qualité
 exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
+Le job de qualité exécute aussi `run_exam_parallel.py` : deux participants d’une même
+réalisation démarrent, répondent et remettent un examen dans des transactions parallèles.
+
 ## Migrations, conservation et concurrence
 
 Le relevé S08 antérieur à la mise à jour utilise le code de sa révision historique,

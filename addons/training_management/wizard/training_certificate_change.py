@@ -6,7 +6,9 @@ class TrainingCertificateChange(models.TransientModel):
     _description = "Change Certificate Status"
 
     verification_id = fields.Many2one("training.certificate.verification", required=True, readonly=True)
-    state = fields.Selection([("revoked", "Revoked"), ("replaced", "Replaced")], required=True, readonly=True)
+    state = fields.Selection(
+        [("revoked", "Revoked"), ("replaced", "Replaced"), ("reissued", "Reissued")], required=True, readonly=True
+    )
     dossier_id = fields.Many2one(related="verification_id.dossier_id")
     kind = fields.Selection(related="verification_id.kind")
     replacement_id = fields.Many2one(
@@ -17,6 +19,8 @@ class TrainingCertificateChange(models.TransientModel):
 
     def action_apply(self):
         self.ensure_one()
+        if self.state == "reissued":
+            return self.verification_id.action_reissue(reason=self.reason)
         if self.state == "replaced":
             self.verification_id.action_replace(replacement_id=self.replacement_id.id, reason=self.reason)
         else:

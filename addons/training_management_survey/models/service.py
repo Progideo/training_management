@@ -3,7 +3,8 @@
 from datetime import timedelta
 
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, LockError, ValidationError
+from odoo.tools import SQL
 
 
 class ExamService(models.AbstractModel):
@@ -29,8 +30,9 @@ class ExamService(models.AbstractModel):
         if enrollment._effective_state() not in ("active", "expired"):
             raise AccessError(self.env._("This private exam is unavailable."))
         if lock:
-            enrollment.delivery_id._serialize()
-            enrollment.invalidate_recordset()
+            # Participants of one delivery answer in parallel: same shared lock as
+            # S05, with a fence on this enrollment and a row lock on the attempt.
+            self.env["training.learning.service"]._lock_enrollment(enrollment)
             return self._enrollment(enrollment_id, history=history, finish=finish)
         return enrollment
 
@@ -62,7 +64,12 @@ class ExamService(models.AbstractModel):
         if not exam or exam.training_state != "published" or not exam.active:
             raise ValidationError(self.env._("No published mock exam is assigned."))
         family = exam.training_origin_id or exam
-        family.lock_for_update()
+        # A whole class may start together: editorial changes stay exclusive and
+        # the partial unique index keeps one active attempt per participant.
+        if not self.env.execute_query(
+            SQL("SELECT id FROM survey_survey WHERE id = %s FOR SHARE SKIP LOCKED", family.id)
+        ):
+            raise LockError(self.env._("Cannot grab a lock on records"))
         attempts = self.env["survey.user_input"].sudo()
         active = attempts.search(
             [
