@@ -572,7 +572,7 @@ class ClosureEnrollment(models.Model):
         return self._issue_certificate("achievement")
 
     @api.private
-    def _issue_certificate(self, kind):
+    def _issue_certificate(self, kind, reissue=None):
         self.ensure_one()
         self.check_access("read")
         dossier = self.env["training.closure"].search([("enrollment_id", "=", self.id)], limit=1)
@@ -609,7 +609,8 @@ class ClosureEnrollment(models.Model):
                     [("delivery_id", "=", self.delivery_id.id), ("optional", "=", False)]
                 )
                 service = self.env["training.learning.service"]
-                if any(not service._complete(self, a) for a in activities):
+                required = activities.filtered(service._required_for_certificate)
+                if any(not service._complete(self, a) for a in required):
                     raise ValidationError(
                         self.env._("Complete every required activity and review its supporting evidence.")
                     )
@@ -636,6 +637,8 @@ class ClosureEnrollment(models.Model):
         if dossier.verify_certificates:
             snapshot["issuer"] = self.company_id.name
         snapshot["client_recipients"] = dossier.client_contact_ids.ids if dossier.share_certificates else []
+        if reissue:
+            snapshot["reissue_of"], snapshot["reissue_reason"] = reissue
         snapshot["reference"] += "-" + hashlib.sha256(json.dumps(snapshot, sort_keys=True).encode()).hexdigest()[:12]
         serialized = json.dumps(snapshot, ensure_ascii=False, sort_keys=True)
         previous = dossier.output_ids.filtered(lambda d: d.kind == kind and d.sudo().snapshot == serialized)
@@ -684,6 +687,11 @@ class ClosureEnrollment(models.Model):
 
 class ClosureLearningService(models.AbstractModel):
     _inherit = "training.learning.service"
+
+    @api.private
+    def _required_for_certificate(self, activity):
+        """Extensions exclude activities whose result is only declared by the client."""
+        return True
 
     @api.private
     def _certificate_origin(self, enrollment, activity):

@@ -142,6 +142,35 @@ class TestCertificateVerification(VerificationCase):
         self.assertEqual(document.data.content, old_pdf)
         self.assertFalse(self.env["training.certificate.verification"].search([("document_id", "=", document.id)]))
 
+    def test_reissue_after_erroneous_revocation_creates_a_new_valid_document(self):
+        dossier, document, verification = self.issue()
+        original = document.data.content
+        quality = verification.with_user(self.quality)
+        with self.assertRaises(ValidationError):
+            quality.action_reissue(reason="Still valid")
+        quality.action_revoke(reason="Fictional erroneous revocation")
+        for user in (self.coordinator, self.other_quality, self.portal):
+            with self.assertRaises(AccessError):
+                verification.with_user(user).action_reissue(reason="Forbidden")
+        with self.assertRaises(ValidationError):
+            quality.action_reissue(reason="  ")
+        self.assertEqual(quality.action_reissue()["res_model"], "training.certificate.change")
+        quality.action_reissue(reason="Fictional reissue")
+        rows = self.env["training.certificate.verification"].search([("dossier_id", "=", dossier.id)])
+        self.assertEqual(len(rows), 2)
+        new = rows - verification
+        self.assertEqual(new.state, "valid")
+        self.assertEqual(verification.state, "revoked")
+        self.assertNotEqual(new.token, verification.token)
+        self.assertEqual(document.data.content, original)
+        snapshot = json.loads(new.document_id.snapshot)
+        self.assertEqual(snapshot["reissue_of"], verification.reference)
+        self.assertEqual(snapshot["reissue_reason"], "Fictional reissue")
+        public = new._public_values(new.token)
+        self.assertNotIn("reissue_reason", public)
+        with self.assertRaises(ValidationError):
+            quality.action_reissue(reason="Second valid document")
+
     def test_revocation_roles_audit_repeat_and_closed_dossier(self):
         dossier, document, verification = self.issue()
         original = document.data.content
