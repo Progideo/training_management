@@ -55,9 +55,12 @@ parent. Ils ne peuvent être partagés, détachés ou copiés par les opération
 pièces jointes ; leur contenu devient immuable à publication. Les propositions
 composées d’une image conservent leur libellé natif et leur image dans le corrigé.
 
-Les mutations reprennent le contrôle d’accès et le verrou natif S03. La règle
-EXA05 se limite à reprendre une tentative active ; un index unique natif protège
-cette unicité. Aucun dispositif général de gestion de concurrence n’est ajouté.
+Les mutations reprennent le contrôle d’accès et le verrou partagé S05 de la
+réalisation : les participants répondent en parallèle, sans réécrire la réalisation.
+Les changements administratifs gardent le verrou exclusif S03. La règle EXA05 se
+limite à reprendre une tentative active ; un index unique natif protège cette
+unicité. Le navigateur rejoue seul un conflit passager ou une perte réseau, avec
+la même charge idempotente, avant de demander une reprise.
 
 Chaque changement reçu est sauvegardé, y compris un effacement ou un marquage.
 L’écran distingue sauvegarde en cours, reçue et échouée. Une coupure conserve les derniers changements dans la page ouverte ; la reprise

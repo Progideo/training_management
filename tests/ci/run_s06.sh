@@ -48,3 +48,5 @@ TM_UPGRADE_PHASE=verify step catalogue_preserved run_odoo shell --no-http < "$re
 
 S06_PHASE=verify S052_PHASE=verify step learning_preserved run_odoo shell --no-http < "$repo/tests/probes/s052_history.py"
 S06_PHASE=verify step exam_preserved run_odoo shell --no-http < "$repo/tests/probes/s06_history.py"
+step exam_parallel run_odoo shell --no-http < "$repo/tests/probes/exam_parallel_saves.py"
+rg -q 'EXAM_PARALLEL_OK' "$results/exam_parallel.log"

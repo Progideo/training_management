@@ -384,6 +384,18 @@ class TestMockExam(ExamCase):
         with self.assertRaises(AccessError):
             service._attempt(attempt.id)
 
+    def test_answers_do_not_rewrite_the_delivery(self):
+        _exam, q1, _q2, activity, enrollment, service = self.published()
+        delivery = enrollment.delivery_id.sudo()
+        revision = delivery.revision
+        attempt = service._start(enrollment.id, activity.id)
+        service._save(attempt.id, q1.id, q1.suggested_answer_ids[:1].ids, False)
+        service._attempt(attempt.id, mutate=True)
+        service._submit(attempt.id)
+        delivery.invalidate_recordset()
+        self.assertEqual(delivery.revision, revision)
+        self.assertEqual(attempt.state, "done")
+
     def test_wrong_question_forged_choices_native_creation_and_finished_edits(self):
         exam, q1, q2, activity, enrollment, service = self.published()
         attempt = service._start(enrollment.id, activity.id)

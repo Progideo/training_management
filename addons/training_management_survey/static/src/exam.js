@@ -2,6 +2,9 @@ import { Interaction } from "@web/public/interaction";
 import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
 
+const RETRY_STATUS = [409, 429, 502, 503, 504];
+const RETRY_DELAYS = [500, 1000, 2000];
+
 // The countdown is survey.SurveyTimer, unmodified. This interaction adds P07
 // navigation and per-change saves to the native survey question widgets.
 export class TrainingExam extends Interaction {
@@ -38,6 +41,28 @@ export class TrainingExam extends Interaction {
         status.classList.toggle("alert-info", !error);
     }
     async send(values) {
+        // A transient conflict or network loss replays the same idempotent payload
+        // before asking the user. A stalled request keeps its own 15 s limit.
+        for (let attempt = 0; ; attempt++) {
+            let response;
+            try {
+                response = await this.post(values);
+            } catch (error) {
+                if (error.name === "AbortError" || attempt >= RETRY_DELAYS.length) {
+                    throw error;
+                }
+            }
+            if (response?.ok && response.headers.get("Content-Type")?.includes("application/json")) {
+                return await response.json();
+            }
+            if (response && (attempt >= RETRY_DELAYS.length || !RETRY_STATUS.includes(response.status))) {
+                throw new Error("Exam operation refused");
+            }
+            const delay = RETRY_DELAYS[attempt];
+            await new Promise((resolve) => setTimeout(resolve, delay + Math.random() * delay));
+        }
+    }
+    async post(values) {
         const data = new FormData();
         data.set("csrf_token", this.el.querySelector("[name=csrf_token]").value);
         for (const [key, value] of Object.entries(values)) {
@@ -46,11 +71,7 @@ export class TrainingExam extends Interaction {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 15000);
         try {
-            const response = await fetch(this.el.dataset.endpoint, { method: "POST", body: data, signal: controller.signal });
-            if (!response.ok || !response.headers.get("Content-Type")?.includes("application/json")) {
-                throw new Error("Exam operation refused");
-            }
-            return await response.json();
+            return await fetch(this.el.dataset.endpoint, { method: "POST", body: data, signal: controller.signal });
         } finally {
             clearTimeout(timeout);
         }
