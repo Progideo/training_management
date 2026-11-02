@@ -2,10 +2,15 @@
 
 import logging
 
+from odoo.tools.sql import column_exists
+
 _logger = logging.getLogger(__name__)
 
 
 def migrate(cr, version):
+    # An upgrade from before these columns has nothing to remove.
+    if not column_exists(cr, "training_session", "attendance_before"):
+        return
     cr.execute(
         """
         SELECT count(*) FROM training_session
