@@ -6,8 +6,8 @@ from odoo import Command, api
 from odoo.exceptions import LockError
 from odoo.tests import new_test_user
 
-if env.cr.dbname != "tm_s01_test_s021_s052":
-    raise RuntimeError("Disposable S06 test database only")
+if env.cr.dbname != "tm_suite_test":
+    raise RuntimeError("Disposable suite database only")
 context = {"no_reset_password": True}
 coordinator = new_test_user(
     env(context=context),
