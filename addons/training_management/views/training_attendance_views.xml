@@ -124,8 +124,6 @@
             <xpath expr="//sheet" position="inside">
                 <group string="Attendance Collection">
                     <field name="attendance_mode"/>
-                    <field name="attendance_before" invisible="1"/>
-                    <field name="attendance_after" invisible="1"/>
                     <field name="attendance_wording"/>
                 </group>
             </xpath>
@@ -139,8 +137,6 @@
             <xpath expr="//footer" position="before">
                 <group string="Attendance Collection">
                     <field name="attendance_mode"/>
-                    <field name="attendance_before" invisible="1"/>
-                    <field name="attendance_after" invisible="1"/>
                     <field name="attendance_wording"/>
                 </group>
             </xpath>

@@ -269,7 +269,6 @@ class TestAttendance(AttendanceCase):
             self.assertEqual(presence.state, "validated")
             self.assertFalse(presence.event_ids[:1].anomaly)
         _, second, second_enrollment = self.scheduled()
-        self.assertEqual(second.attendance_after, 30)
         with patch("odoo.fields.Datetime.now", return_value=second.end_at + timedelta(minutes=30)):
             timely = self.declare(second, second_enrollment)
             self.assertEqual(timely.state, "pending")
@@ -505,7 +504,7 @@ class TestAttendance(AttendanceCase):
             with self.assertRaises(AccessError):
                 self.env["training.attendance.event"].create({})
             with self.assertRaises(ValidationError):
-                session.write({"attendance_after": 30})
+                session.write({"attendance_mode": "paper"})
             with self.assertRaises(ValidationError):
                 self.env["ir.attachment"].create(
                     {"name": "leak", "res_model": event._name, "res_id": event.id, "raw": PDF, "public": True}
@@ -523,7 +522,7 @@ class TestAttendance(AttendanceCase):
             form.end_date = "2027-01-04"
             form.attendance_mode = "mixed"
         form.record.action_apply()
-        self.assertEqual(delivery.session_ids.attendance_after, 30)
+        self.assertEqual(delivery.session_ids.attendance_mode, "mixed")
 
     def test_paper_import_rejects_a_rescheduled_session(self):
         _, session, enrollment = self.scheduled()
