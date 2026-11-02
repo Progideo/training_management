@@ -54,7 +54,7 @@ class OperatorNotice(models.Model):
     @api.private
     def _recipient(self, source, role):
         if role == "trainer" and source._name == "training.attendance.event":
-            return source.attendance_id.session_id.instructor_id.user_ids.filtered(
+            return source.attendance_id.session_id._control_partner().user_ids.filtered(
                 lambda user: user.active and not user._is_public() and source.company_id in user.company_ids
             )[:1]
         return source.company_id.sudo().training_notification_manager_id if role == "manager" else self.env["res.users"]
