@@ -152,7 +152,14 @@ class DashboardService(models.AbstractModel):
             or not user.active
             or user._is_public()
             or delivery.company_id not in self.env.companies
-            or not self.env["training.evaluation.service"]._staff(delivery)
+            or not (
+                self.env["training.evaluation.service"]._staff(delivery)
+                or delivery.id
+                in self.env["training.session"]
+                .browse(self.env["training.session"]._delegated_session_ids(user.partner_id))
+                .sudo()
+                .delivery_id.ids
+            )
         ):
             raise AccessError(self.env._("This training dashboard is unavailable."))
         return delivery
@@ -168,6 +175,7 @@ class DashboardService(models.AbstractModel):
             rights |= Domain(
                 "session_ids", "any", [("instructor_id", "=", user.partner_id.id), ("cancelled", "=", False)]
             )
+            rights |= Domain("session_ids", "in", self.env["training.session"]._delegated_session_ids(user.partner_id))
             if user.has_group(SUPERVISOR):
                 rights |= Domain("evaluation_supervisor_ids", "in", user.ids)
             if user.has_group(QUALITY):
@@ -188,7 +196,11 @@ class DashboardService(models.AbstractModel):
             or (user.has_group(SUPERVISOR) and user in delivery.evaluation_supervisor_ids)
             or (user.has_group(QUALITY) and user == delivery.evaluation_quality_id)
         )
-        return sessions if broad else sessions.filtered(lambda s: s.instructor_id == user.partner_id)
+        return (
+            sessions
+            if broad
+            else sessions.filtered(lambda s: user.partner_id in (s.instructor_id | s._control_partner()))
+        )
 
     @api.private
     def _batch(self, enrollments):

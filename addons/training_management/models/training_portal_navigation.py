@@ -36,7 +36,9 @@ class TrainingPortalNavigation(models.AbstractModel):
                 .sudo()
                 .search_count(
                     [
+                        "|",
                         ("instructor_id", "=", user.partner_id.id),
+                        ("id", "in", self.env["training.session"]._delegated_session_ids(user.partner_id)),
                         ("company_id", "in", user.company_ids.ids),
                         ("delivery_id.state", "in", ("confirmed", "ongoing", "delivered")),
                         ("cancelled", "=", False),

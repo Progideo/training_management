@@ -97,11 +97,29 @@
             </form>
         </field>
     </record>
+    <record id="view_attendance_delegate" model="ir.ui.view">
+        <field name="name">training.attendance.delegate.form</field>
+        <field name="model">training.attendance.delegate</field>
+        <field name="arch" type="xml">
+            <form string="Reassign Attendance Control">
+                <group>
+                    <field name="session_id" readonly="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="current_partner_id"/>
+                    <field name="partner_id"/>
+                    <field name="reason"/>
+                </group>
+                <p>The schedule, declarations and decisions stay unchanged. Only the replacement can validate from now on. Without any available replacement, use Validate for an Unavailable Trainer in the attendance assistant.</p>
+                <footer><button name="action_apply" type="object" string="Reassign" class="btn-primary"/><button special="cancel" string="Cancel"/></footer>
+            </form>
+        </field>
+    </record>
     <record id="view_session_attendance" model="ir.ui.view">
         <field name="name">training.session.attendance</field>
         <field name="model">training.session</field>
         <field name="inherit_id" ref="view_training_session_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside"><button name="action_delegate_control" type="object" string="Reassign Attendance Control" groups="training_management.group_training_coordinator"/></xpath>
             <xpath expr="//header" position="inside"><button name="action_attendance" type="object" string="Attendance"/><button name="action_record_attendance" type="object" string="Paper / Correct / Invalidate"/></xpath>
             <xpath expr="//sheet" position="inside">
                 <group string="Attendance Collection">

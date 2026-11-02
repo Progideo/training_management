@@ -17,6 +17,7 @@ class AttendanceEdit(models.TransientModel):
         [
             ("paper", "Import Signed Paper"),
             ("correction", "Correct Validated Attendance"),
+            ("fallback", "Validate for an Unavailable Trainer"),
             ("invalidation", "Invalidate Attendance"),
         ],
         required=True,
@@ -105,6 +106,7 @@ class AttendanceEdit(models.TransientModel):
             self.start_minutes,
             self.end_minutes,
             correction=self.operation == "correction",
+            fallback=self.operation == "fallback",
             paper=self.operation == "paper",
             absent=self.absent,
             revision=self.revision,
@@ -131,3 +133,24 @@ class AttendanceSessionEdit(models.TransientModel):
     @api.model
     def _schedule_fields(self):
         return (*super()._schedule_fields(), *SETTINGS)
+
+
+class AttendanceDelegate(models.TransientModel):
+    _name = "training.attendance.delegate"
+    _description = "Reassign Attendance Control"
+    _check_company_auto = True
+
+    session_id = fields.Many2one("training.session", required=True, check_company=True)
+    company_id = fields.Many2one(related="session_id.company_id")
+    current_partner_id = fields.Many2one(related="session_id.attendance_control_partner_id", string="Current Control")
+    partner_id = fields.Many2one(
+        "res.partner", string="Replacement Trainer", required=True, domain="[('user_ids', '!=', False)]"
+    )
+    reason = fields.Text(required=True)
+
+    def action_apply(self):
+        self.ensure_one()
+        if not self.env.user.has_group("training_management.group_training_coordinator"):
+            raise AccessError(self.env._("Only a training coordinator may reassign attendance control."))
+        self.env["training.attendance.service"]._delegate(self.session_id.id, self.partner_id.id, self.reason)
+        return {"type": "ir.actions.act_window_close"}

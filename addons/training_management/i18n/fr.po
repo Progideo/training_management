@@ -15186,3 +15186,51 @@ msgstr "Seule une attestation révoquée peut être réémise."
 #. module: training_management
 msgid "A valid certificate of this type already exists for this dossier."
 msgstr "Une attestation valide de ce type existe déjà pour ce dossier."
+
+#. module: training_management
+msgid "Reassign Attendance Control"
+msgstr "Réaffecter le contrôle des présences"
+
+#. module: training_management
+msgid "Validate for an Unavailable Trainer"
+msgstr "Valider pour un formateur indisponible"
+
+#. module: training_management
+msgid "Replacement Trainer"
+msgstr "Formateur remplaçant"
+
+#. module: training_management
+msgid "Attendance Control"
+msgstr "Contrôle des présences"
+
+#. module: training_management
+msgid "Current Control"
+msgstr "Contrôle actuel"
+
+#. module: training_management
+msgid "Previous Controller"
+msgstr "Contrôleur précédent"
+
+#. module: training_management
+msgid "Reassign"
+msgstr "Réaffecter"
+
+#. module: training_management
+msgid "Explain why the attendance control is reassigned."
+msgstr "Expliquez pourquoi le contrôle des présences est réaffecté."
+
+#. module: training_management
+msgid "Choose a replacement with an active account in this company."
+msgstr "Choisissez un remplaçant disposant d’un compte actif dans cette société."
+
+#. module: training_management
+msgid "A participant of this training cannot control its attendance."
+msgstr "Un participant de cette formation ne peut pas en contrôler les présences."
+
+#. module: training_management
+msgid "Only a training coordinator may reassign attendance control."
+msgstr "Seul un coordinateur de formation peut réaffecter le contrôle des présences."
+
+#. module: training_management
+msgid "The schedule, declarations and decisions stay unchanged. Only the replacement can validate from now on. Without any available replacement, use Validate for an Unavailable Trainer in the attendance assistant."
+msgstr "Le planning, les déclarations et les décisions restent inchangés. Seul le remplaçant peut désormais valider. Si aucun remplaçant n’est disponible, utilisez « Valider pour un formateur indisponible » dans l’assistant de présences."
