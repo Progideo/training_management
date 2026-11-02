@@ -30,6 +30,11 @@ def snapshot():
             f"SELECT to_jsonb(t) FROM {table} t WHERE {column}=%s ORDER BY id", [value]
         )  # fixed identifiers above; synthetic fixtures only
         records[table] = [row[0] for row in env.cr.fetchall()]
+        if table == "training_session":
+            # Colonnes retirées explicitement par la migration 20.0.2.13.0 (P3-5), sans effet fonctionnel.
+            for row in records[table]:
+                row.pop("attendance_before", None)
+                row.pop("attendance_after", None)
         if table == "training_attendance":
             for row in records[table]:
                 if "period_key" in row:
