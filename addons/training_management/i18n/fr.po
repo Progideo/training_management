@@ -15170,3 +15170,19 @@ msgstr "Empreinte de signature"
 #: model:ir.model.fields,field_description:training_management.field_training_attendance_event__signature_version
 msgid "Signature Version"
 msgstr "Version de signature"
+
+#. module: training_management
+msgid "Reissue"
+msgstr "Réémettre"
+
+#. module: training_management
+msgid "Reissued"
+msgstr "Réémise"
+
+#. module: training_management
+msgid "Only a revoked certificate can be reissued."
+msgstr "Seule une attestation révoquée peut être réémise."
+
+#. module: training_management
+msgid "A valid certificate of this type already exists for this dossier."
+msgstr "Une attestation valide de ce type existe déjà pour ce dossier."
