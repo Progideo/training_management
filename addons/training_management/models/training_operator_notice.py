@@ -197,7 +197,7 @@ class OperatorNotice(models.Model):
 
 
 class AttendanceAlert(models.Model):
-    _inherit = "training.attendance.event"
+    _inherit = "training.attendance.event"  # pylint: disable=consider-merging-classes-inherited
 
     @api.private
     def _append(self, values):

@@ -24,7 +24,7 @@ class AttendanceDelegation(models.Model):
 
 
 class AttendanceControlSession(models.Model):
-    _inherit = "training.session"
+    _inherit = "training.session"  # pylint: disable=consider-merging-classes-inherited
 
     attendance_delegation_ids = fields.One2many(
         "training.attendance.delegation",
@@ -66,7 +66,7 @@ class AttendanceControlSession(models.Model):
 
 
 class AttendanceDelegationService(models.AbstractModel):
-    _inherit = "training.attendance.service"
+    _inherit = "training.attendance.service"  # pylint: disable=consider-merging-classes-inherited
 
     @api.private
     def _delegate(self, session_id, partner_id, reason):
