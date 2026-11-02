@@ -170,6 +170,36 @@ class TestPublicRequest(CatalogueCase, HttpCase):
                     FileStorage(stream=BytesIO(data), filename=filename),
                 )
 
+    def test_hourly_limits_bound_leads_acknowledgements_and_files(self):
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_str("training_request.max_per_email_hour", "2")
+        params.set_str("training_request.max_per_hour", "3")
+        params.set_str("training_request.max_upload_mb_hour", "1")
+        Lead = self.env["crm.lead"]
+        company = self.company
+        for index in range(2):
+            Lead._submit_public_request(company, self.request_values(contact=f"Fictional {index}"), f"limit-{index}")
+        # Replaying a recorded form stays idempotent at the limit.
+        replay = Lead._submit_public_request(company, self.request_values(contact="Fictional 1"), "limit-1")
+        self.assertTrue(replay)
+        with self.assertRaises(ValidationError):
+            Lead._submit_public_request(company, self.request_values(), "limit-email")
+        other = self.request_values(email="other@example.invalid")
+        Lead._submit_public_request(company, other, "limit-other")
+        with self.assertRaises(ValidationError):
+            Lead._submit_public_request(company, self.request_values(email="third@example.invalid"), "limit-all")
+        self.assertEqual(
+            self.env["training.request.notice"].sudo().search_count([("email", "=", "requester@example.invalid")]), 2
+        )
+        params.set_str("training_request.max_per_hour", "100")
+        pdf = FileStorage(BytesIO(b"%PDF-1.4\n" + b"0" * 700000), filename="s.pdf")
+        Lead._submit_public_request(company, self.request_values(email="file1@example.invalid"), "limit-file-1", pdf)
+        big = FileStorage(BytesIO(b"%PDF-1.4\n" + b"1" * 700000), filename="s.pdf")
+        with self.assertRaises(ValidationError):
+            Lead._submit_public_request(
+                company, self.request_values(email="file2@example.invalid"), "limit-file-2", big
+            )
+
     def test_public_request_offers_and_accepts_any_active_currency(self):
         gbp = self.env.ref("base.GBP")
         gbp.active = True
