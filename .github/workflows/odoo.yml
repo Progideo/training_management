@@ -48,6 +48,14 @@ jobs:
           name: j1-interactive-results
           path: test-results/j1-interactive/
           if-no-files-found: error
+      - name: J1 — Examens blancs indépendants
+        run: python3 tests/ci/run_j1_mock_exam.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: j1-mock-exam-results
+          path: test-results/j1-mock-exam/
+          if-no-files-found: error
       - name: Vérifier la localisation et les paramètres de lancement natifs
         run: python3 tests/ci/run_launch_settings.py
         env:
