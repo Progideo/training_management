@@ -609,6 +609,7 @@ class ClosureEnrollment(models.Model):
                     [("delivery_id", "=", self.delivery_id.id), ("optional", "=", False)]
                 )
                 service = self.env["training.learning.service"]
+                activities = activities.filtered(service._required_for_certificate)
                 if any(not service._complete(self, a) for a in activities):
                     raise ValidationError(
                         self.env._("Complete every required activity and review its supporting evidence.")
@@ -684,6 +685,11 @@ class ClosureEnrollment(models.Model):
 
 class ClosureLearningService(models.AbstractModel):
     _inherit = "training.learning.service"
+
+    @api.private
+    def _required_for_certificate(self, activity):
+        """Adapters may exclude formative activities; native obligations stay required."""
+        return not activity.optional
 
     @api.private
     def _certificate_origin(self, enrollment, activity):

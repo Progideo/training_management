@@ -1,0 +1,148 @@
+# Translation of Odoo Server.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_interactive
+#: model:res.groups.privilege,name:training_interactive.privilege_interactive
+msgid "Interactive Resources"
+msgstr "Ressources interactives"
+
+#. module: training_interactive
+#: model:res.groups,name:training_interactive.group_interactive_author
+msgid "Interactive Content Author"
+msgstr "Auteur de ressources interactives"
+
+#. module: training_interactive
+#: model:res.groups,name:training_interactive.group_interactive_manager
+msgid "Interactive Library Manager"
+msgstr "Gestionnaire de ressources interactives"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__identifier
+msgid "Identifier"
+msgstr "Identifiant"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__format
+msgid "Format"
+msgstr "Format"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__license_note
+msgid "Content license"
+msgstr "Licence du contenu"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__provenance
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__provenance
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__provenance
+msgid "Provenance"
+msgstr "Provenance"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__version_ids
+msgid "Version"
+msgstr "Versions"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__resource_id
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__resource_id
+msgid "Resource"
+msgstr "Ressource"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__number
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__number
+msgid "Number"
+msgstr "Version"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__state
+msgid "State"
+msgstr "Statut"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__entrypoint
+msgid "Entrypoint"
+msgstr "Point d’entrée"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__license_note
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__license_note
+msgid "License Note"
+msgstr "Licence du contenu"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__published_at
+msgid "Published At"
+msgstr "Publié le"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__published_by_id
+msgid "Published By"
+msgstr "Publié par"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__withdrawn_at
+msgid "Withdrawn At"
+msgstr "Retiré le"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__withdrawn_by_id
+msgid "Withdrawn By"
+msgstr "Retiré par"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__withdrawal_reason
+msgid "Withdrawal Reason"
+msgstr "Motif du retrait"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__data
+msgid "Data"
+msgstr "Paquet"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_withdraw__version_id
+msgid "Version"
+msgstr "Version"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_withdraw__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: training_interactive
+#: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: training_interactive
+#: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__published
+msgid "Published"
+msgstr "Publié"
+
+#. module: training_interactive
+#: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__withdrawn
+msgid "Withdrawn"
+msgstr "Retiré"

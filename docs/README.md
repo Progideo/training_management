@@ -10,6 +10,9 @@ Le [cadrage J1](j1-shared-catalog.md) décrit la cible validée le 3 novembre 20
 les contrats à extraire et les limites de la première tranche. Il prévaut sur les
 anciennes prescriptions de reprise Odoo 19 et de couplage eLearning à TM.
 
+La [bibliothèque interactive commune](j1-shared-interactive.md) poursuit J1 :
+stockage/import partagés, droits et raccordement de l’extension historique.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,
