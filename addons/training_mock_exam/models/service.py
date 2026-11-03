@@ -67,6 +67,7 @@ class ExamService(models.AbstractModel):
                 "survey_id": exam.id,
                 "partner_id": user.partner_id.id,
                 "mock_context_key": context_key,
+                "mock_company_id": exam.mock_company_id.id,
                 "training_family_id": family.id,
                 "start_datetime": now,
                 "state": "in_progress",

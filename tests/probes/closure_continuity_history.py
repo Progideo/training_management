@@ -22,7 +22,12 @@ def snapshot(table, ids):
         return "[]"
     # Fixed caller table names and synthetic IDs only; compare every stored column.
     env.cr.execute(f"SELECT to_jsonb(t) FROM {table} t WHERE id IN %s ORDER BY id", [tuple(ids)])
-    return json.dumps([row[0] for row in env.cr.fetchall()], sort_keys=True, default=str)
+    rows = [row[0] for row in env.cr.fetchall()]
+    if table == "training_learning_activity":
+        for row in rows:
+            if "exam_obligation" in row:
+                assert row.pop("exam_obligation") is None, "Never backfill legacy exam obligations"
+    return json.dumps(rows, sort_keys=True, default=str)
 
 
 def remember(name, table, records):
