@@ -26,6 +26,7 @@ def save_reference(name, row):
 def schema():
     env.cr.execute("""SELECT table_name, array_agg(column_name::text ORDER BY ordinal_position)
         FROM information_schema.columns WHERE table_schema='public' AND table_name LIKE 'training_%'
+        AND column_name NOT IN ('attendance_before', 'attendance_after')
         GROUP BY table_name ORDER BY table_name""")
     return dict(env.cr.fetchall())
 

@@ -97,6 +97,17 @@ class Coverage(unittest.TestCase):
                 )
                 self.assertIn(addition, path.read_text())
                 preserved = path.read_text().replace(addition, "")
+                # P3-5 retired exactly these two unused session columns. Every other
+                # column, fixture and comparison stays byte-for-byte checked.
+                retired = (
+                    '        if table == "training_session":\n'
+                    "            # Colonnes retirées explicitement par la migration 20.0.2.13.0 (P3-5), sans effet fonctionnel.\n"
+                    "            for row in records[table]:\n"
+                    '                row.pop("attendance_before", None)\n'
+                    '                row.pop("attendance_after", None)\n'
+                )
+                self.assertIn(retired, preserved)
+                preserved = preserved.replace(retired, "")
                 if name == "tests/probes/s07_history.py":
                     # Admit exactly the signature opt-in guard, including its
                     # assertion that no old event acquired a signature. Keep the
@@ -113,6 +124,11 @@ class Coverage(unittest.TestCase):
                     self.assertIn(signatures, preserved)
                     preserved = preserved.replace(signatures, "")
                 self.assertEqual(preserved, original(name))
+            elif name == "tests/probes/s093_history.py":
+                # P3-5 retired exactly these two unused columns from the full-column capture.
+                retired = "        AND column_name NOT IN ('attendance_before', 'attendance_after')\n"
+                self.assertEqual(path.read_text().count(retired), 1)
+                self.assertEqual(path.read_text().replace(retired, ""), original(name))
             elif name == "tests/probes/s08_history.py":
                 # P20 admits only its disabled opt-in on historical dossiers.
                 # All original comparisons and the absence of public registration stay checked.

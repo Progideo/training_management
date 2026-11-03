@@ -11,15 +11,13 @@ from odoo.tools.binary import BinaryBytes
 
 COORDINATOR = "training_management.group_training_coordinator"
 MODES = [("electronic", "Electronic"), ("paper", "Paper"), ("mixed", "Mixed")]
-SETTINGS = ("attendance_mode", "attendance_before", "attendance_after", "attendance_wording")
+SETTINGS = ("attendance_mode", "attendance_wording")
 
 
 class AttendanceSession(models.Model):
     _inherit = "training.session"
 
     attendance_mode = fields.Selection(MODES, required=True, default="electronic")
-    attendance_before = fields.Integer(string="Declaration Opens Before Session (Minutes)", default=0)
-    attendance_after = fields.Integer(string="Declaration Closes After Session (Minutes)", default=30)
     attendance_wording = fields.Text(
         required=True,
         default=lambda self: self.env._("I confirm that I was present for this half-day."),
@@ -29,11 +27,8 @@ class AttendanceSession(models.Model):
     @api.constrains(*SETTINGS)
     def _check_attendance_settings(self):
         for session in self:
-            if (
-                min(session.attendance_before, session.attendance_after) < 0
-                or not (session.attendance_wording or "").strip()
-            ):
-                raise ValidationError(self.env._("Use non-negative declaration windows and a confirmation text."))
+            if not (session.attendance_wording or "").strip():
+                raise ValidationError(self.env._("Enter a confirmation text."))
 
     @api.private
     def _apply_schedule(self, vals, reason=None, cancel=False, conflict_reason=None):

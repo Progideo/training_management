@@ -5763,18 +5763,6 @@ msgid "Data"
 msgstr "Fichier"
 
 #. module: training_management
-#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_after
-#: model:ir.model.fields,field_description:training_management.field_training_session_edit__attendance_after
-msgid "Declaration Closes After Session (Minutes)"
-msgstr "Fermeture après la fin de séance (minutes)"
-
-#. module: training_management
-#: model:ir.model.fields,field_description:training_management.field_training_session__attendance_before
-#: model:ir.model.fields,field_description:training_management.field_training_session_edit__attendance_before
-msgid "Declaration Opens Before Session (Minutes)"
-msgstr "Ouverture avant le début de séance (minutes)"
-
-#. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
 msgid "Declaration and review history"
 msgstr "Historique des déclarations et contrôles"
@@ -6021,8 +6009,8 @@ msgstr ""
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_attendance.py:0
-msgid "Use non-negative declaration windows and a confirmation text."
-msgstr "Utilisez des marges positives ou nulles et un texte de confirmation."
+msgid "Enter a confirmation text."
+msgstr "Saisissez un texte de confirmation."
 
 #. module: training_management
 #. odoo-python
