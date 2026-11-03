@@ -81,6 +81,27 @@ class QualityCase(ClosureCase):
 
 @tagged("post_install", "-at_install")
 class TestQuality(QualityCase):
+    def test_ordinary_activity_without_technical_model_read_permission(self):
+        staff = new_test_user(self.env, login="fictional_activity_staff", groups="base.group_user")
+        self.assertFalse(self.env["ir.model"].with_user(staff).has_access("read"))
+        partner_model = self.env["ir.model"]._get_id("res.partner")
+        activity = (
+            self.env["mail.activity"]
+            .with_user(staff)
+            .create(
+                {
+                    "res_model_id": partner_model,
+                    "res_id": staff.partner_id.id,
+                    "user_id": staff.id,
+                    "activity_type_id": self.env.ref("mail.mail_activity_data_todo").id,
+                }
+            )
+        )
+        activity.write({"res_model_id": partner_model, "summary": "Fictional ordinary follow-up"})
+        private = self.complaint()
+        with self.assertRaises(AccessError):
+            activity.write({"res_model_id": self.env["ir.model"]._get_id(private._name), "res_id": private.id})
+
     def test_access_errors_do_not_disclose_private_labels(self):
         self.other_quality.group_ids = [Command.link(self.env.ref("base.group_no_one").id)]
         complaint = self.complaint(name="PRIVATE complaint subject")
