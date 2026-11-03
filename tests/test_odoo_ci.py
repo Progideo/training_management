@@ -134,6 +134,17 @@ class Coverage(unittest.TestCase):
             elif name == "tests/probes/p09_history.py":
                 addition = '            "training_course": ["presentation", "general_objectives"],\n'
                 self.assertIn(addition, path.read_text())
+                context = '            "survey_user_input": ["mock_context_key"],\n'
+                self.assertIn(context, path.read_text())
+                self.assertEqual(path.read_text().replace(addition, "").replace(context, ""), original(name))
+            elif name == "tests/probes/s092_history.py":
+                addition = (
+                    '        if table == "survey_user_input":\n'
+                    "            for row in result[table]:\n"
+                    '                if "mock_context_key" in row:\n'
+                    '                    assert row.pop("mock_context_key") is None\n'
+                )
+                self.assertIn(addition, path.read_text())
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
             elif name == "tests/probes/catalogue_pdf_history.py":
                 addition = "\n\ndef expected_visibility_default(spec):\n" + (

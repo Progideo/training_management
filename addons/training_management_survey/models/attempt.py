@@ -13,20 +13,10 @@ class Attempt(models.Model):
         "training.enrollment", ondelete="restrict", readonly=True, index=True, copy=False
     )
     training_activity_id = fields.Many2one("training.learning.activity", ondelete="restrict", readonly=True, copy=False)
-    training_family_id = fields.Many2one("survey.survey", readonly=True, ondelete="restrict", index=True, copy=False)
-    training_review_ids = fields.Many2many(
-        "survey.question",
-        "training_exam_review_rel",
-        "attempt_id",
-        "question_id",
-        string="Marked for Review",
-        readonly=True,
-        copy=False,
-    )
     training_adjustment_ids = fields.One2many("training.exam.revision", "attempt_id", readonly=True)
 
     _training_one_active = models.UniqueIndex(
-        "(partner_id, training_family_id) WHERE training_enrollment_id IS NOT NULL AND state != 'done'",
+        "(partner_id, training_family_id, training_enrollment_id) WHERE training_enrollment_id IS NOT NULL AND state != 'done'",
         "Resume the active attempt before starting another one.",
     )
 
@@ -44,14 +34,6 @@ class Attempt(models.Model):
             raise AccessError(self.env._("Use the checked exam operations."))
         return super().create(vals_list)
 
-    @api.private
-    def _training_create(self, values):
-        return super().create(values)  # pylint: disable=super-method-mismatch  # checked server evidence factory
-
-    @api.private
-    def _training_store(self, values):
-        return super().write(values)  # pylint: disable=super-method-mismatch  # checked server transition
-
     def write(self, vals):
         if (
             self.filtered("training_enrollment_id")
@@ -66,121 +48,26 @@ class Attempt(models.Model):
         if self.filtered("training_enrollment_id"):
             raise ValidationError(self.env._("Keep the exam history."))
 
+    @api.private
+    def _mock_exam_records(self):
+        return super()._mock_exam_records() | self.filtered("training_enrollment_id")
+
     @api.depends(
         "user_input_line_ids.answer_score",
         "user_input_line_ids.suggested_answer_id",
         "predefined_question_ids",
         "survey_id",
+        "mock_context_key",
         "training_enrollment_id",
     )
     def _compute_scoring_values(self):
-        result = super()._compute_scoring_values()
-        for attempt in self.filtered("training_enrollment_id"):
-            rows = attempt._training_scores()
-            total = sum(row["maximum"] for row in rows)
-            obtained = sum(row["points"] for row in rows)
-            attempt.scoring_total = obtained
-            # No rounding before the inclusive threshold comparison.
-            attempt.scoring_percentage = 100 * obtained / total if total else 0
-
-        return result
-
-    @api.private
-    def _training_scores(self):
-        self.ensure_one()
-        rows = []
-        for question in self.predefined_question_ids.sorted(lambda q: (q.sequence, q.id)):
-            selected = self.user_input_line_ids.filtered(lambda line: line.question_id == question).suggested_answer_id
-            correct = question.suggested_answer_ids.filtered("is_correct")
-            rows.append(
-                {
-                    "question": question,
-                    "selected": selected,
-                    "correct": correct,
-                    "points": question.answer_score if selected and set(selected.ids) == set(correct.ids) else 0,
-                    "maximum": question.answer_score,
-                }
-            )
-        return rows
-
-    @api.private
-    def _training_finish(self):
-        for attempt in self:
-            if attempt.state != "done":
-                attempt._training_store(
-                    {
-                        "state": "done",
-                        "end_datetime": min(fields.Datetime.now(), attempt.deadline),
-                    }
-                )
-        # No standard _mark_done: its mail/badge side effects are inappropriate
-        # for private mock exams. Native stored scoring is still computed above.
+        return super()._compute_scoring_values()
 
     @api.model
     def _cron_training_expire(self):
-        candidates = self.sudo().search(
-            [
-                ("training_enrollment_id", "!=", False),
-                ("state", "!=", "done"),
-                ("deadline", "<=", fields.Datetime.now()),
-            ],
-            limit=100,
-        )
-        # Native non-blocking row locks; no commit inside the managed transaction.
-        for candidate in candidates:
-            with self.env.cr.savepoint():
-                locked = candidate.try_lock_for_update()
-                if locked:
-                    locked.invalidate_recordset()
-                    if locked.state != "done" and locked.deadline <= fields.Datetime.now():
-                        locked._training_finish()
-
-
-class AnswerLine(models.Model):
-    _inherit = "survey.user_input.line"  # pylint: disable=consider-merging-classes-inherited  # feedback and exam evidence have distinct transitions
-
-    @api.depends("suggested_answer_id", "user_input_id", "question_id.answer_score")
-    def _compute_answer_score(self):
-        result = super()._compute_answer_score()
-        for line in self.filtered("user_input_id.training_enrollment_id"):
-            question = line.question_id
-            lines = line.user_input_id.user_input_line_ids.filtered(lambda item: item.question_id == question)
-            selected = lines.suggested_answer_id
-            correct = question.suggested_answer_ids.filtered("is_correct")
-            exact = bool(selected) and set(selected.ids) == set(correct.ids)
-            line.answer_is_correct = exact
-            # Allocate question points once, retaining native answer lines.
-            line.answer_score = question.answer_score if exact and line == lines[:1] else 0
-        return result
-
-    @api.private
-    def _training_mutable(self, attempts):
-        if attempts.filtered(lambda a: a.training_enrollment_id and (not self.env.su or a.state == "done")):
-            raise AccessError(self.env._("Use the checked exam operations; completed answers are immutable."))
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        self._training_mutable(
-            self.env["survey.user_input"].browse(
-                list(
-                    filter(
-                        None,
-                        [v.get("user_input_id") or self.env.context.get("default_user_input_id") for v in vals_list],
-                    )
-                )
-            )
-        )
-        return super().create(vals_list)
-
-    def write(self, vals):
-        self._training_mutable(self.user_input_id)
-        if vals.get("user_input_id"):
-            self._training_mutable(self.env["survey.user_input"].browse(vals["user_input_id"]))
-        return super().write(vals)
-
-    @api.ondelete(at_uninstall=False)
-    def _training_keep_answers(self):
-        self._training_mutable(self.user_input_id)
+        # Compatibility entry point; repeated cron calls are idempotent.
+        self._cron_mock_expire()
+        self._mock_expire_domain([("training_enrollment_id", "!=", False), ("mock_context_key", "=", False)])
 
 
 class Revision(models.Model):
@@ -226,6 +113,6 @@ class Revision(models.Model):
                 "points_by_question": points,
                 "reason": reason.strip(),
                 "author_id": self.env.user.id,
-                "previous_id": attempt.training_adjustment_ids[:1].id,
+                "previous_id": attempt.training_adjustment_ids.sorted("id", reverse=True)[:1].id,
             }
         )

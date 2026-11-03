@@ -91,6 +91,7 @@ class SharedSurvey(models.Model):
 
     @api.private
     def _mock_validate_fixed_questions(self, questions):
+        questions._validate_interaction()
         for question in questions:
             correct = question.suggested_answer_ids.filtered("is_correct")
             if (
@@ -117,7 +118,6 @@ class SharedSurvey(models.Model):
                 raise ValidationError(self.env._("Explain the new version."))
             if not exam.question_ids or not math.isfinite(exam.time_limit) or exam.time_limit <= 0:
                 raise ValidationError(self.env._("Use a positive duration and at least one question."))
-            exam.question_ids._validate_interaction()
             exam._mock_validate_fixed_questions(exam.question_ids)
         return super(SharedSurvey, self).write(  # pylint: disable=super-method-mismatch  # checked publication only
             {
