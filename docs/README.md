@@ -13,7 +13,8 @@ anciennes prescriptions de reprise Odoo 19 et de couplage eLearning à TM.
 La [bibliothèque interactive commune](j1-shared-interactive.md) poursuit J1 :
 stockage/import partagés, droits et raccordement de l’extension historique.
 Les [lecteurs et définitions d’examens communs](j1-shared-readers-exams.md)
-poursuivent cette extraction.
+poursuivent cette extraction. La [passation et le chronométrage serveur](j1-shared-exam-runtime.md)
+précisent le moteur commun et son raccordement TM.
 
 ## Manuel utilisateur
 

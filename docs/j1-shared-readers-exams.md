@@ -1,5 +1,8 @@
 # Lecteurs et définitions d’examens communs
 
+La [tranche suivante](j1-shared-exam-runtime.md) extrait la passation et le délai
+serveur ; cette page décrit la tranche des lecteurs et définitions.
+
 Suite de [J1 #123](https://github.com/Progideo/training_management/issues/123),
 selon le cadrage consolidé du 3 novembre 2026. Le graphe cible à dix addons est
 conservé. Cette tranche ajoute les lecteurs à la [bibliothèque interactive](j1-shared-interactive.md)

@@ -105,3 +105,61 @@ assert (
     & installed
 )
 print("J1_MOCK_WITHOUT_BUSINESS_APPS_CONFIRMED")
+
+# Exercise the native engine through its private adapter boundary. This fictional
+# provider key is not an operational learner route or a business authorization.
+runtime_key = "training_mock_exam.j1_runtime_snapshot"
+runtime_expected = params.get_str(runtime_key)
+
+
+def runtime_snapshot(attempts):
+    env.flush_all()
+    return {
+        "attempts": attempts.read(
+            [
+                "id",
+                "survey_id",
+                "partner_id",
+                "mock_context_key",
+                "training_family_id",
+                "predefined_question_ids",
+                "training_review_ids",
+                "start_datetime",
+                "deadline",
+                "end_datetime",
+                "state",
+                "scoring_total",
+                "scoring_percentage",
+            ]
+        ),
+        "answers": attempts.user_input_line_ids.sorted("id").read(
+            ["id", "user_input_id", "question_id", "suggested_answer_id", "answer_score", "answer_is_correct"]
+        ),
+    }
+
+
+if not runtime_expected:
+    learner = new_test_user(env, login="j1m_fixture_learner", groups="base.group_portal")
+    spec = json.loads(params.get_str(key))
+    exam = env["survey.survey"].browse(spec["ids"][0])
+    engine = env["training.mock.exam.service"].with_user(learner)
+    done = engine._start_native(exam, "test.provider:1", {})
+    question = exam.question_ids[0]
+    done._save_lines(question, question.suggested_answer_ids.filtered("is_correct").ids)
+    done._training_finish()
+    active = engine._start_native(exam, "test.provider:2", {})
+    attempts = (done | active).sorted("id")
+    params.set_str(
+        runtime_key,
+        json.dumps(
+            {"ids": attempts.ids, "learner": learner.id, "exam": exam.id, "snapshot": runtime_snapshot(attempts)},
+            default=str,
+        ),
+    )
+    env.cr.commit()  # Fictional engine state survives the independent update process.
+    print("J1_MOCK_NATIVE_ATTEMPTS_PREPARED")
+else:
+    spec = json.loads(runtime_expected)
+    actual = json.loads(json.dumps(runtime_snapshot(env["survey.user_input"].browse(spec["ids"])), default=str))
+    assert actual == spec["snapshot"], "Native answers, deadlines, states or scores changed"
+    print("J1_MOCK_NATIVE_ATTEMPTS_DEADLINES_AND_SCORES_PRESERVED")

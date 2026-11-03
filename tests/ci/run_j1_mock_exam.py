@@ -33,6 +33,15 @@ def run(results):
                 text = checked(command("shell", "--no-http"), results / (phase + ".log"), stdin=probe)
             if "J1_MOCK_WITHOUT_BUSINESS_APPS_CONFIRMED" not in text:
                 raise RuntimeError("Missing independent mock library proof")
+        if "J1_MOCK_NATIVE_ATTEMPTS_DEADLINES_AND_SCORES_PRESERVED" not in text:
+            raise RuntimeError("Missing native attempt preservation proof")
+        with (ROOT / "tests/probes/j1_mock_exam_concurrency.py").open() as probe:
+            concurrent = checked(command("shell", "--no-http"), results / "concurrency.log", stdin=probe)
+        if (
+            "J1_MOCK_CONCURRENT_LAUNCHES_ONE_ATTEMPT_PER_CONTEXT_CONFIRMED" not in concurrent
+            or "J1_MOCK_CONCURRENT_CRON_AND_REQUEST_CLOSE_AT_DEADLINE_WITHOUT_CONTEXT_LEAK_CONFIRMED" not in concurrent
+        ):
+            raise RuntimeError("Missing native concurrency proof")
         if "J1_MOCK_NATIVE_DEFINITIONS_AND_CORRECTIONS_PRESERVED" not in text:
             raise RuntimeError("Missing native mock history proof")
 
