@@ -7,6 +7,10 @@ from odoo.exceptions import AccessError, ValidationError
 class Attempt(models.Model):
     _inherit = "survey.user_input"  # pylint: disable=consider-merging-classes-inherited  # boundary and engine transitions are separate concerns
 
+    mock_reader_group_id = fields.Many2one("res.groups", readonly=True, copy=False, ondelete="restrict")
+    # Capture at the authorized factory. A new stored related field would
+    # recompute old native answers and change their audit timestamps on upgrade.
+    mock_company_id = fields.Many2one("res.company", readonly=True, copy=False, index=True)
     mock_context_key = fields.Char(readonly=True, copy=False, index=True)
     training_family_id = fields.Many2one("survey.survey", readonly=True, ondelete="restrict", index=True, copy=False)
     training_review_ids = fields.Many2many(

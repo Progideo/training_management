@@ -1752,3 +1752,69 @@ msgstr "Réessayer la sauvegarde / consulter le résultat"
 #: code:addons/training_management_survey/static/src/exam.js:0
 msgid "Saving %s question(s)…"
 msgstr "Sauvegarde de %s question(s)…"
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/requirement.py:0
+msgid "Exam obligations are fixed by enrollment confirmation."
+msgstr "Les obligations d’examen sont figées à la confirmation de l’inscription."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/requirement.py:0
+msgid "Keep the frozen exam obligations."
+msgstr "Conservez les obligations d’examen figées."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/requirement.py:0
+msgid "Confirm enrollment before freezing exam obligations."
+msgstr "Confirmez l’inscription avant de figer ses obligations d’examen."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/requirement.py:0
+msgid "Use a new offer for new exam obligations after enrollment."
+msgstr "Créez une nouvelle offre pour modifier les obligations après une inscription confirmée."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/requirement.py:0
+msgid "Keep activities referenced by frozen exam obligations."
+msgstr "Conservez les activités liées à des obligations d’examen figées."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/requirement.py:0
+msgid "Match the optional flag to the exam obligation."
+msgstr "Le caractère facultatif doit correspondre à l’obligation de l’examen."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Finish the active attempt of this exam family before changing versions."
+msgstr "Terminez la tentative en cours de cette famille avant de changer de version."
+
+#. module: training_management_survey
+#. odoo-python
+#: code:addons/training_management_survey/models/service.py:0
+msgid "Detailed exam content is closed after access expiry."
+msgstr "Le détail des examens n’est plus accessible après la fin d’accès."
+
+#. module: training_management_survey
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_learning_activity__exam_obligation__optional
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_exam_requirement__obligation__optional
+msgid "Optional"
+msgstr "Facultatif"
+
+#. module: training_management_survey
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_learning_activity__exam_obligation__complete
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_exam_requirement__obligation__complete
+msgid "Required to Complete"
+msgstr "Requis à passer"
+
+#. module: training_management_survey
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_learning_activity__exam_obligation__pass
+#: model:ir.model.fields.selection,name:training_management_survey.selection__training_exam_requirement__obligation__pass
+msgid "Required to Pass"
+msgstr "Requis à réussir"

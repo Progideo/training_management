@@ -67,6 +67,7 @@ class ExamService(models.AbstractModel):
                 "survey_id": exam.id,
                 "partner_id": user.partner_id.id,
                 "mock_context_key": context_key,
+                "mock_company_id": exam.mock_company_id.id,
                 "training_family_id": family.id,
                 "start_datetime": now,
                 "state": "in_progress",
@@ -169,3 +170,43 @@ class ExamService(models.AbstractModel):
     @api.private
     def _result_images(self, attempt, question):
         return []
+
+    @api.private
+    def _obligation_status(self, exam, context_key, partner_id, obligation, *, legacy_domain=None):
+        """Scalar evidence only; the adapter resolves and authorizes its frozen grant."""
+        if obligation not in ("optional", "complete", "pass"):
+            raise ValidationError(self.env._("Choose a valid exam obligation."))
+        scope = Domain("mock_context_key", "=", context_key)
+        if legacy_domain is not None:
+            scope |= Domain(legacy_domain)
+        attempts = (
+            self.env["survey.user_input"]
+            .sudo()
+            .search(
+                list(
+                    scope
+                    & Domain("survey_id", "=", exam.id)
+                    & Domain("partner_id", "=", partner_id)
+                    & Domain("state", "=", "done")
+                )
+            )
+        )
+        scores = []
+        for attempt in attempts:
+            rows = attempt._training_scores()
+            latest = self._result_adjustments(attempt)[:1]
+            maximum = sum(row["maximum"] for row in rows)
+            if maximum:
+                points = sum(
+                    latest.points_by_question[str(row["question"].id)] if latest else row["points"] for row in rows
+                )
+                scores.append(100 * points / maximum)
+        best = max(scores, default=None)
+        succeeded = best is not None and best >= exam.scoring_success_min
+        return {
+            "required": obligation != "optional",
+            "complete": bool(attempts),
+            "success": succeeded,
+            "satisfied": succeeded if obligation == "pass" else bool(attempts),
+            "score": best,
+        }

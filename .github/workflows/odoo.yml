@@ -64,6 +64,14 @@ jobs:
           name: j1-mock-upgrade-results
           path: test-results/j1-mock-upgrade/
           if-no-files-found: error
+      - name: J2 — Examens partagés et obligations figées par offre
+        run: python3 tests/ci/run_j2_obligations.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: j2-obligations-results
+          path: test-results/j2-obligations/
+          if-no-files-found: error
       - name: Vérifier la localisation et les paramètres de lancement natifs
         run: python3 tests/ci/run_launch_settings.py
         env:

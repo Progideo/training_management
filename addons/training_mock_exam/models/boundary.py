@@ -156,10 +156,25 @@ class Attempt(models.Model):
             surveys.sudo().filtered("training_course_id")
             or any(
                 "default_" + field in self.env.context
-                for field in ("mock_context_key", "training_family_id", "training_review_ids")
+                for field in (
+                    "mock_context_key",
+                    "mock_reader_group_id",
+                    "mock_company_id",
+                    "training_family_id",
+                    "training_review_ids",
+                )
             )
             or any(
-                any(field in vals for field in ("mock_context_key", "training_family_id", "training_review_ids"))
+                any(
+                    field in vals
+                    for field in (
+                        "mock_context_key",
+                        "mock_reader_group_id",
+                        "mock_company_id",
+                        "training_family_id",
+                        "training_review_ids",
+                    )
+                )
                 for vals in vals_list
             )
         ):
@@ -177,6 +192,8 @@ class Attempt(models.Model):
     def write(self, vals):
         if (
             self._mock_exam_records()
+            or "mock_reader_group_id" in vals
+            or "mock_company_id" in vals
             or "mock_context_key" in vals
             or "training_family_id" in vals
             or "training_review_ids" in vals

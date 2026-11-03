@@ -56,12 +56,21 @@ class ExamService(models.AbstractModel):
     def _start(self, enrollment_id, activity_id):
         enrollment = self._enrollment(enrollment_id, lock=True)
         activity = self.env["training.learning.service"]._activity(enrollment, activity_id)
-        return self._start_native(
-            activity.training_exam_id,
+        exam = self.env["training.exam.requirement"]._assigned_exam(enrollment, activity)
+        attempt = self._start_native(
+            exam,
             "training.enrollment:%s" % enrollment.id,
-            {"training_enrollment_id": enrollment.id, "training_activity_id": activity.id},
+            {
+                "training_enrollment_id": enrollment.id,
+                "training_activity_id": activity.id,
+                "mock_reader_group_id": self.env.ref("training_management.group_training_coordinator").id,
+            },
             legacy_domain=[("mock_context_key", "=", False), ("training_enrollment_id", "=", enrollment.id)],
         )
+
+        if attempt.survey_id != exam:
+            raise ValidationError(self.env._("Finish the active attempt of this exam family before changing versions."))
+        return attempt
 
     @api.private
     def _attempt(self, attempt_id, *, mutate=False):
@@ -69,6 +78,19 @@ class ExamService(models.AbstractModel):
         if not attempt or not attempt.training_enrollment_id or attempt.training_evaluation_assignment_id:
             raise AccessError(self.env._("This private exam is unavailable."))
         self._enrollment(attempt.training_enrollment_id.id, history=not mutate, finish=mutate, lock=mutate)
+        if attempt.survey_id.training_course_id:
+            assigned = self.env["training.exam.requirement"]._assigned_exam(
+                attempt.training_enrollment_id, attempt.training_activity_id
+            )
+            if assigned != attempt.survey_id:
+                raise AccessError(self.env._("This private exam is unavailable."))
+            if attempt.training_enrollment_id._effective_state() == "expired":
+                if not mutate:
+                    raise AccessError(self.env._("Detailed exam content is closed after access expiry."))
+                attempt.lock_for_update()
+                attempt.invalidate_recordset()
+                if attempt.state != "done":
+                    attempt._training_finish()
         if (
             attempt.mock_context_key
             and attempt.mock_context_key != "training.enrollment:%s" % attempt.training_enrollment_id.id
@@ -122,7 +144,12 @@ class LearningActivity(models.Model):
                 and (
                     activity.criterion != "evaluation"
                     or exam.training_state != "published"
-                    or exam.training_program_id != activity.delivery_id.program_id
+                    or (
+                        exam.training_course_id != activity.delivery_id.program_id.course_id
+                        if exam.training_course_id
+                        else exam.training_program_id != activity.delivery_id.program_id
+                    )
+                    or (exam.training_course_id and exam.mock_company_id != activity.company_id)
                 )
             ):
                 raise ValidationError(
@@ -179,7 +206,7 @@ class LearningService(models.AbstractModel):
         scores = []
         for attempt in attempts:
             rows = attempt._training_scores()
-            latest = attempt.training_adjustment_ids[:1]
+            latest = attempt.training_adjustment_ids.sorted("id", reverse=True)[:1]
             maximum = sum(row["maximum"] for row in rows)
             if maximum:
                 obtained = sum(

@@ -34,7 +34,7 @@ def snapshot(tables, *, business=False, database_env=None):
         # original column byte-for-byte after explicitly checking the new fields.
         added = {
             "training_course": ["presentation", "general_objectives"],
-            "survey_user_input": ["mock_context_key"],
+            "survey_user_input": ["mock_context_key", "mock_reader_group_id", "mock_company_id"],
             "training_delivery": [
                 "session_public",
                 "session_sales_open",
@@ -42,6 +42,7 @@ def snapshot(tables, *, business=False, database_env=None):
                 "session_guaranteed",
             ],
             "training_learning_activity": [
+                "exam_obligation",
                 "project_rubric_id",
                 "project_deliverable",
                 "project_service_reference",

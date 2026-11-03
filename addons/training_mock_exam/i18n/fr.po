@@ -90,3 +90,9 @@ msgstr "Les preuves d’examen sont produites par le serveur."
 #: code:addons/training_mock_exam/models/boundary.py:0
 msgid "Keep native answer identities unchanged."
 msgstr "Conservez les identifiants des réponses natives."
+
+#. module: training_mock_exam
+#. odoo-python
+#: code:addons/training_mock_exam/models/service.py:0
+msgid "Choose a valid exam obligation."
+msgstr "Choisissez une obligation d’examen valide."

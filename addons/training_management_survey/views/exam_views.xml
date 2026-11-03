@@ -51,10 +51,12 @@
         <field name="inherit_id" ref="training_management.view_learning_activity_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='evaluation_threshold']" position="after">
-                <field name="training_exam_id" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/>
+                <field name="shared_exam" invisible="1"/><field name="exam_obligation" invisible="not shared_exam" required="shared_exam"/><field name="training_exam_id" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/>
             </xpath>
+            <xpath expr="//field[@name='optional']" position="attributes"><attribute name="invisible">shared_exam</attribute></xpath>
+            <xpath expr="//field[@name='evaluation_threshold']" position="attributes"><attribute name="invisible">criterion != 'evaluation' or shared_exam</attribute></xpath>
             <xpath expr="//div[@name='evaluation_dependency_notice']" position="replace">
-                <p invisible="criterion != 'evaluation'">Assign a published mock exam. Its authoritative result determines completion.</p>
+                <p invisible="criterion != 'evaluation'">Select a published exam from this programme or the shared course library. Shared exam obligations are frozen when enrollment is confirmed.</p>
             </xpath>
         </field>
     </record>

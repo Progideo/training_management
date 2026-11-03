@@ -20,7 +20,7 @@
     </template>
     <template id="learning_exam_link" inherit_id="training_management.portal_learning_content" name="Mock Exam Access">
         <xpath expr="//p[@t-if=&quot;a['criterion'] == 'evaluation'&quot;]" position="replace">
-            <p t-if="a['criterion'] == 'evaluation' and not a['complete']">Complete the assigned mock exam to reach the required threshold.</p>
+            <p t-if="a['criterion'] == 'evaluation' and not a['complete']"><t t-if="a.get('exam_obligation') == 'optional'">Optional exam: it does not block completion.</t><t t-elif="a.get('exam_obligation') == 'complete'">Finish one attempt; an expired attempt also counts once closed.</t><t t-else="">Reach the assigned exam version's success threshold.</t></p>
         </xpath>
         <xpath expr="//section[1]" position="inside">
             <p t-foreach="learning['activities']" t-as="a" t-if="not is_tutor and a.get('exam_url')">

@@ -134,18 +134,40 @@ class Coverage(unittest.TestCase):
             elif name == "tests/probes/p09_history.py":
                 addition = '            "training_course": ["presentation", "general_objectives"],\n'
                 self.assertIn(addition, path.read_text())
-                context = '            "survey_user_input": ["mock_context_key"],\n'
+                context = '            "survey_user_input": ["mock_context_key", "mock_reader_group_id", "mock_company_id"],\n'
                 self.assertIn(context, path.read_text())
-                self.assertEqual(path.read_text().replace(addition, "").replace(context, ""), original(name))
+                activity = '                "exam_obligation",\n'
+                self.assertIn(activity, path.read_text())
+                self.assertEqual(
+                    path.read_text().replace(addition, "").replace(context, "").replace(activity, ""), original(name)
+                )
             elif name == "tests/probes/s092_history.py":
                 addition = (
                     '        if table == "survey_user_input":\n'
                     "            for row in result[table]:\n"
-                    '                if "mock_context_key" in row:\n'
-                    '                    assert row.pop("mock_context_key") is None\n'
+                    '                for added in ("mock_context_key", "mock_reader_group_id", "mock_company_id"):\n'
+                    "                    if added in row:\n"
+                    "                        assert row.pop(added) is None\n"
                 )
                 self.assertIn(addition, path.read_text())
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
+            elif name == "tests/probes/closure_continuity_history.py":
+                addition = (
+                    "    rows = [row[0] for row in env.cr.fetchall()]\n"
+                    '    if table == "training_learning_activity":\n'
+                    "        for row in rows:\n"
+                    '            if "exam_obligation" in row:\n'
+                    '                assert row.pop("exam_obligation") is None, "Never backfill legacy exam obligations"\n'
+                    "    return json.dumps(rows, sort_keys=True, default=str)"
+                )
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(
+                    path.read_text().replace(
+                        addition,
+                        "    return json.dumps([row[0] for row in env.cr.fetchall()], sort_keys=True, default=str)",
+                    ),
+                    original(name),
+                )
             elif name == "tests/probes/catalogue_pdf_history.py":
                 addition = "\n\ndef expected_visibility_default(spec):\n" + (
                     "    # The shared catalogue now installs native Website on an old base without it.\n"
