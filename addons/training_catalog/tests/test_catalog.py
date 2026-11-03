@@ -46,6 +46,8 @@ class SharedCatalogCase(TransactionCase):
         if "training.enrollment" in self.env:
             with self.assertRaises(AccessError):
                 self.env["training.enrollment"].with_user(self.editor).search([])
+            with self.assertRaises(AccessError):
+                self.course.read(["program_version_ids"])
 
     def test_company_scope_and_relations(self):
         foreign = self.env["training.category"].create(

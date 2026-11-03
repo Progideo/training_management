@@ -9,6 +9,7 @@ class TrainingCourse(models.Model):
         "training.program.version",
         "course_id",
         string="Programme Versions",
+        groups="training_management.group_training_reader",
         copy=False,
     )
 
