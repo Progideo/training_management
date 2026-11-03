@@ -47,7 +47,7 @@ génération. Aucun ancien addon n'est désinstallé et aucun historique n'est s
 | eLearning | training_elearning_sale | training_elearning, sale_management ; CRM à confirmer |
 | eLearning | training_elearning_survey | training_elearning, training_mock_exam, website_slides_survey |
 
-Seul le premier composant commun est extrait ici. Les autres lignes décrivent la
+Cette page décrit l’extraction initiale du catalogue. La [tranche bibliothèque interactive](j1-shared-interactive.md) poursuit les extractions communes. Les autres lignes décrivent la
 cible, pas des manifests livrés. Les addons historiques `training_management_website`
 et `training_management_elearning` sont des composants à absorber/remplacer,
 pas des onzième/douzième addons cibles. `sale_invoice_address_fiscal` est une

@@ -31,6 +31,12 @@ def visibility_default():
     return env.cr.fetchone()
 
 
+def expected_visibility_default(spec):
+    # The shared catalogue now installs native Website on an old base without it.
+    # Its new visibility column has no SQL default; existing defaults stay exact.
+    return spec["visibility_default"] if spec["visibility_default"] is not None else [None]
+
+
 if phase == "prepare":
     # Prove this is a direct S04 upgrade, with no catalogue/PDF placeholders.
     for name in new_view_names:
@@ -111,7 +117,7 @@ if phase == "prepare":
 elif phase == "verify":
     spec = json.loads(params.get_str(key))
     default_after = visibility_default()
-    assert (list(default_after) if default_after is not None else None) == spec["visibility_default"]
+    assert (list(default_after) if default_after is not None else None) == expected_visibility_default(spec)
     env.cr.execute("SELECT to_regclass('pg_temp.training_pdf_visibility_default_restore')")
     assert env.cr.fetchone()[0] is None
     if spec["view_visibility"]:
@@ -169,7 +175,7 @@ elif phase == "repeat":
         program = env["training.program.version"].browse(record_id)
         assert hashlib.sha256(program._reference_pdf().raw).hexdigest() == sha
     default = visibility_default()
-    assert (list(default) if default is not None else None) == spec["visibility_default"]
+    assert (list(default) if default is not None else None) == expected_visibility_default(spec)
     if default is not None:
         migrate = runpy.run_path(file_path("training_management/migrations/20.0.1.4.0/pre-migration.py"))["migrate"]
 

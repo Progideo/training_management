@@ -96,7 +96,7 @@ class AttendanceSignature(models.Model):
 
 
 class AttendanceSignedEvent(models.Model):
-    _inherit = "training.attendance.event"
+    _inherit = "training.attendance.event"  # pylint: disable=consider-merging-classes-inherited  # signed evidence is separate from operator notifications
 
     signature = fields.Binary(attachment=False, readonly=True, copy=False)
     signature_version = fields.Integer(readonly=True)
@@ -107,7 +107,7 @@ class AttendanceSignedEvent(models.Model):
 
 
 class AttendanceSigning(models.AbstractModel):
-    _inherit = "training.attendance.service"
+    _inherit = "training.attendance.service"  # pylint: disable=consider-merging-classes-inherited  # signature transactions are separate from period computation
 
     @api.private
     def _sign_halfday(self, enrollment_id, key, *, signature_version, **values):
