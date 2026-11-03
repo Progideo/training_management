@@ -25,6 +25,7 @@
     <record id="version_form" model="ir.ui.view">
         <field name="name">training.interactive.version.form</field><field name="model">training.elearning.version</field>
         <field name="arch" type="xml"><form create="0" edit="0" delete="0"><header>
+            <button name="action_preview" type="object" string="Prévisualiser" invisible="state == 'withdrawn'"/>
             <button name="action_publish" type="object" string="Publier" invisible="state != 'draft'" groups="training_interactive.group_interactive_author"/>
             <button name="%(withdraw_action)d" type="action" string="Retirer pour sécurité" context="{'default_version_id': id}"
                     groups="training_interactive.group_interactive_manager" invisible="state == 'withdrawn'"/>

@@ -13,3 +13,5 @@ from . import test_l01
 from . import test_path
 from . import test_orientation
 from . import test_review_access
+
+from . import test_shared_library

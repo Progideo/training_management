@@ -113,6 +113,11 @@ class Version(models.Model):
             }
         )
 
+    def action_preview(self):
+        self.ensure_one()
+        self.check_access("read")
+        return {"type": "ir.actions.act_url", "url": "/training/interactive/preview/%s" % self.id, "target": "new"}
+
 
 class PackageFile(models.Model):
     _name = "training.elearning.file"

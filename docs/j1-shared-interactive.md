@@ -1,5 +1,8 @@
 # Bibliothèque interactive commune
 
+Cette page décrit la première tranche. La [suite lecteurs et examens](j1-shared-readers-exams.md)
+précise les extractions réalisées depuis et les limites actuelles.
+
 Suite de [J1 #123](https://github.com/Progideo/training_management/issues/123),
 après le [catalogue commun](j1-shared-catalog.md). Cadrage consolidé du 3 novembre
 2026, D09/D21/D32/D36/D38. Cette tranche reste une préparation de l'indépendance ;

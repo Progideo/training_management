@@ -7,7 +7,7 @@ from odoo.addons.training_management.controllers.portal_utils import portal_date
 from werkzeug.exceptions import BadRequest
 
 from odoo import http, fields
-from odoo.addons.survey.controllers.main import Survey
+from odoo.addons.training_mock_exam.controllers.native import SharedSurveyBoundary as Survey
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.training_management.controllers.material_portal import TrainingParticipantPortal
 from odoo.exceptions import AccessError, MissingError, ValidationError
