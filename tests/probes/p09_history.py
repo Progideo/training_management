@@ -33,6 +33,7 @@ def snapshot(tables, *, business=False, database_env=None):
         # Opt-in additions must remain empty on historical rows. Compare every
         # original column byte-for-byte after explicitly checking the new fields.
         added = {
+            "training_course": ["presentation", "general_objectives"],
             "training_delivery": [
                 "session_public",
                 "session_sales_open",

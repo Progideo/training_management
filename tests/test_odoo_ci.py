@@ -62,6 +62,11 @@ def normalize_migration(text):
         "\nS08_PHASE=prepare step fixture_baseline run_odoo",
         '\nTM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step fixture_baseline run_odoo',
     )
+    # S09.3 also captures history before installing the new catalogue dependency.
+    text = text.replace(
+        "\nS093_PHASE=baseline step history_baseline run_odoo",
+        '\nTM_ADDONS_DIR="$work_dir/addons" S093_PHASE=baseline step history_baseline run_odoo',
+    )
     return (
         text.replace("real Odoo tests and concurrent reservations", "migration and concurrent reservations").rstrip()
         + "\n"
@@ -126,6 +131,23 @@ class Coverage(unittest.TestCase):
                 )
                 self.assertIn(addition, path.read_text())
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
+            elif name == "tests/probes/p09_history.py":
+                addition = '            "training_course": ["presentation", "general_objectives"],\n'
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(path.read_text().replace(addition, ""), original(name))
+            elif name == "tests/probes/catalogue_pdf_history.py":
+                addition = "\n\ndef expected_visibility_default(spec):\n" + (
+                    "    # The shared catalogue now installs native Website on an old base without it.\n"
+                    "    # Its new visibility column has no SQL default; existing defaults stay exact.\n"
+                    '    return spec["visibility_default"] if spec["visibility_default"] is not None else [None]\n'
+                )
+                self.assertIn(addition, path.read_text())
+                preserved = (
+                    path.read_text()
+                    .replace(addition, "")
+                    .replace("== expected_visibility_default(spec)", '== spec["visibility_default"]')
+                )
+                self.assertEqual(preserved, original(name))
             else:
                 self.assertEqual(path.read_text(), original(name))
         self.assertEqual(len(PLAN["migrations"]), 25)
