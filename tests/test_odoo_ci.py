@@ -151,6 +151,23 @@ class Coverage(unittest.TestCase):
                 )
                 self.assertIn(addition, path.read_text())
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
+            elif name == "tests/probes/closure_continuity_history.py":
+                addition = (
+                    "    rows = [row[0] for row in env.cr.fetchall()]\n"
+                    '    if table == "training_learning_activity":\n'
+                    "        for row in rows:\n"
+                    '            if "exam_obligation" in row:\n'
+                    '                assert row.pop("exam_obligation") is None, "Never backfill legacy exam obligations"\n'
+                    "    return json.dumps(rows, sort_keys=True, default=str)"
+                )
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(
+                    path.read_text().replace(
+                        addition,
+                        "    return json.dumps([row[0] for row in env.cr.fetchall()], sort_keys=True, default=str)",
+                    ),
+                    original(name),
+                )
             elif name == "tests/probes/catalogue_pdf_history.py":
                 addition = "\n\ndef expected_visibility_default(spec):\n" + (
                     "    # The shared catalogue now installs native Website on an old base without it.\n"

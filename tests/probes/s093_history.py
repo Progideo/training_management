@@ -137,6 +137,5 @@ if phase in ("baseline", "prepare"):
     print("S093_HISTORY_PREPARED")
 else:
     saved = json.loads(env["ir.config_parameter"].sudo().get_str(key))
-    current = json.loads(json.dumps(snapshot(saved["schema"]), default=str, sort_keys=True))
-    assert current == saved["data"], [name for name, rows in current.items() if rows != saved["data"][name]]
+    assert json.loads(json.dumps(snapshot(saved["schema"]), default=str, sort_keys=True)) == saved["data"]
     print("S093_HISTORY_OK: all previous business rows, quality histories, PDF bytes and native schema retained")
