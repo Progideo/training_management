@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.fields import Domain
 from odoo.tools.binary import BinaryBytes
 from ..services.archive import parse_package
 
@@ -149,6 +150,14 @@ class Binary(models.AbstractModel):
 
 class Attachment(models.Model):
     _inherit = "ir.attachment"
+
+    @api.model
+    def _access_domain(self, operation):
+        domain = super()._access_domain(operation)
+        if operation == "read":
+            # Public attachment metadata must not grant ORM access to package bytes.
+            domain &= ~Domain("res_model", "in", PROTECTED)
+        return domain
 
     def _to_http_stream(self):
         if any(a.sudo().res_model in PROTECTED for a in self):

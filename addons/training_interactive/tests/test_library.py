@@ -231,6 +231,22 @@ class TestInteractiveLibrary(LibraryCase):
         with self.assertRaises(AccessError):
             version.action_publish()
 
+    def test_public_attachment_flag_does_not_grant_orm_access(self):
+        version = self.version()
+        file = self.env["training.elearning.file"].search([("version_id", "=", version.id)], limit=1)
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": "Fictional incorrectly public package file",
+                "res_model": file._name,
+                "res_id": file.id,
+                "raw": BinaryBytes(b"private fixture"),
+                "public": True,
+            }
+        )
+        for actor in (self.author, self.manager, self.portal, self.unassigned, self.env.ref("base.public_user")):
+            with self.subTest(actor=actor.login), self.assertRaises(AccessError):
+                attachment.with_user(actor).read(["raw"])
+
     def test_files_and_native_tokens_never_stream(self):
         version = self.version()
         file = self.env["training.elearning.file"].search([("version_id", "=", version.id)], limit=1)
