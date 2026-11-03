@@ -197,7 +197,7 @@ class OperatorNotice(models.Model):
 
 
 class AttendanceAlert(models.Model):
-    _inherit = "training.attendance.event"
+    _inherit = "training.attendance.event"  # pylint: disable=consider-merging-classes-inherited  # notifications are separate from immutable signed evidence
 
     @api.private
     def _append(self, values):
