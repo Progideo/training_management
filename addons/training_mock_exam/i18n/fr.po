@@ -96,3 +96,300 @@ msgstr "Conservez les identifiants des réponses natives."
 #: code:addons/training_mock_exam/models/service.py:0
 msgid "Choose a valid exam obligation."
 msgstr "Choisissez une obligation d’examen valide."
+
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Answered"
+msgstr "Répondu"
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Answered: %s / %s. Marked for review: %s."
+msgstr "Questions répondues : %s / %s. À revoir : %s."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Marked for review"
+msgstr "À revoir"
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid ""
+"Not saved. Check your connection. Reload to recover only answers already "
+"received by the server."
+msgstr ""
+"Non sauvegardé. Vérifiez votre connexion. Rechargez pour retrouver "
+"uniquement les réponses déjà reçues par le serveur."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Not saved. Reload to recover answers already received by the server."
+msgstr ""
+"Non sauvegardé. Rechargez pour retrouver les réponses déjà reçues par le "
+"serveur."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Question %s"
+msgstr "Question %s"
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Saved on the server."
+msgstr "Sauvegardé sur le serveur."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Saving…"
+msgstr "Sauvegarde en cours…"
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid ""
+"Submission blocked: some answers are not saved. Reload and verify your saved"
+" answers."
+msgstr ""
+"Remise bloquée : certaines réponses ne sont pas sauvegardées. Rechargez et "
+"vérifiez vos réponses sauvegardées."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Submission not confirmed. Check your connection and retry."
+msgstr "Remise non confirmée. Vérifiez votre connexion et réessayez."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid ""
+"Time elapsed. Only answers received before the server deadline are retained."
+" Reconnect to see the result."
+msgstr ""
+"Temps écoulé. Seules les réponses reçues avant l’échéance du serveur sont "
+"conservées. Reconnectez-vous pour consulter le résultat."
+
+#. module: training_mock_exam
+#. odoo-python
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Unanswered"
+msgstr "Sans réponse"
+
+#. module: training_mock_exam
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid ""
+"%s question(s) not confirmed on the server. Check your connection, then "
+"retry saving. Keep this page open."
+msgstr ""
+"%s question(s) non confirmée(s) sur le serveur. Vérifiez votre connexion, "
+"puis réessayez la sauvegarde. Gardez cette page ouverte."
+
+#. module: training_mock_exam
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Before submitting, retry saving the unconfirmed answers."
+msgstr ""
+"Avant de remettre la tentative, réessayez la sauvegarde des réponses non "
+"confirmées."
+
+#. module: training_mock_exam
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Changes not yet confirmed on the server"
+msgstr "Modifications pas encore confirmées sur le serveur"
+
+#. module: training_mock_exam
+#. odoo-javascript
+#: code:addons/training_mock_exam/static/src/exam.js:0
+msgid "Saving %s question(s)…"
+msgstr "Sauvegarde de %s question(s)…"
+
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid ""
+"Answers received by the server are saved. Unsaved changes will be reported "
+"here."
+msgstr ""
+"Les réponses reçues par le serveur sont sauvegardées. Les changements non "
+"sauvegardés sont signalés ici."
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Authorized revision resource"
+msgstr "Ressource de révision autorisée"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Clear answer"
+msgstr "Effacer la réponse"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Confirm and retake the mock exam"
+msgstr "Confirmer et repasser l’examen blanc"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Confirm final submission"
+msgstr "Confirmer la remise définitive"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Expected answers:"
+msgstr "Réponses attendues :"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Initial result preserved:"
+msgstr "Résultat initial conservé :"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid ""
+"JavaScript is required for answer saving and navigation. This attempt "
+"remains timed; reload after enabling JavaScript."
+msgstr ""
+"JavaScript est nécessaire pour sauvegarder les réponses et naviguer. Le "
+"temps continue de s’écouler ; rechargez après avoir activé JavaScript."
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Mark for review"
+msgstr "Marquer à revoir"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Mock exam — no official certification."
+msgstr "Examen blanc — sans certification officielle."
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "My attempts / retake the mock exam"
+msgstr "Mes tentatives / repasser l’examen blanc"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Next"
+msgstr "Suivante"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Not evaluated"
+msgstr "Non évalué"
+
+#. module: training_mock_exam
+#: model:ir.model.fields,field_description:training_mock_exam.field_training_exam_revise_line__points
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Points"
+msgstr "Points"
+
+#. module: training_mock_exam
+#: model:ir.model.fields,field_description:training_mock_exam.field_training_exam_revision__previous_id
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Previous"
+msgstr "Précédente"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Question palette"
+msgstr "Palette des questions"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Result and final correction"
+msgstr "Résultat et corrigé final"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Results by theme"
+msgstr "Résultats par thème"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid ""
+"Retaking starts a new attempt with the full duration. Previous results are "
+"preserved."
+msgstr ""
+"Repasser ouvre une nouvelle tentative avec la durée complète. Les résultats "
+"précédents sont conservés."
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Review and submit"
+msgstr "Vérifier et remettre"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Score"
+msgstr "Score"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Submission summary"
+msgstr "Récapitulatif de remise"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Submitting ends this attempt. Its answers cannot then be changed."
+msgstr ""
+"La remise termine cette tentative. Ses réponses ne pourront plus être "
+"modifiées."
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Theme"
+msgstr "Thème"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "This mock exam result does not guarantee success in an official exam."
+msgstr ""
+"Ce résultat d’examen blanc ne garantit aucune réussite à un examen officiel."
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Threshold not reached"
+msgstr "Seuil non atteint"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Threshold reached"
+msgstr "Seuil atteint"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Time remaining: <strong class=\"o_survey_timer\" role=\"timer\"/>"
+msgstr "Temps restant : <strong class=\"o_survey_timer\" role=\"timer\"/>"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_result
+msgid "Your answers:"
+msgstr "Vos réponses :"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Retry saving / check the result"
+msgstr "Réessayer la sauvegarde / consulter le résultat"

@@ -15,7 +15,7 @@ stockage/import partagés, droits et raccordement de l’extension historique.
 Les [lecteurs et définitions d’examens communs](j1-shared-readers-exams.md)
 poursuivent cette extraction. La [passation et le chronométrage serveur](j1-shared-exam-runtime.md)
 précisent le moteur commun et son raccordement TM. Les [obligations par offre](j2-shared-exam-obligations.md)
-raccordent ensuite la bibliothèque aux inscriptions TM.
+raccordent ensuite la bibliothèque aux inscriptions TM. Le [rendu commun et les contextes autonomes](j3-autonomous-exam-rendering.md) poursuivent cette séparation.
 
 ## Manuel utilisateur
 
