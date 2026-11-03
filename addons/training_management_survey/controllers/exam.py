@@ -27,7 +27,7 @@ class NativeSurveyBoundary(Survey):
         survey = request.env["survey.survey"].sudo().search([("access_token", "=", survey_token)], limit=1)
         if survey.orientation_company_id:
             raise request.not_found()
-        if not survey.training_program_id:
+        if not (survey.training_program_id or survey.training_course_id):
             return super().survey_get_question_image(survey_token, answer_token, question_id, suggested_answer_id)
         attempt = (
             request.env["survey.user_input"]

@@ -36,8 +36,9 @@ def snapshot():
         result[table] = [r[0] for r in env.cr.fetchall()]
         if table == "survey_user_input":
             for row in result[table]:
-                if "mock_context_key" in row:
-                    assert row.pop("mock_context_key") is None
+                for added in ("mock_context_key", "mock_reader_group_id", "mock_company_id"):
+                    if added in row:
+                        assert row.pop(added) is None
     dossier = env.ref("training_management_test.s08_dossier")
     result["pdf"] = [hashlib.sha256(p.data.content).hexdigest() for p in dossier.evidence_ids if p.data]
     return json.dumps(result, default=str, sort_keys=True)

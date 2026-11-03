@@ -1,5 +1,8 @@
 # Passation commune et chronométrage serveur
 
+La [tranche suivante](j2-shared-exam-obligations.md) raccorde les examens partagés
+aux offres et fige leurs obligations par inscription TM.
+
 Suite de [J1 #123](https://github.com/Progideo/training_management/issues/123),
 après les [lecteurs et définitions](j1-shared-readers-exams.md). Le cadrage consolidé
 du 3 novembre 2026, notamment D01/D02, conserve les réponses natives Survey et

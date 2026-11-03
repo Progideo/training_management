@@ -134,15 +134,20 @@ class Coverage(unittest.TestCase):
             elif name == "tests/probes/p09_history.py":
                 addition = '            "training_course": ["presentation", "general_objectives"],\n'
                 self.assertIn(addition, path.read_text())
-                context = '            "survey_user_input": ["mock_context_key"],\n'
+                context = '            "survey_user_input": ["mock_context_key", "mock_reader_group_id", "mock_company_id"],\n'
                 self.assertIn(context, path.read_text())
-                self.assertEqual(path.read_text().replace(addition, "").replace(context, ""), original(name))
+                activity = '                "exam_obligation",\n'
+                self.assertIn(activity, path.read_text())
+                self.assertEqual(
+                    path.read_text().replace(addition, "").replace(context, "").replace(activity, ""), original(name)
+                )
             elif name == "tests/probes/s092_history.py":
                 addition = (
                     '        if table == "survey_user_input":\n'
                     "            for row in result[table]:\n"
-                    '                if "mock_context_key" in row:\n'
-                    '                    assert row.pop("mock_context_key") is None\n'
+                    '                for added in ("mock_context_key", "mock_reader_group_id", "mock_company_id"):\n'
+                    "                    if added in row:\n"
+                    "                        assert row.pop(added) is None\n"
                 )
                 self.assertIn(addition, path.read_text())
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
