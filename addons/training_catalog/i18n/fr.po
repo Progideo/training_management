@@ -1,0 +1,88 @@
+# Translation of Odoo Server.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_catalog
+#: model:res.groups.privilege,name:training_catalog.privilege_catalog
+msgid "Training Catalogue"
+msgstr "Catalogue de formations"
+
+#. module: training_catalog
+#: model:res.groups,name:training_catalog.group_catalog_reader
+msgid "Catalogue Reader"
+msgstr "Lecteur du catalogue"
+
+#. module: training_catalog
+#: model:res.groups,name:training_catalog.group_catalog_editor
+msgid "Catalogue Editor"
+msgstr "Auteur du catalogue"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__presentation
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "General Presentation"
+msgstr "Présentation générale"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__general_objectives
+msgid "General Objectives"
+msgstr "Objectifs généraux"
+
+#. module: training_catalog
+#: model:ir.actions.act_window,name:training_catalog.action_training_categories
+msgid "Training Categories"
+msgstr "Catégories de formations"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__name
+#: model:ir.model.fields,field_description:training_catalog.field_training_category__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__category_id
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_search
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__company_id
+#: model:ir.model.fields,field_description:training_catalog.field_training_category__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_category_form
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_course.py:0
+msgid "A course name is required."
+msgstr "Un nom de formation est obligatoire."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_category.py:0
+msgid "Enter a category name."
+msgstr "Saisissez un nom de catégorie."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_category.py:0
+msgid "A training category keeps its company. Create a category in the other company."
+msgstr "Une catégorie de formations conserve sa société. Créez une catégorie dans l’autre société."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_category.py:0
+msgid "Archive categories used by courses instead of deleting them."
+msgstr "Archivez les catégories utilisées par des formations au lieu de les supprimer."

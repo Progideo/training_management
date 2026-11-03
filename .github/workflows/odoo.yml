@@ -21,7 +21,7 @@ jobs:
   orchestration:
     name: Qualité du code et orchestration
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,6 +32,14 @@ jobs:
         run: python3 -m unittest discover -s tests -v
       - name: Style et règles Odoo
         run: pre-commit run --all-files --show-diff-on-failure
+      - name: J1 — Catalogue autonome, droits et conservation TM
+        run: python3 tests/ci/run_j1.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: j1-catalog-results
+          path: test-results/j1/
+          if-no-files-found: error
       - name: Vérifier la localisation et les paramètres de lancement natifs
         run: python3 tests/ci/run_launch_settings.py
         env:

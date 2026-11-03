@@ -4,6 +4,12 @@ Point d’entrée documentaire pour le dépôt `Progideo/training_management`.
 Les besoins et leur avancement restent dans les issues ; les changements et
 leurs validations dans les pull requests ; les décisions durables dans la documentation.
 
+## Séparation TM et eLearning
+
+Le [cadrage J1](j1-shared-catalog.md) décrit la cible validée le 3 novembre 2026,
+les contrats à extraire et les limites de la première tranche. Il prévaut sur les
+anciennes prescriptions de reprise Odoo 19 et de couplage eLearning à TM.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,
@@ -84,6 +90,12 @@ SHA-256 de la spécification amendée (y compris P20, #105, l’émargement par 
 
 ```text
 d03e565ec89e73981315234d148204b05c16fae979b94087fca81bfa3ce6cb6a  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+```
+
+Empreinte courante après l'amendement de séparation du 3 novembre 2026 :
+
+```text
+c5cfc7033533a76c98c1dd40ba09520014348d5766930ab57a19782ea2392068  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments

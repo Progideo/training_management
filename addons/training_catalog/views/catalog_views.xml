@@ -1,0 +1,81 @@
+<odoo>
+    <record id="view_training_course_list" model="ir.ui.view">
+        <field name="name">training.course.list</field>
+        <field name="model">training.course</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_course_form" model="ir.ui.view">
+        <field name="name">training.course.form</field>
+        <field name="model">training.course</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <group>
+                        <field name="name"/>
+                <field name="category_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                    <group string="General Presentation">
+                        <field name="presentation"/>
+                        <field name="general_objectives"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_course_search" model="ir.ui.view">
+        <field name="name">training.course.search</field>
+        <field name="model">training.course</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <filter name="group_category" string="Category" context="{'group_by': 'category_id'}"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_courses" model="ir.actions.act_window">
+        <field name="name">Formations</field>
+        <field name="res_model">training.course</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_training_course_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_training_course_form')})
+        ]"/>
+    </record>
+
+
+    <record id="view_training_category_list" model="ir.ui.view">
+        <field name="name">training.category.list</field>
+        <field name="model">training.category</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/><field name="company_id" groups="base.group_multi_company"/></list>
+        </field>
+    </record>
+    <record id="view_training_category_form" model="ir.ui.view">
+        <field name="name">training.category.form</field>
+        <field name="model">training.category</field>
+        <field name="arch" type="xml">
+            <form><sheet>
+                <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                <group><field name="active" invisible="1"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/></group>
+            </sheet></form>
+        </field>
+    </record>
+    <record id="action_training_categories" model="ir.actions.act_window">
+        <field name="name">Training Categories</field><field name="res_model">training.category</field><field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_catalog_root" name="Catalogue de formations" sequence="45" groups="training_catalog.group_catalog_reader"/>
+    <menuitem id="menu_catalog_courses" name="Formations" parent="menu_catalog_root" action="action_training_courses"/>
+    <menuitem id="menu_catalog_categories" name="Catégories" parent="menu_catalog_root" action="action_training_categories"/>
+</odoo>

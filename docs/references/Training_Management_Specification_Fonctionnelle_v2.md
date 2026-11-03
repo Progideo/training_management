@@ -1,3 +1,12 @@
+> Révision validée du 3 novembre 2026 — séparation TM/eLearning : le cadrage
+> consolidé v1 et ses 41 décisions remplacent les prescriptions contradictoires
+> ci-dessous. TM couvre les formations avec formateur ; eLearning est autonome.
+> Catalogue commun, programmes et suivis distincts. Aucune reprise métier/Odoo 19.
+> Avant achat : présentation générale seulement, sans programme détaillé ni démo.
+> P15 reste annulé, P17–P19 reportés, P20 encadré préservé. La cible et l'état
+> de la première tranche sont décrits dans [J1](../j1-shared-catalog.md).
+> Cette révision ne déclare pas les fonctionnalités cibles déjà livrées.
+
 > Révision du 30 octobre 2026 — [#102](https://github.com/Progideo/training_management/issues/102).
 > Les règles commerciales et comptables suivent désormais Odoo natif et les extensions/localisations installées.
 > Les mentions historiques MAD/EUR et virement manuel décrivent le premier organisme ; elles ne contraignent plus le module générique.

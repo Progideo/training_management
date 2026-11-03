@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_course_reader,Catalogue course reader,training.course,training_catalog.group_catalog_reader,r,
+access_course_editor,Catalogue course editor,training.course,training_catalog.group_catalog_editor,crud,
+rule_course_company,Catalogue course companies,training.course,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_category_reader,Catalogue category reader,training.category,training_catalog.group_catalog_reader,r,
+access_category_editor,Catalogue category editor,training.category,training_catalog.group_catalog_editor,crud,
+rule_category_company,Catalogue category companies,training.category,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
