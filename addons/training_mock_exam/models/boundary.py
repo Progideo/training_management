@@ -155,12 +155,12 @@ class Attempt(models.Model):
         if (
             surveys.sudo().filtered("training_course_id")
             or any(
-                self.env.context.get("default_" + field)
+                "default_" + field in self.env.context
                 for field in ("mock_context_key", "training_family_id", "training_review_ids")
             )
             or any(
-                v.get("mock_context_key") or v.get("training_family_id") or v.get("training_review_ids")
-                for v in vals_list
+                any(field in vals for field in ("mock_context_key", "training_family_id", "training_review_ids"))
+                for vals in vals_list
             )
         ):
             raise AccessError(self.env._("Use an authorized learner context for this mock exam."))

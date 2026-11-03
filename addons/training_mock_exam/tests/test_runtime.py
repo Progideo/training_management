@@ -112,6 +112,17 @@ class TestSharedRuntime(MockCase):
                 {"survey_id": self.exam_record.id}
             )
 
+        ordinary = (
+            self.env["survey.survey"].with_user(self.author).create({"title": "Fictional ordinary native survey"})
+        )
+        for value in (0, False, ""):
+            with self.assertRaises(AccessError):
+                self.env["survey.user_input"].create({"survey_id": ordinary.id, "mock_context_key": value})
+            with self.assertRaises(AccessError):
+                self.env["survey.user_input"].with_context(default_mock_context_key=value).create(
+                    {"survey_id": ordinary.id}
+                )
+
     def test_definition_author_cannot_read_learner_evidence_via_public_attachment(self):
         attempt = self.start()
         attachment = self.env["ir.attachment"].create(
