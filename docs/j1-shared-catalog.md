@@ -64,6 +64,22 @@ L'ancien E00 eLearning, qui impose TM et exclut website_slides, reste historique
 il devra être amendé dans la PR qui extrait son code. Aucun changement de ce dépôt
 n'est nécessaire à la première tranche du catalogue.
 
+Inventaire des manifests au départ (tous déclarés LGPL-3) :
+
+| Addon existant | Dépendances directes au départ |
+| --- | --- |
+| training_management 20.0.2.11.1 | base, mail, resource, portal, web, base_report_wkhtmltox |
+| training_management_sale 20.0.2.5.0 | training_management, sale_management, sale_crm |
+| training_management_survey 20.0.2.8.0 | training_management, survey |
+| training_management_website 20.0.1.0.0 | training_management, website ; installation automatique |
+| sale_invoice_address_fiscal 20.0.1.2.0 | sale_management ; extension hors architecture pédagogique |
+| training_management_elearning 20.0.2.2.1 (correctif #11) | training_management, training_management_survey |
+
+Le manifeste eLearning courant est donc déjà plus couplé que la première version
+d'E00 : Survey est devenu obligatoire dans cet addon historique. Le nouveau socle
+catalogue est le seul addon ajouté par cette tranche ; TM passe à 20.0.3.0.0 et en
+dépend. Les manifests des autres composants existants restent inchangés.
+
 Image exacte : `odoo@sha256:61e3c71b0503c5f658e604c3e340bede20b97d05f726179fa006eae50a32fd23`.
 Sources Community de cette image, sous `odoo/addons/` :
 
