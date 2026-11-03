@@ -50,6 +50,73 @@ class SharedExamCase(ExamCase):
 
 @tagged("post_install", "-at_install")
 class TestExamRequirements(SharedExamCase):
+    def test_coexisting_autonomous_offer_keeps_evidence_and_reader_scope_separate(self):
+        if "training.elearning.exam.service" not in self.env:
+            self.skipTest("Optional autonomous composition is not installed")
+        exam, _, _ = self.shared_exam()
+        delivery = self.delivery()
+        activity = self.assigned(delivery, exam, "complete")
+        enrollment = self.opened(delivery)
+        manager = new_test_user(
+            self.env,
+            login="fictional_coexistence_coordinator",
+            groups="training_elearning_survey.group_learning_exam_reader",
+        )
+        course = (
+            self.env["slide.channel"]
+            .with_user(manager)
+            .create(
+                {
+                    "name": "Fictional autonomous edition",
+                    "training_course_id": self.program.course_id.id,
+                }
+            )
+        )
+        slide = (
+            self.env["slide.slide"]
+            .with_user(manager)
+            .create(
+                {
+                    "channel_id": course.id,
+                    "survey_id": exam.id,
+                    "learning_exam_obligation": "pass",
+                    "is_published": True,
+                }
+            )
+        )
+        course.action_learning_publish()
+        member = (
+            self.env["slide.channel.partner"]
+            .with_user(manager)
+            .create(
+                {
+                    "channel_id": course.id,
+                    "partner_id": self.portal.partner_id.id,
+                }
+            )
+        )
+        member.action_learning_activate(fields.Datetime.now() + timedelta(days=2), self.portal.id, "Fictional access")
+        tm = self.env["training.exam.service"].with_user(self.portal)
+        autonomous = self.env["training.elearning.exam.service"].with_user(self.portal)
+        first = tm._start(enrollment.id, activity.id)
+        second = autonomous._start(member.id, slide.id)
+        self.assertEqual(first.survey_id, second.survey_id)
+        self.assertNotEqual(first.mock_context_key, second.mock_context_key)
+        self.assertNotEqual(first, second)
+        tm._submit(first.id)
+        self.assertTrue(self.env["training.learning.service"]._complete(enrollment, activity))
+        self.assertEqual(member.completion, 0)
+        for question in second.predefined_question_ids:
+            autonomous._save(second.id, question.id, question.suggested_answer_ids.filtered("is_correct").ids, False)
+        autonomous._submit(second.id)
+        self.assertEqual(member.completion, 100)
+        self.assertFalse(second.with_user(self.coordinator).search([("id", "=", second.id)]))
+        self.assertFalse(first.with_user(manager).search([("id", "=", first.id)]))
+        with self.assertRaises(AccessError):
+            tm._submit(second.id)
+        with self.assertRaises(AccessError):
+            autonomous._submit(first.id)
+
     def test_multi_exam_optional_complete_and_pass_are_frozen_and_independent(self):
         exam, q1, q2 = self.shared_exam()
         another, _, _ = self.shared_exam()

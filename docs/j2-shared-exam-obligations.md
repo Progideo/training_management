@@ -76,3 +76,13 @@ reprise Odoo 19 ou bascule de production n’est qualifiée.
 
 Banc dédié : `python3 tests/ci/run_j2_obligations.py`. Les résultats d’exécution
 restent dans les PR.
+
+## Conservation des réponses antérieures
+
+La société de lecture est figée par la fabrique privée de tentatives. Elle ne se
+recalcule pas sur les anciennes réponses natives : l’ajout d’un champ apparenté
+stocké provoquait une réécriture de leur `write_date`. Les chemins S09.3 et
+continuité P20 vérifient la conservation exacte des anciennes colonnes et dates
+d’audit. L’ajout de `exam_obligation` doit rester NULL sur les activités anciennes ;
+aucune obligation n’est inventée lors d’une mise à jour. Ces deux chemins ont été
+rejoués avec succès sur l’image qualifiée, avec seconde mise à jour et concurrence.

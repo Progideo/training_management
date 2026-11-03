@@ -126,7 +126,7 @@ class ExamService(models.AbstractModel):
 
 
 class LearningActivity(models.Model):
-    _inherit = "training.learning.activity"
+    _inherit = "training.learning.activity"  # pylint: disable=consider-merging-classes-inherited  # legacy exam integration is separate from frozen requirements
 
     criterion = fields.Selection(selection_add=[("evaluation", "Mock Exam Threshold")])
     training_exam_id = fields.Many2one("survey.survey", ondelete="restrict", string="Mock Exam Version")
@@ -163,7 +163,7 @@ class LearningActivity(models.Model):
 
 
 class LearningService(models.AbstractModel):
-    _inherit = "training.learning.service"
+    _inherit = "training.learning.service"  # pylint: disable=consider-merging-classes-inherited  # legacy integration and contextual obligations are separate
 
     @api.private
     def _evaluation_snapshot(self, enrollment, activity):

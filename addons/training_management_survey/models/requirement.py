@@ -236,7 +236,7 @@ class Progress(models.Model):
 
 
 class Attempt(models.Model):
-    _inherit = "survey.user_input"
+    _inherit = "survey.user_input"  # pylint: disable=consider-merging-classes-inherited  # contextual progress invalidation is separate from native orientation
 
     @api.private
     def _invalidate_exam_progress(self):
