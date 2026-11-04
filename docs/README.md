@@ -19,6 +19,9 @@ raccordent ensuite la bibliothèque aux inscriptions TM. Le [rendu commun et les
 
 La [validation formative commune](j14-shared-formative-validation.md) accompagne le raccordement du lecteur aux cours autonomes et précise la limite sans vidéo privée.
 
+Le [découpage final des addons](j15-module-layout.md) replace l’adaptateur interactif
+dans TM et le menu Website dans le catalogue commun.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,
