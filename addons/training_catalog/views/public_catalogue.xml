@@ -1,0 +1,42 @@
+<odoo>
+  <template id="public_catalogue" name="General training catalogue">
+    <t t-call="portal.frontend_layout" additional_title.translate="Formations">
+      <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
+        <h1>Formations</h1>
+        <form action="/formations" method="get" class="row g-3 mb-4">
+          <div class="col-md-4"><label for="search">Rechercher</label><input id="search" name="search" class="form-control" t-att-value="search"/></div>
+          <div class="col-md-3"><label for="category">Catégorie</label><select id="category" name="category" class="form-select"><option value="">Toutes</option><option t-foreach="categories" t-as="item" t-att-value="item[0]" t-att-selected="str(item[0]) == category" t-out="item[1]"/></select></div>
+          <div class="col-md-3"><label for="mode">Modalité</label><select id="mode" name="mode" class="form-select"><option value="">Toutes</option><option value="onsite" t-att-selected="mode == 'onsite'">Présentiel</option><option value="remote" t-att-selected="mode == 'remote'">Distanciel</option><option value="blended" t-att-selected="mode == 'blended'">Mixte</option><option value="autonomous" t-att-selected="mode == 'autonomous'">Autonome</option></select></div>
+          <div class="col-md-2 align-self-end"><button class="btn btn-primary">Rechercher</button></div>
+        </form>
+        <p t-if="not courses">Aucune formation publiée.</p>
+        <div class="row g-3">
+          <article t-foreach="courses" t-as="course" class="col-md-6">
+            <div class="card h-100"><div class="card-body">
+              <h2 class="h4"><a t-att-href="'/formations/catalogue/%s' % course['id']" t-out="course['name']"/></h2>
+              <p t-if="course['category']" t-out="course['category']"/>
+              <p style="white-space:pre-wrap" t-out="course['presentation']"/>
+              <ul><li t-foreach="course['offers']" t-as="offer"><a t-att-href="offer['url']"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></a></li></ul>
+            </div></div>
+          </article>
+        </div>
+      </div>
+    </t>
+  </template>
+  <template id="public_course" name="General training presentation">
+    <t t-call="portal.frontend_layout">
+      <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
+        <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
+        <p style="white-space:pre-wrap" t-out="course['presentation']"/>
+        <section t-if="course['objectives']"><h2>Objectifs généraux</h2><p style="white-space:pre-wrap" t-out="course['objectives']"/></section>
+        <section t-if="course['offers']"><h2>Offres disponibles</h2>
+          <article t-foreach="course['offers']" t-as="offer" class="card my-3"><div class="card-body">
+            <h3 class="h5"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></h3>
+            <p style="white-space:pre-wrap" t-out="offer['conditions']"/>
+            <a class="btn btn-outline-primary" t-att-href="offer['url']" t-out="offer['action']"/>
+          </div></article>
+        </section>
+      </div>
+    </t>
+  </template>
+</odoo>

@@ -38,7 +38,7 @@ mkdir -p "$work_dir/s031"
 git -C "$repo" archive 7fc2318d1bcfc13bce44be3181d2a1f45c8e33fc addons | tar -x -C "$work_dir/s031"
 TM_ADDONS_DIR="$work_dir/s031/addons" step baseline run_odoo -i training_management_sale --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/s031/addons" S04_PHASE=prepare step prepare run_odoo shell --no-http < "$repo/tests/probes/s04_history.py"
-step upgrade run_odoo -u training_management,training_management_sale --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale --stop-after-init
 S04_PHASE=verify step history run_odoo shell --no-http < "$repo/tests/probes/s04_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s04_concurrency.py"
 
@@ -51,5 +51,5 @@ fi
 git -C "$repo" archive "$review_ref" addons | tar -x -C "$work_dir/s04_review"
 TM_S04_DB=tm_s04_test_dispatch TM_ADDONS_DIR="$work_dir/s04_review/addons" step dispatch_baseline run_odoo -i training_management --without-demo --stop-after-init
 TM_S04_DB=tm_s04_test_dispatch TM_ADDONS_DIR="$work_dir/s04_review/addons" S04_PHASE=prepare step dispatch_prepare run_odoo shell --no-http < "$repo/tests/probes/s04_dispatch_upgrade.py"
-TM_S04_DB=tm_s04_test_dispatch step dispatch_upgrade run_odoo -u training_management --stop-after-init
+TM_S04_DB=tm_s04_test_dispatch step dispatch_upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management --stop-after-init
 TM_S04_DB=tm_s04_test_dispatch S04_PHASE=verify step dispatch_history run_odoo shell --no-http < "$repo/tests/probes/s04_dispatch_upgrade.py"

@@ -51,7 +51,7 @@ def run(results):
         checked(
             command(
                 "-u",
-                "training_mock_exam,training_management,training_management_sale,training_management_survey",
+                "training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey",
                 "--stop-after-init",
             ),
             results / "update.log",

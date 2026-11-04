@@ -24,7 +24,12 @@ def run(results):
         with (ROOT / "tests/probes/j2_obligations.py").open() as probe:
             checked(command("shell", "--no-http"), results / "prepare.log", stdin=probe)
         checked(
-            command("-u", "training_mock_exam,training_management_survey", "--stop-after-init"), results / "update.log"
+            command(
+                "-u",
+                "training_catalog,training_interactive,training_mock_exam,training_management_survey",
+                "--stop-after-init",
+            ),
+            results / "update.log",
         )
         with (ROOT / "tests/probes/j2_obligations.py").open() as probe:
             text = checked(command("shell", "--no-http"), results / "preserved.log", stdin=probe)

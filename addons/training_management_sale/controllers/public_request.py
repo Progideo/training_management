@@ -86,6 +86,12 @@ class TrainingCommercialCatalogue(TrainingPublicCatalogue):
         return response
 
     @http.route()
+    def course(self, course_id, **kwargs):
+        response = super().course(course_id, **kwargs)
+        response.qcontext["kind"] = kwargs.get("kind") if kwargs.get("kind") in ("group", "individual") else ""
+        return response
+
+    @http.route()
     def programme(self, program_id, **post):
         response = super().programme(program_id, **post)
         response.qcontext["kind"] = post.get("kind") if post.get("kind") in ("group", "individual") else ""

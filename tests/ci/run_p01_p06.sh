@@ -39,8 +39,8 @@ step() {
 git -C "$repo" archive 1db3b95bd789d7b7dacf8e42e7e3053aa5e8e1dd addons | tar -x -C "$work_dir"
 TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i website,website_slides,training_management_sale,training_management_survey --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" P01P06_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/p01p06_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P01P06_PHASE=verify step history_preserved run_odoo shell --no-http < "$repo/tests/probes/p01p06_history.py"
-step second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P01P06_PHASE=verify step repeated_history_preserved run_odoo shell --no-http < "$repo/tests/probes/p01p06_history.py"
 P01P06_PHASE=concurrency step concurrency run_odoo shell --no-http < "$repo/tests/probes/p01p06_history.py"

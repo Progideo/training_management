@@ -44,17 +44,17 @@ step() {
 git -C "$repo" archive 99c079a6fbc9158c39e6fcbcc907c6cebd45e48b addons | tar -x -C "$work_dir"
 TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i training_management_sale,training_management_survey --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" P09_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=verify step history_preserved run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
-step second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=verify step repeated_history_preserved run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=prepare_path step path_baseline run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
-step path_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step path_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=verify_path step path_preserved run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=concurrency step concurrency run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=portal step portal_readonly run_odoo shell --no-http < "$repo/tests/probes/p09_history.py"
 P09_PHASE=commerce_prepare step commerce_baseline run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
-step commerce_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step commerce_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=commerce_verify step commerce_preserved run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
 # The PDF engine fetches native report assets from a real disposable HTTP
 # process, rather than forcing network rendering inside a TransactionCase.
@@ -74,35 +74,35 @@ docker cp "$pdf_container:/var/lib/odoo/p093-quotation.pdf" "$results/p093-quota
 docker rm -f "$pdf_container" > "$results/pdf-server-stop.log"
 P09_PHASE=commerce_concurrency step commerce_concurrency run_odoo shell --no-http < "$repo/tests/probes/p093_commerce.py"
 P09_PHASE=orientation_prepare step orientation_baseline run_odoo shell --no-http < "$repo/tests/probes/p10_orientation.py"
-step orientation_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step orientation_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=orientation_verify step orientation_preserved run_odoo shell --no-http < "$repo/tests/probes/p10_orientation.py"
 P09_PHASE=practice_prepare step practice_baseline run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
-step practice_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step practice_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=practice_verify step practice_preserved run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
-step practice_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step practice_second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=practice_verify step practice_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
 P09_PHASE=practice_concurrency step practice_concurrency run_odoo shell --no-http < "$repo/tests/probes/p11_practice.py"
 P09_PHASE=project_prepare step project_baseline run_odoo shell --no-http < "$repo/tests/probes/p12_project.py"
-step project_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step project_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=project_verify step project_preserved run_odoo shell --no-http < "$repo/tests/probes/p12_project.py"
-step project_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step project_second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=project_verify step project_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p12_project.py"
 P09_PHASE=project_concurrency step project_concurrency run_odoo shell --no-http < "$repo/tests/probes/p12_project.py"
 P09_PHASE=tutoring_prepare step tutoring_baseline run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
-step tutoring_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step tutoring_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=tutoring_verify step tutoring_preserved run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
-step tutoring_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step tutoring_second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=tutoring_verify step tutoring_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
 P09_PHASE=tutoring_concurrency step tutoring_concurrency run_odoo shell --no-http < "$repo/tests/probes/p13_tutoring.py"
 P09_PHASE=publication_prepare step publication_baseline run_odoo shell --no-http < "$repo/tests/probes/p14_publication.py"
-step publication_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step publication_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=publication_verify step publication_preserved run_odoo shell --no-http < "$repo/tests/probes/p14_publication.py"
-step publication_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step publication_second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=publication_verify step publication_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p14_publication.py"
 P09_PHASE=publication_concurrency step publication_concurrency run_odoo shell --no-http < "$repo/tests/probes/p14_publication.py"
 P09_PHASE=sessions_prepare step sessions_baseline run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
-step sessions_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step sessions_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=sessions_verify step sessions_preserved run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
-step sessions_second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step sessions_second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 P09_PHASE=sessions_verify step sessions_repeated_preserved run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
 P09_PHASE=sessions_concurrency step sessions_concurrency run_odoo shell --no-http < "$repo/tests/probes/p16_sessions.py"
