@@ -2,9 +2,11 @@
 
 from datetime import timedelta
 import math
+from psycopg2.errors import UniqueViolation
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, ConcurrencyError, LockError, ValidationError
 from odoo.fields import Domain
+from odoo.tools import SQL
 from odoo.tools.misc import format_datetime
 
 
@@ -42,7 +44,12 @@ class ExamService(models.AbstractModel):
         ):
             raise ValidationError(self.env._("No published mock exam is assigned."))
         family = exam.training_origin_id or exam
-        family.lock_for_update()
+        # Editorial changes stay exclusive; learners of different contexts may
+        # start in parallel. The scoped unique index serializes each learner.
+        if not self.env.execute_query(
+            SQL("SELECT id FROM survey_survey WHERE id = %s FOR SHARE SKIP LOCKED", family.id)
+        ):
+            raise LockError(self.env._("Cannot grab a lock on records"))
         scope = Domain("mock_context_key", "=", context_key)
         if legacy_domain is not None:
             scope |= Domain(legacy_domain)
@@ -62,20 +69,28 @@ class ExamService(models.AbstractModel):
                 return active
             active.flush_recordset(["state"])
         now = fields.Datetime.now()
-        return attempts._training_create(
-            {
-                **values,
-                "survey_id": exam.id,
-                "partner_id": user.partner_id.id,
-                "mock_context_key": context_key,
-                "mock_company_id": exam.mock_company_id.id,
-                "training_family_id": family.id,
-                "start_datetime": now,
-                "state": "in_progress",
-                "deadline": now + timedelta(minutes=exam.time_limit),
-                "predefined_question_ids": [(6, 0, exam.question_ids.ids)],
-            }
-        )
+        try:
+            with self.env.cr.savepoint():
+                return attempts._training_create(
+                    {
+                        **values,
+                        "survey_id": exam.id,
+                        "partner_id": user.partner_id.id,
+                        "mock_context_key": context_key,
+                        "mock_company_id": exam.mock_company_id.id,
+                        "training_family_id": family.id,
+                        "start_datetime": now,
+                        "state": "in_progress",
+                        "deadline": now + timedelta(minutes=exam.time_limit),
+                        "predefined_question_ids": [(6, 0, exam.question_ids.ids)],
+                    }
+                )
+        except UniqueViolation as error:
+            if error.diag.constraint_name != "survey_user_input_mock_context_active":
+                raise
+            # A different request committed after this repeatable-read snapshot.
+            # The native retry layer opens a fresh transaction and resumes it.
+            raise ConcurrencyError("Concurrent launch in the same exam context") from error
 
     @api.private
     def _save(self, attempt_id, question_id, choices, marked):

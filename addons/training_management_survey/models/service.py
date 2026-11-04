@@ -28,8 +28,7 @@ class ExamService(models.AbstractModel):
         if enrollment._effective_state() not in ("active", "expired"):
             raise AccessError(self.env._("This private exam is unavailable."))
         if lock:
-            enrollment.delivery_id._serialize()
-            enrollment.invalidate_recordset()
+            self.env["training.learning.service"]._lock_enrollment(enrollment)
             return self._enrollment(enrollment_id, history=history, finish=finish)
         return enrollment
 

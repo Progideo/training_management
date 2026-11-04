@@ -99,6 +99,24 @@ class CertificateVerification(models.Model):
     def action_replace(self, replacement_id=None, reason=None):
         return self._change("replaced", reason=reason, replacement_id=replacement_id)
 
+    def action_reissue(self, reason=None):
+        record = self._authorize()
+        if reason is None:
+            return record._change("reissued")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValidationError(self.env._("Enter a reason for this action."))
+        record.dossier_id._serialize()
+        if record.state != "revoked":
+            raise ValidationError(self.env._("Only a revoked certificate can be reissued."))
+        if self.sudo().search_count(
+            [("dossier_id", "=", record.dossier_id.id), ("kind", "=", record.kind), ("state", "=", "valid")], limit=1
+        ):
+            raise ValidationError(self.env._("A valid certificate of this type already exists for this dossier."))
+        # The revoked PDF and its public status stay unchanged; a new document is issued.
+        return record.dossier_id.enrollment_id.with_env(record.env)._issue_certificate(
+            record.kind, reissue=(record.reference, reason.strip())
+        )
+
     @api.private
     def _change(self, state, reason=None, replacement_id=None):
         record = self._authorize()

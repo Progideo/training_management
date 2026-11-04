@@ -88,10 +88,33 @@ class TestInteractiveLibrary(LibraryCase):
     def test_no_business_application_dependency_or_permission(self):
         module = self.env["ir.module.module"].search([("name", "=", "training_interactive")])
         self.assertEqual(module.dependencies_id.mapped("name"), ["training_catalog"])
-        for model in ("training.enrollment", "slide.channel", "survey.survey"):
-            if model in self.env:
-                with self.assertRaises(AccessError):
-                    self.env[model].with_user(self.author).search([])
+        if "training.enrollment" in self.env:
+            with self.assertRaises(AccessError):
+                self.env["training.enrollment"].with_user(self.author).search([])
+        # Native Community may permit discovery of ordinary public courses or
+        # surveys. The library role must never reveal managed private records.
+        for model, group, title in (
+            ("slide.channel", "training_elearning.group_elearning_author", "name"),
+            ("survey.survey", "training_mock_exam.group_mock_exam_author", "title"),
+        ):
+            role = self.env.ref(group, raise_if_not_found=False)
+            if model not in self.env or not role:
+                continue
+            self.assertFalse(self.author.has_group(group))
+            identity = self.env["training.course"].create({"name": "Fictional private library boundary"})
+            creator = new_test_user(self.env, login="fictional_library_scope_" + title, groups=group)
+            private = (
+                self.env[model]
+                .with_user(creator)
+                .create({title: "PRIVATE FICTIONAL BUSINESS RECORD", "training_course_id": identity.id})
+            )
+            with self.assertRaises(AccessError):
+                private.with_user(self.author).read([title])
+            try:
+                found = self.env[model].with_user(self.author).search([("id", "=", private.id)])
+            except AccessError:
+                found = self.env[model].browse()
+            self.assertFalse(found)
         self.assertFalse(self.author.has_group("website.group_website_designer"))
         self.assertFalse(self.author.has_group("base.group_system"))
 

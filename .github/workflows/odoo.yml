@@ -80,6 +80,16 @@ jobs:
         run: python3 tests/ci/run_attendance_policy.py
         env:
           TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_attendance
+      - name: Vérifier les réponses d’examen de participants simultanés
+        run: python3 tests/ci/run_exam_parallel.py
+        env:
+          TM_CI_ID: ${{ github.run_id }}_${{ github.run_attempt }}_exam_parallel
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exam-parallel-results
+          path: test-results/exam-parallel/
+          if-no-files-found: error
       - name: Vérifier les accès et réservations C06
         run: python3 tests/ci/run_pedagogical_policy.py
         env:

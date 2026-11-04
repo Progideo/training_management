@@ -2,7 +2,7 @@
 {
     "name": "Training Management - Sales",
     "summary": "Link training programmes to native Odoo sales and accounting",
-    "version": "20.0.2.5.1",
+    "version": "20.0.2.5.2",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",

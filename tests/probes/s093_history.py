@@ -24,6 +24,7 @@ def columns():
     env.cr.execute("""SELECT table_name, array_agg(column_name::text ORDER BY ordinal_position)
         FROM information_schema.columns WHERE table_schema='public'
         AND (table_name LIKE 'training_%' OR table_name IN ('survey_user_input', 'survey_user_input_line'))
+        AND column_name NOT IN ('attendance_before', 'attendance_after')
         GROUP BY table_name ORDER BY table_name""")
     return dict(env.cr.fetchall())
 
