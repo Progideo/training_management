@@ -2,7 +2,7 @@
 
 Suite du cadrage du 3 novembre et du raccordement autonome. Les adaptateurs TM et
 cours natifs consomment désormais un même validateur de rapports formatifs : JSON
-borné à 128 Kio, nombres finis, score positif borné par le maximum, booléen de
+borné à 128 Kio, nombres finis, score non négatif borné par le maximum, booléen de
 complétion explicite et résultat entier sur un pour H5P TrueFalse 1.8. La validation
 ne transforme pas une déclaration du navigateur en évaluation certifiée.
 

@@ -118,7 +118,17 @@ class TestInteractiveLibrary(LibraryCase):
         self.assertTrue(version.published_at)
 
     def test_import_guards_and_atomic_rejection(self):
-        for name in ("../escape.js", "/absolute", "a/../b", "a\\b", "a//b", "a%2fb", "nested.zip", "private.mp4", "private.webm"):
+        for name in (
+            "../escape.js",
+            "/absolute",
+            "a/../b",
+            "a\\b",
+            "a//b",
+            "a%2fb",
+            "nested.zip",
+            "private.mp4",
+            "private.webm",
+        ):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 parse_package(package({name: b"bad"}), "scorm12")
         for extra in (
