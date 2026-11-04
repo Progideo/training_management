@@ -22,6 +22,17 @@ class Attempt(models.Model):
         readonly=True,
         copy=False,
     )
+    training_adjustment_ids = fields.One2many("training.exam.revision", "attempt_id", readonly=True)
+    mock_revision_serial = fields.Integer(readonly=True, copy=False, default=0)
+
+    @api.private
+    def _mock_revision_scope(self, *, lock=False):
+        raise AccessError(self.env._("This exam context does not authorize result revisions."))
+
+    @api.private
+    def _mock_revision_project(self):
+        return True
+
     _mock_context_active = models.UniqueIndex(
         "(partner_id, training_family_id, mock_context_key) WHERE mock_context_key IS NOT NULL AND state != 'done'",
         "Resume the active attempt in this context before starting another one.",

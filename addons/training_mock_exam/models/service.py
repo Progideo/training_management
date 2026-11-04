@@ -5,6 +5,7 @@ import math
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Domain
+from odoo.tools.misc import format_datetime
 
 
 class ExamService(models.AbstractModel):
@@ -156,12 +157,18 @@ class ExamService(models.AbstractModel):
             "percentage": percentage,
             "success": percentage is not None and percentage >= attempt.survey_id.scoring_success_min,
             "original_percentage": attempt.scoring_percentage,
-            "revisions": [{"reason": r.reason, "date": r.create_date} for r in self._result_adjustments(attempt)],
+            "revisions": [
+                {
+                    "reason": r.reason,
+                    "date": format_datetime(self.env, r.revised_at or r.create_date, tz=self.env.user.tz or "UTC"),
+                }
+                for r in self._result_adjustments(attempt)
+            ],
         }
 
     @api.private
     def _result_adjustments(self, attempt):
-        return []
+        return self.env["training.exam.revision"].sudo().search([("attempt_id", "=", attempt.id)], order="id desc")
 
     @api.private
     def _result_material(self, question):

@@ -254,12 +254,8 @@ class Attempt(models.Model):
         self._invalidate_exam_progress()
         return result
 
-
-class Revision(models.Model):
-    _inherit = "training.exam.revision"
-
     @api.private
-    def _record(self, attempt, points, reason):
-        revision = super()._record(attempt, points, reason)
-        attempt._invalidate_exam_progress()
-        return revision
+    def _mock_revision_project(self):
+        result = super()._mock_revision_project()
+        self._invalidate_exam_progress()
+        return result

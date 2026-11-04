@@ -41,6 +41,19 @@ class TestSharedRuntime(MockCase):
         with patch.object(type(self.engine), "_attempt", authorized):
             yield
 
+    def test_result_revisions_require_an_authorized_business_provider(self):
+        attempt = self.start()
+        attempt._training_finish()
+        for user in (self.author, self.learner):
+            with self.assertRaises(AccessError):
+                self.env["training.exam.revision"].with_user(user)._record(
+                    attempt, {str(self.question.id): 2}, "No business revision grant"
+                )
+        self.assertFalse(attempt.training_adjustment_ids)
+        self.assertEqual(attempt.mock_revision_serial, 0)
+        with self.assertRaises(AccessError):
+            attempt.with_user(self.author).write({"mock_revision_serial": 10})
+
     def test_context_resume_two_exams_and_unlimited_retake_after_success(self):
         first = self.start()
         self.assertEqual(self.start(), first)

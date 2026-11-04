@@ -2,7 +2,7 @@
 {
     "name": "Training Mock Exam Library",
     "summary": "Shared native Survey definitions and immutable mock exam versions",
-    "version": "20.0.1.3.1",
+    "version": "20.0.1.4.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
@@ -14,6 +14,7 @@
         "views/exam_views.xml",
         "data/cron.xml",
         "views/runner_templates.xml",
+        "views/result_revision.xml",
     ],
     "assets": {
         "web.assets_frontend": ["training_mock_exam/static/src/exam.js", "training_mock_exam/static/src/enriched.js"]

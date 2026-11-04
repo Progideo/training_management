@@ -1,7 +1,5 @@
 """Native answers and scoring with private, immutable training evidence."""
 
-import math
-
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
@@ -13,7 +11,6 @@ class Attempt(models.Model):
         "training.enrollment", ondelete="restrict", readonly=True, index=True, copy=False
     )
     training_activity_id = fields.Many2one("training.learning.activity", ondelete="restrict", readonly=True, copy=False)
-    training_adjustment_ids = fields.One2many("training.exam.revision", "attempt_id", readonly=True)
 
     _training_one_active = models.UniqueIndex(
         "(partner_id, training_family_id, training_enrollment_id) WHERE training_enrollment_id IS NOT NULL AND state != 'done'",
@@ -69,50 +66,22 @@ class Attempt(models.Model):
         self._cron_mock_expire()
         self._mock_expire_domain([("training_enrollment_id", "!=", False), ("mock_context_key", "=", False)])
 
-
-class Revision(models.Model):
-    _name = "training.exam.revision"
-    _description = "Motivated Exam Result Revision"
-    _order = "id desc"
-
-    attempt_id = fields.Many2one("survey.user_input", required=True, ondelete="restrict", readonly=True)
-    company_id = fields.Many2one(related="attempt_id.training_enrollment_id.company_id", store=True)
-    reason = fields.Text(required=True, readonly=True)
-    points_by_question = fields.Json(required=True, readonly=True)
-    author_id = fields.Many2one("res.users", required=True, readonly=True, ondelete="restrict")
-    previous_id = fields.Many2one("training.exam.revision", readonly=True, ondelete="restrict")
-
-    @api.model_create_multi
-    def create(self, vals_list):  # pylint: disable=method-required-super  # evidence factory only
-        raise AccessError(self.env._("Use the motivated result revision action."))
-
-    def write(self, vals):  # pylint: disable=method-required-super  # immutable evidence
-        raise AccessError(self.env._("Result revisions are immutable."))
-
-    @api.ondelete(at_uninstall=False)
-    def _keep_revisions(self):
-        raise AccessError(self.env._("Result revisions are immutable."))
-
     @api.private
-    def _record(self, attempt, points, reason):
+    def _mock_revision_scope(self, *, lock=False):
+        self.ensure_one()
+        attempt = self.sudo()
         if not attempt.training_enrollment_id:
-            raise ValidationError(self.env._("Choose a completed mock exam attempt."))
-        attempt.training_enrollment_id.delivery_id._require_coordinator()
-        attempt.training_enrollment_id.delivery_id._serialize()
-        attempt.lock_for_update()
-        attempt.invalidate_recordset()
-        expected = {str(q.id): q.answer_score for q in attempt.predefined_question_ids}
-        if attempt.state != "done" or not (reason or "").strip() or set(points) != set(expected):
-            raise ValidationError(self.env._("Provide a reason and points for every completed question."))
-        if any(not math.isfinite(v) or not 0 <= v <= expected[k] for k, v in points.items()):
-            raise ValidationError(self.env._("Revised points must be between zero and the question maximum."))
-        # pylint: disable=super-method-mismatch  # checked, append-only evidence factory
-        return super(Revision, self.sudo()).create(
-            {
-                "attempt_id": attempt.id,
-                "points_by_question": points,
-                "reason": reason.strip(),
-                "author_id": self.env.user.id,
-                "previous_id": attempt.training_adjustment_ids.sorted("id", reverse=True)[:1].id,
-            }
-        )
+            return super()._mock_revision_scope(lock=lock)
+        delivery = attempt.training_enrollment_id.delivery_id.with_env(self.env(su=False))
+        delivery._require_coordinator()
+        if lock:
+            delivery._serialize()
+        if (
+            attempt.mock_context_key
+            and attempt.mock_context_key != "training.enrollment:%s" % attempt.training_enrollment_id.id
+        ):
+            raise AccessError(self.env._("This private exam is unavailable."))
+        return {
+            "company": delivery.company_id,
+            "reader_group": self.env.ref("training_management.group_training_coordinator"),
+        }

@@ -4,7 +4,7 @@ access_exam_question,Training question editor,survey.question,training_managemen
 access_exam_choice,Training choice editor,survey.question.answer,training_management.group_training_coordinator,crud,"[('question_id.survey_id.training_program_id', '!=', False)]"
 access_exam_attempt,Training exam history,survey.user_input,training_management.group_training_coordinator,r,"[('survey_id.training_program_id', '!=', False)]"
 access_exam_line,Training exam answers,survey.user_input.line,training_management.group_training_coordinator,r,"[('survey_id.training_program_id', '!=', False)]"
-access_exam_revision,Training result revisions,training.exam.revision,training_management.group_training_coordinator,r,
+access_exam_revision,Training result revisions,training.exam.revision,training_management.group_training_coordinator,r,"[('attempt_id.training_enrollment_id', '!=', False)]"
 rule_exam_revision_company,Result revisions company,training.exam.revision,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_exam_private,Private training surveys,survey.survey,,crud,"['|', ('training_program_id', '=', False), ('training_company_id', 'in', company_ids)] if user.has_group('training_management.group_training_coordinator') else [('training_program_id', '=', False)]"
 rule_exam_question_private,Private training questions,survey.question,,crud,"['|', '|', ('survey_id', '=', False), ('survey_id.training_program_id', '=', False), ('survey_id.training_company_id', 'in', company_ids)] if user.has_group('training_management.group_training_coordinator') else ['|', ('survey_id', '=', False), ('survey_id.training_program_id', '=', False)]"
