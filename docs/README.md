@@ -22,6 +22,9 @@ La [validation formative commune](j14-shared-formative-validation.md) accompagne
 Le [découpage final des addons](j15-module-layout.md) replace l’adaptateur interactif
 dans TM et le menu Website dans le catalogue commun.
 
+Le [catalogue public général](j16-general-public-catalogue.md) applique la restriction
+P03/P04 aux offres communes, sans retirer les fonctions privées.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,
@@ -192,3 +195,9 @@ MAD/EUR et virement manuel dans le module générique. COM02/COM03 et les consig
 du dépôt sont amendées ; les documents S02 gardent leur provenance historique.
 Les fichiers synchronisés `sources/` et le prompt maître importé restent inchangés ;
 leurs prescriptions commerciales historiques se lisent avec cette décision plus récente.
+
+Empreinte SHA-256 après application ciblée de D28 aux paragraphes P03/P04 (J16) :
+
+```text
+b7e281b0b8555ca3f35fdf9194ecf4eb6dce83b73dbe3ab8e9f6dce7f6902a7b  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+```

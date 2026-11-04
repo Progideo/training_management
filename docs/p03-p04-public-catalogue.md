@@ -1,3 +1,7 @@
+> Révision du 3 novembre : les dispositions publiques ci-dessous sont remplacées
+> par le [catalogue général J16](j16-general-public-catalogue.md). Programme détaillé
+> et démonstrations ne sont plus publics ; les fonctions privées sont conservées.
+
 # P03–P04 — catalogue public et démonstration
 
 La [matrice C02/C04](p01-p06-coverage.md) qualifie l’existant et les écarts.

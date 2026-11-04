@@ -24,6 +24,7 @@
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
                     <group string="General Presentation">
+                        <field name="public_catalogue"/>
                         <field name="presentation"/>
                         <field name="general_objectives"/>
                     </group>

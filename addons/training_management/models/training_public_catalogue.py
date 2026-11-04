@@ -34,6 +34,25 @@ class TrainingPublicProgramme(models.Model):
                 raise ValidationError(self.env._("The public extract must be a PDF of at most 10 MB."))
 
     @api.private
+    def _public_general_sections(self):
+        self.ensure_one()
+        return [
+            (label, self[name])
+            for name, label in [
+                ("objectives", self.env._("Objectives")),
+                ("target_audience", self.env._("Target audience")),
+                ("prerequisites", self.env._("Prerequisites")),
+                ("access_conditions", self.env._("Access conditions")),
+                ("accessibility_information", self.env._("Accessibility")),
+                ("expected_outcomes", self.env._("Expected outcomes")),
+                ("material_access_duration", self.env._("Material access duration")),
+                ("included_services", self.env._("Included training services")),
+                ("official_exam_details", self.env._("Official exam and inclusion")),
+            ]
+            if self[name]
+        ]
+
+    @api.private
     def _catalogue_sections(self):
         self.ensure_one()
         labels = [
@@ -117,3 +136,39 @@ class TrainingPreviewQuestion(models.Model):
         self.check_access("unlink")
         self._check_editable_programs(self.program_id)
         return super().unlink()
+
+
+class TrainingCoursePublication(models.Model):
+    _inherit = "training.course"
+
+    @api.private
+    def _catalogue_offers(self, company):
+        offers = super()._catalogue_offers(company)
+        # Only public, published programmes for this website operator. No
+        # detailed programme, PDF, preview or question enters the projection.
+        programs = (
+            self.env["training.program.version"]
+            .sudo()
+            .search(
+                [
+                    ("company_id", "=", company.id),
+                    ("state", "=", "published"),
+                    ("public_catalogue", "=", True),
+                    ("course_id.active", "=", True),
+                ]
+            )
+        )
+        return offers + [
+            {
+                "course_id": program.course_id.id,
+                "title": program.title,
+                "mode": program.delivery_mode,
+                "kind": self.env._("Avec formateur"),
+                "conditions": self.env._(
+                    "Durée indicative : %(hours)s h. Prix sur devis.", hours=program.duration_hours
+                ),
+                "url": "/formations/%s" % program.id,
+                "action": self.env._("Consulter l’offre"),
+            }
+            for program in programs
+        ]
