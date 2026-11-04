@@ -4,6 +4,7 @@ import io
 import json
 import stat
 import zipfile
+from unittest.mock import patch
 
 from psycopg2 import IntegrityError
 
@@ -117,6 +118,22 @@ class TestInteractiveLibrary(LibraryCase):
             self.assertFalse(found)
         self.assertFalse(self.author.has_group("website.group_website_designer"))
         self.assertFalse(self.author.has_group("base.group_system"))
+
+    def test_consumer_failure_rolls_back_the_whole_withdrawal_decision(self):
+        version = self.version()
+        version.action_publish()
+        with patch.object(
+            type(version), "_withdraw_consumers", side_effect=ValidationError("Fictional consumer failure")
+        ):
+            try:
+                version.with_user(self.manager)._withdraw("Fictional withdrawal decision")
+            except ValidationError:  # pylint: disable=except-pass
+                pass  # The production savepoint, not a test savepoint, must undo the decision.
+            else:
+                self.fail("The interrupted withdrawal was accepted")
+        self.assertEqual(version.state, "published")
+        self.assertFalse(version.withdrawn_at)
+        self.assertFalse(version.withdrawal_reason)
 
     def test_native_author_form_and_controlled_import(self):
         with Form(
