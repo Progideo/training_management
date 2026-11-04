@@ -85,6 +85,31 @@ class TestReviewContent(ContentCase):
 
 @tagged("post_install", "-at_install")
 class TestReviewRuntime(RuntimeCase):
+    def test_shared_withdrawal_notifies_only_active_tm_context_and_keeps_evidence(self):
+        enrollment, usage = self.setup_runtime()
+        attempt = self.start(enrollment, usage)
+        attempt._save("before-withdrawal", 1, {"result": {"score": 80, "maximum": 100, "completed": True}})
+        evidence = attempt.sudo().event_ids.ids
+        version = usage.version_id.with_user(self.coordinator)
+        version._withdraw("Fictional private retirement reason")
+        notice = (
+            self.env["training.learning.notice"]
+            .sudo()
+            .search([("interactive_version_id", "=", version.id), ("enrollment_id", "=", enrollment.id)])
+        )
+        self.assertEqual(len(notice), 1)
+        self.assertTrue(notice.mail_id)
+        self.assertTrue(notice._authorized())
+        self.assertEqual(notice.event_kind, "resource_withdrawal")
+        self.assertTrue(notice.mail_id._prepare_outgoing_list())
+        self.assertNotIn("Fictional private retirement reason", str(notice.mail_id.body_html))
+        self.assertEqual(attempt.sudo().event_ids.ids, evidence)
+        self.assertTrue(attempt.sudo().completed)
+        self.portal.with_env(self.env).active = False
+        self.assertFalse(notice._authorized())
+        with self.assertRaises(ValidationError):
+            notice.mail_id._prepare_outgoing_list()
+
     def test_extreme_numeric_result_is_validation_error(self):
         enrollment, usage = self.setup_runtime()
         attempt = self.start(enrollment, usage)

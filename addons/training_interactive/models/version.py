@@ -109,14 +109,22 @@ class Version(models.Model):
         self.invalidate_recordset()
         if any(version.state == "withdrawn" for version in self):
             raise ValidationError(self.env._("The original withdrawal decision must be preserved."))
-        return super().write(  # pylint: disable=super-method-mismatch  # checked lifecycle transition
-            {
-                "state": "withdrawn",
-                "withdrawal_reason": reason.strip(),
-                "withdrawn_at": fields.Datetime.now(),
-                "withdrawn_by_id": self.env.uid,
-            }
-        )
+        with self.env.cr.savepoint():
+            result = super().write(  # pylint: disable=super-method-mismatch
+                {
+                    "state": "withdrawn",
+                    "withdrawal_reason": reason.strip(),
+                    "withdrawn_at": fields.Datetime.now(),
+                    "withdrawn_by_id": self.env.uid,
+                }
+            )
+            self._withdraw_consumers(reason.strip())
+            return result
+
+    @api.private
+    def _withdraw_consumers(self, reason):
+        """Consuming applications notify their own contexts without library dependencies."""
+        return True
 
     def action_preview(self):
         self.ensure_one()
