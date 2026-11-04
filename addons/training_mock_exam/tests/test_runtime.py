@@ -67,6 +67,45 @@ class TestSharedRuntime(MockCase):
         self.assertEqual(other_context.state, "in_progress")
         self.assertEqual(first.scoring_percentage, 100)
 
+    def test_adapter_evidence_filter_excludes_without_widening_context_or_erasing_answers(self):
+        passed = self.start()
+        with self.grant():
+            self.engine._save(
+                passed.id, self.question.id, self.question.suggested_answer_ids.filtered("is_correct").ids, False
+            )
+            self.engine._submit(passed.id)
+        failed = self.start()
+        with self.grant():
+            self.engine._submit(failed.id)
+        partner = self.learner.partner_id.id
+        status = self.engine._obligation_status(self.exam_record, "test.grant:1", partner, "pass")
+        self.assertTrue(status["satisfied"])
+        excluded = self.engine._obligation_status(
+            self.exam_record, "test.grant:1", partner, "pass", attempt_domain=[("id", "!=", passed.id)]
+        )
+        self.assertFalse(excluded["satisfied"])
+        self.assertEqual(excluded["score"], 0)
+        other = self.start("test.grant:2")
+        with self.grant():
+            self.engine._save(
+                other.id, self.question.id, self.question.suggested_answer_ids.filtered("is_correct").ids, False
+            )
+            self.engine._submit(other.id)
+        outside = self.engine._obligation_status(
+            self.exam_record, "test.grant:1", partner, "pass", attempt_domain=[("id", "=", other.id)]
+        )
+        self.assertFalse(outside["complete"])
+        empty = self.engine._obligation_status(
+            self.exam_record,
+            "test.grant:1",
+            partner,
+            "complete",
+            attempt_domain=[("id", "not in", (passed | failed).ids)],
+        )
+        self.assertFalse(empty["satisfied"])
+        self.assertTrue(passed.user_input_line_ids)
+        self.assertTrue(self.engine._obligation_status(self.exam_record, "test.grant:1", partner, "pass")["satisfied"])
+
     def test_exact_deadline_closes_without_saving_late_answers_or_restarting(self):
         attempt = self.start()
         deadline = attempt.deadline
