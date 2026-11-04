@@ -26,7 +26,7 @@ def headers(mime, portal=None, content=None):
             (
                 "Content-Security-Policy",
                 "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-                "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; "
+                "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'none'; "
                 "connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; "
                 "frame-ancestors %s %s; sandbox allow-scripts allow-same-origin" % (portal, content),
             )

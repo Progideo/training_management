@@ -135,6 +135,10 @@ def parse_package(raw, kind):
                 continue
             if path.lower().endswith((".zip", ".h5p", ".jar", ".gz", ".7z")):
                 raise ValueError("Nested archives are not supported")
+            if path.lower().endswith(
+                (".mp4", ".m4v", ".webm", ".ogv", ".mov", ".avi", ".wmv", ".mpeg", ".mpg", ".m3u8")
+            ):
+                raise ValueError("Les vidéos privées ne sont pas prises en charge dans les paquets interactifs.")
             with archive.open(info) as stream:
                 data = stream.read(MAX_FILE + 1)
             if len(data) != info.file_size or len(data) > MAX_FILE:

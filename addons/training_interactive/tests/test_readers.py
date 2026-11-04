@@ -40,6 +40,7 @@ class TestSharedReaders(LibraryCase, HttpCase):
         launch = self.url_open(source)
         self.assertEqual(launch.status_code, 200)
         self.assertEqual(launch.headers["Cache-Control"], "no-store")
+        self.assertIn("media-src 'none'", launch.headers["Content-Security-Policy"])
         root = source.removesuffix("/launch")
         for suffix in ("/file/index.html", "/runner.js", "/vendor/scorm12.min.js"):
             response = self.url_open(root + suffix)
