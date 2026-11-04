@@ -67,6 +67,10 @@ def normalize_migration(text):
         "\nS093_PHASE=baseline step history_baseline run_odoo",
         '\nTM_ADDONS_DIR="$work_dir/addons" S093_PHASE=baseline step history_baseline run_odoo',
     )
+    # Current upgrades must also refresh the shared libraries used by current
+    # XML and models. This adds no install step and removes no original module,
+    # historical source, fixture, migration operation or preservation check.
+    text = text.replace(" -u training_", " -u training_catalog,training_interactive,training_mock_exam,training_")
     return (
         text.replace("real Odoo tests and concurrent reservations", "migration and concurrent reservations").rstrip()
         + "\n"

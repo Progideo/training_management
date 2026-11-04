@@ -43,9 +43,9 @@ TM_ADDONS_DIR="$work_dir/addons" S052_PHASE=prepare step learning_prepare run_od
 TM_ADDONS_DIR="$work_dir/addons" S07_PHASE=prepare step attendance_prepare run_odoo shell --no-http < "$repo/tests/probes/s07_history.py"
 TM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step closure_prepare run_odoo shell --no-http < "$repo/tests/probes/s08_history.py"
 TM_ADDONS_DIR="$work_dir/addons" CONTINUITY_PHASE=baseline step exact_prepare run_odoo shell --no-http < "$repo/tests/probes/closure_continuity_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 CONTINUITY_PHASE=verify_legacy step legacy_preserved run_odoo shell --no-http < "$repo/tests/probes/closure_continuity_history.py"
 CONTINUITY_PHASE=prepare step rectification_prepare run_odoo shell --no-http < "$repo/tests/probes/closure_continuity_history.py"
-step second_update run_odoo -u training_management,training_management_survey --stop-after-init
+step second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_survey --stop-after-init
 CONTINUITY_PHASE=verify step rectification_preserved run_odoo shell --no-http < "$repo/tests/probes/closure_continuity_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/closure_continuity_concurrency.py"

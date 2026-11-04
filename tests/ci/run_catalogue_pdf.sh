@@ -42,8 +42,8 @@ baseline_modules=training_management_sale
 if [[ "${TM_CATPDF_WITH_WEBSITE:-false}" == true ]]; then baseline_modules=website,training_management_sale; fi
 TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i "$baseline_modules" --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" CATALOGUE_PHASE=prepare step prepare run_odoo shell --no-http < "$repo/tests/probes/catalogue_pdf_history.py"
-step upgrade run_odoo -u training_management,training_management_sale --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale --stop-after-init
 CATALOGUE_PHASE=verify step history run_odoo shell --no-http < "$repo/tests/probes/catalogue_pdf_history.py"
-step repeat_upgrade run_odoo -u training_management,training_management_sale --stop-after-init
+step repeat_upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale --stop-after-init
 CATALOGUE_PHASE=repeat step preserved_pdf run_odoo shell --no-http < "$repo/tests/probes/catalogue_pdf_history.py"
 CATALOGUE_PHASE=concurrency step concurrency run_odoo shell --no-http < "$repo/tests/probes/catalogue_pdf_history.py"

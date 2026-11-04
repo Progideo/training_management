@@ -39,7 +39,7 @@ step() {
 git -C "$repo" archive da0e3cfc8223e8582ae2df70fbee935f0d03c16c addons | tar -x -C "$work_dir"
 TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i website,website_slides,training_management_sale,training_management_survey --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" S10_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/s10_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 S10_PHASE=verify step history_preserved run_odoo shell --no-http < "$repo/tests/probes/s10_history.py"
-step second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 S10_PHASE=verify step repeated_history_preserved run_odoo shell --no-http < "$repo/tests/probes/s10_history.py"

@@ -39,9 +39,9 @@ step() {
 git -C "$repo" archive e93ce351d0d616ef3baa3b98adcdc68ad44730f0 addons | tar -x -C "$work_dir"
 TM_ADDONS_DIR="$work_dir/addons" step baseline run_odoo -i website,website_slides,training_management_sale,training_management_survey --without-demo --stop-after-init
 TM_ADDONS_DIR="$work_dir/addons" S094_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/s094_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 S094_PHASE=verify step history_preserved run_odoo shell --no-http < "$repo/tests/probes/s094_history.py"
 S094_PHASE=prepare step provider_prepare run_odoo shell --no-http < "$repo/tests/probes/s094_history.py"
-step second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 S094_PHASE=verify step provider_preserved run_odoo shell --no-http < "$repo/tests/probes/s094_history.py"
 S094_PHASE=concurrency step concurrency run_odoo shell --no-http < "$repo/tests/probes/s094_history.py"
