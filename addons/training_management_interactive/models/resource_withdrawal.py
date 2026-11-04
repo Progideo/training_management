@@ -50,9 +50,10 @@ class Notice(models.Model):
 
     @api.depends("entry_id", "interactive_version_id")
     def _compute_event_kind(self):
-        super()._compute_event_kind()
+        result = super()._compute_event_kind()
         for notice in self.filtered("interactive_version_id"):
             notice.event_kind = "resource_withdrawal"
+        return result
 
     @api.private
     def _authorized(self):
