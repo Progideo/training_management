@@ -172,13 +172,17 @@ class ExamService(models.AbstractModel):
         return []
 
     @api.private
-    def _obligation_status(self, exam, context_key, partner_id, obligation, *, legacy_domain=None):
+    def _obligation_status(self, exam, context_key, partner_id, obligation, *, legacy_domain=None, attempt_domain=None):
         """Scalar evidence only; the adapter resolves and authorizes its frozen grant."""
         if obligation not in ("optional", "complete", "pass"):
             raise ValidationError(self.env._("Choose a valid exam obligation."))
         scope = Domain("mock_context_key", "=", context_key)
         if legacy_domain is not None:
             scope |= Domain(legacy_domain)
+        # Context adapters may exclude interrupted evidence, but this conjunctive
+        # filter can never widen the authorized person/version/context scope.
+        if attempt_domain is not None:
+            scope &= Domain(attempt_domain)
         attempts = (
             self.env["survey.user_input"]
             .sudo()

@@ -45,6 +45,8 @@ modifie ni les réponses ni l’acquis d’une tentative terminée. QCU/QCM, app
 et mise en ordre utilisent le barème exact sans crédit partiel. La correction
 est disponible après fermeture, avec une nouvelle vérification de l’identité.
 
+Un adaptateur peut exclure des preuves de son agrégat par un filtre privé, par exemple une tentative interrompue par l’organisme. Ce filtre est une conjonction avec le contexte, la personne et la version autorisés : il ne peut pas élargir leur périmètre. Il ne supprime ni réponse ni résultat et ne change pas l’échéance. La qualification de l’interruption appartient à l’adaptateur.
+
 ## Raccordement TM et limites
 
 `training_management_survey` hérite du moteur. Il conserve les règles d’inscription,
@@ -59,9 +61,7 @@ et garde la fermeture des évaluations ; les appels répétés sont idempotents.
 Le contrôle de mise à jour utilise uniquement des données fictives de la génération
 J1 précédente. Il ne qualifie aucune migration métier historique ou Odoo 19.
 
-Les pages apprenant TM conservent leurs URLs et widgets. Les futures pages et
-autorisations de `training_elearning_survey`, les obligations et la progression
-autonomes restent à raccorder. La bibliothèque seule ne propose pas d’accès apprenant.
+Les pages apprenant TM conservent leurs URLs et widgets. Les [contextes autonomes](j3-autonomous-exam-rendering.md) raccordent les pages, obligations et autorisations de `training_elearning_survey`. La bibliothèque seule ne propose pas d’accès apprenant.
 
 ## Recette courte
 
