@@ -1,5 +1,6 @@
 from odoo import http
 from odoo.http import request
+from odoo.http.stream import Stream
 from odoo.addons.training_catalog.controllers.catalogue import TrainingCatalogue
 
 
@@ -65,3 +66,14 @@ class TrainingPublicCatalogue(TrainingCatalogue):
         # November 3 scope: detailed programmes and demonstrations stay private.
         # The original frozen PDF and authorized participant download are kept.
         raise request.not_found()
+
+    @staticmethod
+    def _pdf(raw, filename):
+        # Shared response builder for already-authorized private company files.
+        # No public programme route calls this helper.
+        response = Stream(type="data", data=raw, mimetype="application/pdf", download_name=filename).get_response(
+            as_attachment=True
+        )
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        return response

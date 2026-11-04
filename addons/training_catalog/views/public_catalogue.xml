@@ -1,7 +1,7 @@
 <odoo>
   <template id="public_catalogue" name="General training catalogue">
     <t t-call="portal.frontend_layout" additional_title.translate="Formations">
-      <main id="wrap" class="container py-4 o_training_public_page o_not_editable">
+      <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
         <h1>Formations</h1>
         <form action="/formations" method="get" class="row g-3 mb-4">
           <div class="col-md-4"><label for="search">Rechercher</label><input id="search" name="search" class="form-control" t-att-value="search"/></div>
@@ -20,12 +20,12 @@
             </div></div>
           </article>
         </div>
-      </main>
+      </div>
     </t>
   </template>
   <template id="public_course" name="General training presentation">
     <t t-call="portal.frontend_layout">
-      <main id="wrap" class="container py-4 o_training_public_page o_not_editable">
+      <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
         <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
         <p style="white-space:pre-wrap" t-out="course['presentation']"/>
         <section t-if="course['objectives']"><h2>Objectifs généraux</h2><p style="white-space:pre-wrap" t-out="course['objectives']"/></section>
@@ -36,7 +36,7 @@
             <a class="btn btn-outline-primary" t-att-href="offer['url']" t-out="offer['action']"/>
           </div></article>
         </section>
-      </main>
+      </div>
     </t>
   </template>
 </odoo>

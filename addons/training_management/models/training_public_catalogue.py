@@ -136,39 +136,3 @@ class TrainingPreviewQuestion(models.Model):
         self.check_access("unlink")
         self._check_editable_programs(self.program_id)
         return super().unlink()
-
-
-class TrainingCoursePublication(models.Model):
-    _inherit = "training.course"
-
-    @api.private
-    def _catalogue_offers(self, company):
-        offers = super()._catalogue_offers(company)
-        # Only public, published programmes for this website operator. No
-        # detailed programme, PDF, preview or question enters the projection.
-        programs = (
-            self.env["training.program.version"]
-            .sudo()
-            .search(
-                [
-                    ("company_id", "=", company.id),
-                    ("state", "=", "published"),
-                    ("public_catalogue", "=", True),
-                    ("course_id.active", "=", True),
-                ]
-            )
-        )
-        return offers + [
-            {
-                "course_id": program.course_id.id,
-                "title": program.title,
-                "mode": program.delivery_mode,
-                "kind": self.env._("Avec formateur"),
-                "conditions": self.env._(
-                    "Durée indicative : %(hours)s h. Prix sur devis.", hours=program.duration_hours
-                ),
-                "url": "/formations/%s" % program.id,
-                "action": self.env._("Consulter l’offre"),
-            }
-            for program in programs
-        ]
