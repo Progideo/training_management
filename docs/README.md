@@ -17,6 +17,8 @@ poursuivent cette extraction. La [passation et le chronométrage serveur](j1-sha
 précisent le moteur commun et son raccordement TM. Les [obligations par offre](j2-shared-exam-obligations.md)
 raccordent ensuite la bibliothèque aux inscriptions TM. Le [rendu commun et les contextes autonomes](j3-autonomous-exam-rendering.md) poursuivent cette séparation.
 
+La [validation formative commune](j14-shared-formative-validation.md) accompagne le raccordement du lecteur aux cours autonomes et précise la limite sans vidéo privée.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,

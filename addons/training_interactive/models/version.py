@@ -36,6 +36,11 @@ class Version(models.Model):
     file_ids = fields.One2many("training.elearning.file", "version_id", groups="base.group_system")
     _number_unique = models.Constraint("UNIQUE(resource_id,number)", "This version already exists.")
 
+    @api.depends("resource_id.name", "number")
+    def _compute_display_name(self):
+        for version in self:
+            version.display_name = "%s / v%s" % (version.resource_id.name, version.number)
+
     @api.model_create_multi
     def create(self, vals_list):  # pylint: disable=method-required-super  # controlled private import only
         raise AccessError(self.env._("Use the controlled package import."))
