@@ -36,7 +36,7 @@
         <h2>Available tutoring slots</h2><p t-if="not rows">No available tutoring slot.</p>
         <article t-foreach="rows" t-as="s" class="card p-3 mb-3">
                 <h3 t-out="s['name']"/>
-                <p><t t-out="s['start']"/> → <t t-out="s['end']"/> · <span>Hours:</span> <t t-out="s['duration']"/></p>
+                <p><t t-out="s['start']"/> → <t t-out="s['end']"/> · <span>Duration (minutes):</span> <t t-out="s['duration']"/></p>
                 <p><span t-if="s['kind'] == 'individual'">Individual</span><span t-else="">Collective</span> · <span>Capacity:</span> <t t-out="s['capacity']"/></p>
                 <p class="text-break" style="white-space: pre-wrap" t-out="s['terms']"/>
                 <p t-if="s['refund']"><span>Quota refunded when cancelled no later than:</span> <t t-out="s['deadline']"/></p>
