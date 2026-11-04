@@ -1,4 +1,6 @@
+import ast
 import io
+from lxml import etree
 from PIL import Image
 from psycopg2 import IntegrityError
 
@@ -65,6 +67,23 @@ class TestMockLibrary(MockCase):
             form.title = "Native shared definition form"
             form.training_course_id = self.course
         self.assertEqual(form.record.training_course_id, self.course)
+        # An orientation/feedback form can otherwise win the default Survey
+        # selection when the origin is opened through its many2one link.
+        self.env["ir.ui.view"].create(
+            {
+                "name": "Fictional unrelated survey editor",
+                "model": "survey.survey",
+                "priority": 0,
+                "arch": '<form><field name="title"/></form>',
+            }
+        )
+        native = model.get_view(view_id=self.env.ref("survey.survey_survey_view_form").id, view_type="form")
+        origins = etree.fromstring(native["arch"]).xpath("//field[@name='training_origin_id']")
+        self.assertTrue(origins)
+        for origin in origins:
+            context = ast.literal_eval(origin.get("context", "{}"))
+            related = model.with_context(**context).get_view(view_type="form")
+            self.assertTrue(etree.fromstring(related["arch"]).xpath("//button[@name='action_mock_publish']"))
         self.env["survey.survey"].with_user(self.author).with_context(default_training_course_id=self.course.id).create(
             {
                 "title": "Shared context with native questions",

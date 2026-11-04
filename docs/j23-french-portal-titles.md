@@ -1,6 +1,7 @@
-# Libellés français de recette
+# Libellés français et navigation des questionnaires
 
-Référence : [#138](https://github.com/Progideo/training_management/issues/138).
+Références : [#138](https://github.com/Progideo/training_management/issues/138),
+[#140](https://github.com/Progideo/training_management/issues/140).
 
 Les pages de présence, signature personnelle, fiche catalogue et passation commune
 renseignent le titre traduisible du layout natif. La confirmation dynamique
@@ -14,3 +15,12 @@ Recette : ouvrir ces pages en français, choisir « Absent » puis revenir à
 et la validation séparée de chaque séance par son formateur. Le test des accès
 natifs aux examens vérifie le refus final après l’éventuel renvoi de langue
 standard Website.
+
+Les liens vers un examen partagé et sa version initiale imposent le formulaire
+Survey natif enrichi. Les actions d’ouverture des questionnaires de positionnement,
+d’acquis et de satisfaction imposent aussi ce formulaire : une autre vue primaire
+de Survey ne doit pas détourner la navigation vers un diagnostic. La création
+d’une version conserve les définitions publiées et les tentatives antérieures.
+
+Recette complémentaire : publier une nouvelle version, suivre « Examen initial »,
+puis ouvrir les questionnaires dédiés et vérifier leurs questions et commandes.

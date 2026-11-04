@@ -47,6 +47,7 @@ class Feedback(models.Model):
             "res_model": "survey.survey",
             "res_id": self.survey_id.id,
             "view_mode": "form",
+            "view_id": self.env.ref("survey.survey_survey_view_form").id,
         }
 
     @api.private

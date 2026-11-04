@@ -15,9 +15,9 @@ class NativeEvaluationCase(EvaluationCase):
         row, grant = self.assigned_evaluation(scored=scored)
         action = row.evaluation_id.action_new_version()
         evaluation = self.env["training.evaluation"].with_user(self.coordinator).browse(action["res_id"])
-        survey = (
-            self.env["survey.survey"].with_user(self.coordinator).browse(evaluation.action_questionnaire()["res_id"])
-        )
+        questionnaire = evaluation.action_questionnaire()
+        self.assertEqual(questionnaire["view_id"], self.env.ref("survey.survey_survey_view_form").id)
+        survey = self.env["survey.survey"].with_user(self.coordinator).browse(questionnaire["res_id"])
         question = (
             self.env["survey.question"]
             .with_user(self.coordinator)

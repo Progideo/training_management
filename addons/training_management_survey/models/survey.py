@@ -158,7 +158,13 @@ class Survey(models.Model):
         if self.training_evaluation_id:
             return self.training_evaluation_id.action_new_version()
         new = self.copy({"training_origin_id": (self.training_origin_id or self).id, "training_version": False})
-        return {"type": "ir.actions.act_window", "res_model": "survey.survey", "res_id": new.id, "view_mode": "form"}
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "survey.survey",
+            "res_id": new.id,
+            "view_mode": "form",
+            "view_id": self.env.ref("survey.survey_survey_view_form").id,
+        }
 
     def copy(self, default=None):
         if self.training_program_id:
