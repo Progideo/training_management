@@ -2,8 +2,9 @@
 
 from datetime import timedelta
 import math
+from psycopg2.errors import UniqueViolation
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, LockError, ValidationError
+from odoo.exceptions import AccessError, ConcurrencyError, LockError, ValidationError
 from odoo.fields import Domain
 from odoo.tools import SQL
 from odoo.tools.misc import format_datetime
@@ -68,20 +69,28 @@ class ExamService(models.AbstractModel):
                 return active
             active.flush_recordset(["state"])
         now = fields.Datetime.now()
-        return attempts._training_create(
-            {
-                **values,
-                "survey_id": exam.id,
-                "partner_id": user.partner_id.id,
-                "mock_context_key": context_key,
-                "mock_company_id": exam.mock_company_id.id,
-                "training_family_id": family.id,
-                "start_datetime": now,
-                "state": "in_progress",
-                "deadline": now + timedelta(minutes=exam.time_limit),
-                "predefined_question_ids": [(6, 0, exam.question_ids.ids)],
-            }
-        )
+        try:
+            with self.env.cr.savepoint():
+                return attempts._training_create(
+                    {
+                        **values,
+                        "survey_id": exam.id,
+                        "partner_id": user.partner_id.id,
+                        "mock_context_key": context_key,
+                        "mock_company_id": exam.mock_company_id.id,
+                        "training_family_id": family.id,
+                        "start_datetime": now,
+                        "state": "in_progress",
+                        "deadline": now + timedelta(minutes=exam.time_limit),
+                        "predefined_question_ids": [(6, 0, exam.question_ids.ids)],
+                    }
+                )
+        except UniqueViolation as error:
+            if error.diag.constraint_name != "survey_user_input_mock_context_active":
+                raise
+            # A different request committed after this repeatable-read snapshot.
+            # The native retry layer opens a fresh transaction and resumes it.
+            raise ConcurrencyError("Concurrent launch in the same exam context") from error
 
     @api.private
     def _save(self, attempt_id, question_id, choices, marked):

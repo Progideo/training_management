@@ -2,7 +2,7 @@
 {
     "name": "Training Mock Exam Library",
     "summary": "Shared native Survey definitions and immutable mock exam versions",
-    "version": "20.0.1.4.1",
+    "version": "20.0.1.4.2",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
