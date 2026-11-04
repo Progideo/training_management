@@ -197,7 +197,9 @@ class TestMockBoundaryHttp(MockCase, HttpCase):
         attachment.invalidate_recordset()
         self.env.flush_all()
         for url in (f"/survey/start/{exam.access_token}", f"/web/content/{attachment.id}"):
-            response = self.url_open(url, allow_redirects=False)
+            # Website may first canonicalize the language prefix. The final
+            # resource must still refuse access, rather than accepting a redirect.
+            response = self.url_open(url)
             self.assertIn(response.status_code, (403, 404))
             self.assertNotIn(b"PRIVATE_EXAM_FIXTURE", response.content)
         with self.assertRaises(AccessError):

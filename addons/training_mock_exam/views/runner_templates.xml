@@ -30,7 +30,7 @@
     </xpath>
   </template>
   <template id="exam_attempt" name="Private Mock Exam">
-    <t t-call="survey.layout">
+    <t t-call="survey.layout" additional_title.translate="Mock exam">
       <div class="container py-4 o_not_editable">
         <a t-att-href="back">My attempts / retake the mock exam</a>
         <h1 t-out="survey.title" />

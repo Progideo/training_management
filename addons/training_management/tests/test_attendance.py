@@ -657,6 +657,12 @@ class TestAttendanceHttp(AttendanceCase, HttpCase):
         self.authenticate(self.portal.login, self.portal.login)
         path = f"/my/trainings/{enrollment.id}/attendance"
         page = html.fromstring(self.url_open(path).content)
+        expected_absence = (
+            "Je confirme mon absence pour cette demi-journée."
+            if page.get("lang", "en").startswith("fr")
+            else "I confirm that I was absent for this half-day."
+        )
+        self.assertEqual(page.xpath("//span[@class='tm_attendance_wording']/@data-absent"), [expected_absence])
         payload = {item.get("name"): item.get("value", "") for item in page.xpath("//form//input[@name]")}
         payload.update(attendance="present", accepted="yes")
         self.assertEqual(self.url_open(path, data=payload).status_code, 200)

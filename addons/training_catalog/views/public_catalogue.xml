@@ -24,7 +24,7 @@
     </t>
   </template>
   <template id="public_course" name="General training presentation">
-    <t t-call="portal.frontend_layout">
+    <t t-call="portal.frontend_layout" additional_title.translate="Formations">
       <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
         <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
         <p style="white-space:pre-wrap" t-out="course['presentation']"/>

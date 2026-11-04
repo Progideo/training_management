@@ -14418,6 +14418,7 @@ msgstr "Présence historique"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_attendance.py:0
+#: code:addons/training_management/controllers/attendance_portal.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
 msgid "I confirm that I was absent for this half-day."
 msgstr "Je confirme mon absence pour cette demi-journée."
@@ -15176,6 +15177,8 @@ msgid "A valid certificate of this type already exists for this dossier."
 msgstr "Une attestation valide de ce type existe déjà pour ce dossier."
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_attendance_delegate
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
 msgid "Reassign Attendance Control"
 msgstr "Réaffecter le contrôle des présences"
 
