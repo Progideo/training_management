@@ -277,7 +277,7 @@ class AttendancePortal(http.Controller):
                     {
                         "anchor": f"attendance-{enrollment.id}-{session.id}-{period['key']}",
                         "review_url": f"/my/training-sessions/{session.id}/attendance#attendance-{enrollment.id}-{session.id}-{period['key']}"
-                        if session.instructor_id == request.env.user.partner_id
+                        if session._control_partner() == request.env.user.partner_id
                         else False,
                         "schedule": [
                             {

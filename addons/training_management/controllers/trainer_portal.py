@@ -65,8 +65,11 @@ class TrainingTrainerPortal(http.Controller):
 
     def _session_domain(self):
         user = request.env.user
+        delegated = request.env["training.session"]._delegated_session_ids(user.partner_id)
         return [
+            "|",
             ("instructor_id", "=", user.partner_id.id),
+            ("id", "in", delegated),
             ("company_id", "in", user.company_ids.ids),
             ("delivery_id.state", "in", ("confirmed", "ongoing", "delivered")),
             ("cancelled", "=", False),

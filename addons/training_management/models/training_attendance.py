@@ -11,15 +11,13 @@ from odoo.tools.binary import BinaryBytes
 
 COORDINATOR = "training_management.group_training_coordinator"
 MODES = [("electronic", "Electronic"), ("paper", "Paper"), ("mixed", "Mixed")]
-SETTINGS = ("attendance_mode", "attendance_before", "attendance_after", "attendance_wording")
+SETTINGS = ("attendance_mode", "attendance_wording")
 
 
 class AttendanceSession(models.Model):
     _inherit = "training.session"
 
     attendance_mode = fields.Selection(MODES, required=True, default="electronic")
-    attendance_before = fields.Integer(string="Declaration Opens Before Session (Minutes)", default=0)
-    attendance_after = fields.Integer(string="Declaration Closes After Session (Minutes)", default=30)
     attendance_wording = fields.Text(
         required=True,
         default=lambda self: self.env._("I confirm that I was present for this half-day."),
@@ -29,11 +27,8 @@ class AttendanceSession(models.Model):
     @api.constrains(*SETTINGS)
     def _check_attendance_settings(self):
         for session in self:
-            if (
-                min(session.attendance_before, session.attendance_after) < 0
-                or not (session.attendance_wording or "").strip()
-            ):
-                raise ValidationError(self.env._("Use non-negative declaration windows and a confirmation text."))
+            if not (session.attendance_wording or "").strip():
+                raise ValidationError(self.env._("Enter a confirmation text."))
 
     @api.private
     def _apply_schedule(self, vals, reason=None, cancel=False, conflict_reason=None):
@@ -230,7 +225,7 @@ class AttendanceService(models.AbstractModel):
         if coordinator:
             session.with_env(self.env(su=False))._require_coordinator()
         else:
-            if session.instructor_id != user.partner_id:
+            if session._control_partner() != user.partner_id:
                 raise AccessError(self.env._("Only the assigned session trainer may validate attendance."))
         if session.cancelled or session.delivery_id.state not in ("confirmed", "ongoing", "delivered"):
             raise ValidationError(self.env._("Attendance requires an active, non-cancelled scheduled session."))
@@ -417,8 +412,10 @@ class AttendanceService(models.AbstractModel):
         definition=None,
         period_key="legacy",
         signature=None,
+        fallback=False,
     ):
         with self.env.cr.savepoint():
+            correction = correction or fallback
             session = self._session(session_id, coordinator=paper or correction, lock=True)
             self._check_definition(session, definition)
             presence = self._presence(session, enrollment_id, period_key)
@@ -442,8 +439,28 @@ class AttendanceService(models.AbstractModel):
                     raise ValidationError(self.env._("A new declaration is required after invalidation."))
             if decisions and latest_decision.kind != "invalidation" and not correction and not paper:
                 raise ValidationError(self.env._("An existing validation requires a coordinator correction."))
-            if correction and not decisions:
+            if correction and not decisions and not fallback:
                 raise ValidationError(self.env._("The trainer must first validate the attendance."))
+            if fallback:
+                # Exceptional decision when no replacement trainer can control: same
+                # separation of duties, with a reason and an evidence file required above.
+                if decisions and latest_decision.kind != "invalidation":
+                    raise ValidationError(self.env._("An existing validation requires a coordinator correction."))
+                if presence.enrollment_id.user_id == self.env.user:
+                    raise AccessError(self.env._("You cannot review your own attendance."))
+                current = presence.event_ids.filtered(
+                    lambda e: e.kind in ("declaration", "paper") and e.id > (latest_decision.id or 0)
+                )
+                if not current and not absent:
+                    raise ValidationError(
+                        self.env._(
+                            "The participant must declare attendance before you can confirm presence. You may record an absence."
+                        )
+                    )
+                if self.env.user in current.actor_id:
+                    raise ValidationError(
+                        self.env._("Trainer validation must be separate from the source declaration.")
+                    )
             if not paper and not correction:
                 if presence.enrollment_id.user_id == self.env.user:
                     raise AccessError(self.env._("A trainer cannot validate their own attendance."))

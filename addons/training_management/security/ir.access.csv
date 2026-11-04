@@ -60,6 +60,10 @@ rule_attendance_event_company,Attendance history company,training.attendance.eve
 access_attendance_edit,Attendance assistant coordinator,training.attendance.edit,training_management.group_training_coordinator,crud,
 rule_attendance_edit_company,Attendance assistant company,training.attendance.edit,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_attendance_edit_owner,Attendance assistant owner,training.attendance.edit,,crud,"[('create_uid', '=', user.id)]"
+access_attendance_delegation_coordinator,Attendance control coordinator,training.attendance.delegation,training_management.group_training_coordinator,r,
+rule_attendance_delegation_company,Attendance control company,training.attendance.delegation,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+access_attendance_delegate,Attendance control assistant coordinator,training.attendance.delegate,training_management.group_training_coordinator,crud,
+rule_attendance_delegate_owner,Attendance control assistant owner,training.attendance.delegate,,crud,"[('create_uid', '=', user.id)]"
 access_s08_training_retention_category_quality,S08 training_retention_category_quality,training.retention.category,training_management.group_training_quality,cru,""
 access_s08_training_retention_category_coordinator,S08 training_retention_category_coordinator,training.retention.category,training_management.group_training_coordinator,r,""
 access_s08_training_closure_quality,S08 training_closure_quality,training.closure,training_management.group_training_quality,ru,"[('quality_id', '=', user.id)]"

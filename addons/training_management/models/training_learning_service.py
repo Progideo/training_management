@@ -52,27 +52,29 @@ class LearningService(models.AbstractModel):
         if not enrollment or not check(enrollment):
             raise AccessError(self.env._("This private learning record is unavailable."))
         if lock:
-            # Parallel learners share the delivery lock; administrative changes
-            # still require its exclusive S03 lock. Lock order stays delivery,
-            # enrollment. SKIP LOCKED preserves native non-blocking conflicts.
-            delivery = enrollment.delivery_id
-            locked = self.env.execute_query(
-                SQL("SELECT id FROM training_delivery WHERE id = %s FOR SHARE SKIP LOCKED", delivery.id)
-            )
-            if not locked:
-                raise LockError(self.env._("Cannot grab a lock on records"))
-            enrollment.lock_for_update(allow_referencing=True)
-            # A no-op write is an MVCC fence for this enrollment only: stale
-            # snapshots must retry even after the previous lock was released.
-            # No business field, timestamp or operation history is rewritten.
-            self.env.cr.execute(
-                SQL("UPDATE training_enrollment SET write_date = write_date WHERE id = %s", enrollment.id)
-            )
-            delivery.invalidate_recordset()
-            enrollment.invalidate_recordset()
+            self._lock_enrollment(enrollment)
             if not check(enrollment):
                 raise AccessError(self.env._("This private learning record is unavailable."))
         return enrollment
+
+    @api.private
+    def _lock_enrollment(self, enrollment):
+        # Parallel learners share the delivery lock; administrative changes
+        # still require its exclusive S03 lock. Lock order stays delivery,
+        # enrollment. SKIP LOCKED preserves native non-blocking conflicts.
+        delivery = enrollment.delivery_id
+        locked = self.env.execute_query(
+            SQL("SELECT id FROM training_delivery WHERE id = %s FOR SHARE SKIP LOCKED", delivery.id)
+        )
+        if not locked:
+            raise LockError(self.env._("Cannot grab a lock on records"))
+        enrollment.lock_for_update(allow_referencing=True)
+        # A no-op write is an MVCC fence for this enrollment only: stale
+        # snapshots must retry even after the previous lock was released.
+        # No business field, timestamp or operation history is rewritten.
+        self.env.cr.execute(SQL("UPDATE training_enrollment SET write_date = write_date WHERE id = %s", enrollment.id))
+        delivery.invalidate_recordset()
+        enrollment.invalidate_recordset()
 
     @api.private
     def _tutored_enrollments(self):

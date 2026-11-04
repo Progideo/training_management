@@ -33,6 +33,10 @@ restent possibles après clôture, ne réécrivent aucun PDF et ne rétablissent
 silencieusement un statut. Une correction S07 seule ne révoque pas les anciens PDF.
 Aucune échéance arbitraire n’est ajoutée.
 
+Après une révocation, « Réémettre » produit un nouveau document et un nouveau lien, avec un
+motif conservé en interne, si aucune attestation du même type n’est valide pour ce dossier.
+Le PDF révoqué et son statut public ne changent pas. Une émission ordinaire reste idempotente.
+
 Le vérificateur retrouve « valide », « révoquée », « remplacée » ou « inconnue ».
 Une inconnue répond HTTP 404. Les réponses n’autorisent aucun cache ni indexation.
 La page ne renvoie pas vers le remplacement : elle ne publie pas un autre lien

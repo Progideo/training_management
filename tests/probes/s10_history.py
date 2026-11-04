@@ -17,6 +17,7 @@ key = "training_management_test.s10_history"
 def schema():
     env.cr.execute("""SELECT table_name,array_agg(column_name::text ORDER BY ordinal_position)
         FROM information_schema.columns WHERE table_schema='public'
+        AND column_name NOT IN ('attendance_before', 'attendance_after')
         AND (table_name LIKE 'training_%' OR table_name LIKE 'survey_%'
              OR table_name IN ('res_users','res_partner','res_company','sale_order','sale_order_line','account_move','account_move_line','account_payment'))
         AND table_name IN (SELECT tablename FROM pg_tables WHERE schemaname='public') GROUP BY table_name ORDER BY table_name""")

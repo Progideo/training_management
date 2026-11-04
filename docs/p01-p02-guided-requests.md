@@ -16,6 +16,10 @@ Pays, langue et devise sont indépendants. MAD et EUR peuvent être demandées
 avant leur activation comptable ; le commercial configure ensuite le devis natif.
 Une demande sur mesure doit être rattachée à un programme validé avant le devis.
 
+Le formulaire anonyme refuse au-delà de 5 demandes par heure et par adresse, 60 demandes
+par heure et 100 Mo de pièces par heure (paramètres `training_request.max_per_email_hour`,
+`max_per_hour`, `max_upload_mb_hour`). La limite par adresse IP se règle au proxy.
+
 La pièce facultative est un PDF privé de 10 Mo maximum. Les contrôles serveur
 refusent type, taille et champs invalides. La création CRM et sa pièce sont
 atomiques. L’erreur conserve les textes ; le navigateur impose de sélectionner

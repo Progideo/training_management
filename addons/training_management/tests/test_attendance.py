@@ -80,6 +80,143 @@ class AttendanceCase(MaterialCase):
 
 
 @tagged("post_install", "-at_install")
+class TestAttendanceControl(AttendanceCase):
+    def setUp(self):
+        super().setUp()
+        self.replacement = new_test_user(self.env, login="s07_replacement", groups="base.group_portal")
+
+    def declared(self, mode="electronic"):
+        _, session, enrollment = self.scheduled(mode=mode)
+        key = self.service()._periods(session)[0]["key"]
+        patcher = patch("odoo.fields.Datetime.now", return_value=session.end_at)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.service()._declare(
+            enrollment.id,
+            session.id,
+            0,
+            0,
+            accepted=True,
+            definition=self.service()._definition(session),
+            period_key=key,
+        )
+        presence = (
+            self.env["training.attendance"]
+            .sudo()
+            .search([("session_id", "=", session.id), ("enrollment_id", "=", enrollment.id)])
+        )
+        return session, enrollment, presence, key
+
+    def validate(self, user, session, enrollment, presence, key):
+        return self.service(user)._review(
+            session.id,
+            enrollment.id,
+            0,
+            0,
+            revision=presence.revision,
+            period_key=key,
+            definition=self.service()._definition(session),
+        )
+
+    def fallback(self, session, enrollment, presence, key, user=None, **values):
+        return self.service(user or self.coordinator)._review(
+            session.id,
+            enrollment.id,
+            0,
+            0,
+            fallback=True,
+            reason=values.pop("reason", "Trainer unavailable, no replacement"),
+            data=values.pop("data", PDF),
+            filename="evidence.pdf",
+            revision=presence.revision,
+            period_key=key,
+            definition=self.service()._definition(session),
+            **values,
+        )
+
+    def test_replacement_validates_and_previous_trainer_can_no_longer(self):
+        session, enrollment, presence, key = self.declared()
+        instructor = session.instructor_id
+        definition = self.service()._definition(session)
+        row = self.service(self.coordinator)._delegate(session.id, self.replacement.partner_id.id, "Trainer ill")
+        self.assertEqual(row.previous_partner_id, instructor)
+        self.assertEqual(row.actor_id, self.coordinator)
+        self.assertEqual(session.instructor_id, instructor)
+        self.assertEqual(self.service()._definition(session), definition)
+        with self.assertRaises(AccessError):
+            self.validate(self.portal_b, session, enrollment, presence, key)
+        self.validate(self.replacement, session, enrollment, presence, key)
+        self.assertEqual(presence.state, "validated")
+        self.assertGreater(presence.minutes, 0)
+        self.assertEqual(presence.event_ids.filtered(lambda e: e.kind == "validation").actor_id, self.replacement)
+        self.assertEqual(len(presence.event_ids.filtered(lambda e: e.kind == "declaration")), 1)
+
+    def test_reassignment_rules_and_evidence_immutability(self):
+        session, _enrollment, _presence, _key = self.declared()
+        service = self.service(self.coordinator)
+        with self.assertRaises(ValidationError):
+            service._delegate(session.id, self.replacement.partner_id.id, "  ")
+        with self.assertRaises(ValidationError):
+            service._delegate(session.id, self.env["res.partner"].create({"name": "No account"}).id, "Trainer ill")
+        with self.assertRaises(ValidationError):
+            service._delegate(session.id, self.portal.partner_id.id, "Trainer ill")
+        with self.assertRaises(AccessError):
+            self.service(self.replacement)._delegate(session.id, self.replacement.partner_id.id, "Self service")
+        row = service._delegate(session.id, self.replacement.partner_id.id, "Trainer ill")
+        self.assertEqual(service._delegate(session.id, self.replacement.partner_id.id, "Again"), row)
+        with self.assertRaises(AccessError):
+            row.write({"reason": "Rewritten"})
+        with self.assertRaises(AccessError):
+            self.env["training.attendance.delegation"].create({"session_id": session.id, "reason": "Forged"})
+
+    def test_coordinator_fallback_needs_reason_evidence_and_stays_exceptional(self):
+        session, enrollment, presence, key = self.declared()
+        with self.assertRaises(ValidationError):
+            self.fallback(session, enrollment, presence, key, reason=" ")
+        with self.assertRaises(ValidationError):
+            self.fallback(session, enrollment, presence, key, data=b"")
+        with self.assertRaises(AccessError):
+            self.fallback(session, enrollment, presence, key, user=self.portal_b)
+        self.fallback(session, enrollment, presence, key)
+        self.assertEqual(presence.state, "validated")
+        self.assertGreater(presence.minutes, 0)
+        self.assertEqual(presence.event_ids[-1:].kind, "correction")
+        self.assertEqual(presence.event_ids[-1:].actor_id, self.coordinator)
+        with self.assertRaises(ValidationError):
+            self.fallback(session, enrollment, presence, key)
+
+    def test_fallback_without_declaration_can_only_record_an_absence(self):
+        _, session, enrollment = self.scheduled(mode="electronic")
+        key = self.service()._periods(session)[0]["key"]
+        with patch("odoo.fields.Datetime.now", return_value=session.end_at):
+            with self.assertRaises(ValidationError):
+                self.service(self.coordinator)._review(
+                    session.id,
+                    enrollment.id,
+                    0,
+                    0,
+                    fallback=True,
+                    reason="Trainer unavailable",
+                    data=PDF,
+                    filename="evidence.pdf",
+                    period_key=key,
+                    definition=self.service()._definition(session),
+                )
+
+    def test_replacement_finds_session_and_former_trainer_keeps_reading(self):
+        session, _enrollment, _presence, _key = self.declared()
+        self.service(self.coordinator)._delegate(session.id, self.replacement.partner_id.id, "Trainer ill")
+        delegated = self.env["training.session"]._delegated_session_ids
+        self.assertIn(session.id, delegated(self.replacement.partner_id))
+        self.assertTrue(self.env["training.portal.navigation"].with_user(self.replacement)._links()["sessions"])
+        dashboard = self.env["training.dashboard.service"].with_user(self.replacement)
+        self.assertEqual(dashboard._delivery(session.delivery_id.id), session.delivery_id.sudo())
+        self.assertEqual(dashboard._sessions(session.delivery_id.sudo()), session.sudo())
+        self.service(self.coordinator)._delegate(session.id, self.portal_b.partner_id.id, "Trainer back")
+        self.assertNotIn(session.id, delegated(self.replacement.partner_id))
+
+
+@tagged("post_install", "-at_install")
 class TestAttendance(AttendanceCase):
     def test_partial_declaration_review_and_duplicate_do_not_double_minutes(self):
         _, session, enrollment = self.scheduled()
@@ -132,7 +269,6 @@ class TestAttendance(AttendanceCase):
             self.assertEqual(presence.state, "validated")
             self.assertFalse(presence.event_ids[:1].anomaly)
         _, second, second_enrollment = self.scheduled()
-        self.assertEqual(second.attendance_after, 30)
         with patch("odoo.fields.Datetime.now", return_value=second.end_at + timedelta(minutes=30)):
             timely = self.declare(second, second_enrollment)
             self.assertEqual(timely.state, "pending")
@@ -368,7 +504,7 @@ class TestAttendance(AttendanceCase):
             with self.assertRaises(AccessError):
                 self.env["training.attendance.event"].create({})
             with self.assertRaises(ValidationError):
-                session.write({"attendance_after": 30})
+                session.write({"attendance_mode": "paper"})
             with self.assertRaises(ValidationError):
                 self.env["ir.attachment"].create(
                     {"name": "leak", "res_model": event._name, "res_id": event.id, "raw": PDF, "public": True}
@@ -386,7 +522,7 @@ class TestAttendance(AttendanceCase):
             form.end_date = "2027-01-04"
             form.attendance_mode = "mixed"
         form.record.action_apply()
-        self.assertEqual(delivery.session_ids.attendance_after, 30)
+        self.assertEqual(delivery.session_ids.attendance_mode, "mixed")
 
     def test_paper_import_rejects_a_rescheduled_session(self):
         _, session, enrollment = self.scheduled()

@@ -3,8 +3,9 @@
 from datetime import timedelta
 import math
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, LockError, ValidationError
 from odoo.fields import Domain
+from odoo.tools import SQL
 from odoo.tools.misc import format_datetime
 
 
@@ -42,7 +43,12 @@ class ExamService(models.AbstractModel):
         ):
             raise ValidationError(self.env._("No published mock exam is assigned."))
         family = exam.training_origin_id or exam
-        family.lock_for_update()
+        # Editorial changes stay exclusive; learners of different contexts may
+        # start in parallel. The scoped unique index serializes each learner.
+        if not self.env.execute_query(
+            SQL("SELECT id FROM survey_survey WHERE id = %s FOR SHARE SKIP LOCKED", family.id)
+        ):
+            raise LockError(self.env._("Cannot grab a lock on records"))
         scope = Domain("mock_context_key", "=", context_key)
         if legacy_domain is not None:
             scope |= Domain(legacy_domain)

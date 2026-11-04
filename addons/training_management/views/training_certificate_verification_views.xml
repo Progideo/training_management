@@ -16,7 +16,7 @@
         <field name="model">training.certificate.verification</field>
         <field name="arch" type="xml">
             <form create="false" edit="false" delete="false" duplicate="false">
-                <header><button name="action_revoke" type="object" string="Revoke" invisible="state != 'valid'"/><button name="action_replace" type="object" string="Replace" invisible="state != 'valid'"/><field name="state" widget="statusbar"/></header>
+                <header><button name="action_revoke" type="object" string="Revoke" invisible="state != 'valid'"/><button name="action_reissue" type="object" string="Reissue" invisible="state != 'revoked'"/><button name="action_replace" type="object" string="Replace" invisible="state != 'valid'"/><field name="state" widget="statusbar"/></header>
                 <sheet>
                     <group>
                         <field name="document_id" options="{'no_open': True}"/>

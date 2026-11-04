@@ -2334,3 +2334,11 @@ msgstr "Devise déclarée"
 #: code:addons/training_management_sale/models/bank_transfer_notice.py:0
 msgid "The claimed invoice must belong to the order."
 msgstr "La facture déclarée doit appartenir à la commande."
+
+#. module: training_management_sale
+msgid "Too many requests were received. Please try again in an hour."
+msgstr "Trop de demandes ont été reçues. Veuillez réessayer dans une heure."
+
+#. module: training_management_sale
+msgid "Too many files were received. Please try again in an hour."
+msgstr "Trop de fichiers ont été reçus. Veuillez réessayer dans une heure."

@@ -37,7 +37,12 @@ Community `20.0-20261015` épinglée par digest et PostgreSQL 18.6. Les variante
 supplémentaire de la même suite, sans retirer leur couverture. Le job de qualité
 exécute tous les tests du dépôt et `pre-commit` (ruff et pylint-odoo).
 
+Le job de qualité exécute aussi `run_exam_parallel.py` : deux participants d’une même
+réalisation démarrent, répondent et remettent un examen dans des transactions parallèles.
+
 ## Migrations, conservation et concurrence
+
+Exception écrite : à la demande de l'exploitant (revue du 2 novembre 2026, P3-5), `training_session.attendance_before` et `attendance_after` sont retirées en `20.0.2.13.0`. Les sondes de conservation excluent ces seules colonnes, et `tests/test_odoo_ci.py` n'admet que ce retrait exact.
 
 Le relevé S08 antérieur à la mise à jour utilise le code de sa révision historique,
 afin que le préchargement ORM ne demande pas des colonnes ajoutées depuis.
