@@ -1253,6 +1253,7 @@ msgstr "Ce questionnaire est archivé."
 
 #. module: training_management_survey
 #: model:ir.model.fields,field_description:training_management_survey.field_survey_survey__training_feedback_id
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_list
 msgid "Training Feedback"
 msgstr "Retours de formation"
 
@@ -1818,3 +1819,23 @@ msgstr "Requis à passer"
 #: model:ir.model.fields.selection,name:training_management_survey.selection__training_exam_requirement__obligation__pass
 msgid "Required to Pass"
 msgstr "Requis à réussir"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback
+msgid "Feedback Questionnaire"
+msgstr "Questionnaire de satisfaction"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.portal_feedback_summary
+msgid "Feedback Summary"
+msgstr "Synthèse des retours"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_history
+msgid "My Mock Exam Attempts"
+msgstr "Mes tentatives d’examen blanc"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Mock Exam Attempts"
+msgstr "Tentatives d’examen blanc"

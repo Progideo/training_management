@@ -5,7 +5,7 @@
         </t></xpath>
     </template>
     <template id="portal_trainer_sessions" name="My Training Sessions">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="My Training Sessions">
             <t t-call="training_management.portal_training_navigation"/><h1>My training sessions</h1>
             <nav aria-label="Session period" class="nav nav-pills mb-3">
                 <a href="/my/training-sessions" t-att-class="'nav-link active' if filterby == 'upcoming' else 'nav-link'" t-att-aria-current="'page' if filterby == 'upcoming' else None">Upcoming</a>
@@ -24,7 +24,7 @@
         </t>
     </template>
     <template id="portal_trainer_session" name="Assigned Training Session">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Assigned Training Session">
             <t t-call="training_management.portal_training_navigation"/><a t-att-href="session_back">My training sessions</a>
             <h1 t-out="session['name']"/>
             <p t-out="session['delivery']"/>

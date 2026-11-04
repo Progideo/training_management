@@ -1,7 +1,8 @@
 # Libellés français et navigation des questionnaires
 
 Références : [#138](https://github.com/Progideo/training_management/issues/138),
-[#140](https://github.com/Progideo/training_management/issues/140).
+[#140](https://github.com/Progideo/training_management/issues/140),
+[#141](https://github.com/Progideo/training_management/issues/141).
 
 Les pages de présence, signature personnelle, fiche catalogue et passation commune
 renseignent le titre traduisible du layout natif. La confirmation dynamique
@@ -9,6 +10,8 @@ renseignent le titre traduisible du layout natif. La confirmation dynamique
 HTML ; aucun appel de traduction dépendant du contexte Python QWeb.
 La réaffectation des contrôles référence explicitement ses vues dans le catalogue
 français. Les autorisations, signatures et minutes validées restent inchangées.
+Les espaces de suivi, tutorat, réclamations, documents, dossiers d’entreprise,
+évaluations et satisfaction utilisent le même mécanisme de titre natif.
 
 Recette : ouvrir ces pages en français, choisir « Absent » puis revenir à
 « Présent » ; vérifier le texte de consentement, le refus d’un formulaire périmé
@@ -24,3 +27,9 @@ d’une version conserve les définitions publiées et les tentatives antérieur
 
 Recette complémentaire : publier une nouvelle version, suivre « Examen initial »,
 puis ouvrir les questionnaires dédiés et vérifier leurs questions et commandes.
+
+Les dates des notifications du bilan utilisent le format datetime natif Odoo.
+Les fractions de seconde techniques de `create_date` restent dans le journal
+original ; elles ne doivent pas faire échouer la présentation du portail.
+Ouvrir un bilan coordinateur avec des notifications et vérifier ses indicateurs,
+sa liste de notifications et l’absence de mise en cache privée.

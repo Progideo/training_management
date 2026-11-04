@@ -5,7 +5,7 @@
         </t></xpath>
     </template>
     <template id="portal_complaints" name="Own Complaints">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Own Complaints">
             <t t-call="training_management.portal_training_navigation"/><h1>My confidential complaints</h1>
             <a href="/my/training-complaints/new" class="btn btn-primary">New complaint</a>
             <p t-if="not rows">No accessible complaint.</p>
@@ -18,7 +18,7 @@
         </t>
     </template>
     <template id="portal_complaint_new" name="Submit Confidential Complaint">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Submit Confidential Complaint">
             <t t-call="training_management.portal_training_navigation"/><h1>Submit a confidential complaint</h1>
             <p>Only authorized staff will process your complaint. Avoid information about other people that is not necessary for treatment.</p>
             <div t-if="error" role="alert" tabindex="-1" autofocus="autofocus" class="alert alert-danger o_training_feedback" t-out="error"/>
@@ -45,7 +45,7 @@
         </t>
     </template>
     <template id="portal_complaint" name="Own Confidential Complaint">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Own Confidential Complaint">
             <t t-call="training_management.portal_training_navigation"/><a href="/my/training-complaints">My confidential complaints</a>
             <h1 class="text-break" t-out="name"/>
             <p>Received:

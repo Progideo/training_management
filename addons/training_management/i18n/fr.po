@@ -15225,3 +15225,73 @@ msgstr "Seul un coordinateur de formation peut réaffecter le contrôle des pré
 #. module: training_management
 msgid "The schedule, declarations and decisions stay unchanged. Only the replacement can validate from now on. Without any available replacement, use Validate for an Unavailable Trainer in the attendance assistant."
 msgstr "Le planning, les déclarations et les décisions restent inchangés. Seul le remplaçant peut désormais valider. Si aucun remplaçant n’est disponible, utilisez « Valider pour un formateur indisponible » dans l’assistant de présences."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_trainings
+msgid "Company training dossiers"
+msgstr "Dossiers de formation de l’entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Company training dossier"
+msgstr "Dossier de formation de l’entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutoring
+msgid "My Tutoring Assignments"
+msgstr "Mes accompagnements pédagogiques"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutor
+msgid "Private Tutoring Details"
+msgstr "Accompagnement pédagogique privé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "My Training Sessions"
+msgstr "Mes séances de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+msgid "Assigned Training Session"
+msgstr "Séance de formation affectée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaints
+msgid "Own Complaints"
+msgstr "Mes réclamations confidentielles"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Submit Confidential Complaint"
+msgstr "Déposer une réclamation confidentielle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "Own Confidential Complaint"
+msgstr "Ma réclamation confidentielle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard_deliveries
+msgid "Operational Training Dashboards"
+msgstr "Tableaux de suivi des formations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard
+msgid "Operational Training Dashboard"
+msgstr "Tableau de suivi des formations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_documents
+msgid "My Training Documents"
+msgstr "Mes documents de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_evaluations
+msgid "Training Evaluations"
+msgstr "Évaluations de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
+msgid "Training Evaluation"
+msgstr "Évaluation de formation"
