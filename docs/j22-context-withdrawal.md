@@ -2,7 +2,10 @@
 
 Le retrait motivé d’une version interactive appelle un point d’extension privé dans
 la même transaction. Une erreur de l’application consommatrice annule le retrait.
-La bibliothèque ne dépend d’aucune application pédagogique.
+La bibliothèque ne dépend d’aucune application pédagogique. Chaque adaptateur
+avertit ses propres accès actifs. TM conserve son journal natif de notification
+et crée une activité pour le responsable de la réalisation concernée ; les
+preuves et acquis restent conservés.
 
 Le moteur commun conserve une seule tentative active par personne, famille et
 contexte. En cas de lancement concurrent sur le même contexte, une collision de
