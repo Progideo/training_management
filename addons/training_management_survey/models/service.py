@@ -101,10 +101,6 @@ class ExamService(models.AbstractModel):
         return attempt
 
     @api.private
-    def _result_adjustments(self, attempt):
-        return attempt.training_adjustment_ids.sorted("id", reverse=True)
-
-    @api.private
     def _result_material(self, question):
         material = question.training_material_id
         return (

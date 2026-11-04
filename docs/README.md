@@ -25,6 +25,9 @@ dans TM et le menu Website dans le catalogue commun.
 Le [catalogue public général](j16-general-public-catalogue.md) applique la restriction
 P03/P04 aux offres communes, sans retirer les fonctions privées.
 
+Les [révisions motivées communes](j17-shared-result-revisions.md) conservent les
+réponses natives et séparent les habilitations des deux modes.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,

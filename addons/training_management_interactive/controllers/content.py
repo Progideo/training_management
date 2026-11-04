@@ -17,7 +17,7 @@ class Content(CommonContent):
         website=True,
         methods=["GET"],
     )
-    def entry(self, enrollment_id, usage_id, **kw):
+    def tm_interactive_entry(self, enrollment_id, usage_id, **kw):
         portal, content = request.env["training.elearning.lease"]._origins()
         if origin() != portal:
             raise Forbidden()
@@ -54,7 +54,7 @@ class Content(CommonContent):
     @http.route(
         "/training/interactive/<int:enrollment_id>/<int:usage_id>/start", auth="user", type="http", methods=["POST"]
     )
-    def start(self, enrollment_id, usage_id, **values):
+    def tm_interactive_start(self, enrollment_id, usage_id, **values):
         portal, content = request.env["training.elearning.lease"]._origins()
         if origin() != portal:
             raise Forbidden()
@@ -64,7 +64,7 @@ class Content(CommonContent):
         return request.redirect("/training/interactive/attempt/%s" % attempt.id, code=303)
 
     @http.route("/training/interactive/attempt/<int:attempt_id>", auth="user", type="http", methods=["GET"])
-    def attempt(self, attempt_id, **kw):
+    def tm_interactive_attempt(self, attempt_id, **kw):
         service = request.env["training.elearning.lease"]
         portal, content = service._origins()
         if origin() != portal:
@@ -76,7 +76,7 @@ class Content(CommonContent):
         return self._parent(version, lease, token, portal, content, attempt)
 
     @http.route("/training/interactive/attempt/<int:attempt_id>/save", auth="user", type="http", methods=["POST"])
-    def save(self, attempt_id, **values):
+    def tm_interactive_save(self, attempt_id, **values):
         if origin() != request.env["training.elearning.lease"]._origins()[0]:
             raise Forbidden()
         raw = values.get("payload", "")
@@ -100,7 +100,7 @@ class Content(CommonContent):
             raise Forbidden() from None
 
     @http.route("/training/interactive/attempt/<int:attempt_id>/renew", auth="user", type="http", methods=["POST"])
-    def renew(self, attempt_id, **values):
+    def tm_interactive_renew(self, attempt_id, **values):
         if origin() != request.env["training.elearning.lease"]._origins()[0]:
             raise Forbidden()
         attempt = request.env["training.elearning.attempt"].browse(attempt_id)

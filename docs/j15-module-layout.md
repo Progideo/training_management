@@ -25,7 +25,8 @@ Une désinstallation détruirait leurs métadonnées et leurs références.
 2. Avec les **anciennes sources et l’ancien registre**, exécuter
    `tools/relocate_modules.py` dans le shell administrateur Odoo. Vérifier le marqueur
    de réussite, puis valider explicitement la transaction. Le script ne valide
-   jamais lui-même. Il refuse un addon cible déjà découvert ou une dépendance
+   jamais lui-même. Il refuse une cible déjà découverte lorsqu’il doit renommer un adaptateur installé,
+   ainsi qu’une dépendance
    installée sur le pont Website retiré.
 3. Remplacer les sources par la composition qualifiée à dix addons. Mettre à jour
    `training_catalog,training_management_interactive` avec services toujours arrêtés.
@@ -35,7 +36,8 @@ Une désinstallation détruirait leurs métadonnées et leurs références.
 
 Le script renomme les métadonnées du module et ses identifiants externes,
 actualise les noms techniques QWeb et statiques, puis transfère le seul menu
-Website sans modifier sa personnalisation. Les identités métier et octets restent
+Website sans modifier sa personnalisation. Le pont retiré devient non installable
+et son ancien indicateur d’installation automatique est désactivé. Les identités métier et octets restent
 inchangés. Une seconde exécution est sans effet. Le script doit être répété sur
 une restauration avant toute intervention réelle ; ce déplacement technique
 n’est pas une reprise métier Odoo 19.

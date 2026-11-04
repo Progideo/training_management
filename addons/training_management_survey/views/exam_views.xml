@@ -83,6 +83,8 @@
             <form string="Motivated Result Revision">
                 <group>
                     <field name="attempt_id" readonly="1"/>
+                    <field name="request_key" invisible="1"/>
+                    <field name="expected_previous" invisible="1"/>
                     <field name="reason"/>
                 </group>
                 <field name="line_ids">

@@ -6,6 +6,7 @@ from odoo.fields import Domain
 
 NATIVE = ("survey.survey", "survey.question", "survey.question.answer", "survey.user_input", "survey.user_input.line")
 AUTHOR = "training_mock_exam.group_mock_exam_author"
+RESULT_MODELS = {"training.exam.revision", "training.exam.revise", "training.exam.revise.line"}
 
 
 def exam_for(record):
@@ -24,6 +25,9 @@ def exam_for(record):
 
 
 def check_read(record):
+    target_model = record.sudo().res_model if record._name == "ir.attachment" else record._name
+    if target_model in RESULT_MODELS:
+        raise AccessError(record.env._("Result revisions do not provide generic file access."))
     exam = exam_for(record)
     target_model = record.sudo().res_model if record._name == "ir.attachment" else record._name
     if exam and target_model in ("survey.user_input", "survey.user_input.line"):
@@ -86,7 +90,10 @@ class Attachment(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            exam = exam_for(self.new(self._add_missing_default_values(dict(vals))))
+            candidate = self.new(self._add_missing_default_values(dict(vals)))
+            if candidate.res_model in RESULT_MODELS:
+                raise AccessError(self.env._("Result revisions do not accept attachments."))
+            exam = exam_for(candidate)
             if exam:
                 exam._mock_edit()
                 if (
@@ -101,6 +108,8 @@ class Attachment(models.Model):
 
     def write(self, vals):
         for attachment in self:
+            if attachment.sudo().res_model in RESULT_MODELS or vals.get("res_model") in RESULT_MODELS:
+                raise AccessError(self.env._("Result revisions do not accept attachments."))
             source = exam_for(attachment)
             target = exam_for(
                 self.new(
@@ -158,6 +167,7 @@ class Attempt(models.Model):
                 "default_" + field in self.env.context
                 for field in (
                     "mock_context_key",
+                    "mock_revision_serial",
                     "mock_reader_group_id",
                     "mock_company_id",
                     "training_family_id",
@@ -169,6 +179,7 @@ class Attempt(models.Model):
                     field in vals
                     for field in (
                         "mock_context_key",
+                        "mock_revision_serial",
                         "mock_reader_group_id",
                         "mock_company_id",
                         "training_family_id",
@@ -195,6 +206,7 @@ class Attempt(models.Model):
             or "mock_reader_group_id" in vals
             or "mock_company_id" in vals
             or "mock_context_key" in vals
+            or "mock_revision_serial" in vals
             or "training_family_id" in vals
             or "training_review_ids" in vals
         ):
