@@ -9,7 +9,7 @@
     </xpath>
   </template>
   <template id="exam_history" name="My Mock Exam Attempts">
-    <t t-call="portal.portal_layout">
+    <t t-call="portal.portal_layout" additional_title.translate="My Mock Exam Attempts">
       <t t-call="training_management.portal_training_navigation" />
       <h1>My mock exam attempts</h1>
       <p>Previous results remain available after access expiry. Suspension or revocation blocks access.</p>
@@ -40,7 +40,7 @@
     </xpath>
   </template>
   <template id="exam_start" name="Mock Exam Attempts">
-    <t t-call="portal.portal_layout">
+    <t t-call="portal.portal_layout" additional_title.translate="Mock Exam Attempts">
       <t t-call="training_management.portal_training_navigation" />
       <div class="container py-4">
         <a t-att-href="back">My training</a>

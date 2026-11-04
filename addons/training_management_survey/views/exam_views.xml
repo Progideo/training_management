@@ -16,7 +16,7 @@
                     <field name="training_program_id" readonly="training_program_id"/>
                     <field name="training_evaluation_id" readonly="1"/>
                     <field name="training_state" readonly="1"/>
-                    <field name="training_origin_id" readonly="1"/>
+                    <field name="training_origin_id" context="{'form_view_ref': 'survey.survey_survey_view_form'}" readonly="1"/>
                     <field name="training_version" readonly="training_state == 'published'"/>
                     <field name="training_revision_reason" readonly="training_state == 'published'"/>
                     <p>Published exams preserve their questions, correction, themes and duration. Create a new version to change them. Mock exams never deliver official certificates.</p>
@@ -51,7 +51,7 @@
         <field name="inherit_id" ref="training_management.view_learning_activity_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='evaluation_threshold']" position="after">
-                <field name="shared_exam" invisible="1"/><field name="exam_obligation" invisible="not shared_exam" required="shared_exam"/><field name="training_exam_id" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/>
+                <field name="shared_exam" invisible="1"/><field name="exam_obligation" invisible="not shared_exam" required="shared_exam"/><field name="training_exam_id" context="{'form_view_ref': 'survey.survey_survey_view_form'}" invisible="criterion != 'evaluation'" required="criterion == 'evaluation'" domain="[('training_state', '=', 'published')]" options="{'no_create': True}"/>
             </xpath>
             <xpath expr="//field[@name='optional']" position="attributes"><attribute name="invisible">shared_exam</attribute></xpath>
             <xpath expr="//field[@name='evaluation_threshold']" position="attributes"><attribute name="invisible">criterion != 'evaluation' or shared_exam</attribute></xpath>

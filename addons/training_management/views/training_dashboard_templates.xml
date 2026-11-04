@@ -43,7 +43,7 @@
         </xpath>
     </template>
     <template id="portal_dashboard_deliveries" name="Operational Training Dashboards">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Operational Training Dashboards">
             <t t-call="training_management.portal_training_navigation"/>
             <div class="container py-3">
                 <h1>Operational training dashboard</h1>
@@ -55,7 +55,7 @@
         </t>
     </template>
     <template id="portal_dashboard" name="Operational Training Dashboard">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Operational Training Dashboard">
             <t t-call="training_management.portal_training_navigation"/>
             <div class="container py-3 text-break">
         <a href="/my/training-dashboard">Assigned deliveries</a><h1 t-out="name"/><p><t t-out="program"/> · <t t-out="company"/></p>

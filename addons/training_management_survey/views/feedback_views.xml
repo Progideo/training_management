@@ -18,7 +18,7 @@
         </xpath>
     </template>
     <template id="portal_feedback_list" name="Training Feedback">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Training Feedback">
             <t t-call="training_management.portal_training_navigation"/>
             <h1>Training feedback</h1>
             <p t-if="not rows">No authorized feedback campaign.</p>
@@ -29,7 +29,7 @@
         </t>
     </template>
     <template id="portal_feedback" name="Feedback Questionnaire">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Feedback Questionnaire">
         <t t-call="training_management.portal_training_navigation"/><a href="/my/training-feedback">My training feedback</a><h1 t-out="name"/>
         <p>Version <t t-out="version"/> — <t t-out="purpose"/> — Deadline (UTC): <t t-out="due"/></p><p t-out="criteria"/>
         <p t-if="anonymous">Anonymous collection. Individual response tracking is unavailable. Do not enter names, email addresses or identifying details in free text. Reminders are collective, even if you have already replied.</p>
@@ -44,7 +44,7 @@
     </t>
     </template>
     <template id="portal_feedback_summary" name="Feedback Summary">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Feedback Summary">
             <t t-call="training_management.portal_training_navigation"/>
             <div class="text-break">
                 <h1 t-out="name"/>

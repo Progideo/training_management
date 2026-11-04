@@ -1,6 +1,6 @@
 <odoo>
     <template id="company_trainings" name="Company training dossiers">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Company training dossiers">
             <t t-call="training_management.portal_training_navigation"/>
             <div class="container py-4">
                 <h1>Formations de mon entreprise</h1>
@@ -23,7 +23,7 @@
         </t>
     </template>
     <template id="company_training" name="Company training dossier">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Company training dossier">
             <t t-call="training_management.portal_training_navigation"/>
             <div class="container py-4">
                 <a href="/my/company-trainings">Mes dossiers entreprise</a>

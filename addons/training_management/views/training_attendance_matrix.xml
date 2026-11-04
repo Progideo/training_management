@@ -37,7 +37,7 @@
         <p t-if="matrix['legacy']">Historical intervals are preserved separately; no half-day or signature is invented.</p>
     </template>
     <template id="portal_attendance_matrix">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Attendance">
             <t t-call="training_management.portal_training_navigation"/>
             <a t-att-href="attendance_back">Back to training</a><h1 t-out="name"/><h2>Attendance</h2>
             <form method="get" class="d-flex flex-wrap gap-2 align-items-end mb-3">
@@ -50,7 +50,7 @@
         </t>
     </template>
     <template id="portal_personal_signature">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="My signature">
             <t t-call="training_management.portal_training_navigation"/>
             <h1>My signature</h1>
             <p>This personal drawing is reused only when you explicitly sign an attendance declaration or review. Replacing or deleting it does not change previous evidence.</p>

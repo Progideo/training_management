@@ -26,9 +26,9 @@ class FeedbackCase(EvaluationCase):
                 }
             )
         )
-        survey = (
-            self.env["survey.survey"].with_user(self.coordinator).browse(definition.action_questionnaire()["res_id"])
-        )
+        questionnaire = definition.action_questionnaire()
+        self.assertEqual(questionnaire["view_id"], self.env.ref("survey.survey_survey_view_form").id)
+        survey = self.env["survey.survey"].with_user(self.coordinator).browse(questionnaire["res_id"])
         question = (
             self.env["survey.question"]
             .with_user(self.coordinator)

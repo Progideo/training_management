@@ -13,7 +13,7 @@
         </xpath>
     </template>
     <template id="portal_learning_tutoring" name="My Tutoring Assignments">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="My Tutoring Assignments">
             <t t-call="training_management.portal_training_navigation"/>
             <h1>My tutoring assignments</h1>
             <p t-if="not enrollments">No current tutoring assignment.</p>
@@ -24,7 +24,7 @@
         </t>
     </template>
     <template id="portal_learning_tutor" name="Private Tutoring Details">
-        <t t-call="portal.portal_layout"><t t-call="training_management.portal_training_navigation"/><a href="/my/training-tutoring">My tutoring assignments</a>
+        <t t-call="portal.portal_layout" additional_title.translate="Private Tutoring Details"><t t-call="training_management.portal_training_navigation"/><a href="/my/training-tutoring">My tutoring assignments</a>
             <h1 t-out="participant"/><p t-out="name"/><t t-call="training_management.portal_learning_content"/>
         </t>
     </template>

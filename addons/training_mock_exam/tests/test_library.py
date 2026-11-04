@@ -1,4 +1,6 @@
+import ast
 import io
+from lxml import etree
 from PIL import Image
 from psycopg2 import IntegrityError
 
@@ -65,6 +67,23 @@ class TestMockLibrary(MockCase):
             form.title = "Native shared definition form"
             form.training_course_id = self.course
         self.assertEqual(form.record.training_course_id, self.course)
+        # An orientation/feedback form can otherwise win the default Survey
+        # selection when the origin is opened through its many2one link.
+        self.env["ir.ui.view"].create(
+            {
+                "name": "Fictional unrelated survey editor",
+                "model": "survey.survey",
+                "priority": 0,
+                "arch": '<form><field name="title"/></form>',
+            }
+        )
+        native = model.get_view(view_id=self.env.ref("survey.survey_survey_view_form").id, view_type="form")
+        origins = etree.fromstring(native["arch"]).xpath("//field[@name='training_origin_id']")
+        self.assertTrue(origins)
+        for origin in origins:
+            context = ast.literal_eval(origin.get("context", "{}"))
+            related = model.with_context(**context).get_view(view_type="form")
+            self.assertTrue(etree.fromstring(related["arch"]).xpath("//button[@name='action_mock_publish']"))
         self.env["survey.survey"].with_user(self.author).with_context(default_training_course_id=self.course.id).create(
             {
                 "title": "Shared context with native questions",
@@ -197,7 +216,9 @@ class TestMockBoundaryHttp(MockCase, HttpCase):
         attachment.invalidate_recordset()
         self.env.flush_all()
         for url in (f"/survey/start/{exam.access_token}", f"/web/content/{attachment.id}"):
-            response = self.url_open(url, allow_redirects=False)
+            # Website may first canonicalize the language prefix. The final
+            # resource must still refuse access, rather than accepting a redirect.
+            response = self.url_open(url)
             self.assertIn(response.status_code, (403, 404))
             self.assertNotIn(b"PRIVATE_EXAM_FIXTURE", response.content)
         with self.assertRaises(AccessError):

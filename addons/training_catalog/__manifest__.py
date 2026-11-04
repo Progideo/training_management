@@ -2,7 +2,7 @@
 {
     "name": "Training Catalogue",
     "summary": "Shared course identities without attendance or learner progression",
-    "version": "20.0.1.2.0",
+    "version": "20.0.1.2.1",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",

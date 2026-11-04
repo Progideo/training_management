@@ -598,7 +598,7 @@ class DashboardService(models.AbstractModel):
                             if model_name == "training.learning.notice"
                             else self.env._("Training invitation / schedule update")
                         ),
-                        "date": str(notice.create_date),
+                        "date": fields.Datetime.to_string(notice.create_date),
                         "state": self._label(mail, "state") if mail else self.env._("Not queued"),
                         "failure": (mail.failure_reason or "") if mail else self.env._("No authorized recipient"),
                         "recipient": (
