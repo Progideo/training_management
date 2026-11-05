@@ -369,6 +369,30 @@ class TestProvider(EvaluationCase):
         )
         self.assertEqual(service._states(offset=1)["rows"], [])
 
+    def test_native_quality_reviewer_creates_each_dossier_kind(self):
+        model = self.env["training.provider.dossier"].with_user(self.quality)
+        for kind in ("watch", "instructor", "subcontract"):
+            with self.subTest(kind=kind):
+                form = Form(model)
+                form.name = "Fictional self-reviewed " + kind
+                form.kind = kind
+                form.quality_id = self.quality
+                form.retention_id = self.retention
+                if kind != "watch":
+                    form.partner_id = self.portal_b.partner_id
+                row = form.save()
+                self.assertEqual(row.state, "draft")
+                self.assertFalse(row.frozen)
+                self.assertEqual(row.quality_id, self.quality)
+                self.assertEqual(row.event_ids.mapped("operation"), ["created"])
+                row.write({"frozen": True})
+                with self.assertRaises(ValidationError), self.env.cr.savepoint():
+                    row.write({"name": "Refused while frozen"})
+                row.write({"frozen": False})
+                self.assertFalse(row.frozen)
+        with self.assertRaises(AccessError), self.env.cr.savepoint():
+            model.create({"name": "Forged workflow", "kind": "watch", "frozen": True})
+
     def test_native_forms_and_french_labels(self):
         self.env["res.lang"]._activate_lang("fr_FR")
         self.env["ir.module.module"]._load_module_terms(["training_management"], ["fr_FR"])
