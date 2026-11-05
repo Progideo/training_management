@@ -34,7 +34,7 @@
                         <field name="quality_id" readonly="id and not can_review"/>
                         <field name="member_ids" widget="many2many_tags" readonly="id and not can_review"/>
                         <field name="retention_id" readonly="state == 'closed' or frozen"/>
-                        <field name="frozen" readonly="not can_review"/>
+                        <field name="frozen" readonly="not id or not can_review"/>
                     </group>
                     <group invisible="kind != 'instructor'">
                         <field name="competencies" readonly="state == 'closed' or frozen"/>
