@@ -39,6 +39,7 @@ class OperatorNotice(models.Model):
             "training.learning.notice",
             "training.practice.notice",
             "training.tutoring.notice",
+            "training.publication.notice",
             "training.session.alert.notice",
         )
 
@@ -84,6 +85,7 @@ class OperatorNotice(models.Model):
                 "training.learning.notice",
                 "training.practice.notice",
                 "training.tutoring.notice",
+                "training.publication.notice",
                 "training.session.alert.notice",
             )
             and source.mail_id.state != "exception"
