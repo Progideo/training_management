@@ -6,7 +6,9 @@
             <list>
                 <field name="name"/>
                 <field name="company_id"/>
+                <field name="duration_unit"/>
                 <field name="duration_days"/>
+                <field name="duration_months"/>
                 <field name="approved_at"/>
             </list>
         </field>
@@ -19,13 +21,15 @@
                 <header><button name="action_approve" type="object" string="Approve Policy" invisible="approved_at" groups="training_management.group_training_quality"/></header>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="company_id"/>
-                        <field name="purpose"/>
-                        <field name="responsible_id"/>
-                        <field name="duration_days"/>
-                        <field name="archive_policy"/>
-                        <field name="deletion_policy"/>
+                        <field name="name" readonly="approved_at"/>
+                        <field name="company_id" readonly="approved_at"/>
+                        <field name="purpose" readonly="approved_at"/>
+                        <field name="responsible_id" readonly="approved_at"/>
+                        <field name="duration_unit" readonly="approved_at"/>
+                        <field name="duration_days" invisible="duration_unit != 'days'" readonly="approved_at"/>
+                        <field name="duration_months" invisible="duration_unit != 'months'" readonly="approved_at"/>
+                        <field name="archive_policy" readonly="approved_at"/>
+                        <field name="deletion_policy" readonly="approved_at"/>
                         <field name="approved_by_id"/>
                         <field name="approved_at"/>
                     </group>

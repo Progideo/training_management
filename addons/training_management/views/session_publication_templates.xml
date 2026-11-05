@@ -29,7 +29,7 @@
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <h1>Nouvelles dates : <t t-out="title"/></h1>
             <p t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
-            <p t-if="policy">Finalité : vous prévenir des nouvelles dates de cette formation. Conservation des preuves prévue par la politique approuvée : <t t-out="policy['days']"/> jours. Pour une demande de suppression, contactez l’organisme. Le désabonnement est immédiat et ne supprime pas les preuves de votre choix.</p>
+            <p t-if="policy">Finalité : vous prévenir des nouvelles dates de cette formation. Conservation des preuves prévue par la politique approuvée : <t t-if="policy['unit'] == 'months'"><t t-out="policy['months']"/> mois calendaires</t><t t-else=""><t t-out="policy['days']"/> jours</t>. Pour une demande de suppression, contactez l’organisme. Le désabonnement est immédiat et ne supprime pas les preuves de votre choix.</p>
             <p t-else="">Les alertes ne sont pas encore disponibles pour cette formation. Contactez l’organisme.</p>
             <form t-if="policy" method="post">
                 <input type="hidden" name="definition" t-att-value="definition"/>

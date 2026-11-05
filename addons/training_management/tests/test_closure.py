@@ -86,6 +86,28 @@ class ClosureCase(AttendanceCase):
 
 @tagged("post_install", "-at_install")
 class TestClosure(ClosureCase):
+    def test_calendar_policy_keeps_one_unit_and_approved_history(self):
+        self.assertEqual(self.retention.duration_unit, "days")
+        self.assertEqual(self.retention.duration_months, 0)
+        policy = self.retention.copy({"name": "Fictional calendar retention"})
+        with Form(policy) as form:
+            form.duration_unit = "months"
+            form.duration_months = 3
+        self.assertEqual(policy.duration_days, 0)
+        policy.action_approve()
+        self.assertTrue(policy.approved_at)
+        self.assertEqual(policy.duration_months, 3)
+        with self.assertRaises(ValidationError):
+            policy.write({"duration_months": 1})
+        for values in (
+            {"duration_unit": "months", "duration_days": 30, "duration_months": 3},
+            {"duration_unit": "days", "duration_days": 0, "duration_months": 3},
+            {"duration_unit": "months", "duration_days": 0, "duration_months": -1},
+        ):
+            ambiguous = self.retention.copy({"name": "Fictional refused duration", **values})
+            with self.assertRaises(ValidationError):
+                ambiguous.action_approve()
+
     def test_client_download_cannot_select_private_filename_field(self):
         dossier = self.dossier()
         # A client contact can independently hold the quality role on other

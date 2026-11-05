@@ -15297,3 +15297,28 @@ msgstr "Évaluations de formation"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
 msgid "Training Evaluation"
 msgstr "Évaluation de formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__duration_unit
+msgid "Retention Unit"
+msgstr "Unité de conservation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__duration_months
+msgid "Retention (Calendar Months)"
+msgstr "Conservation (mois calendaires)"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_retention_category__duration_unit__days
+msgid "Days"
+msgstr "Jours"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_retention_category__duration_unit__months
+msgid "Calendar Months"
+msgstr "Mois calendaires"
+
+#. module: training_management
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Choose one positive duration in days or calendar months and an authorized responsible user."
+msgstr "Choisissez une seule durée positive, en jours ou en mois calendaires, et un responsable habilité."

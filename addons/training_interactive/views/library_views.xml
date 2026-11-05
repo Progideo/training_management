@@ -48,8 +48,10 @@
         <field name="arch" type="xml"><form><header>
             <button name="%(import_action)d" type="action" string="Importer une version" context="{'default_resource_id': id}" invisible="not id or not active"/>
         </header><sheet><group>
-            <field name="name"/><field name="identifier"/><field name="format" readonly="id"/>
-            <field name="company_id" readonly="id" groups="base.group_multi_company"/><field name="active"/>
+            <group colspan="2">
+                <field name="name"/><field name="identifier"/><field name="format" readonly="id"/>
+                <field name="company_id" readonly="id" groups="base.group_multi_company"/><field name="active"/>
+            </group>
             <!-- Persistent titles avoid labels targeting the dialog's similarly named inputs. -->
             <group string="Content license" colspan="2" col="1">
                 <field name="license_note" nolabel="1" placeholder="Content license"/>
