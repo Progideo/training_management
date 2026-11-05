@@ -20,8 +20,9 @@
             const receipt=await response.json();
             if(!receipt.ok) throw new Error('Sauvegarde non confirmée.');
             revision=receipt.revision;queue.shift();
-            status.textContent='Sauvegarde confirmée — révision '+revision+'.';
-            frame.contentWindow.postMessage({type:'saved',nonce:cfg.nonce,revision},cfg.origin);
+            const receiver=frame.contentWindow;
+            status.textContent='Sauvegarde confirmée — révision '+revision+'.'+(receiver?'':' Rechargez le lecteur pour reprendre.');
+            if(receiver) receiver.postMessage({type:'saved',nonce:cfg.nonce,revision},cfg.origin);
         } catch(error) {
             failed=true;retry.hidden=false;
             status.textContent=error.message+' Les données en attente restent dans cet onglet. En cas de conflit, rechargez le lecteur.';
@@ -29,7 +30,8 @@
     }
     retry.onclick=()=>{failed=false;retry.hidden=true;flush();};
     window.addEventListener('message',event=>{
-        if(event.origin!==cfg.origin||event.source!==frame.contentWindow) return;
+        const receiver=frame.contentWindow;
+        if(!receiver||event.origin!==cfg.origin||event.source!==receiver) return;
         const message=event.data;
         if(!message||typeof message!=='object'||message.nonce!==cfg.nonce) return;
         let size;try{size=JSON.stringify(message).length;}catch(e){return;}
