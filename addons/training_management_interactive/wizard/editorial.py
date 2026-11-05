@@ -16,8 +16,13 @@ class Apply(models.TransientModel):
         usages = self.assignment_id._apply(self.delivery_ids)
         return {
             "type": "ir.actions.act_window",
+            "name": self.env._("Interactive activities"),
             "res_model": usages._name,
             "view_mode": "list,form",
+            "views": [
+                (self.env.ref("training_management_interactive.usage_list").id, "list"),
+                (self.env.ref("training_management_interactive.usage_form").id, "form"),
+            ],
             "domain": [("id", "in", usages.ids)],
         }
 
