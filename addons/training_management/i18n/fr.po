@@ -8977,6 +8977,7 @@ msgstr "Commencez le traitement d’une réclamation reçue."
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__name
 #: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__name
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
 msgid "Subject"
 msgstr "Sujet"
 
@@ -9605,6 +9606,7 @@ msgstr "Veille"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__source
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
 msgid "Watch Source"
 msgstr "Source de veille"
 
