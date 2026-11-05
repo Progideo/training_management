@@ -204,7 +204,7 @@ class PracticeAction(models.Model):
             previous
             and previous[-1].body == body.strip()
             and previous[-1].sha256 == (hashlib.sha256(data).hexdigest() if data else False)
-            and previous[-1].filename == (filename.replace("\\", "/").split("/")[-1] if data else False)
+            and (previous[-1].filename or False) == (filename.replace("\\", "/").split("/")[-1] if data else False)
         ):
             return False
         self._append(kind, body.strip(), data, filename)
