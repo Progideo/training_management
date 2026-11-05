@@ -12910,8 +12910,8 @@ msgstr "· <span>Consommées :</span>"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
-msgid "· <span>Hours:</span>"
-msgstr "· <span>Heures :</span>"
+msgid "· <span>Duration (minutes):</span>"
+msgstr "· <span>Durée (minutes) :</span>"
 
 #. module: training_management
 #. odoo-python

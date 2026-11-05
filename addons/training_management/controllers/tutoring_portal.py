@@ -102,7 +102,7 @@ class TutoringPortal(http.Controller):
                     "name": slot.name,
                     "start": format_datetime(request.env, slot.start_at, tz=tz),
                     "end": format_datetime(request.env, slot.end_at, tz=tz),
-                    "duration": formatLang(request.env, slot.duration_hours, digits=1),
+                    "duration": formatLang(request.env, round(slot.duration_hours * 60), digits=0),
                     "capacity": slot.capacity,
                     "kind": slot.kind,
                     "terms": slot.cancellation_terms,
