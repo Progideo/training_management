@@ -85,7 +85,13 @@ class SessionPublicationPortal(http.Controller):
                     "title": program.title,
                     "wording": model._wording(),
                     "definition": model._definition(program),
-                    "policy": {"days": policy.duration_days} if policy and policy.approved_at else False,
+                    "policy": {
+                        "unit": policy.duration_unit,
+                        "days": policy.duration_days,
+                        "months": policy.duration_months,
+                    }
+                    if policy and policy.approved_at
+                    else False,
                     "error": error,
                 },
             )
