@@ -147,6 +147,10 @@ class Attendance(models.Model):
                 if events.filtered("anomaly")
                 else "pending"
             )
+            if last.kind == "invalidation" and events[-1:].id > last.id:
+                # A new source awaits a new review; the previous invalidation
+                # still controls retained minutes and stays in the history.
+                record.state = "anomaly" if events.filtered(lambda e: e.id > last.id and e.anomaly) else "pending"
             retained = bool(decisions and last.kind != "invalidation")
             record.minutes = (
                 max(0, (last.end_at - last.start_at).total_seconds() / 60) if retained and not last.absent else 0
