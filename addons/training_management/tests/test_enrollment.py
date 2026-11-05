@@ -867,13 +867,17 @@ class TestErgonomics(EnrollmentCase):
         enrollment = self.enrollment(self.delivery())
         for operation in ("postpone", "replace"):
             action = self.env.ref(f"training_management.action_enrollment_{operation}")
-            result = action.with_user(self.coordinator).with_context(
-                lang="fr_FR",
-                allowed_company_ids=self.company.ids,
-                active_model="training.enrollment",
-                active_id=enrollment.id,
-                active_ids=enrollment.ids,
-            ).run()
+            result = (
+                action.with_user(self.coordinator)
+                .with_context(
+                    lang="fr_FR",
+                    allowed_company_ids=self.company.ids,
+                    active_model="training.enrollment",
+                    active_id=enrollment.id,
+                    active_ids=enrollment.ids,
+                )
+                .run()
+            )
             self.assertEqual(result["name"], "Opération sur une inscription")
             self.assertEqual(result["context"]["default_operation"], operation)
             self.assertEqual(enrollment.state, "requested")
