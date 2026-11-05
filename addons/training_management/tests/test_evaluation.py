@@ -1,15 +1,34 @@
 """S09.1: real scoped roles, preserved decisions and dedicated S08 evidence."""
 
 from datetime import timedelta
+import io
 
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import new_test_user, tagged
+from odoo.tools.pdf import PdfReader
 
 from .test_closure import ClosureCase
 
 
 class EvaluationCase(ClosureCase):
+    def native_pdf_reports(self):
+        # Keep HTML preparation and wkhtmltopdf real. HTTP assets cannot read
+        # this uncommitted TransactionCase database from a second connection.
+        self.env["ir.ui.view"].create(
+            {
+                "name": "Fictional PDF layout without HTTP assets",
+                "type": "qweb",
+                "inherit_id": self.env.ref("web.minimal_layout").id,
+                "arch": """<data>
+                    <xpath expr="//t[@t-call-assets='web.report_assets_pdf'][@t-js='false']" position="replace"/>
+                    <xpath expr="//t[@t-call-assets='web.report_assets_common']" position="replace"/>
+                    <xpath expr="//t[@t-call-assets='web.report_assets_pdf'][@t-css='false']" position="replace"/>
+                </data>""",
+            }
+        )
+        return self.env["ir.actions.report"].with_context(force_report_rendering=True)
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -89,6 +108,25 @@ class EvaluationCase(ClosureCase):
 
 @tagged("post_install", "-at_install")
 class TestEvaluation(EvaluationCase):
+    def test_native_evaluation_report_uses_real_pdf_engine_and_scoped_access(self):
+        row, _grant = self.assigned_evaluation(criteria="Réponse contrôlée — démonstration française")
+        result = self.decision(row)
+        reports = self.native_pdf_reports()
+        report_ref = "training_management.report_evaluation"
+        with self.assertRaises(AccessError):
+            reports.with_user(self.portal)._render_qweb_pdf(report_ref, result.ids)
+        before = result.read(["score", "conclusion", "reason", "create_date"])
+        content, kind = reports.with_user(self.quality)._render_qweb_pdf(report_ref, result.ids)
+        self.assertEqual(kind, "pdf")
+        self.assertTrue(content.startswith(b"%PDF-"))
+        pdf = PdfReader(io.BytesIO(content))
+        self.assertEqual(len(pdf.pages), 1)
+        text = pdf.pages[0].extract_text()
+        self.assertIn("Fictional dedicated assessment", text)
+        self.assertIn("Évaluation pédagogique dédiée", text)
+        self.assertIn("Réponse contrôlée — démonstration française", text)
+        self.assertEqual(result.read(["score", "conclusion", "reason", "create_date"]), before)
+
     def test_versions_and_no_implicit_zero(self):
         row, _grant = self.assigned_evaluation()
         self.assertEqual(row.state, "not_started")
