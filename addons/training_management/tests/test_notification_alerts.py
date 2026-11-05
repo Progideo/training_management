@@ -2,13 +2,14 @@
 
 from datetime import timedelta
 from email.utils import parseaddr
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import tagged
 
 from .test_attendance import AttendanceCase
 from .test_quality import QualityCase
+from .test_testimonial import PublicationCase
 
 
 @tagged("post_install", "-at_install")
@@ -236,3 +237,71 @@ class TestQualityAlerts(QualityCase):
         complaint.write({"quality_id": self.other_quality.id})
         with self.assertRaises(ValidationError):
             notice.mail_id._prepare_outgoing_list()
+
+
+@tagged("post_install", "-at_install")
+class TestPublicationFailureAlerts(PublicationCase):
+    def setUp(self):
+        super().setUp()
+        self.company.write(
+            {
+                "training_notification_template_id": self.env["mail.template"]
+                .create(
+                    {
+                        "name": "Fictional publication alert identity",
+                        "model_id": self.env["ir.model"]._get_id("res.company"),
+                        "email_from": "contact@example.invalid",
+                    }
+                )
+                .id,
+                "training_notification_manager_id": self.coordinator.id,
+            }
+        )
+        self.coordinator.partner_id.email = "manager@example.invalid"
+
+    def publication_alert(self, notice):
+        return self.env["training.operator.notice"].search(
+            [("source_model", "=", notice._name), ("source_id", "=", notice.id)]
+        )
+
+    def test_publication_failure_alert_is_unique_and_follows_source_state(self):
+        row, _presence = self.review_request()
+        notice = self.env["training.publication.notice"].search([("publication_id", "=", row.id)])
+        notice.mail_id.write({"state": "exception"})
+        alert = self.publication_alert(notice)
+        self.assertEqual(len(alert), 1)
+        self.assertEqual(alert.recipient_id, self.coordinator)
+        self.assertTrue(alert.mail_id)
+        self.assertTrue(alert.mail_id._prepare_outgoing_list())
+        self.assertFalse(alert.mail_id.attachment_ids or alert.mail_id.email_cc or alert.mail_id.recipient_ids)
+        notice.mail_id.write({"state": "exception"})
+        self.assertEqual(self.publication_alert(notice), alert)
+        before = self.env["training.operator.notice"].search_count([])
+        alert.mail_id.write({"state": "exception"})
+        self.assertEqual(self.env["training.operator.notice"].search_count([]), before)
+        notice.mail_id.write({"state": "outgoing"})
+        self.assertFalse(alert._authorized())
+        with self.assertRaises(ValidationError):
+            alert.mail_id._prepare_outgoing_list()
+
+    def test_withdrawn_publication_notice_refused_without_aborting_native_send(self):
+        row, _presence = self.review_request()
+        notice = self.env["training.publication.notice"].search([("publication_id", "=", row.id)])
+        row.with_user(self.portal).sudo()._withdraw()
+        self.assertFalse(notice._authorized())
+        server = type(self.env["ir.mail_server"])
+        with (
+            patch.object(server, "_disable_send", return_value=False),
+            patch.object(server, "_connect__", return_value=MagicMock()),
+            patch.object(server, "send_email") as transport,
+        ):
+            notice.mail_id.with_context(lang="en_US").send(raise_exception=False)
+        transport.assert_not_called()
+        self.assertEqual(notice.mail_id.state, "exception")
+        self.assertIn("authorized recipient", notice.mail_id.failure_reason)
+        alert = self.publication_alert(notice)
+        self.assertEqual(len(alert), 1)
+        self.assertTrue(alert.mail_id)
+        self.assertTrue(alert.mail_id._prepare_outgoing_list())
+        self.assertEqual(row.state, "withdrawn")
+        self.assertFalse(row._public_row())
