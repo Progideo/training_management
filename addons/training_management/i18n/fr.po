@@ -2412,6 +2412,7 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__reason
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_change__reason
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__reason
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Reason"
 msgstr "Motif"
 
@@ -9492,6 +9493,7 @@ msgstr "Justificatif remplacé"
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__replacement_ids
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_change__replacement_id
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__replacement_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Replacement"
 msgstr "Remplacement"
 
@@ -14384,7 +14386,7 @@ msgid ""
 "Confirm attendance for this half-day. Validated attendance counts for its "
 "scheduled duration."
 msgstr ""
-"Confirmez votre présence pour cette demi-journée. La présence validée compte"
+"Confirmez la présence pour cette demi-journée. La présence validée compte"
 " pour sa durée prévue au planning."
 
 #. module: training_management
@@ -15163,18 +15165,22 @@ msgid "Signature Version"
 msgstr "Version de signature"
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Reissue"
 msgstr "Réémettre"
 
 #. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_change__state__reissued
 msgid "Reissued"
 msgstr "Réémise"
 
 #. module: training_management
+#: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "Only a revoked certificate can be reissued."
 msgstr "Seule une attestation révoquée peut être réémise."
 
 #. module: training_management
+#: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "A valid certificate of this type already exists for this dossier."
 msgstr "Une attestation valide de ce type existe déjà pour ce dossier."
 
