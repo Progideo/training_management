@@ -13,6 +13,7 @@ from odoo.tests import Form, HttpCase, TransactionCase, new_test_user, tagged
 from odoo.tools.binary import BinaryBytes
 from odoo.tools.misc import limited_field_access_token
 from odoo.tools import mute_logger
+from odoo.tools.translate import load_language
 
 from ..services.archive import parse_package
 
@@ -192,6 +193,30 @@ class TestInteractiveLibrary(LibraryCase):
             versions.with_user(self.author)._import(self.resource, "1", package({"../bad": b"x"}), "Test", "Test")
         self.assertEqual(versions.search_count([]), count)
         self.assertEqual(self.env["training.elearning.file"].search_count([]), files)
+
+    def test_french_import_refusals_keep_versions_and_files_unchanged(self):
+        load_language(self.cr, "fr_FR")
+        self.env["ir.module.module"].search([("name", "=", "training_interactive")])._update_translations(["fr_FR"])
+        versions = self.env["training.elearning.version"].with_user(self.author).with_context(lang="fr_FR")
+        before = (versions.search_count([]), self.env["training.elearning.file"].search_count([]))
+        for raw, expected in (
+            (package({"../refused.txt": b"Fictional"}), "Le paquet contient un chemin de fichier interdit."),
+            (package({"imsmanifest.xml": b"<manifest>"}), "L’archive ou le manifeste du paquet est invalide."),
+            (
+                package({"imsmanifest.xml": MANIFEST.replace(b"1.2", b"2004")}),
+                "Seul SCORM 1.2 avec un unique module SCO est pris en charge.",
+            ),
+        ):
+            with self.subTest(reason=expected), self.assertRaises(ValidationError) as error, self.env.cr.savepoint():
+                versions._import(self.resource, "refused", raw, "CC0 fixture", "Fictional test")
+            self.assertEqual(str(error.exception), expected)
+        self.assertEqual(before, (versions.search_count([]), self.env["training.elearning.file"].search_count([])))
+        self.assertEqual(
+            versions._import_error_message("Unexpected PRIVATE value"), "Le paquet interactif n’a pas pu être importé."
+        )
+        self.assertEqual(
+            versions.with_context(lang="en_US")._import_error_message("Unsafe package path"), "Unsafe package path"
+        )
 
     def test_context_cannot_publish_and_duplicate_import_is_atomic(self):
         versions = (
