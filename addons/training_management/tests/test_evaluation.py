@@ -109,7 +109,7 @@ class EvaluationCase(ClosureCase):
 @tagged("post_install", "-at_install")
 class TestEvaluation(EvaluationCase):
     def test_native_evaluation_report_uses_real_pdf_engine_and_scoped_access(self):
-        row, _grant = self.assigned_evaluation()
+        row, _grant = self.assigned_evaluation(criteria="Réponse contrôlée — démonstration française")
         result = self.decision(row)
         reports = self.native_pdf_reports()
         report_ref = "training_management.report_evaluation"
@@ -121,7 +121,10 @@ class TestEvaluation(EvaluationCase):
         self.assertTrue(content.startswith(b"%PDF-"))
         pdf = PdfReader(io.BytesIO(content))
         self.assertEqual(len(pdf.pages), 1)
-        self.assertIn("Fictional dedicated assessment", pdf.pages[0].extract_text())
+        text = pdf.pages[0].extract_text()
+        self.assertIn("Fictional dedicated assessment", text)
+        self.assertIn("Évaluation pédagogique dédiée", text)
+        self.assertIn("Réponse contrôlée — démonstration française", text)
         self.assertEqual(result.read(["score", "conclusion", "reason", "create_date"]), before)
 
     def test_versions_and_no_implicit_zero(self):

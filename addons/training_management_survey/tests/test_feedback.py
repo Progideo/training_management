@@ -12,7 +12,9 @@ from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
 
 
 class FeedbackCase(EvaluationCase):
-    def campaign(self, anonymous=True, purpose="immediate", recipients=3, opened=True):
+    def campaign(
+        self, anonymous=True, purpose="immediate", recipients=3, opened=True, name="Fictional feedback campaign"
+    ):
         delivery = self.delivery()
         definition = (
             self.env["training.feedback"]
@@ -56,7 +58,7 @@ class FeedbackCase(EvaluationCase):
             .with_user(self.coordinator)
             .create(
                 {
-                    "name": "Fictional feedback campaign",
+                    "name": name,
                     "delivery_id": delivery.id,
                     "feedback_id": definition.id,
                     "population": "Confirmed fictional participants",
@@ -101,7 +103,7 @@ class FeedbackCase(EvaluationCase):
 @tagged("post_install", "-at_install")
 class TestFeedback(FeedbackCase):
     def test_native_closed_feedback_report_preserves_snapshot_and_scope(self):
-        campaign, users, question = self.campaign()
+        campaign, users, question = self.campaign(name="Synthèse des retours — édition française")
         for user in users:
             self.submit(campaign, user, question)
         campaign.action_close()
