@@ -66,6 +66,22 @@ class TestPractice(PracticeCase):
         with self.assertRaises(ValidationError):
             self.plan(state="done")
 
+    def test_identical_trainer_feedback_without_attachment_is_idempotent(self):
+        action = self.plan()
+        participant = self.as_user(action)
+        trainer = self.as_user(action, self.portal_b)
+        participant._submit("participant", "Fictional completed action")
+        self.assertTrue(trainer._submit("trainer", "Fictional plain feedback"))
+        feedback = action.entry_ids.filtered(lambda entry: entry.kind == "feedback")
+        self.assertEqual(len(feedback), 1)
+        self.assertFalse(feedback.filename)
+        self.assertFalse(feedback.sha256)
+        self.assertFalse(trainer._submit("trainer", "  Fictional plain feedback  "))
+        self.assertEqual(action.entry_ids.filtered(lambda entry: entry.kind == "feedback"), feedback)
+        self.assertTrue(trainer._submit("trainer", "Fictional additional feedback"))
+        self.assertEqual(len(action.entry_ids.filtered(lambda entry: entry.kind == "feedback")), 2)
+        self.assertEqual(feedback.body, "Fictional plain feedback")
+
     def test_completion_optional_proof_feedback_and_double_submit(self):
         action = self.plan()
         participant, trainer = self.as_user(action), self.as_user(action, self.portal_b)
