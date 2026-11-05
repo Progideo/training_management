@@ -33,7 +33,7 @@
                     <p><t t-out="pending_nominations"/> participant proposals awaiting coordination.</p>
                     <p t-if="lot_deadline">Reservation deadline: <t t-out="lot_deadline"/></p>
                 </div>
-                <div t-if="saved" id="company-feedback" class="alert alert-success o_training_feedback" tabindex="-1" role="status">Participant proposal recorded. Coordination must still confirm the enrollment.</div>
+                <div t-if="saved or approved" id="company-feedback" class="alert alert-success o_training_feedback" tabindex="-1" role="status"><t t-if="approved">Your agreement on this version has been recorded.</t><t t-else="">Participant proposal recorded. Coordination must still confirm the enrollment.</t></div>
                 <p t-out="program"/>
                 <h2>Séances</h2>
                 <ul>

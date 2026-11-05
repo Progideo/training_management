@@ -15328,3 +15328,8 @@ msgstr "Mois calendaires"
 #: code:addons/training_management/models/training_closure.py:0
 msgid "Choose one positive duration in days or calendar months and an authorized responsible user."
 msgstr "Choisissez une seule durée positive, en jours ou en mois calendaires, et un responsable habilité."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Your agreement on this version has been recorded."
+msgstr "Votre accord sur cette version a été enregistré."
