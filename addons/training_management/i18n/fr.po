@@ -4057,6 +4057,7 @@ msgid "Unavailability"
 msgstr "Indisponibilité"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
 #: code:addons/training_management/controllers/attendance_matrix.py:0
 msgid "Upcoming"
@@ -5588,6 +5589,7 @@ msgstr ""
 "la coordination pour l’affectation d’un tuteur."
 
 #. module: training_management
+#. odoo-python
 #: model:ir.model.fields.selection,name:training_management.selection__training_practice_notice__event_kind__reminder
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__reminder
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__event_kind__reminder
@@ -15175,11 +15177,13 @@ msgid "Reissued"
 msgstr "Réémise"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "Only a revoked certificate can be reissued."
 msgstr "Seule une attestation révoquée peut être réémise."
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "A valid certificate of this type already exists for this dossier."
 msgstr "Une attestation valide de ce type existe déjà pour ce dossier."
@@ -15325,6 +15329,7 @@ msgid "Calendar Months"
 msgstr "Mois calendaires"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/models/training_closure.py:0
 msgid "Choose one positive duration in days or calendar months and an authorized responsible user."
 msgstr "Choisissez une seule durée positive, en jours ou en mois calendaires, et un responsable habilité."
