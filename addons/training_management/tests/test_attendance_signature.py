@@ -46,13 +46,16 @@ class TestAttendanceSignatures(AttendanceCase, HttpCase):
         self.assertEqual(presence.state, "pending")
         self.assertEqual(presence.minutes, 0)
         self.assertEqual(presence.event_ids[:2].read(list(original[0])), original)
+        language = self.env["website"].search([], limit=1).default_lang_id.code or self.portal_b.lang
+        self.portal_b.lang = language
+        states = dict(presence.with_context(lang=language).fields_get(["state"])["state"]["selection"])
         self.authenticate(self.portal_b.login, self.portal_b.login)
         response = self.url_open(f"/my/training-sessions/{session.id}/attendance")
         self.assertEqual(response.status_code, 200)
         tree = html.fromstring(response.content)
         summaries = tree.xpath("//details/summary/text()")
-        self.assertTrue(any("Pending Review" in text for text in summaries), summaries)
-        self.assertFalse(any("Invalidated" in text for text in summaries), summaries)
+        self.assertTrue(any(states["pending"] in text for text in summaries), summaries)
+        self.assertFalse(any(states["invalidated"] in text for text in summaries), summaries)
 
     def sign(self, session, enrollment, **values):
         return self.service()._sign_halfday(

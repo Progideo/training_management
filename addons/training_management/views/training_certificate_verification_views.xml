@@ -37,7 +37,9 @@
                         <group colspan="2">
                             <field name="changed_at"/>
                             <field name="changed_by_id"/>
-                            <field name="replacement_id"/>
+                        </group>
+                        <group string="Replacement" colspan="2" col="1">
+                            <field name="replacement_id" nolabel="1"/>
                         </group>
                     </group>
                 </sheet>
