@@ -65,6 +65,7 @@ class TrainingCompanyPortal(http.Controller):
                     "practice_summaries": request.env["training.practice.summary"]._client_rows(allocation),
                     "allocation_id": allocation.id,
                     "saved": post.get("saved") == "1",
+                    "approved": post.get("approved") == "1",
                     "lot_quantity": allocation.quantity,
                     "lot_remaining": allocation.unnamed_seats,
                     "lot_deadline": portal_datetime(allocation.expires_at) if allocation.state == "reserved" else False,
@@ -183,4 +184,4 @@ class TrainingCompanyPortal(http.Controller):
         version = self._version(allocation_id, version_id)
         # Exact current allocation/company/client grant has been checked above.
         version._approve(request.env.user, request.env.user.partner_id)
-        return request.redirect(f"/my/company-trainings/{allocation_id}?saved=1#company-feedback")
+        return request.redirect(f"/my/company-trainings/{allocation_id}?approved=1#company-feedback")

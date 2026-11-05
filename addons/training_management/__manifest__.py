@@ -2,7 +2,7 @@
 {
     "name": "Training Management",
     "summary": "Standard training catalogue and controlled programme versions",
-    "version": "20.0.3.0.11",
+    "version": "20.0.3.0.12",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
