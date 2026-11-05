@@ -49,6 +49,7 @@ msgstr "Format"
 
 #. module: training_interactive
 #: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__license_note
+#: model_terms:ir.ui.view,arch_db:training_interactive.resource_form
 msgid "Content license"
 msgstr "Licence du contenu"
 
@@ -56,6 +57,7 @@ msgstr "Licence du contenu"
 #: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__provenance
 #: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__provenance
 #: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__provenance
+#: model_terms:ir.ui.view,arch_db:training_interactive.resource_form
 msgid "Provenance"
 msgstr "Provenance"
 

@@ -27,7 +27,9 @@
                 <sheet>
                     <field name="can_review" invisible="1"/>
                     <group>
-                        <field name="name" readonly="state == 'closed' or frozen"/>
+                        <group string="Subject" colspan="2" col="1">
+                            <field name="name" nolabel="1" placeholder="Subject" readonly="state == 'closed' or frozen"/>
+                        </group>
                         <field name="kind" readonly="id"/>
                         <field name="company_id" readonly="id" groups="base.group_multi_company"/>
                         <field name="partner_id" invisible="kind == 'watch'" required="kind != 'watch'" readonly="id"/>
@@ -40,7 +42,9 @@
                         <field name="competencies" readonly="state == 'closed' or frozen"/>
                     </group>
                     <group string="Analyzed Watch" invisible="kind != 'watch'">
-                        <field name="source" readonly="state == 'closed' or frozen"/>
+                        <group string="Watch Source" colspan="2" col="1">
+                            <field name="source" nolabel="1" placeholder="Watch Source" readonly="state == 'closed' or frozen"/>
+                        </group>
                         <field name="observed_on" readonly="state == 'closed' or frozen"/>
                         <field name="analysis" readonly="state == 'closed' or frozen"/>
                         <field name="decision" readonly="state == 'closed' or frozen"/>
