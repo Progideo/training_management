@@ -146,3 +146,177 @@ msgstr "Publié"
 #: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__withdrawn
 msgid "Withdrawn"
 msgstr "Retiré"
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsafe package path"
+msgstr "Le paquet contient un chemin de fichier interdit."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "JSON metadata too large"
+msgstr "Les métadonnées JSON du paquet sont trop volumineuses."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "JSON object required"
+msgstr "Les métadonnées du paquet doivent être un objet JSON."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P dependency"
+msgstr "Une dépendance H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P library identity"
+msgstr "L’identité d’une bibliothèque H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P runtime dependencies"
+msgstr "Les dépendances nécessaires à la lecture H5P sont invalides."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Only H5P TrueFalse 1.8 is qualified"
+msgstr "Seule la bibliothèque H5P TrueFalse 1.8 est prise en charge."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "H5P library identity mismatch"
+msgstr "L’identité d’une bibliothèque H5P ne correspond pas à celle annoncée."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing H5P main runtime"
+msgstr "Le composant principal de lecture H5P est absent."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P assets"
+msgstr "La liste des fichiers de lecture H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P asset"
+msgstr "Un fichier de lecture H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing H5P runtime asset"
+msgstr "Un fichier nécessaire à la lecture H5P est absent."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P dependencies"
+msgstr "Les dépendances H5P sont invalides."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Incomplete H5P runtime dependency list"
+msgstr "La liste des dépendances nécessaires à la lecture H5P est incomplète."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Cyclic H5P dependencies"
+msgstr "Les dépendances H5P contiennent un cycle."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid TrueFalse content"
+msgstr "Le contenu de la question vrai ou faux est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsupported or oversized archive"
+msgstr "Le format du paquet est invalide ou sa taille dépasse 20 Mio."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Archive limits exceeded"
+msgstr "Le paquet dépasse les limites du nombre ou de la taille totale des fichiers."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsafe or excessive archive entry"
+msgstr "Un fichier du paquet est interdit ou dépasse les limites autorisées."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Nested archives are not supported"
+msgstr "Les archives imbriquées ne sont pas prises en charge."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Les vidéos privées ne sont pas prises en charge dans les paquets interactifs."
+msgstr "Les vidéos privées ne sont pas prises en charge dans les paquets interactifs."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid entry size"
+msgstr "La taille d’un fichier du paquet est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsafe manifest"
+msgstr "Le manifeste du paquet contient une déclaration interdite."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Only SCORM 1.2 single SCO is supported"
+msgstr "Seul SCORM 1.2 avec un unique module SCO est pris en charge."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "A SCO resource is required"
+msgstr "Le paquet doit contenir une ressource SCO."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing local HTML entry point"
+msgstr "La page HTML locale de démarrage est absente."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing manifest file"
+msgstr "Un fichier annoncé dans le manifeste est absent."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid package archive or manifest"
+msgstr "L’archive ou le manifeste du paquet est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "The interactive package could not be imported."
+msgstr "Le paquet interactif n’a pas pu être importé."

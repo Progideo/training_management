@@ -2,7 +2,7 @@
 {
     "name": "Training Interactive Library",
     "summary": "Shared private H5P and SCORM package versions, independent of learner contexts",
-    "version": "20.0.1.2.1",
+    "version": "20.0.1.2.2",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",

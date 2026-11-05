@@ -46,6 +46,43 @@ class Version(models.Model):
         raise AccessError(self.env._("Use the controlled package import."))
 
     @api.private
+    def _import_error_message(self, message):
+        """Translate known parser failures without exposing unexpected exception text."""
+        messages = {
+            "Unsafe package path": self.env._("Unsafe package path"),
+            "JSON metadata too large": self.env._("JSON metadata too large"),
+            "JSON object required": self.env._("JSON object required"),
+            "Invalid H5P dependency": self.env._("Invalid H5P dependency"),
+            "Invalid H5P library identity": self.env._("Invalid H5P library identity"),
+            "Invalid H5P runtime dependencies": self.env._("Invalid H5P runtime dependencies"),
+            "Only H5P TrueFalse 1.8 is qualified": self.env._("Only H5P TrueFalse 1.8 is qualified"),
+            "H5P library identity mismatch": self.env._("H5P library identity mismatch"),
+            "Missing H5P main runtime": self.env._("Missing H5P main runtime"),
+            "Invalid H5P assets": self.env._("Invalid H5P assets"),
+            "Invalid H5P asset": self.env._("Invalid H5P asset"),
+            "Missing H5P runtime asset": self.env._("Missing H5P runtime asset"),
+            "Invalid H5P dependencies": self.env._("Invalid H5P dependencies"),
+            "Incomplete H5P runtime dependency list": self.env._("Incomplete H5P runtime dependency list"),
+            "Cyclic H5P dependencies": self.env._("Cyclic H5P dependencies"),
+            "Invalid TrueFalse content": self.env._("Invalid TrueFalse content"),
+            "Unsupported or oversized archive": self.env._("Unsupported or oversized archive"),
+            "Archive limits exceeded": self.env._("Archive limits exceeded"),
+            "Unsafe or excessive archive entry": self.env._("Unsafe or excessive archive entry"),
+            "Nested archives are not supported": self.env._("Nested archives are not supported"),
+            "Les vidéos privées ne sont pas prises en charge dans les paquets interactifs.": self.env._(
+                "Les vidéos privées ne sont pas prises en charge dans les paquets interactifs."
+            ),
+            "Invalid entry size": self.env._("Invalid entry size"),
+            "Unsafe manifest": self.env._("Unsafe manifest"),
+            "Only SCORM 1.2 single SCO is supported": self.env._("Only SCORM 1.2 single SCO is supported"),
+            "A SCO resource is required": self.env._("A SCO resource is required"),
+            "Missing local HTML entry point": self.env._("Missing local HTML entry point"),
+            "Missing manifest file": self.env._("Missing manifest file"),
+            "Invalid package archive or manifest": self.env._("Invalid package archive or manifest"),
+        }
+        return messages.get(message, self.env._("The interactive package could not be imported."))
+
+    @api.private
     def _import(self, resource, number, raw, license_note, provenance):
         resource = resource.with_env(self.env)
         resource.ensure_one()
@@ -59,7 +96,7 @@ class Version(models.Model):
         try:
             result = parse_package(raw, resource.format)
         except ValueError as error:
-            raise ValidationError(str(error)) from error
+            raise ValidationError(self._import_error_message(str(error))) from error
         with self.env.cr.savepoint():
             version = super(Version, self.with_context({})).create(  # pylint: disable=super-method-mismatch,context-overridden  # checked import; discard RPC defaults
                 {
