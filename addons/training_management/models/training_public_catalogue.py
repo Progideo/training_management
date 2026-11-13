@@ -34,6 +34,25 @@ class TrainingPublicProgramme(models.Model):
                 raise ValidationError(self.env._("The public extract must be a PDF of at most 10 MB."))
 
     @api.private
+    def _public_general_sections(self):
+        self.ensure_one()
+        return [
+            (label, self[name])
+            for name, label in [
+                ("objectives", self.env._("Objectives")),
+                ("target_audience", self.env._("Target audience")),
+                ("prerequisites", self.env._("Prerequisites")),
+                ("access_conditions", self.env._("Access conditions")),
+                ("accessibility_information", self.env._("Accessibility")),
+                ("expected_outcomes", self.env._("Expected outcomes")),
+                ("material_access_duration", self.env._("Material access duration")),
+                ("included_services", self.env._("Included training services")),
+                ("official_exam_details", self.env._("Official exam and inclusion")),
+            ]
+            if self[name]
+        ]
+
+    @api.private
     def _catalogue_sections(self):
         self.ensure_one()
         labels = [

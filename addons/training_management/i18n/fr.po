@@ -2412,6 +2412,7 @@ msgstr "Nombre de places"
 #: model:ir.model.fields,field_description:training_management.field_training_publication_event__reason
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_change__reason
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__reason
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Reason"
 msgstr "Motif"
 
@@ -4056,6 +4057,7 @@ msgid "Unavailability"
 msgstr "Indisponibilité"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
 #: code:addons/training_management/controllers/attendance_matrix.py:0
 msgid "Upcoming"
@@ -5587,6 +5589,7 @@ msgstr ""
 "la coordination pour l’affectation d’un tuteur."
 
 #. module: training_management
+#. odoo-python
 #: model:ir.model.fields.selection,name:training_management.selection__training_practice_notice__event_kind__reminder
 #: model:ir.model.fields.selection,name:training_management.selection__training_learning_notice__event_kind__reminder
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_notice__event_kind__reminder
@@ -8977,6 +8980,7 @@ msgstr "Commencez le traitement d’une réclamation reçue."
 #: model:ir.model.fields,field_description:training_management.field_training_quality_record__name
 #: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__name
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
 msgid "Subject"
 msgstr "Sujet"
 
@@ -9491,6 +9495,7 @@ msgstr "Justificatif remplacé"
 #: model:ir.model.fields,field_description:training_management.field_training_provider_evidence__replacement_ids
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_change__replacement_id
 #: model:ir.model.fields,field_description:training_management.field_training_certificate_verification__replacement_id
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Replacement"
 msgstr "Remplacement"
 
@@ -9605,6 +9610,7 @@ msgstr "Veille"
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_provider_dossier__source
+#: model_terms:ir.ui.view,arch_db:training_management.view_provider_dossier_form
 msgid "Watch Source"
 msgstr "Source de veille"
 
@@ -12910,8 +12916,8 @@ msgstr "· <span>Consommées :</span>"
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
-msgid "· <span>Hours:</span>"
-msgstr "· <span>Heures :</span>"
+msgid "· <span>Duration (minutes):</span>"
+msgstr "· <span>Durée (minutes) :</span>"
 
 #. module: training_management
 #. odoo-python
@@ -14382,7 +14388,7 @@ msgid ""
 "Confirm attendance for this half-day. Validated attendance counts for its "
 "scheduled duration."
 msgstr ""
-"Confirmez votre présence pour cette demi-journée. La présence validée compte"
+"Confirmez la présence pour cette demi-journée. La présence validée compte"
 " pour sa durée prévue au planning."
 
 #. module: training_management
@@ -14418,6 +14424,7 @@ msgstr "Présence historique"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_attendance.py:0
+#: code:addons/training_management/controllers/attendance_portal.py:0
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
 msgid "I confirm that I was absent for this half-day."
 msgstr "Je confirme mon absence pour cette demi-journée."
@@ -15160,22 +15167,30 @@ msgid "Signature Version"
 msgstr "Version de signature"
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_certificate_verification_form
 msgid "Reissue"
 msgstr "Réémettre"
 
 #. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_certificate_change__state__reissued
 msgid "Reissued"
 msgstr "Réémise"
 
 #. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "Only a revoked certificate can be reissued."
 msgstr "Seule une attestation révoquée peut être réémise."
 
 #. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_certificate_verification.py:0
 msgid "A valid certificate of this type already exists for this dossier."
 msgstr "Une attestation valide de ce type existe déjà pour ce dossier."
 
 #. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_attendance_delegate
+#: model_terms:ir.ui.view,arch_db:training_management.view_session_attendance
 msgid "Reassign Attendance Control"
 msgstr "Réaffecter le contrôle des présences"
 
@@ -15222,3 +15237,104 @@ msgstr "Seul un coordinateur de formation peut réaffecter le contrôle des pré
 #. module: training_management
 msgid "The schedule, declarations and decisions stay unchanged. Only the replacement can validate from now on. Without any available replacement, use Validate for an Unavailable Trainer in the attendance assistant."
 msgstr "Le planning, les déclarations et les décisions restent inchangés. Seul le remplaçant peut désormais valider. Si aucun remplaçant n’est disponible, utilisez « Valider pour un formateur indisponible » dans l’assistant de présences."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_trainings
+msgid "Company training dossiers"
+msgstr "Dossiers de formation de l’entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Company training dossier"
+msgstr "Dossier de formation de l’entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutoring
+msgid "My Tutoring Assignments"
+msgstr "Mes accompagnements pédagogiques"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_learning_tutor
+msgid "Private Tutoring Details"
+msgstr "Accompagnement pédagogique privé"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
+msgid "My Training Sessions"
+msgstr "Mes séances de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_session
+msgid "Assigned Training Session"
+msgstr "Séance de formation affectée"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaints
+msgid "Own Complaints"
+msgstr "Mes réclamations confidentielles"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint_new
+msgid "Submit Confidential Complaint"
+msgstr "Déposer une réclamation confidentielle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_complaint
+msgid "Own Confidential Complaint"
+msgstr "Ma réclamation confidentielle"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard_deliveries
+msgid "Operational Training Dashboards"
+msgstr "Tableaux de suivi des formations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_dashboard
+msgid "Operational Training Dashboard"
+msgstr "Tableau de suivi des formations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_documents
+msgid "My Training Documents"
+msgstr "Mes documents de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_evaluations
+msgid "Training Evaluations"
+msgstr "Évaluations de formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_evaluation
+msgid "Training Evaluation"
+msgstr "Évaluation de formation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__duration_unit
+msgid "Retention Unit"
+msgstr "Unité de conservation"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_retention_category__duration_months
+msgid "Retention (Calendar Months)"
+msgstr "Conservation (mois calendaires)"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_retention_category__duration_unit__days
+msgid "Days"
+msgstr "Jours"
+
+#. module: training_management
+#: model:ir.model.fields.selection,name:training_management.selection__training_retention_category__duration_unit__months
+msgid "Calendar Months"
+msgstr "Mois calendaires"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_closure.py:0
+msgid "Choose one positive duration in days or calendar months and an authorized responsible user."
+msgstr "Choisissez une seule durée positive, en jours ou en mois calendaires, et un responsable habilité."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "Your agreement on this version has been recorded."
+msgstr "Votre accord sur cette version a été enregistré."

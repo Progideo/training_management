@@ -39,6 +39,7 @@ class OperatorNotice(models.Model):
             "training.learning.notice",
             "training.practice.notice",
             "training.tutoring.notice",
+            "training.publication.notice",
             "training.session.alert.notice",
         )
 
@@ -84,6 +85,7 @@ class OperatorNotice(models.Model):
                 "training.learning.notice",
                 "training.practice.notice",
                 "training.tutoring.notice",
+                "training.publication.notice",
                 "training.session.alert.notice",
             )
             and source.mail_id.state != "exception"
@@ -197,7 +199,7 @@ class OperatorNotice(models.Model):
 
 
 class AttendanceAlert(models.Model):
-    _inherit = "training.attendance.event"  # pylint: disable=consider-merging-classes-inherited
+    _inherit = "training.attendance.event"  # pylint: disable=consider-merging-classes-inherited  # notifications are separate from immutable signed evidence
 
     @api.private
     def _append(self, values):

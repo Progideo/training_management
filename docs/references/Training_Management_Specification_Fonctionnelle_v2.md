@@ -1,3 +1,12 @@
+> Révision validée du 3 novembre 2026 — séparation TM/eLearning : le cadrage
+> consolidé v1 et ses 41 décisions remplacent les prescriptions contradictoires
+> ci-dessous. TM couvre les formations avec formateur ; eLearning est autonome.
+> Catalogue commun, programmes et suivis distincts. Aucune reprise métier/Odoo 19.
+> Avant achat : présentation générale seulement, sans programme détaillé ni démo.
+> P15 reste annulé, P17–P19 reportés, P20 encadré préservé. La cible et l'état
+> de la première tranche sont décrits dans [J1](../j1-shared-catalog.md).
+> Cette révision ne déclare pas les fonctionnalités cibles déjà livrées.
+
 > Révision du 30 octobre 2026 — [#102](https://github.com/Progideo/training_management/issues/102).
 > Les règles commerciales et comptables suivent désormais Odoo natif et les extensions/localisations installées.
 > Les mentions historiques MAD/EUR et virement manuel décrivent le premier organisme ; elles ne contraignent plus le module générique.
@@ -541,17 +550,17 @@ Le demandeur choisit catalogue, adaptation ou sur mesure et décrit objectifs, n
 
 Acceptation — Nominal : la demande et ses pièces sont retrouvées dans le dossier commercial avec accusé de réception. Erreur : champs indispensables absents ou pièce interdite empêchent la soumission avec indication claire ; les pièces ne sont jamais publiques.
 
-## P03 Fiches formation enrichies
+## P03 Présentation générale avant achat — révision du 3 novembre 2026
 
-La fiche présente résultats attendus, exercices ou livrables, profils des intervenants, durée d'accès aux supports, modalités et éléments inclus. Elle distingue explicitement formation, préparation, examen blanc et éventuel examen officiel, en précisant si celui-ci est inclus. Les informations non confirmées sont signalées avant publication. Rattachement : CAT01, DOC02.
+La fiche commune présente l’intitulé, la catégorie, la présentation et les objectifs généraux, puis distingue les offres avec formateur et autonomes. Les objectifs, le public, les prérequis, la durée indicative et les conditions commerciales peuvent être exposés. Les inclusions éventuelles d’un examen officiel sont explicites ; un examen blanc ne constitue pas une certification officielle. Le programme détaillé et les ressources restent privés. Rattachement : CAT01, DOC02 et décision D28 du cadrage consolidé.
 
-Acceptation — Nominal : programme public et fiche affichent les mêmes version, modalités et inclusions. Erreur : une fiche ne présente pas un examen blanc comme une certification officielle et ne promet pas une certification Qualiopi inexistante.
+Acceptation — Nominal : une même formation présente ses offres distinctes, sans créer de droit d’accès par consultation. Erreur : ni lien direct ni recherche ne révèle un contenu pédagogique privé ; aucun examen blanc ou objectif Qualiopi n’est présenté comme une certification acquise.
 
-## P04 Aperçu pédagogique public
+## P04 Aperçu pédagogique public — retiré au lancement, 3 novembre 2026
 
-Une formation peut proposer un extrait PDF et un mini-quiz de démonstration, sélectionnés et validés pour publication. Ces contenus sont séparés des supports privés et des questions d'évaluation. La démonstration ne compte pas dans la progression ni dans les résultats de formation. Rattachement : CAT01, ESP01.
+Les extraits PDF et mini-quiz publics prévus antérieurement sont retirés du périmètre de lancement par la décision D28. Les anciens liens publics sont fermés. Les données et octets historiques sont conservés, ainsi que la génération des programmes et les fonctions privées autorisées ; aucun retrait des fonctions encadrées privées n’est déduit de cette décision.
 
-Acceptation — Nominal : un visiteur consulte l'extrait et obtient le retour prévu du quiz de démonstration. Erreur : les liens ou identifiants de démonstration ne permettent pas d'ouvrir un PDF privé, un corrigé ou une banque de questions.
+Acceptation — Les routes publiques de programme détaillé, extrait et démonstration ne donnent aucun contenu. Un participant disposant du contexte autorisé conserve son téléchargement privé du programme applicable.
 
 # 20 Phase 1 Entreprises et examens blancs
 

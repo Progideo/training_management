@@ -445,6 +445,7 @@ class TestTutoringHttp(TutoringCase, HttpCase):
         self.assertIn(b"Fictional agreed cancellation terms", response.content)
         from lxml import html
 
+        self.assertTrue(html.fromstring(response.content).xpath("//article/p[1]")[0].text_content().endswith("60"))
         token = html.fromstring(response.content).xpath("//input[@name='csrf_token']/@value")[0]
         response = self.url_open(
             url, data={"csrf_token": token, "action": "reserve", "slot_id": slot.id, "request_key": str(uuid4())}
@@ -466,7 +467,7 @@ class TestTutoringHttp(TutoringCase, HttpCase):
             self.env["website"].search([]).write(
                 {"language_ids": [Command.set(french.ids)], "default_lang_id": french.id}
             )
-        entitlement, slot = self.setup_tutoring(name="<script>Fictional P13</script>")
+        entitlement, slot = self.setup_tutoring(name="<script>Fictional P13</script>", end_hour=10.25)
         self.authenticate(self.portal.login, self.portal.login)
         response = self.url_open(
             "/my/trainings/%s/tutoring" % entitlement.enrollment_id.id,
@@ -475,7 +476,7 @@ class TestTutoringHttp(TutoringCase, HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Créneaux de tutorat disponibles", response.text)
         self.assertIn("Confirmer la réservation — une unité", response.text)
-        self.assertIn("1,0", response.text)
+        self.assertIn("Durée (minutes) :</span> 15", response.text)
         self.assertIn("&lt;script&gt;Fictional P13&lt;/script&gt;", response.text)
         self.assertNotIn("<script>Fictional P13</script>", response.text)
         booking = self.reserve(entitlement, slot)

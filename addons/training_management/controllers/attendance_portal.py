@@ -218,6 +218,7 @@ class AttendancePortal(http.Controller):
             ),
             "signature_version": signature.version or 0,
             "has_signature": bool(signature.drawing),
+            "absence_wording": request.env._("I confirm that I was absent for this half-day."),
         }
 
     def _all_rows(self, sessions, enrollments):

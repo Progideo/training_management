@@ -162,7 +162,7 @@
         </xpath>
     </template>
     <template id="portal_evaluations" name="Training Evaluations">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Training Evaluations">
             <t t-call="training_management.portal_training_navigation"/>
             <h1>Training evaluations</h1>
             <p t-if="not rows">No authorized evaluation.</p>
@@ -173,7 +173,7 @@
         </t>
     </template>
     <template id="portal_evaluation" name="Training Evaluation">
-        <t t-call="portal.portal_layout">
+        <t t-call="portal.portal_layout" additional_title.translate="Training Evaluation">
             <t t-call="training_management.portal_training_navigation"/><a href="/my/training-evaluations">My evaluations</a>
             <h1 t-out="name"/>
             <p><span t-out="purpose"/> — Version <span t-out="version"/> — Attempt <span t-out="attempt_number"/></p>

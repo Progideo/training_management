@@ -195,7 +195,16 @@ class TestCompanyPortal(PreparationCase, HttpCase):
         self.authenticate(self.portal.login, self.portal.login)
         page = self.url_open(url)
         token = html.fromstring(page.content).xpath("//input[@name='csrf_token']/@value")[0]
-        self.assertEqual(self.url_open(approve, data={"csrf_token": token}).status_code, 200)
+        approved = self.url_open(approve, data={"csrf_token": token})
+        self.assertEqual(approved.status_code, 200)
+        page = html.fromstring(approved.content)
+        feedback = page.xpath("string(//*[@id='company-feedback'])").strip()
+        expected = (
+            "Votre accord sur cette version a été enregistré."
+            if page.get("lang", "").startswith("fr")
+            else "Your agreement on this version has been recorded."
+        )
+        self.assertEqual(feedback, expected)
         self.assertEqual(version.state, "approved")
         self.assertEqual(version.approved_contact_id, self.portal.partner_id)
         self.assertEqual(version.approved_by_id, self.portal)

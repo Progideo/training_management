@@ -27,27 +27,35 @@
                 <sheet>
                     <field name="can_review" invisible="1"/>
                     <group>
-                        <field name="name" readonly="state == 'closed' or frozen"/>
-                        <field name="kind" readonly="id"/>
-                        <field name="company_id" readonly="id" groups="base.group_multi_company"/>
-                        <field name="partner_id" invisible="kind == 'watch'" required="kind != 'watch'" readonly="id"/>
-                        <field name="quality_id" readonly="id and not can_review"/>
-                        <field name="member_ids" widget="many2many_tags" readonly="id and not can_review"/>
-                        <field name="retention_id" readonly="state == 'closed' or frozen"/>
-                        <field name="frozen" readonly="not can_review"/>
+                        <group string="Subject" colspan="2" col="1">
+                            <field name="name" nolabel="1" placeholder="Subject" readonly="state == 'closed' or frozen"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="kind" readonly="id"/>
+                            <field name="company_id" readonly="id" groups="base.group_multi_company"/>
+                            <field name="partner_id" invisible="kind == 'watch'" required="kind != 'watch'" readonly="id"/>
+                            <field name="quality_id" readonly="id and not can_review"/>
+                            <field name="member_ids" widget="many2many_tags" readonly="id and not can_review"/>
+                            <field name="retention_id" readonly="state == 'closed' or frozen"/>
+                            <field name="frozen" readonly="not id or not can_review"/>
+                        </group>
                     </group>
                     <group invisible="kind != 'instructor'">
                         <field name="competencies" readonly="state == 'closed' or frozen"/>
                     </group>
                     <group string="Analyzed Watch" invisible="kind != 'watch'">
-                        <field name="source" readonly="state == 'closed' or frozen"/>
-                        <field name="observed_on" readonly="state == 'closed' or frozen"/>
-                        <field name="analysis" readonly="state == 'closed' or frozen"/>
-                        <field name="decision" readonly="state == 'closed' or frozen"/>
-                        <field name="impact" readonly="state == 'closed' or frozen"/>
-                        <field name="no_impact_reason" readonly="state == 'closed' or frozen"/>
-                        <field name="program_id" readonly="state == 'closed' or frozen" options="{'no_create': True}"/>
-                        <field name="improvement_id" readonly="state == 'closed' or frozen" options="{'no_create': True}"/>
+                        <group string="Watch Source" colspan="2" col="1">
+                            <field name="source" nolabel="1" placeholder="Watch Source" readonly="state == 'closed' or frozen"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="observed_on" readonly="state == 'closed' or frozen"/>
+                            <field name="analysis" readonly="state == 'closed' or frozen"/>
+                            <field name="decision" readonly="state == 'closed' or frozen"/>
+                            <field name="impact" readonly="state == 'closed' or frozen"/>
+                            <field name="no_impact_reason" readonly="state == 'closed' or frozen"/>
+                            <field name="program_id" readonly="state == 'closed' or frozen" options="{'no_create': True}"/>
+                            <field name="improvement_id" readonly="state == 'closed' or frozen" options="{'no_create': True}"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Evidence">

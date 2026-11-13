@@ -12,6 +12,7 @@
     </record>
     <record id="view_training_course_form" model="ir.ui.view">
         <field name="name">training.course.form</field>
+        <field name="priority">5</field>
         <field name="model">training.course</field>
         <field name="arch" type="xml">
             <form>
@@ -23,6 +24,7 @@
                 <field name="category_id"/>
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
+                    <group string="General Presentation"><field name="presentation"/><field name="general_objectives"/></group>
                     <group string="Standard Programmes">
                         <button name="action_open_programs" type="object" string="Programme Versions" class="btn-primary"/>
                         <div class="text-muted">

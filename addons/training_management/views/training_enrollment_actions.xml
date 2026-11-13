@@ -46,7 +46,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'operation': 'postpone'}).action_open_operation()</field>
+        <field name="code">action = record.with_context(operation='postpone').action_open_operation()</field>
     </record>
     <record id="action_enrollment_replace" model="ir.actions.server">
         <field name="name">Replace Participant</field>
@@ -55,7 +55,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'operation': 'replace'}).action_open_operation()</field>
+        <field name="code">action = record.with_context(operation='replace').action_open_operation()</field>
     </record>
     <record id="action_enrollment_waive_prerequisites" model="ir.actions.server">
         <field name="name">Waive Prerequisites</field>
@@ -64,7 +64,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_waive_prerequisites'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_waive_prerequisites').action_open_reason()</field>
     </record>
     <record id="action_enrollment_withdraw_authorization" model="ir.actions.server">
         <field name="name">Withdraw Authorization</field>
@@ -73,7 +73,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_revoke_authorization'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_revoke_authorization').action_open_reason()</field>
     </record>
     <record id="action_enrollment_suspend_access" model="ir.actions.server">
         <field name="name">Suspend Access</field>
@@ -82,7 +82,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_suspend_access'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_suspend_access').action_open_reason()</field>
     </record>
     <record id="action_enrollment_revoke_access" model="ir.actions.server">
         <field name="name">Revoke Access</field>
@@ -91,7 +91,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_revoke_access'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_revoke_access').action_open_reason()</field>
     </record>
     <record id="action_enrollment_close" model="ir.actions.server">
         <field name="name">Close</field>
@@ -100,7 +100,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_close'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_close').action_open_reason()</field>
     </record>
     <record id="action_enrollment_abandon" model="ir.actions.server">
         <field name="name">Abandon</field>
@@ -109,7 +109,7 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_abandon'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_abandon').action_open_reason()</field>
     </record>
     <record id="action_enrollment_cancel" model="ir.actions.server">
         <field name="name">Cancel Enrollment</field>
@@ -118,6 +118,6 @@
         <field name="model_id" ref="model_training_enrollment"/>
         <field name="binding_model_id" ref="model_training_enrollment"/>
         <field name="group_ids" eval="[(4, ref('group_training_coordinator'))]"/>
-        <field name="code">action = record.with_context({'reason_action': 'action_cancel'}).action_open_reason()</field>
+        <field name="code">action = record.with_context(reason_action='action_cancel').action_open_reason()</field>
     </record>
 </odoo>

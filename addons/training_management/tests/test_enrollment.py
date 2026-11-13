@@ -859,6 +859,38 @@ class TestErgonomics(EnrollmentCase):
             self.assertEqual(action["context"]["default_operation"], operation)
         self.assertNotIn("default_operation", e.with_context(operation="unlink").action_open_operation()["context"])
 
+    def test_menu_transfer_actions_keep_french_language_and_company_scope(self):
+        from odoo.tools.translate import load_language
+
+        load_language(self.cr, "fr_FR")
+        self.env["ir.module.module"].search([("name", "=", "training_management")])._update_translations(["fr_FR"])
+        enrollment = self.enrollment(self.delivery())
+        for operation in ("postpone", "replace"):
+            action = self.env.ref(f"training_management.action_enrollment_{operation}")
+            result = (
+                action.with_user(self.coordinator)
+                .with_context(
+                    lang="fr_FR",
+                    allowed_company_ids=self.company.ids,
+                    active_model="training.enrollment",
+                    active_id=enrollment.id,
+                    active_ids=enrollment.ids,
+                )
+                .run()
+            )
+            self.assertEqual(result["name"], "Opération sur une inscription")
+            self.assertEqual(result["context"]["default_operation"], operation)
+            self.assertEqual(enrollment.state, "requested")
+
+            with self.assertRaises(AccessError):
+                action.with_user(self.coordinator).with_context(
+                    lang="fr_FR",
+                    allowed_company_ids=self.other_company.ids,
+                    active_model="training.enrollment",
+                    active_id=enrollment.id,
+                    active_ids=enrollment.ids,
+                ).run()
+
     def test_daily_job_records_expiries_and_alerts_once(self):
         delivery = self.delivery()
         lot = self.lot(delivery, quantity=5)

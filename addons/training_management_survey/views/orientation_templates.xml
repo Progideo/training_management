@@ -1,5 +1,5 @@
 <odoo>
-    <template id="orientation_catalogue" inherit_id="training_management.public_catalogue">
+    <template id="orientation_catalogue" inherit_id="training_catalog.public_catalogue">
         <xpath expr="//h1" position="after">
             <p><a href="/formations/orientation">Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif</a></p>
         </xpath>

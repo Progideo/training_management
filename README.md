@@ -25,11 +25,14 @@ Ajouter le dossier `addons/` au chemin des addons Odoo, puis installer
 | `training_management` | Socle et portail de formation | `base`, `mail`, `resource`, `portal`, `web`, `base_report_wkhtmltox` |
 | `training_management_sale` | Ventes et CRM | `training_management`, `sale_management`, `sale_crm` |
 | `training_management_survey` | Examens blancs et questionnaires natifs | `training_management`, `survey` |
-| `training_management_website` | Menu du catalogue dans Website | `training_management`, `website` |
+| `training_catalog` | Identités communes et menu Website | `base`, `mail`, `portal`, `website` |
+| `training_interactive` | Bibliothèque et lecteurs privés communs | `training_catalog` |
+| `training_mock_exam` | Définitions et moteur d’examens communs | `training_catalog`, `survey` |
+| `training_management_interactive` | Activités interactives dans TM | `training_interactive`, `training_mock_exam`, `training_management`, `training_management_survey` |
 | `sale_invoice_address_fiscal` | Option fiscale indépendante, selon l’adresse de facturation | `sale_management` |
 
-Le pont Website s’installe automatiquement avec le socle et Website ; Website
-reste facultatif. Voir [navigation et thèmes](docs/usability-theme.md).
+Le menu Website appartient au catalogue commun. Voir le
+[découpage final et la mise à jour technique](docs/j15-module-layout.md).
 L’option fiscale s’installe séparément et n’est requise par aucun addon de formation.
 
 ## Validation du module

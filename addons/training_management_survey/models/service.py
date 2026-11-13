@@ -1,14 +1,12 @@
 """All portal operations recheck the exact S03 identity and current grant."""
 
-from datetime import timedelta
-
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, LockError, ValidationError
-from odoo.tools import SQL
+from odoo.exceptions import AccessError, ValidationError
 
 
 class ExamService(models.AbstractModel):
     _name = "training.exam.service"
+    _inherit = "training.mock.exam.service"
     _description = "Private Native Survey Exam Operations"
 
     @api.private
@@ -30,8 +28,6 @@ class ExamService(models.AbstractModel):
         if enrollment._effective_state() not in ("active", "expired"):
             raise AccessError(self.env._("This private exam is unavailable."))
         if lock:
-            # Participants of one delivery answer in parallel: same shared lock as
-            # S05, with a fence on this enrollment and a row lock on the attempt.
             self.env["training.learning.service"]._lock_enrollment(enrollment)
             return self._enrollment(enrollment_id, history=history, finish=finish)
         return enrollment
@@ -57,52 +53,23 @@ class ExamService(models.AbstractModel):
 
     @api.private
     def _start(self, enrollment_id, activity_id):
-        learning = self.env["training.learning.service"]
         enrollment = self._enrollment(enrollment_id, lock=True)
-        activity = learning._activity(enrollment, activity_id)
-        exam = activity.training_exam_id
-        if not exam or exam.training_state != "published" or not exam.active:
-            raise ValidationError(self.env._("No published mock exam is assigned."))
-        family = exam.training_origin_id or exam
-        # A whole class may start together: editorial changes stay exclusive and
-        # the partial unique index keeps one active attempt per participant.
-        if not self.env.execute_query(
-            SQL("SELECT id FROM survey_survey WHERE id = %s FOR SHARE SKIP LOCKED", family.id)
-        ):
-            raise LockError(self.env._("Cannot grab a lock on records"))
-        attempts = self.env["survey.user_input"].sudo()
-        active = attempts.search(
-            [
-                ("training_family_id", "=", family.id),
-                ("partner_id", "=", enrollment.participant_id.id),
-                ("state", "!=", "done"),
-            ],
-            limit=1,
-        )
-        if active and active.deadline <= fields.Datetime.now():
-            active.lock_for_update()
-            active._training_finish()
-            # Release the partial unique index before INSERT: ORM writes are deferred.
-            active.flush_recordset(["state"])
-            active = attempts
-        if active:
-            if active.training_enrollment_id != enrollment:
-                raise ValidationError(self.env._("Resume the active attempt in your other training space first."))
-            return active
-        now = fields.Datetime.now()
-        return attempts._training_create(
+        activity = self.env["training.learning.service"]._activity(enrollment, activity_id)
+        exam = self.env["training.exam.requirement"]._assigned_exam(enrollment, activity)
+        attempt = self._start_native(
+            exam,
+            "training.enrollment:%s" % enrollment.id,
             {
-                "survey_id": exam.id,
-                "partner_id": enrollment.participant_id.id,
                 "training_enrollment_id": enrollment.id,
                 "training_activity_id": activity.id,
-                "training_family_id": family.id,
-                "start_datetime": now,
-                "state": "in_progress",
-                "deadline": now + timedelta(minutes=exam.time_limit),
-                "predefined_question_ids": [(6, 0, exam.question_ids.ids)],
-            }
+                "mock_reader_group_id": self.env.ref("training_management.group_training_coordinator").id,
+            },
+            legacy_domain=[("mock_context_key", "=", False), ("training_enrollment_id", "=", enrollment.id)],
         )
+
+        if attempt.survey_id != exam:
+            raise ValidationError(self.env._("Finish the active attempt of this exam family before changing versions."))
+        return attempt
 
     @api.private
     def _attempt(self, attempt_id, *, mutate=False):
@@ -110,102 +77,51 @@ class ExamService(models.AbstractModel):
         if not attempt or not attempt.training_enrollment_id or attempt.training_evaluation_assignment_id:
             raise AccessError(self.env._("This private exam is unavailable."))
         self._enrollment(attempt.training_enrollment_id.id, history=not mutate, finish=mutate, lock=mutate)
+        if attempt.survey_id.training_course_id:
+            assigned = self.env["training.exam.requirement"]._assigned_exam(
+                attempt.training_enrollment_id, attempt.training_activity_id
+            )
+            if assigned != attempt.survey_id:
+                raise AccessError(self.env._("This private exam is unavailable."))
+            if attempt.training_enrollment_id._effective_state() == "expired":
+                if not mutate:
+                    raise AccessError(self.env._("Detailed exam content is closed after access expiry."))
+                attempt.lock_for_update()
+                attempt.invalidate_recordset()
+                if attempt.state != "done":
+                    attempt._training_finish()
+        if (
+            attempt.mock_context_key
+            and attempt.mock_context_key != "training.enrollment:%s" % attempt.training_enrollment_id.id
+        ):
+            raise AccessError(self.env._("This private exam is unavailable."))
         if mutate or attempt.state != "done":
-            attempt.lock_for_update()
-            attempt.invalidate_recordset()
-            if attempt.state != "done" and attempt.deadline <= fields.Datetime.now():
-                attempt._training_finish()
+            attempt._mock_close_if_expired()
         return attempt
 
     @api.private
-    def _save(self, attempt_id, question_id, choices, marked):
-        attempt = self._attempt(attempt_id, mutate=True)
-        # Expiration is persisted in this successful response, never rolled back
-        # by throwing a late-answer exception after closing the attempt.
-        if attempt.state == "done":
-            return {"done": True}
-        question = attempt.predefined_question_ids.filtered(lambda q: q.id == question_id)
-        if (
-            not question
-            or len(choices) != len(set(choices))
-            or not set(choices) <= set(question.suggested_answer_ids.ids)
-        ):
-            raise ValidationError(self.env._("Choose answers from this question."))
-        if question.question_type == "simple_choice" and len(choices) > 1:
-            raise ValidationError(self.env._("Choose one answer for a QCU question."))
-        attempt._save_lines(question, choices)
-        attempt.user_input_line_ids.filtered(lambda line: line.question_id == question)._compute_answer_score()
-        review = attempt.training_review_ids | question if marked else attempt.training_review_ids - question
-        attempt._training_store({"training_review_ids": [(6, 0, review.ids)]})
-        return {"saved": True}
+    def _result_material(self, question):
+        material = question.training_material_id
+        return (
+            f"/web/content/training.material/{material.id}/data?download=true&filename_field=filename"
+            if material and self.env["training.document.policy"]._can_read(material)
+            else False
+        )
 
     @api.private
-    def _submit(self, attempt_id):
-        attempt = self._attempt(attempt_id, mutate=True)
-        if attempt.state != "done":
-            attempt._training_finish()
-        return {"done": True}
-
-    @api.private
-    def _result(self, attempt):
-        if attempt.state != "done":
-            raise AccessError(self.env._("Correction is available only after submission."))
-        rows = attempt._training_scores()
-        latest = attempt.training_adjustment_ids[:1]
-        themes = {p.title: {"points": 0, "maximum": 0} for p in attempt.survey_id.page_ids}
-        result = []
-        policy = self.env["training.document.policy"]
-        for row in rows:
-            question = row["question"]
-            points = latest.points_by_question[str(question.id)] if latest else row["points"]
-            theme = question.training_theme or question.page_id.title or self.env._("Unclassified")
-            material = question.training_material_id
-            # Reuse S05 policy, including revocation, version and assignment.
-            url = (
-                f"/web/content/training.material/{material.id}/data?download=true&filename_field=filename"
-                if (material and policy._can_read(material))
-                else False
-            )
-            result.append(
-                {
-                    "title": question.title,
-                    "selected": row["selected"].mapped("value_label"),
-                    "correct": row["correct"].mapped("value_label"),
-                    "images": [
-                        {
-                            "label": choice.value_label,
-                            "url": f"/survey/get_question_image/{attempt.survey_id.access_token}/{attempt.access_token}/{question.id}/{choice.id}",
-                        }
-                        for choice in question.suggested_answer_ids
-                        if choice.value_image
-                    ],
-                    "explanation": question.training_explanation,
-                    "points": points,
-                    "original_points": row["points"],
-                    "maximum": row["maximum"],
-                    "url": url,
-                }
-            )
-            totals = themes.setdefault(theme, {"points": 0, "maximum": 0})
-            totals["points"] += points
-            totals["maximum"] += row["maximum"]
-        maximum = sum(r["maximum"] for r in result)
-        obtained = sum(r["points"] for r in result)
-        percentage = 100 * obtained / maximum if maximum else None
-        return {
-            "questions": result,
-            "themes": themes,
-            "points": obtained,
-            "maximum": maximum,
-            "percentage": percentage,
-            "success": percentage is not None and percentage >= attempt.survey_id.scoring_success_min,
-            "original_percentage": attempt.scoring_percentage,
-            "revisions": [{"reason": r.reason, "date": r.create_date} for r in attempt.training_adjustment_ids],
-        }
+    def _result_images(self, attempt, question):
+        return [
+            {
+                "label": choice.value_label,
+                "url": f"/survey/get_question_image/{attempt.survey_id.access_token}/{attempt.access_token}/{question.id}/{choice.id}",
+            }
+            for choice in question.suggested_answer_ids
+            if choice.value_image
+        ]
 
 
 class LearningActivity(models.Model):
-    _inherit = "training.learning.activity"
+    _inherit = "training.learning.activity"  # pylint: disable=consider-merging-classes-inherited  # legacy exam integration is separate from frozen requirements
 
     criterion = fields.Selection(selection_add=[("evaluation", "Mock Exam Threshold")])
     training_exam_id = fields.Many2one("survey.survey", ondelete="restrict", string="Mock Exam Version")
@@ -223,7 +139,12 @@ class LearningActivity(models.Model):
                 and (
                     activity.criterion != "evaluation"
                     or exam.training_state != "published"
-                    or exam.training_program_id != activity.delivery_id.program_id
+                    or (
+                        exam.training_course_id != activity.delivery_id.program_id.course_id
+                        if exam.training_course_id
+                        else exam.training_program_id != activity.delivery_id.program_id
+                    )
+                    or (exam.training_course_id and exam.mock_company_id != activity.company_id)
                 )
             ):
                 raise ValidationError(
@@ -237,7 +158,7 @@ class LearningActivity(models.Model):
 
 
 class LearningService(models.AbstractModel):
-    _inherit = "training.learning.service"
+    _inherit = "training.learning.service"  # pylint: disable=consider-merging-classes-inherited  # legacy integration and contextual obligations are separate
 
     @api.private
     def _evaluation_snapshot(self, enrollment, activity):
@@ -280,7 +201,7 @@ class LearningService(models.AbstractModel):
         scores = []
         for attempt in attempts:
             rows = attempt._training_scores()
-            latest = attempt.training_adjustment_ids[:1]
+            latest = attempt.training_adjustment_ids.sorted("id", reverse=True)[:1]
             maximum = sum(row["maximum"] for row in rows)
             if maximum:
                 obtained = sum(

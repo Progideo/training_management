@@ -25,11 +25,11 @@ def methods(text):
 
 def validate(root, revision):
     root = Path(root)
-    current = {str(file.relative_to(root)): file for file in root.glob("addons/training_management*/tests/test_*.py")}
+    current = {str(file.relative_to(root)): file for file in root.glob("addons/training_*/tests/test_*.py")}
     baseline = {
         path
         for path in source_files(root, revision, "addons")
-        if re.fullmatch(r"addons/training_management[^/]*/tests/test_[^/]+\.py", path)
+        if re.fullmatch(r"addons/training_[^/]*/tests/test_[^/]+\.py", path)
     }
     missing = baseline - current.keys()
     if missing:

@@ -472,6 +472,41 @@ class TestSessionDateAlerts(SessionAlertCase):
 
 @tagged("post_install", "-at_install")
 class TestSessionDatesHttp(SessionAlertCase, HttpCase):
+    def test_calendar_months_are_shown_and_bound_to_consent(self):
+        from lxml import html
+
+        policy = self.policy.copy(
+            {
+                "name": "Fictional three calendar months",
+                "duration_unit": "months",
+                "duration_days": 0,
+                "duration_months": 3,
+            }
+        )
+        policy.action_approve()
+        self.company.training_session_alert_retention_id = policy
+        self.authenticate(self.portal.login, self.portal.login)
+        url = "/formations/%s/date-alert" % self.public_program.id
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("3 mois calendaires", response.text)
+        self.assertNotIn("90 jours", response.text)
+        tree = html.fromstring(response.content)
+        response = self.url_open(
+            url,
+            data={
+                "csrf_token": tree.xpath("//input[@name='csrf_token']/@value")[0],
+                "definition": tree.xpath("//input[@name='definition']/@value")[0],
+                "accepted": "yes",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        subscription = self.env["training.session.alert.subscription"].search([("owner_id", "=", self.portal.id)])
+        self.assertEqual(subscription.retention_id, policy)
+        self.assertTrue(subscription.active_consent)
+        self.assertEqual(self.policy.duration_unit, "days")
+        self.assertEqual(self.policy.duration_days, 90)
+
     def test_public_projection_and_authenticated_consent_withdrawal(self):
         from lxml import html
 

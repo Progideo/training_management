@@ -44,13 +44,15 @@ Ne pas supposer que les fichiers joints et le dépôt sont synchronisés. Signal
 
 Préserver les exigences suivantes :
 - Marché francophone mondial ; intraentreprise prioritaire, puis inscriptions individuelles.
-- Présentiel, distanciel, mixte et eLearning.
+- TM : présentiel, distanciel et mixte avec formateur. eLearning autonome distinct ; catalogue commun sans présence ni progression.
 - Devises, tarifs, remises, fiscalité, facturation, paiements et rapprochements selon les règles natives Odoo et les extensions/localisations installées ; aucun mode de paiement ni couple de devises imposé par le module générique (#102).
 - Supports principalement PDF, quiz et examens blancs.
 - Examens blancs à questions choisies par le créateur, durée contrôlée, score et correction finale, tentatives illimitées.
 - Émargement électronique dès le lancement ; papier possible selon les cas.
-- Reprise Odoo 19 indispensable, avec migration manuelle contrôlée possible.
+- Séparation TM/eLearning (cadrage consolidé v1 du 3 novembre 2026) : aucune reprise métier ni import Odoo 19. Les anciens outils de reprise restent historiques.
 - Bonnes pratiques qualité compatibles avec l’objectif Qualiopi, sans revendiquer une certification effective.
+
+Voir [la séparation TM/eLearning](docs/j1-shared-catalog.md) pour la cible à dix addons et les limites de la première tranche.
 
 ## Intégration native Odoo
 

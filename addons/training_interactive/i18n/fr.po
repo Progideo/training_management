@@ -1,0 +1,324 @@
+# Translation of Odoo Server.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_interactive
+#: model:res.groups.privilege,name:training_interactive.privilege_interactive
+msgid "Interactive Resources"
+msgstr "Ressources interactives"
+
+#. module: training_interactive
+#: model:res.groups,name:training_interactive.group_interactive_author
+msgid "Interactive Content Author"
+msgstr "Auteur de ressources interactives"
+
+#. module: training_interactive
+#: model:res.groups,name:training_interactive.group_interactive_manager
+msgid "Interactive Library Manager"
+msgstr "Gestionnaire de ressources interactives"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__identifier
+msgid "Identifier"
+msgstr "Identifiant"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__format
+msgid "Format"
+msgstr "Format"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__license_note
+#: model_terms:ir.ui.view,arch_db:training_interactive.resource_form
+msgid "Content license"
+msgstr "Licence du contenu"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__provenance
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__provenance
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__provenance
+#: model_terms:ir.ui.view,arch_db:training_interactive.resource_form
+msgid "Provenance"
+msgstr "Provenance"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_resource__version_ids
+msgid "Version"
+msgstr "Versions"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__resource_id
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__resource_id
+msgid "Resource"
+msgstr "Ressource"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__number
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__number
+msgid "Number"
+msgstr "Version"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__state
+msgid "State"
+msgstr "Statut"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__entrypoint
+msgid "Entrypoint"
+msgstr "Point d’entrée"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__license_note
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__license_note
+msgid "License Note"
+msgstr "Licence du contenu"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__published_at
+msgid "Published At"
+msgstr "Publié le"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__published_by_id
+msgid "Published By"
+msgstr "Publié par"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__withdrawn_at
+msgid "Withdrawn At"
+msgstr "Retiré le"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__withdrawn_by_id
+msgid "Withdrawn By"
+msgstr "Retiré par"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_version__withdrawal_reason
+msgid "Withdrawal Reason"
+msgstr "Motif du retrait"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_import__data
+msgid "Data"
+msgstr "Paquet"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_withdraw__version_id
+msgid "Version"
+msgstr "Version"
+
+#. module: training_interactive
+#: model:ir.model.fields,field_description:training_interactive.field_training_elearning_withdraw__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: training_interactive
+#: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: training_interactive
+#: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__published
+msgid "Published"
+msgstr "Publié"
+
+#. module: training_interactive
+#: model:ir.model.fields.selection,name:training_interactive.selection__training_elearning_version__state__withdrawn
+msgid "Withdrawn"
+msgstr "Retiré"
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsafe package path"
+msgstr "Le paquet contient un chemin de fichier interdit."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "JSON metadata too large"
+msgstr "Les métadonnées JSON du paquet sont trop volumineuses."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "JSON object required"
+msgstr "Les métadonnées du paquet doivent être un objet JSON."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P dependency"
+msgstr "Une dépendance H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P library identity"
+msgstr "L’identité d’une bibliothèque H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P runtime dependencies"
+msgstr "Les dépendances nécessaires à la lecture H5P sont invalides."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Only H5P TrueFalse 1.8 is qualified"
+msgstr "Seule la bibliothèque H5P TrueFalse 1.8 est prise en charge."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "H5P library identity mismatch"
+msgstr "L’identité d’une bibliothèque H5P ne correspond pas à celle annoncée."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing H5P main runtime"
+msgstr "Le composant principal de lecture H5P est absent."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P assets"
+msgstr "La liste des fichiers de lecture H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P asset"
+msgstr "Un fichier de lecture H5P est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing H5P runtime asset"
+msgstr "Un fichier nécessaire à la lecture H5P est absent."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid H5P dependencies"
+msgstr "Les dépendances H5P sont invalides."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Incomplete H5P runtime dependency list"
+msgstr "La liste des dépendances nécessaires à la lecture H5P est incomplète."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Cyclic H5P dependencies"
+msgstr "Les dépendances H5P contiennent un cycle."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid TrueFalse content"
+msgstr "Le contenu de la question vrai ou faux est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsupported or oversized archive"
+msgstr "Le format du paquet est invalide ou sa taille dépasse 20 Mio."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Archive limits exceeded"
+msgstr "Le paquet dépasse les limites du nombre ou de la taille totale des fichiers."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsafe or excessive archive entry"
+msgstr "Un fichier du paquet est interdit ou dépasse les limites autorisées."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Nested archives are not supported"
+msgstr "Les archives imbriquées ne sont pas prises en charge."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Les vidéos privées ne sont pas prises en charge dans les paquets interactifs."
+msgstr "Les vidéos privées ne sont pas prises en charge dans les paquets interactifs."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid entry size"
+msgstr "La taille d’un fichier du paquet est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Unsafe manifest"
+msgstr "Le manifeste du paquet contient une déclaration interdite."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Only SCORM 1.2 single SCO is supported"
+msgstr "Seul SCORM 1.2 avec un unique module SCO est pris en charge."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "A SCO resource is required"
+msgstr "Le paquet doit contenir une ressource SCO."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing local HTML entry point"
+msgstr "La page HTML locale de démarrage est absente."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Missing manifest file"
+msgstr "Un fichier annoncé dans le manifeste est absent."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "Invalid package archive or manifest"
+msgstr "L’archive ou le manifeste du paquet est invalide."
+
+#. module: training_interactive
+#. odoo-python
+#: code:addons/training_interactive/models/version.py:0
+msgid "The interactive package could not be imported."
+msgstr "Le paquet interactif n’a pas pu être importé."

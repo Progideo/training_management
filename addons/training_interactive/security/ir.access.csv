@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+resource_author,Interactive resources author,training.elearning.resource,training_interactive.group_interactive_author,cru,
+resource_company,Interactive resource companies,training.elearning.resource,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+version_author,Interactive versions author,training.elearning.version,training_interactive.group_interactive_author,cru,
+version_company,Interactive version companies,training.elearning.version,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+import_author,Interactive package import,training.elearning.import,training_interactive.group_interactive_author,crud,
+withdraw_manager,Interactive version withdrawal,training.elearning.withdraw,training_interactive.group_interactive_manager,crud,

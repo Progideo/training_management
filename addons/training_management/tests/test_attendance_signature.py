@@ -17,6 +17,46 @@ from ..controllers.attendance_portal import AttendancePortal
 
 @tagged("post_install", "-at_install")
 class TestAttendanceSignatures(AttendanceCase, HttpCase):
+    def test_redeclaration_after_invalidation_is_pending_in_native_and_portal(self):
+        _, session, enrollment = self.scheduled()
+        self.sign(session, enrollment)
+        presence = self.env["training.attendance"].search([("enrollment_id", "=", enrollment.id)])
+        reviewer = self.service(self.portal_b)
+        reviewer._sign_review(
+            session.id,
+            enrollment.id,
+            0,
+            0,
+            signature_version=1,
+            period_key=presence.period_key,
+            revision=presence.revision,
+            definition=reviewer._definition(session),
+        )
+        original = presence.event_ids.read(["kind", "occurred_at", "actor_id", "signature_digest"])
+        reviewer._invalidate(
+            session.id,
+            enrollment.id,
+            reason="Fictional new declaration required",
+            revision=presence.revision,
+            period_key=presence.period_key,
+            definition=reviewer._definition(session),
+        )
+        self.assertEqual(presence.state, "invalidated")
+        self.sign(session, enrollment)
+        self.assertEqual(presence.state, "pending")
+        self.assertEqual(presence.minutes, 0)
+        self.assertEqual(presence.event_ids[:2].read(list(original[0])), original)
+        language = self.env["website"].search([], limit=1).default_lang_id.code or self.portal_b.lang
+        self.portal_b.lang = language
+        states = dict(presence.with_context(lang=language).fields_get(["state"])["state"]["selection"])
+        self.authenticate(self.portal_b.login, self.portal_b.login)
+        response = self.url_open(f"/my/training-sessions/{session.id}/attendance")
+        self.assertEqual(response.status_code, 200)
+        tree = html.fromstring(response.content)
+        summaries = tree.xpath("//details/summary/text()")
+        self.assertTrue(any(states["pending"] in text for text in summaries), summaries)
+        self.assertFalse(any(states["invalidated"] in text for text in summaries), summaries)
+
     def sign(self, session, enrollment, **values):
         return self.service()._sign_halfday(
             enrollment.id,

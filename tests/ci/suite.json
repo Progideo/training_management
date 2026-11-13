@@ -25,16 +25,17 @@
       "website": false
     },
     "full": {
-      "label": "Socle + Ventes + Surveys",
+      "label": "Socle + Ventes + Surveys + Interactif",
       "addons": [
         "training_management",
         "training_management_sale",
-        "training_management_survey"
+        "training_management_survey",
+        "training_management_interactive"
       ],
       "website": false
     },
     "website_sale": {
-      "label": "Website/eLearning + Ventes \u00b7 anglais",
+      "label": "Website/eLearning + Ventes · anglais",
       "addons": [
         "training_management",
         "training_management_sale"
@@ -43,17 +44,18 @@
       "language": "en_US"
     },
     "website_full": {
-      "label": "Website/eLearning + Ventes + Surveys \u00b7 anglais",
+      "label": "Website/eLearning + Ventes + Surveys · anglais + Interactif",
       "addons": [
         "training_management",
         "training_management_sale",
-        "training_management_survey"
+        "training_management_survey",
+        "training_management_interactive"
       ],
       "website": true,
       "language": "en_US"
     },
     "website_sale_fr": {
-      "label": "Website/eLearning + Ventes \u00b7 fran\u00e7ais",
+      "label": "Website/eLearning + Ventes · français",
       "addons": [
         "training_management",
         "training_management_sale"
@@ -62,11 +64,12 @@
       "language": "fr_FR"
     },
     "website_full_fr": {
-      "label": "Website/eLearning + Ventes + Surveys \u00b7 fran\u00e7ais",
+      "label": "Website/eLearning + Ventes + Surveys · français + Interactif",
       "addons": [
         "training_management",
         "training_management_sale",
-        "training_management_survey"
+        "training_management_survey",
+        "training_management_interactive"
       ],
       "website": true,
       "language": "fr_FR"

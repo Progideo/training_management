@@ -33,6 +33,13 @@ def snapshot(tables, *, business=False, database_env=None):
         # Opt-in additions must remain empty on historical rows. Compare every
         # original column byte-for-byte after explicitly checking the new fields.
         added = {
+            "training_course": ["presentation", "general_objectives", "public_catalogue"],
+            "survey_user_input": [
+                "mock_context_key",
+                "mock_reader_group_id",
+                "mock_company_id",
+                "mock_revision_serial",
+            ],
             "training_delivery": [
                 "session_public",
                 "session_sales_open",
@@ -40,6 +47,7 @@ def snapshot(tables, *, business=False, database_env=None):
                 "session_guaranteed",
             ],
             "training_learning_activity": [
+                "exam_obligation",
                 "project_rubric_id",
                 "project_deliverable",
                 "project_service_reference",
@@ -51,7 +59,16 @@ def snapshot(tables, *, business=False, database_env=None):
             database_env.cr.execute(SQL("SELECT to_jsonb(t) FROM %s t", SQL.identifier(table)))
             for (row,) in database_env.cr.fetchall():
                 for column in added:
-                    if table == "training_delivery" and column != "session_first_published_at":
+                    if table == "survey_user_input" and column == "mock_revision_serial":
+                        assert row.get(column) is None or (type(row[column]) is int and row[column] == 0), (
+                            table,
+                            row["id"],
+                            column,
+                        )
+                        continue
+                    if (table == "training_delivery" and column != "session_first_published_at") or (
+                        table == "training_course" and column == "public_catalogue"
+                    ):
                         assert row.get(column) is None or row.get(column) is False, (table, row["id"], column)
                     else:
                         assert row.get(column) is None, (table, row["id"], column)

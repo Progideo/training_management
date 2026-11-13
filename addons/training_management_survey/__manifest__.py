@@ -2,12 +2,12 @@
 {
     "name": "Training Management — Mock Exams",
     "summary": "Private versioned mock exams using native Odoo Surveys",
-    "version": "20.0.2.8.1",
+    "version": "20.0.4.2.2",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
     "license": "LGPL-3",
-    "depends": ["training_management", "survey"],
+    "depends": ["training_management", "training_mock_exam"],
     "data": [
         "security/groups.xml",
         "security/ir.access.csv",

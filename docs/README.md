@@ -4,6 +4,30 @@ Point d’entrée documentaire pour le dépôt `Progideo/training_management`.
 Les besoins et leur avancement restent dans les issues ; les changements et
 leurs validations dans les pull requests ; les décisions durables dans la documentation.
 
+## Séparation TM et eLearning
+
+Le [cadrage J1](j1-shared-catalog.md) décrit la cible validée le 3 novembre 2026,
+les contrats à extraire et les limites de la première tranche. Il prévaut sur les
+anciennes prescriptions de reprise Odoo 19 et de couplage eLearning à TM.
+
+La [bibliothèque interactive commune](j1-shared-interactive.md) poursuit J1 :
+stockage/import partagés, droits et raccordement de l’extension historique.
+Les [lecteurs et définitions d’examens communs](j1-shared-readers-exams.md)
+poursuivent cette extraction. La [passation et le chronométrage serveur](j1-shared-exam-runtime.md)
+précisent le moteur commun et son raccordement TM. Les [obligations par offre](j2-shared-exam-obligations.md)
+raccordent ensuite la bibliothèque aux inscriptions TM. Le [rendu commun et les contextes autonomes](j3-autonomous-exam-rendering.md) poursuivent cette séparation.
+
+La [validation formative commune](j14-shared-formative-validation.md) accompagne le raccordement du lecteur aux cours autonomes et précise la limite sans vidéo privée.
+
+Le [découpage final des addons](j15-module-layout.md) replace l’adaptateur interactif
+dans TM et le menu Website dans le catalogue commun.
+
+Le [catalogue public général](j16-general-public-catalogue.md) applique la restriction
+P03/P04 aux offres communes, sans retirer les fonctions privées.
+
+Les [révisions motivées communes](j17-shared-result-revisions.md) conservent les
+réponses natives et séparent les habilitations des deux modes.
+
 ## Manuel utilisateur
 
 Le [manuel HTML](user/README.md) couvre administration et utilisateurs : procédures,
@@ -84,6 +108,12 @@ SHA-256 de la spécification amendée (y compris P20, #105, l’émargement par 
 
 ```text
 d03e565ec89e73981315234d148204b05c16fae979b94087fca81bfa3ce6cb6a  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+```
+
+Empreinte courante après l'amendement de séparation du 3 novembre 2026 :
+
+```text
+c5cfc7033533a76c98c1dd40ba09520014348d5766930ab57a19782ea2392068  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
 ## Incréments
@@ -168,3 +198,9 @@ MAD/EUR et virement manuel dans le module générique. COM02/COM03 et les consig
 du dépôt sont amendées ; les documents S02 gardent leur provenance historique.
 Les fichiers synchronisés `sources/` et le prompt maître importé restent inchangés ;
 leurs prescriptions commerciales historiques se lisent avec cette décision plus récente.
+
+Empreinte SHA-256 après application ciblée de D28 aux paragraphes P03/P04 (J16) :
+
+```text
+b7e281b0b8555ca3f35fdf9194ecf4eb6dce83b73dbe3ab8e9f6dce7f6902a7b  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+```

@@ -7,7 +7,7 @@ from odoo.addons.training_management.controllers.portal_utils import portal_date
 from werkzeug.exceptions import BadRequest
 
 from odoo import http, fields
-from odoo.addons.survey.controllers.main import Survey
+from odoo.addons.training_mock_exam.controllers.native import SharedSurveyBoundary as Survey
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.training_management.controllers.material_portal import TrainingParticipantPortal
 from odoo.exceptions import AccessError, MissingError, ValidationError
@@ -27,7 +27,7 @@ class NativeSurveyBoundary(Survey):
         survey = request.env["survey.survey"].sudo().search([("access_token", "=", survey_token)], limit=1)
         if survey.orientation_company_id:
             raise request.not_found()
-        if not survey.training_program_id:
+        if not (survey.training_program_id or survey.training_course_id):
             return super().survey_get_question_image(survey_token, answer_token, question_id, suggested_answer_id)
         attempt = (
             request.env["survey.user_input"]

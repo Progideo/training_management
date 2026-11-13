@@ -50,10 +50,10 @@ TM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step closure_prepare run_odoo
 TM_ADDONS_DIR="$work_dir/addons" S091_PHASE=prepare step evaluation_prepare run_odoo shell --no-http < "$repo/tests/probes/s091_history.py"
 TM_ADDONS_DIR="$work_dir/addons" step evaluation_baseline run_odoo shell --no-http < "$repo/tests/probes/s092_upgrade_baseline.py"
 TM_ADDONS_DIR="$work_dir/addons" S092_PHASE=prepare step feedback_prepare run_odoo shell --no-http < "$repo/tests/probes/s092_history.py"
-S093_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
-step upgrade run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+TM_ADDONS_DIR="$work_dir/addons" S093_PHASE=baseline step history_baseline run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
+step upgrade run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 S093_PHASE=verify step history_preserved run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
 S093_PHASE=prepare step quality_prepare run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
-step second_update run_odoo -u training_management,training_management_sale,training_management_survey --stop-after-init
+step second_update run_odoo -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale,training_management_survey --stop-after-init
 S093_PHASE=verify step quality_preserved run_odoo shell --no-http < "$repo/tests/probes/s093_history.py"
 step concurrency run_odoo shell --no-http < "$repo/tests/probes/s093_concurrency.py"

@@ -137,8 +137,10 @@ class QualityMailActivity(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             model_id = vals.get("res_model_id") or self.env.context.get("default_res_model_id")
+            # Classify a technical model name only; business access stays with
+            # the caller and the private-quality activity prohibition below.
             if vals.get("res_model", self.env.context.get("default_res_model")) in QUALITY_MODELS or (
-                model_id and self.env["ir.model"].browse(model_id).model in QUALITY_MODELS
+                model_id and self.env["ir.model"].sudo().browse(model_id).model in QUALITY_MODELS
             ):
                 raise AccessError(self.env._("Use the private quality deadline list; no shared activity content."))
         return super().create(vals_list)
@@ -146,7 +148,7 @@ class QualityMailActivity(models.Model):
     def write(self, vals):
         model_id = vals.get("res_model_id")
         if vals.get("res_model") in QUALITY_MODELS or (
-            model_id and self.env["ir.model"].browse(model_id).model in QUALITY_MODELS
+            model_id and self.env["ir.model"].sudo().browse(model_id).model in QUALITY_MODELS
         ):
             raise AccessError(self.env._("Use the private quality deadline list; no shared activity content."))
         return super().write(vals)

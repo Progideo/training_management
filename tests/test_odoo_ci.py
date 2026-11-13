@@ -62,6 +62,15 @@ def normalize_migration(text):
         "\nS08_PHASE=prepare step fixture_baseline run_odoo",
         '\nTM_ADDONS_DIR="$work_dir/addons" S08_PHASE=prepare step fixture_baseline run_odoo',
     )
+    # S09.3 also captures history before installing the new catalogue dependency.
+    text = text.replace(
+        "\nS093_PHASE=baseline step history_baseline run_odoo",
+        '\nTM_ADDONS_DIR="$work_dir/addons" S093_PHASE=baseline step history_baseline run_odoo',
+    )
+    # Current upgrades must also refresh the shared libraries used by current
+    # XML and models. This adds no install step and removes no original module,
+    # historical source, fixture, migration operation or preservation check.
+    text = text.replace(" -u training_", " -u training_catalog,training_interactive,training_mock_exam,training_")
     return (
         text.replace("real Odoo tests and concurrent reservations", "migration and concurrent reservations").rstrip()
         + "\n"
@@ -142,6 +151,56 @@ class Coverage(unittest.TestCase):
                 )
                 self.assertIn(addition, path.read_text())
                 self.assertEqual(path.read_text().replace(addition, ""), original(name))
+            elif name == "tests/probes/p09_history.py":
+                addition = '            "training_course": ["presentation", "general_objectives"],\n'
+                self.assertIn(addition, path.read_text())
+                context = '            "survey_user_input": ["mock_context_key", "mock_reader_group_id", "mock_company_id"],\n'
+                self.assertIn(context, path.read_text())
+                activity = '                "exam_obligation",\n'
+                self.assertIn(activity, path.read_text())
+                self.assertEqual(
+                    path.read_text().replace(addition, "").replace(context, "").replace(activity, ""), original(name)
+                )
+            elif name == "tests/probes/s092_history.py":
+                addition = (
+                    '        if table == "survey_user_input":\n'
+                    "            for row in result[table]:\n"
+                    '                for added in ("mock_context_key", "mock_reader_group_id", "mock_company_id"):\n'
+                    "                    if added in row:\n"
+                    "                        assert row.pop(added) is None\n"
+                )
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(path.read_text().replace(addition, ""), original(name))
+            elif name == "tests/probes/closure_continuity_history.py":
+                addition = (
+                    "    rows = [row[0] for row in env.cr.fetchall()]\n"
+                    '    if table == "training_learning_activity":\n'
+                    "        for row in rows:\n"
+                    '            if "exam_obligation" in row:\n'
+                    '                assert row.pop("exam_obligation") is None, "Never backfill legacy exam obligations"\n'
+                    "    return json.dumps(rows, sort_keys=True, default=str)"
+                )
+                self.assertIn(addition, path.read_text())
+                self.assertEqual(
+                    path.read_text().replace(
+                        addition,
+                        "    return json.dumps([row[0] for row in env.cr.fetchall()], sort_keys=True, default=str)",
+                    ),
+                    original(name),
+                )
+            elif name == "tests/probes/catalogue_pdf_history.py":
+                addition = "\n\ndef expected_visibility_default(spec):\n" + (
+                    "    # The shared catalogue now installs native Website on an old base without it.\n"
+                    "    # Its new visibility column has no SQL default; existing defaults stay exact.\n"
+                    '    return spec["visibility_default"] if spec["visibility_default"] is not None else [None]\n'
+                )
+                self.assertIn(addition, path.read_text())
+                preserved = (
+                    path.read_text()
+                    .replace(addition, "")
+                    .replace("== expected_visibility_default(spec)", '== spec["visibility_default"]')
+                )
+                self.assertEqual(preserved, original(name))
             else:
                 self.assertEqual(path.read_text(), original(name))
         self.assertEqual(len(PLAN["migrations"]), 25)

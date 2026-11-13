@@ -1,0 +1,186 @@
+# Translation of Training Management Interactive.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__program_id
+msgid "Program"
+msgstr "Programme"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__objective
+msgid "Objective"
+msgstr "Objectif"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__rule
+msgid "Rule"
+msgstr "Critère formatif"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__threshold
+msgid "Threshold"
+msgstr "Seuil (%)"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__state
+msgid "State"
+msgstr "Statut"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_assignment__counts_for_completion
+msgid "Counts for the completion certificate"
+msgstr "Compte pour l’attestation de réalisation"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_usage__assignment_id
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_apply__assignment_id
+msgid "Assignment"
+msgstr "Affectation"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_usage__activity_id
+msgid "Activity"
+msgstr "Activité"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_usage__delivery_id
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_apply__delivery_ids
+msgid "Delivery"
+msgstr "Réalisation"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_invalidate__progress_id
+msgid "Progress"
+msgstr "Progression"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,field_description:training_management_interactive.field_training_elearning_invalidate__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: training_management_interactive
+#: model:ir.model.fields.selection,name:training_management_interactive.selection__training_elearning_assignment__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: training_management_interactive
+#: model:ir.model.fields.selection,name:training_management_interactive.selection__training_elearning_assignment__state__validated
+msgid "Validated"
+msgstr "Validée"
+
+#. module: training_management_interactive
+#: model:ir.model.fields.selection,name:training_management_interactive.selection__training_elearning_assignment__rule__completed
+msgid "Completed"
+msgstr "Activité terminée"
+
+#. module: training_management_interactive
+#: model:ir.model.fields.selection,name:training_management_interactive.selection__training_elearning_assignment__rule__score
+msgid "Completed with score"
+msgstr "Activité terminée avec seuil"
+
+#. module: training_management_interactive
+#: model:ir.model.fields,help:training_management_interactive.field_training_elearning_assignment__counts_for_completion
+msgid "The result is declared by the browser. By default a human evidence decides the certificate."
+msgstr "Le résultat est déclaré par le navigateur. Par défaut, une preuve humaine détermine l’attestation."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/wizard/editorial.py:0
+msgid "Select at least one delivery."
+msgstr "Sélectionnez au moins une réalisation."
+
+#. module: training_management_interactive
+#: model:res.groups,name:training_management_interactive.group_elearning_author
+msgid "Interactive Content Author"
+msgstr "Auteur de contenus interactifs"
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/wizard/editorial.py:0
+msgid "Interactive activities"
+msgstr "Activités interactives"
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Keep the interactive adapter while interactive activities exist."
+msgstr "Conservez l’adaptateur interactif tant que des activités interactives existent."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Validate the draft through the publication action."
+msgstr "Validez le brouillon avec l’action de validation."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Preserve validated assignments; create a new assignment."
+msgstr "Conservez les affectations validées ; créez une nouvelle affectation."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Select a published version of an active resource."
+msgstr "Sélectionnez une version publiée d’une ressource active."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Explicit cross-company sharing is not supported."
+msgstr "Le partage explicite entre sociétés n’est pas pris en charge."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Coordination required."
+msgstr "Une habilitation de coordination est requise."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Use a validated assignment with an available version."
+msgstr "Utilisez une affectation validée dont la version est disponible."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "The delivery must use the assigned programme."
+msgstr "La réalisation doit utiliser le programme de l’affectation."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Keep validated assignments."
+msgstr "Conservez les affectations validées."
+
+#. module: training_management_interactive
+#: model:ir.model.constraint,message:training_management_interactive.constraint_training_elearning_assignment_threshold_valid
+msgid "Threshold must be between 0 and 100."
+msgstr "Le seuil doit être compris entre 0 et 100."
+
+#. module: training_management_interactive
+#: model:ir.model.constraint,message:training_management_interactive.constraint_training_elearning_usage_one_activity
+msgid "An activity has one interactive usage."
+msgstr "Une activité possède un seul usage interactif."
+
+#. module: training_management_interactive
+#: model:ir.model.constraint,message:training_management_interactive.constraint_training_elearning_usage_one_assignment_delivery
+msgid "This assignment is already applied."
+msgstr "Cette affectation est déjà appliquée."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Select an available validated assignment and a compatible interactive activity."
+msgstr "Sélectionnez une affectation validée disponible et une activité interactive compatible."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Keep historical content usages."
+msgstr "Conservez les usages historiques des contenus."
+
+#. module: training_management_interactive
+#: code:addons/training_management_interactive/models/assignment.py:0
+msgid "Preserve the activity and its content usage."
+msgstr "Conservez l’activité et son usage de contenu."

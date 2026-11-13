@@ -61,7 +61,7 @@ case "$scenario" in
       -i training_management --without-demo --stop-after-init
     TM_UPGRADE_PHASE=prepare run_step baseline run_odoo shell < tests/probes/catalogue_upgrade_probe.py
     run_step update run_odoo \
-      -u training_management --stop-after-init
+      -u training_catalog,training_interactive,training_mock_exam,training_management --stop-after-init
     TM_UPGRADE_PHASE=verify run_step history run_odoo shell < tests/probes/catalogue_upgrade_probe.py
     run_step commercial-install run_odoo \
       -i training_management_sale --without-demo --stop-after-init
@@ -87,13 +87,13 @@ case "$scenario" in
     TM_TEST_DB=tm_s03_test_upgrade_ci TM_ADDONS_DIR="${work_dir}/s04-bridge/addons" run_step s03-view-bootstrap run_odoo \
       shell < tests/probes/s03_view_bootstrap.py
     TM_TEST_DB=tm_s03_test_upgrade_ci run_step s03-upgrade-tests run_odoo \
-      -u training_management,training_management_sale --stop-after-init
+      -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale --stop-after-init
     TM_TEST_DB=tm_s03_test_upgrade_ci S03_UPGRADE_PHASE=verify run_step s03-history-verify run_odoo \
       shell < tests/probes/s03_history.py
     TM_TEST_DB=tm_s03_test_upgrade_ci S03_UPGRADE_PHASE=prepare_s03 run_step s03-update-prepare run_odoo \
       shell < tests/probes/s03_history.py
     TM_TEST_DB=tm_s03_test_upgrade_ci run_step s03-update run_odoo \
-      -u training_management,training_management_sale --stop-after-init
+      -u training_catalog,training_interactive,training_mock_exam,training_management,training_management_sale --stop-after-init
     TM_TEST_DB=tm_s03_test_upgrade_ci S03_UPGRADE_PHASE=verify_s03 run_step s03-update-verify run_odoo \
       shell < tests/probes/s03_history.py
     ;;
@@ -105,7 +105,7 @@ case "$scenario" in
     TM_TEST_DB=tm_s01_test_website_ci run_step website-commercial-install run_odoo \
       -i training_management_sale --without-demo --stop-after-init
     TM_TEST_DB=tm_s01_test_website_ci run_step website-commercial-update run_odoo \
-      -u training_management_sale --stop-after-init
+      -u training_catalog,training_interactive,training_mock_exam,training_management_sale --stop-after-init
     TM_TEST_DB=tm_s01_test_website_ci TM_UPGRADE_PHASE=verify run_step website-history run_odoo \
       shell < tests/probes/catalogue_upgrade_probe.py
     ;;

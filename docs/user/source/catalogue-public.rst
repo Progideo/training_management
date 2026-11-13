@@ -12,21 +12,20 @@ Trouver une formation
    utiliser **Décrire un projet sur mesure**.
 #. Rechercher par texte et filtrer par catégorie ou modalité.
 #. Ouvrir la fiche et lire objectifs, public, prérequis, durée, modalités,
-   inclusions, exercices et préparation attendue.
-#. Télécharger le programme public. Si un aperçu est disponible, consulter
-   l'extrait ou répondre au mini-quiz de démonstration.
+   et conditions commerciales. La fiche commune distingue les offres avec
+   formateur et autonomes.
 #. Utiliser **Demander un devis pour mon équipe** ou **Demander un devis individuel**.
    Le parcours et la version choisie sont repris dans le formulaire.
 
-La démonstration donne une correction sans créer d'inscription, de tentative
-d'examen ou de progression. Un examen blanc et un examen officiel sont deux
+Le programme détaillé, les supports et les démonstrations restent privés avant
+achat. Une consultation ne crée aucun accès pédagogique. Un examen blanc et un examen officiel sont deux
 prestations différentes : vérifier les inclusions indiquées sur la fiche et le devis.
 
 .. figure:: images/catalogue.jpg
    :alt: Catalogue sur ordinateur avec les entrées Former mon équipe, Me former, recherche, catégorie et modalité.
    :width: 100%
 
-   Choix du parcours et filtres du catalogue, démonstration du 1 novembre 2026.
+   Capture historique du 1 novembre 2026 ; les fiches publiques présentent désormais les seules informations générales.
 
 Envoyer une demande
 -------------------

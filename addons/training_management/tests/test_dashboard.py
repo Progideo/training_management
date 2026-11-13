@@ -352,6 +352,28 @@ class TestDashboard(EvaluationCase):
 
 @tagged("post_install", "-at_install")
 class TestDashboardHttp(EvaluationCase, HttpCase):
+    def test_coordinator_dashboard_with_fractional_notification_timestamp(self):
+        enrollment = self.opened(self.delivery())
+        notice = (
+            self.env["training.notification"]
+            .with_user(self.coordinator)
+            ._queue(enrollment, "confirmation", "confirmation")
+        )
+        created = fields.Datetime.now().replace(microsecond=123456)
+        # PostgreSQL log-access timestamps retain fractional seconds. Force a
+        # deterministic value in this disposable test database.
+        self.env.cr.execute("UPDATE training_notification SET create_date = %s WHERE id = %s", (created, notice.id))
+        notice.invalidate_recordset(["create_date"])
+        notifications = (
+            self.env["training.dashboard.service"].with_user(self.coordinator)._notifications(enrollment.delivery_id)
+        )
+        self.assertIn(fields.Datetime.to_string(created), [item["date"] for item in notifications])
+        self.authenticate(self.coordinator.login, self.coordinator.login)
+        response = self.url_open("/my/training-dashboard/%s" % enrollment.delivery_id.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(enrollment.participant_id.name, response.text)
+        self.assertIn("no-store", response.headers.get("Cache-Control", ""))
+
     def test_portal_scoped_dashboard_no_cache_and_revoked_link(self):
         assignment, _grant = self.assigned_evaluation()
         self.authenticate(self.portal_b.login, self.portal_b.login)

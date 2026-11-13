@@ -52,10 +52,24 @@ class RetentionCategory(models.Model):
     purpose = fields.Text(required=True)
     responsible_id = fields.Many2one("res.users", required=True, ondelete="restrict")
     duration_days = fields.Integer(required=True)
+    duration_unit = fields.Selection(
+        [("days", "Days"), ("months", "Calendar Months")],
+        string="Retention Unit",
+        default="days",
+        required=True,
+    )
+    duration_months = fields.Integer(string="Retention (Calendar Months)")
     archive_policy = fields.Text(required=True)
     deletion_policy = fields.Text(required=True, help="Requests are reviewed manually; no automatic purge.")
     approved_by_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
     approved_at = fields.Datetime(readonly=True, copy=False)
+
+    @api.onchange("duration_unit")
+    def _onchange_duration_unit(self):
+        if self.duration_unit == "months":
+            self.duration_days = 0
+        else:
+            self.duration_months = 0
 
     @api.private
     def _quality(self):
@@ -84,9 +98,13 @@ class RetentionCategory(models.Model):
         self.lock_for_update()
         self.invalidate_recordset()
         for policy in self.filtered(lambda p: not p.approved_at):
-            if policy.duration_days <= 0 or policy.company_id not in policy.responsible_id.company_ids:
+            duration = policy.duration_months if policy.duration_unit == "months" else policy.duration_days
+            other = policy.duration_days if policy.duration_unit == "months" else policy.duration_months
+            if duration <= 0 or other != 0 or policy.company_id not in policy.responsible_id.company_ids:
                 raise ValidationError(
-                    self.env._("Set a positive approved duration and an authorized responsible user.")
+                    self.env._(
+                        "Choose one positive duration in days or calendar months and an authorized responsible user."
+                    )
                 )
             # pylint: disable-next=super-method-mismatch  # checked approval bypasses the public immutable write guard
             super(RetentionCategory, policy).write(
@@ -609,8 +627,8 @@ class ClosureEnrollment(models.Model):
                     [("delivery_id", "=", self.delivery_id.id), ("optional", "=", False)]
                 )
                 service = self.env["training.learning.service"]
-                required = activities.filtered(service._required_for_certificate)
-                if any(not service._complete(self, a) for a in required):
+                activities = activities.filtered(service._required_for_certificate)
+                if any(not service._complete(self, a) for a in activities):
                     raise ValidationError(
                         self.env._("Complete every required activity and review its supporting evidence.")
                     )
@@ -690,8 +708,8 @@ class ClosureLearningService(models.AbstractModel):
 
     @api.private
     def _required_for_certificate(self, activity):
-        """Extensions exclude activities whose result is only declared by the client."""
-        return True
+        """Adapters may exclude formative activities; native obligations stay required."""
+        return not activity.optional
 
     @api.private
     def _certificate_origin(self, enrollment, activity):

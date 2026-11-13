@@ -27,30 +27,20 @@ gardent leurs références d'origine.
 Publier une fiche publique
 --------------------------
 
-#. Sur le brouillon, compléter les rubriques publiques et approuver explicitement
-   leur diffusion. Préparer, si souhaité, un extrait PDF public distinct des supports privés.
-#. Ajouter les questions de démonstration facultatives. Elles ne reprennent pas
-   une banque d'examen privée.
+#. Compléter la fiche commune : intitulé, catégorie, présentation et objectifs généraux.
+#. Sur le programme, vérifier objectifs, public, prérequis, durée indicative et
+   conditions commerciales avant d’approuver sa présence au catalogue.
 #. Valider puis publier la version selon les actions de la fiche.
-#. Ouvrir le catalogue public sans connexion ; contrôler recherche, catégorie,
-   modalité, fiche, PDF du programme et extrait.
-#. Retirer la publication lorsque la fiche ne doit plus être proposée.
+#. Ouvrir le catalogue sans connexion ; vérifier présentation générale, recherche,
+   catégorie, modalités et liens vers les offres et demandes de devis.
+#. Pour une édition autonome, activer séparément sa présence au catalogue et
+   renseigner ses conditions publiques. Sa publication pédagogique reste distincte.
+#. Retirer la publication lorsque l’offre ne doit plus être proposée.
 
-Une information manquante peut apparaître comme non confirmée. Cela ne vaut pas
-promesse commerciale. Après validation, tout enrichissement du programme exige
-une nouvelle version et les approbations correspondantes.
-
-.. important::
-   Un PDF public est une décision de diffusion. Ne pas y placer un cas client
-   confidentiel, une adaptation individuelle, un lien de salle distante ou
-   un support pédagogique réservé. Le retrait empêche les nouvelles lectures
-   publiques ; il ne rappelle pas les fichiers déjà téléchargés.
-
-.. figure:: images/fiche-publique.jpg
-   :alt: Fiche publique du programme avec version, durée, modalité et accès au devis et au PDF.
-   :width: 100%
-
-   Contrôler en visiteur les informations réellement publiées.
+Le programme détaillé et son PDF restent privés. Les téléchargements autorisés
+par le contexte du participant sont conservés. Les anciens extraits et mini-quiz
+sont gardés dans l’historique, sans diffusion publique. Après validation, une
+évolution du programme suit toujours les règles de version et d’approbation.
 
 Gérer une adaptation intraentreprise
 ------------------------------------

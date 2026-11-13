@@ -1,16 +1,20 @@
 """EVA02: separation proof and functional/security regression tests."""
 
 from datetime import timedelta
+import io
 
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
+from odoo.tools.pdf import PdfReader
 from lxml import html
 from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
 
 
 class FeedbackCase(EvaluationCase):
-    def campaign(self, anonymous=True, purpose="immediate", recipients=3, opened=True):
+    def campaign(
+        self, anonymous=True, purpose="immediate", recipients=3, opened=True, name="Fictional feedback campaign"
+    ):
         delivery = self.delivery()
         definition = (
             self.env["training.feedback"]
@@ -26,9 +30,9 @@ class FeedbackCase(EvaluationCase):
                 }
             )
         )
-        survey = (
-            self.env["survey.survey"].with_user(self.coordinator).browse(definition.action_questionnaire()["res_id"])
-        )
+        questionnaire = definition.action_questionnaire()
+        self.assertEqual(questionnaire["view_id"], self.env.ref("survey.survey_survey_view_form").id)
+        survey = self.env["survey.survey"].with_user(self.coordinator).browse(questionnaire["res_id"])
         question = (
             self.env["survey.question"]
             .with_user(self.coordinator)
@@ -54,7 +58,7 @@ class FeedbackCase(EvaluationCase):
             .with_user(self.coordinator)
             .create(
                 {
-                    "name": "Fictional feedback campaign",
+                    "name": name,
                     "delivery_id": delivery.id,
                     "feedback_id": definition.id,
                     "population": "Confirmed fictional participants",
@@ -98,6 +102,23 @@ class FeedbackCase(EvaluationCase):
 
 @tagged("post_install", "-at_install")
 class TestFeedback(FeedbackCase):
+    def test_native_closed_feedback_report_preserves_snapshot_and_scope(self):
+        campaign, users, question = self.campaign(name="Synthèse des retours — édition française")
+        for user in users:
+            self.submit(campaign, user, question)
+        campaign.action_close()
+        snapshot = dict(campaign.snapshot)
+        reports = self.native_pdf_reports()
+        report_ref = "training_management.report_feedback"
+        with self.assertRaises(AccessError):
+            reports.with_user(users[0])._render_qweb_pdf(report_ref, campaign.ids)
+        content, kind = reports.with_user(self.coordinator)._render_qweb_pdf(report_ref, campaign.ids)
+        self.assertEqual(kind, "pdf")
+        pdf = PdfReader(io.BytesIO(content))
+        self.assertEqual(len(pdf.pages), 1)
+        self.assertIn(campaign.name, pdf.pages[0].extract_text())
+        self.assertEqual(campaign.snapshot, snapshot)
+
     def test_anonymous_separation_proof_and_three_threshold(self):
         campaign, users, question = self.campaign()
         invitation_before = campaign.recipient_ids.read(["user_id", "write_date", "response_state"])

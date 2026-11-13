@@ -11,7 +11,7 @@ from odoo.tools.misc import format_date
 
 
 class AttendancePeriods(models.AbstractModel):
-    _inherit = "training.attendance.service"
+    _inherit = "training.attendance.service"  # pylint: disable=consider-merging-classes-inherited  # period computation is separate from signature transactions
 
     @api.private
     def _periods(self, session):

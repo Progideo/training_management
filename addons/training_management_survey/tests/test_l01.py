@@ -870,16 +870,16 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         self.assertLess(home.text.index("Former mon équipe"), home.text.index("Me former"))
         page = self.url_open("/formations/%s?kind=group" % self.public_program.id)
         self.assertEqual(page.status_code, 200)
-        self.assertEqual(
-            self.url_open("/formations/%s/pdf" % self.public_program.id).content,
-            self.public_program.pdf_attachment_id.raw.content,
-        )
-        self.assertEqual(self.url_open("/formations/%s/apercu.pdf" % self.public_program.id).content, self.pdf)
+        original_pdf = self.public_program.pdf_attachment_id.raw.content
+        self.assertEqual(self.url_open("/formations/%s/pdf" % self.public_program.id).status_code, 404)
+        self.assertEqual(self.url_open("/formations/%s/apercu.pdf" % self.public_program.id).status_code, 404)
         question = self.public_program.preview_question_ids
         result = self.url_open(
             "/formations/%s" % self.public_program.id, data={"csrf_token": self.csrf_token(), str(question.id): "a"}
         )
-        self.assertIn("Public demonstration only", result.text)
+        self.assertIn(result.status_code, (400, 403, 404, 405))
+        self.assertNotIn("Public demonstration only", result.text)
+        self.assertEqual(self.public_program.pdf_attachment_id.raw.content, original_pdf)
         self.assertFalse(self.env["survey.user_input"].search([("training_enrollment_id", "!=", False)]))
         self.assertTrue(PdfFileReader(io.BytesIO(self.public_program.pdf_attachment_id.raw.content)).pages)
         self.assertIn(self.url_open("/formations/%s" % self.program.id).status_code, (403, 404))

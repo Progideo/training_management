@@ -1,5 +1,4 @@
 from . import training_course
-from . import training_category
 from . import training_program
 from . import training_controlled
 from . import training_delivery
