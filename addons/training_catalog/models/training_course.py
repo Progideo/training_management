@@ -19,6 +19,7 @@ class TrainingCourse(models.Model):
         index=True,
     )
     presentation = fields.Text(translate=True, string="General Presentation")
+    public_tags = fields.Text(string="Public Tags", translate=True, help="Enter one public catalogue label per line.")
     general_objectives = fields.Text(translate=True)
 
     @api.constrains("name")
@@ -56,6 +57,13 @@ class TrainingCourse(models.Model):
                 "objectives": course.general_objectives or "",
                 "category_id": course.category_id.id,
                 "category": course.category_id.name or "",
+                "tags": list(
+                    dict.fromkeys(
+                        label.strip()
+                        for label in [course.category_id.name or "", *(course.public_tags or "").splitlines()]
+                        if label.strip()
+                    )
+                ),
                 "offers": [offer for offer in offers if offer["course_id"] == course.id],
             }
             for course in courses

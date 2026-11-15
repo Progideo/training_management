@@ -29,6 +29,16 @@ msgid "General Presentation"
 msgstr "Présentation générale"
 
 #. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_tags
+msgid "Public Tags"
+msgstr "Étiquettes publiques"
+
+#. module: training_catalog
+#: model:ir.model.fields,help:training_catalog.field_training_course__public_tags
+msgid "Enter one public catalogue label per line."
+msgstr "Saisissez une étiquette de catalogue public par ligne."
+
+#. module: training_catalog
 #: model:ir.model.fields,field_description:training_catalog.field_training_course__general_objectives
 msgid "General Objectives"
 msgstr "Objectifs généraux"

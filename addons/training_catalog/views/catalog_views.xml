@@ -26,6 +26,7 @@
                     <group string="General Presentation">
                         <field name="public_catalogue"/>
                         <field name="presentation"/>
+                        <field name="public_tags"/>
                         <field name="general_objectives"/>
                     </group>
                 </sheet>
