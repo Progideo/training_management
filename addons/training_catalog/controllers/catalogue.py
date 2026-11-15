@@ -22,7 +22,9 @@ class TrainingCatalogue(http.Controller):
                 for row in rows
                 if needle
                 in " ".join(
-                    [row["name"], row["presentation"], row["objectives"]] + [offer["title"] for offer in row["offers"]]
+                    [row["name"], row["presentation"], row["objectives"]]
+                    + [tag["label"] for tag in row["tags"]]
+                    + [offer["title"] for offer in row["offers"]]
                 ).casefold()
             ]
         if category:

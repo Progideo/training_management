@@ -10,10 +10,12 @@ regroupe les offres TM et autonomes, sans copier de programme ni créer de droit
 pédagogique. Les extensions fournissent seulement une projection de champs autorisés.
 La recherche porte sur ces données générales, jamais sur les contenus privés.
 Le site courant natif Odoo 20 (`env.website`) fixe la société exploitante.
-La grille place les étiquettes de présentation sous le résumé. Le champ
-traduisible « Étiquettes publiques » contient un libellé par ligne, éditable
-par les gestionnaires du catalogue. La catégorie de la fiche figure aussi
-dans ses étiquettes.
+La présentation générale et les étiquettes appartiennent à la fiche commune.
+Les étiquettes s’affichent sous le résumé, dans la grille et sur les pages de
+la fiche et du programme. Le catalogue seul affiche la catégorie. Quand
+eLearning est installé, le champ « Étiquettes publiques » permet de sélectionner
+les étiquettes natives et reprend leur libellé traduit et leur couleur. Les
+étiquettes sans couleur restent internes selon la règle native d’Odoo.
 
 Une fiche générale peut être publiée par l’éditeur catalogue. Les programmes TM
 explicitement publiés au catalogue conservent leur présentation générale et leurs

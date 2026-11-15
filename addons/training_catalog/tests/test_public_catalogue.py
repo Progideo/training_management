@@ -1,5 +1,7 @@
 """General pages work with the catalogue alone; public ORM grants stay closed."""
 
+from lxml import html
+
 from odoo.exceptions import AccessError
 from odoo.tests import HttpCase, tagged
 from .test_catalog import SharedCatalogCase
@@ -11,13 +13,13 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.authenticate(None, None)
         url = "/formations/catalogue/%s" % self.course.id
         self.assertEqual(self.url_open(url).status_code, 404)
-        self.course.with_user(self.editor).write({"public_catalogue": True, "public_tags": "Quality\nTesting\nQuality"})
+        category = self.env["training.category"].create({"name": "Quality", "company_id": self.course.company_id.id})
+        self.course.with_user(self.editor).write({"public_catalogue": True, "category_id": category.id})
         foreign = self.env["training.course"].create(
             {
                 "name": "FICTIONAL FOREIGN PUBLIC COURSE",
                 "company_id": self.other_company.id,
                 "public_catalogue": True,
-                "public_tags": "FOREIGN LABEL",
             }
         )
         page = self.url_open(url)
@@ -27,9 +29,11 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         root = self.url_open("/formations")
         self.assertIn(self.course.name, root.text)
         self.assertNotIn(foreign.name, root.text)
-        self.assertNotIn("FOREIGN LABEL", root.text)
-        self.assertEqual(root.text.count(">Quality</li>"), 1)
-        self.assertLess(root.text.index("General presentation"), root.text.index(">Quality</li>"))
+        card_content = html.fromstring(root.text).xpath(
+            '//div[contains(concat(" ", normalize-space(@class), " "), " o_training_catalogue_card ")]'
+            '//*[self::p or self::li]/text()'
+        )
+        self.assertEqual([value.strip() for value in card_content if value.strip()], ["General presentation", "Quality"])
         self.assertEqual(self.url_open("/formations/catalogue/%s" % foreign.id).status_code, 404)
         self.assertNotIn(self.course.name, self.url_open("/formations?search=UNPUBLISHED_SECRET_SEARCH").text)
         self.assertIn(self.course.name, self.url_open("/formations?search=General%20presentation").text)
