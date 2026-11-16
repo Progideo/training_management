@@ -239,7 +239,7 @@ class OrientationRule(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         surveys = self.env["survey.survey"].browse(
-            [v.get("survey_id") or self.env.context.get("default_survey_id") for v in vals_list]
+            {v.get("survey_id") or self.env.context.get("default_survey_id") for v in vals_list}
         )
         surveys._orientation_edit()
         prepared = []

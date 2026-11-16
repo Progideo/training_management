@@ -44,11 +44,20 @@
             </p>
             <form method="post">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                <fieldset t-foreach="questions" t-as="q" class="my-4"><legend t-out="q['title']"/>
-                    <label t-foreach="q['choices']" t-as="choice" class="d-block py-1">
-                        <input type="radio" t-att-name="q['id']" t-att-value="choice[0]" t-att-checked="answers.get(str(q['id'])) == str(choice[0])"/> <t t-out="choice[1]"/>
-                    </label>
-                </fieldset>
+                <div t-foreach="questions" t-as="q" class="my-4">
+                    <t t-if="len(q['choices']) &gt; 8">
+                        <label class="form-label h5" t-att-for="'orientation-question-%s' % q['id']" t-out="q['title']"/>
+                        <select class="form-select" t-att-id="'orientation-question-%s' % q['id']" t-att-name="q['id']">
+                            <option value="">Choisir une réponse</option>
+                            <option t-foreach="q['choices']" t-as="choice" t-att-value="choice[0]" t-att-selected="answers.get(str(q['id'])) == str(choice[0])" t-out="choice[1]"/>
+                        </select>
+                    </t>
+                    <fieldset t-else=""><legend t-out="q['title']"/>
+                        <label t-foreach="q['choices']" t-as="choice" class="d-block py-1">
+                            <input type="radio" t-att-name="q['id']" t-att-value="choice[0]" t-att-checked="answers.get(str(q['id'])) == str(choice[0])"/> <t t-out="choice[1]"/>
+                        </label>
+                    </fieldset>
+                </div>
                 <button class="btn btn-primary">Voir mon orientation</button>
             </form>
         </div>
