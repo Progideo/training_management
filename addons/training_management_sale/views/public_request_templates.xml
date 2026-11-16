@@ -1,7 +1,10 @@
 <odoo>
     <template id="public_journeys" inherit_id="training_catalog.public_catalogue">
         <xpath expr="//h1" position="after">
-            <a t-if="kind != 'individual'" class="d-inline-block mb-3" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
+            <div t-if="kind != 'individual'" class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 rounded-3 border bg-body-tertiary p-3 p-md-4 mb-4">
+                <p class="mb-0 fw-semibold">Vous ne trouvez pas la formation qui vous convient ?</p>
+                <a class="btn btn-outline-primary" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
+            </div>
         </xpath>
         <xpath expr="//h2/a" position="attributes">
             <attribute name="t-att-href">'/formations/catalogue/%s?kind=%s' % (course['id'], kind)</attribute>
