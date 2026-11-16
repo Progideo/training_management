@@ -179,6 +179,8 @@ class OrientationSurvey(models.Model):
         return {
             "name": rule.level or rule.program_id.title or rule.path_id.name,
             "explanation": rule.explanation,
+            "next_step": rule.next_step,
+            "catalogue_search": rule.catalogue_search,
             "criteria": [(a.question_id.title, a.value) for a in rule.answer_ids.sorted("id")],
             "programs": [(p.id, p.title) for p in (rule.program_id or rule.path_id.step_ids.program_id)],
         }
@@ -196,6 +198,8 @@ class OrientationRule(models.Model):
     program_id = fields.Many2one("training.program.version", string="Recommended Programme", ondelete="restrict")
     path_id = fields.Many2one("training.path", string="Recommended Path", ondelete="restrict")
     explanation = fields.Text(string="Recommendation Explanation", required=True, translate=True)
+    next_step = fields.Text(translate=True, help="Concrete next action shown in the public summary.")
+    catalogue_search = fields.Char(translate=True, help="Search term for the link to the public catalogue.")
 
     @api.constrains("survey_id", "company_id", "answer_ids", "level", "program_id", "path_id", "explanation")
     def _check_definition(self):

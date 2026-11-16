@@ -46,6 +46,8 @@
                                 <field name="program_id" options="{'no_create': True}"/>
                                 <field name="path_id" options="{'no_create': True}"/>
                                 <field name="explanation"/>
+                                <field name="next_step"/>
+                                <field name="catalogue_search"/>
                             </group>
                         </form>
                     </field>

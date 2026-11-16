@@ -336,6 +336,7 @@ class TestOrientation(OrientationCase, HttpCase):
 
     def test_http_public_privacy_native_boundaries_and_no_effects(self):
         survey, _, rule, answers = self.diagnostic()
+        rule.write({"next_step": "Start with a guided exercise.", "catalogue_search": "Quality & methods"})
         attachment = (
             self.env["ir.attachment"]
             .with_user(self.coordinator)
@@ -390,6 +391,8 @@ class TestOrientation(OrientationCase, HttpCase):
             self.assertIn("Bilan d’orientation", response.text)
             self.assertIn("Pourquoi cette recommandation ?", response.text)
             self.assertIn("Explorer les formations", response.text)
+            self.assertIn("Start with a guided exercise.", response.text)
+            self.assertIn('/formations?search=Quality+%26+methods', response.text)
             self.assertNotIn("data-orientation-step", response.text)
             self.assertNotIn("Votre pratique ?", response.text)
             self.assertIn("no-store", response.headers["Cache-Control"])

@@ -30,10 +30,11 @@
                         <h3 class="h5">Pourquoi cette recommandation ?</h3>
                         <p t-out="result['explanation']"/>
                         <h3 class="h5">Prochaine étape</h3>
+                        <p t-if="result['next_step']" t-out="result['next_step']"/>
                         <ul t-if="result['programs']">
                             <li t-foreach="result['programs']" t-as="p"><a t-att-href="'/formations/%s' % p[0]" t-out="p[1]"/></li>
                         </ul>
-                        <p t-else=""><a href="/formations" class="btn btn-primary">Explorer les formations</a></p>
+                        <p t-else=""><a t-att-href="catalogue_url" class="btn btn-primary">Explorer les formations</a></p>
                     </t>
                     <t t-else="">
                         <h3 class="h5">Demandons conseil à une personne</h3>

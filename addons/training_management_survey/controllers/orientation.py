@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from odoo import http
 from odoo.http import request
 
@@ -54,6 +56,9 @@ class TrainingOrientation(http.Controller):
         # Reject duplicate parameters as well as foreign question/answer ids.
         duplicate = any(len(v) != 1 for _, v in request.httprequest.form.lists())
         result = survey._orientation_result(answers) if submitted and not duplicate else False
+        catalogue_url = "/formations"
+        if result and result["catalogue_search"]:
+            catalogue_url += "?" + urlencode({"search": result["catalogue_search"]})
         response = TrainingParticipantPortal._private(
             request.render(
                 "training_management_survey.orientation_form",
@@ -66,6 +71,7 @@ class TrainingOrientation(http.Controller):
                     ],
                     "submitted": submitted,
                     "result": result,
+                    "catalogue_url": catalogue_url,
                     "guided_request": "training_request_type" in request.env["crm.lead"]._fields
                     if "crm.lead" in request.env
                     else False,
