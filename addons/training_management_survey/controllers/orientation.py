@@ -22,12 +22,17 @@ class TrainingOrientation(http.Controller):
             )
         )
 
-    @http.route("/formations/orientation", type="http", auth="public", website=True, methods=["GET"])
+    @http.route("/formations/orientation", type="http", auth="public", website=True, methods=["GET", "POST"])
     def diagnostics(self, **kwargs):
+        surveys = self._surveys()
+        if len(surveys) == 1:
+            return self._render_diagnostic(surveys, "/formations/orientation")
+        if request.httprequest.method == "POST":
+            raise request.not_found()
         return TrainingParticipantPortal._private(
             request.render(
                 "training_management_survey.orientation_list",
-                {"diagnostics": [(s.id, s.title) for s in self._surveys()]},
+                {"diagnostics": [(s.id, s.title) for s in surveys]},
             )
         )
 
@@ -38,6 +43,10 @@ class TrainingOrientation(http.Controller):
         survey = self._surveys().filtered(lambda s: s.id == survey_id)
         if not survey:
             raise request.not_found()
+        return self._render_diagnostic(survey, f"/formations/orientation/{survey_id}")
+
+    @staticmethod
+    def _render_diagnostic(survey, form_url):
         submitted = request.httprequest.method == "POST"
         answers = (
             {key: value for key, value in request.httprequest.form.items() if key != "csrf_token"} if submitted else {}
@@ -50,11 +59,11 @@ class TrainingOrientation(http.Controller):
                 "training_management_survey.orientation_form",
                 {
                     "diagnostic": {"title": survey.title, "contact": survey.orientation_contact},
+                    "form_url": form_url,
                     "questions": [
                         {"id": q.id, "title": q.title, "choices": [(a.id, a.value) for a in q.suggested_answer_ids]}
                         for q in survey.question_ids.sorted(lambda q: (q.sequence, q.id))
                     ],
-                    "answers": answers,
                     "submitted": submitted,
                     "result": result,
                     "guided_request": "training_request_type" in request.env["crm.lead"]._fields
