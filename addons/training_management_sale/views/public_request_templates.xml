@@ -1,19 +1,7 @@
 <odoo>
     <template id="public_journeys" inherit_id="training_catalog.public_catalogue">
         <xpath expr="//h1" position="after">
-            <section class="my-4" aria-label="Choisir mon parcours">
-                <t t-if="not kind">
-                    <h2>Former mon équipe</h2><p>Un projet intraentreprise, une adaptation ou une formation sur mesure.</p><a class="btn btn-primary" href="/formations?kind=group">Choisir pour mon équipe</a>
-                    <h2 class="mt-3">Me former</h2><a class="btn btn-outline-primary" href="/formations?kind=individual">Choisir pour moi</a>
-                </t>
-                <t t-else="">
-                    <h2 t-if="kind == 'individual'">Votre formation individuelle</h2>
-                    <h2 t-else="">La formation de votre équipe</h2>
-                    <p>Choisissez une formation ci-dessous pour consulter son offre et demander un devis.</p>
-                    <a href="/formations">Changer de parcours</a>
-                </t>
-                <a t-if="kind != 'individual'" class="d-block mt-3" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
-            </section>
+            <a t-if="kind != 'individual'" class="d-inline-block mb-3" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
         </xpath>
         <xpath expr="//h2/a" position="attributes">
             <attribute name="t-att-href">'/formations/catalogue/%s?kind=%s' % (course['id'], kind)</attribute>

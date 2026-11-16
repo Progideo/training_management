@@ -1534,21 +1534,6 @@ msgid "Choisir indépendamment du pays"
 msgstr "Choisir indépendamment du pays"
 
 #. module: training_management_sale
-#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
-msgid "Choisir mon parcours"
-msgstr "Choisir mon parcours"
-
-#. module: training_management_sale
-#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
-msgid "Choisir pour moi"
-msgstr "Choisir pour moi"
-
-#. module: training_management_sale
-#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
-msgid "Choisir pour mon équipe"
-msgstr "Choisir pour mon équipe"
-
-#. module: training_management_sale
 #: model:ir.model.fields.selection,name:training_management_sale.selection__crm_lead__training_request_type__custom
 msgid "Custom"
 msgstr "Sur mesure"
@@ -1594,7 +1579,6 @@ msgid "Formation du catalogue"
 msgstr "Formation du catalogue"
 
 #. module: training_management_sale
-#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_programme_actions
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
 msgid "Former mon équipe"
@@ -1611,7 +1595,6 @@ msgid "MAD"
 msgstr "MAD"
 
 #. module: training_management_sale
-#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_programme_actions
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
 msgid "Me former"
@@ -1707,12 +1690,6 @@ msgstr "Transmettre ma demande"
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
 msgid "Type de besoin"
 msgstr "Type de besoin"
-
-#. module: training_management_sale
-#: model_terms:ir.ui.view,arch_db:training_management_sale.public_journeys
-msgid "Un projet intraentreprise, une adaptation ou une formation sur mesure."
-msgstr ""
-"Un projet intraentreprise, une adaptation ou une formation sur mesure."
 
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.public_request
