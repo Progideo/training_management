@@ -9,6 +9,8 @@ questions et démonstrations restent privés.
 regroupe les offres TM et autonomes, sans copier de programme ni créer de droit
 pédagogique. Les extensions fournissent seulement une projection de champs autorisés.
 La recherche porte sur ces données générales, jamais sur les contenus privés.
+La grille affiche jusqu’à douze fiches par page et conserve la recherche, la
+catégorie et la modalité dans les liens de pagination.
 Le site courant natif Odoo 20 (`env.website`) fixe la société exploitante.
 La présentation générale et les étiquettes appartiennent à la fiche commune.
 Les étiquettes s’affichent sous le résumé, dans la grille et sur les pages de

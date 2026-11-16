@@ -79,11 +79,10 @@ class TrainingPublicRequest(http.Controller):
 
 
 class TrainingCommercialCatalogue(TrainingPublicCatalogue):
-    @http.route()
-    def catalogue(self, search="", category="", mode="", **kwargs):
-        response = super().catalogue(search=search, category=category, mode=mode, **kwargs)
-        response.qcontext["kind"] = kwargs.get("kind") if kwargs.get("kind") in ("group", "individual") else ""
-        return response
+    def _catalogue_options(self, kind="", **kwargs):
+        options = super()._catalogue_options(**kwargs)
+        options["kind"] = kind if kind in ("group", "individual") else ""
+        return options
 
     @http.route()
     def course(self, course_id, **kwargs):

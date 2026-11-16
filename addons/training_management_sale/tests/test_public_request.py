@@ -100,6 +100,20 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         else:
             self.assertIn(image.status_code, (403, 404))
 
+    def test_catalogue_pager_preserves_legacy_quote_context(self):
+        courses = self.env["training.course"].create(
+            [
+                {"name": f"Fictional quote pagination {number:02d}", "company_id": self.company.id, "public_catalogue": True}
+                for number in range(13)
+            ]
+        )
+        self.authenticate(None, None)
+        root = html.fromstring(self.url_open("/formations?kind=individual&search=Fictional+quote+pagination").content)
+        next_link = root.xpath("//nav//a[starts-with(@href, '/formations/page/2?')]/@href")[0]
+        second = html.fromstring(self.url_open(next_link).content)
+        self.assertEqual(second.xpath("//input[@name='kind']/@value"), ["individual"])
+        self.assertEqual(second.xpath("//article//h2/a/@href"), [f"/formations/catalogue/{courses[-1].id}?kind=individual"])
+
     def test_http_journeys_preserve_context_and_validation_and_repetition(self):
         program = self.published()
         self.authenticate(None, None)
