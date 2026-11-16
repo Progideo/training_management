@@ -91,3 +91,41 @@ msgstr "Archivez les catégories utilisées par des formations au lieu de les su
 #: model:ir.model.fields,field_description:training_catalog.field_training_course__public_programme
 msgid "Public Programme"
 msgstr "Programme public"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_reference
+msgid "Public Reference"
+msgstr "Référence publique"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__live_duration_days
+msgid "Live Duration (days)"
+msgstr "Durée avec formateur (jours)"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_logo
+msgid "Public Logo"
+msgstr "Logo public"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_rating_rating__is_public_course_review
+msgid "Publish on the Training Catalogue"
+msgstr "Publier sur le catalogue de formations"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/controllers/catalogue.py:0
+msgid "Share this course"
+msgstr "Partager cette formation"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/controllers/catalogue.py:0
+msgid "Copy link"
+msgstr "Copier le lien"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/controllers/catalogue.py:0
+msgid "Link copied"
+msgstr "Lien copié"

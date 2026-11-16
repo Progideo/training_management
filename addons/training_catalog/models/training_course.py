@@ -27,6 +27,14 @@ class TrainingCourse(models.Model):
         strip_style=True,
     )
 
+    public_reference = fields.Char(string="Public Reference")
+    live_duration_days = fields.Float(string="Live Duration (days)")
+    public_logo = fields.Image(string="Public Logo", max_width=256, max_height=256)
+
+    _live_duration_nonnegative = models.Constraint(
+        "CHECK(live_duration_days >= 0)", "Live duration cannot be negative.",
+    )
+
     @api.constrains("name")
     def _check_name(self):
         if any(not (course.name or "").strip() for course in self):
@@ -44,6 +52,21 @@ class TrainingCourse(models.Model):
                 ("public_catalogue", "=", True),
             ],
             limit=1,
+        )
+
+    @api.private
+    def _public_reviews(self):
+        self.ensure_one()
+        return self.env["rating.rating"].sudo().search_read(
+            [
+                ("res_model", "=", self._name),
+                ("res_id", "=", self.id),
+                ("consumed", "=", True),
+                ("is_public_course_review", "=", True),
+            ],
+            ["rating", "feedback"],
+            order="write_date desc, id desc",
+            limit=20,
         )
 
     @api.private

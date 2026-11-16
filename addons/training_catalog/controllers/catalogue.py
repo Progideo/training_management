@@ -8,6 +8,7 @@ from odoo import http
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.http import request
 from odoo.tools import is_html_empty
+from odoo.tools.misc import formatLang
 
 CARDS_PER_PAGE = 12
 
@@ -67,6 +68,8 @@ class TrainingCatalogue(http.Controller):
         company = request.env.website.company_id if request.env.website else request.env.company
         published = courses._published_catalogue_course(company, course_id)
         programme = published.public_programme if published else False
+        duration = published.live_duration_days if published else 0.0
+        formatted_duration = formatLang(request.env, duration, digits=0 if duration.is_integer() else 2)
         url = request.httprequest.url_root.rstrip("/") + f"/formations/catalogue/{course_id}"
         return request.render(
             "training_catalog.public_course",
@@ -74,8 +77,18 @@ class TrainingCatalogue(http.Controller):
                 "course": row,
                 "general_presentation_published": bool(published),
                 "public_programme": Markup(programme) if not is_html_empty(programme) else "",
-                "share_url": url,
-                "share_email": "mailto:?" + urlencode({"subject": row["name"], "body": url}, quote_via=quote),
-                "share_whatsapp": "https://wa.me/?" + urlencode({"text": f"{row['name']}\n{url}"}),
+                "public_reference": published.public_reference if published else False,
+                "live_duration": duration,
+                "live_duration_label": formatted_duration,
+                "public_logo": published.public_logo if published else False,
+                "public_reviews": published._public_reviews() if published else [],
+                "course_share": {
+                    "url": url,
+                    "title": request.env._("Share this course"),
+                    "copyText": request.env._("Copy link"),
+                    "copied": request.env._("Link copied"),
+                    "email": "mailto:?" + urlencode({"subject": row["name"], "body": url}, quote_via=quote),
+                    "whatsapp": "https://wa.me/?" + urlencode({"text": f"{row['name']}\n{url}"}),
+                },
             },
         )

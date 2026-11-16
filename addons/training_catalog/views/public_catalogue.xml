@@ -40,18 +40,19 @@
     <t t-call="portal.frontend_layout" additional_title.translate="Formations">
       <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
         <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
+        <img t-if="public_logo" t-att-src="image_data_uri(public_logo)" alt="" class="img-fluid d-block my-3"/>
         <p style="white-space:pre-wrap" t-out="course['presentation']"/>
+        <dl t-if="public_reference or live_duration" class="d-flex flex-wrap gap-4 my-3">
+          <div t-if="public_reference"><dt>Référence</dt><dd t-out="public_reference"/></div>
+          <div t-if="live_duration">
+            <dt>Durée avec formateur</dt>
+            <dd><t t-out="live_duration_label"/> <t t-if="live_duration == 1">jour</t><t t-else="">jours</t></dd>
+          </div>
+        </dl>
         <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
         <div id="training_course_actions" class="d-flex flex-wrap gap-2 my-3"/>
-        <details class="mb-4">
-          <summary>Partager cette formation</summary>
-          <div class="d-flex flex-wrap gap-2 my-2">
-            <a class="btn btn-outline-secondary" t-att-href="share_email">Par e-mail</a>
-            <a class="btn btn-outline-secondary" t-att-href="share_whatsapp">Sur WhatsApp</a>
-          </div>
-          <label for="training_share_url">Lien de la fiche</label>
-          <input id="training_share_url" class="form-control" type="url" readonly="readonly" t-att-value="share_url"/>
-        </details>
+        <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
+        <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
         <section t-if="course['objectives']"><h2>Objectifs généraux</h2><p style="white-space:pre-wrap" t-out="course['objectives']"/></section>
         <section t-if="public_programme" id="training_course_programme" aria-label="Programme de la formation" class="mt-4">
           <div class="o_training_course_programme" t-out="public_programme"/>
@@ -62,6 +63,16 @@
             <p style="white-space:pre-wrap" t-out="offer['conditions']"/>
             <a class="btn btn-outline-primary" t-att-href="offer['url']" t-out="offer['action']"/>
           </div></article>
+        </section>
+        <section t-if="general_presentation_published" id="training_course_reviews" class="my-4">
+          <h2>Avis clients</h2>
+          <p t-if="not public_reviews" class="text-muted">Aucun avis publié pour cette formation.</p>
+          <ul t-else="" class="list-unstyled">
+            <li t-foreach="public_reviews" t-as="review" class="border-bottom py-2">
+              <p class="fw-semibold"><t t-out="review['rating']"/> / 5</p>
+              <p t-if="review['feedback']" class="text-break" t-out="review['feedback']"/>
+            </li>
+          </ul>
         </section>
       </div>
     </t>
