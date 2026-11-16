@@ -86,3 +86,8 @@ msgstr "Une catégorie de formations conserve sa société. Créez une catégori
 #: code:addons/training_catalog/models/training_category.py:0
 msgid "Archive categories used by courses instead of deleting them."
 msgstr "Archivez les catégories utilisées par des formations au lieu de les supprimer."
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_programme
+msgid "Public Programme"
+msgstr "Programme public"

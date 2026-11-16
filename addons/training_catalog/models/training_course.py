@@ -20,6 +20,12 @@ class TrainingCourse(models.Model):
     )
     presentation = fields.Text(translate=True, string="General Presentation")
     general_objectives = fields.Text(translate=True)
+    public_programme = fields.Html(
+        string="Public Programme",
+        translate=True,
+        sanitize_overridable=False,
+        strip_style=True,
+    )
 
     @api.constrains("name")
     def _check_name(self):
@@ -27,6 +33,18 @@ class TrainingCourse(models.Model):
             raise ValidationError(self.env._("A course name is required."))
 
     public_catalogue = fields.Boolean(string="Publier la présentation générale", copy=False)
+
+    @api.private
+    def _published_catalogue_course(self, company, course_id):
+        return self.sudo().search(
+            [
+                ("id", "=", course_id),
+                ("company_id", "=", company.id),
+                ("active", "=", True),
+                ("public_catalogue", "=", True),
+            ],
+            limit=1,
+        )
 
     @api.private
     def _catalogue_offers(self, company):

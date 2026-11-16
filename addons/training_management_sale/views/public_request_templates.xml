@@ -15,6 +15,10 @@
         <xpath expr="//form[@action='/formations']" position="inside"><input type="hidden" name="kind" t-att-value="kind"/></xpath>
     </template>
     <template id="public_general_course_journey" inherit_id="training_catalog.public_course">
+        <xpath expr="//div[@id='training_course_actions']" position="inside">
+            <a t-if="general_presentation_published" class="btn btn-primary"
+               t-att-href="'/formations/demande?course=%s&amp;request_type=catalogue%s' % (course['id'], '&amp;kind=' + kind if kind else '')">Demander un devis</a>
+        </xpath>
         <xpath expr="//a[@href='/formations']" position="attributes">
             <attribute name="t-att-href">'/formations?kind=%s' % kind</attribute>
         </xpath>
@@ -36,7 +40,7 @@
     <template id="public_request" name="Training request">
         <t t-call="portal.frontend_layout">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
-                <p><a href="/formations">Retour au catalogue</a><a t-if="values['program']" class="ms-3" t-att-href="'/formations/%s?kind=%s' % (values['program'], values['kind'])">Retour à l’offre</a></p>
+                <p><a href="/formations">Retour au catalogue</a><a t-if="course" class="ms-3" t-att-href="'/formations/catalogue/%s' % course['id']">Retour à la fiche</a><a t-elif="values['program']" class="ms-3" t-att-href="'/formations/%s?kind=%s' % (values['program'], values['kind'])">Retour à l’offre</a></p>
                 <h1>Votre projet de formation</h1>
                 <p>Une demande ne confirme ni disponibilité, ni commande, ni inscription. Les conditions commerciales sont précisées dans le devis.</p>
                 <p>Vous pouvez changer de parcours dans ce formulaire en conservant vos saisies. Les champs entreprise restent disponibles.</p>
@@ -51,9 +55,11 @@
                         <div class="mb-3"><label for="phone">Téléphone</label><input class="form-control" id="phone" name="phone" t-att-value="values['phone']" type="text" maxlength="5000"/></div>
                     </fieldset><fieldset class="mb-4">
                         <legend class="h4">Votre besoin</legend>
+                        <p t-if="course" class="fw-semibold" t-out="course['name']"/>
+                        <input t-if="course" type="hidden" name="course" t-att-value="course['id']"/>
                         <div class="mb-3"><label for="kind">Parcours</label><select id="kind" name="kind" class="form-select"><option value="group" t-att-selected="values['kind'] == 'group'">Former mon équipe</option><option value="individual" t-att-selected="values['kind'] == 'individual'">Me former</option></select></div>
                         <div class="mb-3"><label for="request_type">Type de besoin</label><select id="request_type" name="request_type" class="form-select"><option value="catalogue" t-att-selected="values['request_type'] == 'catalogue'">Formation du catalogue</option><option value="adaptation" t-att-selected="values['request_type'] == 'adaptation'">Adaptation du catalogue</option><option value="custom" t-att-selected="values['request_type'] == 'custom'">Sur mesure</option></select></div>
-                        <div class="mb-3"><label for="program">Formation (facultative pour le sur mesure)</label><select id="program" name="program" class="form-select"><option value="">À définir</option><option t-foreach="programs" t-as="p" t-att-value="p['id']" t-att-selected="str(p['id']) == values['program']"><t t-out="p['title']"/> — <t t-out="p['version']"/></option></select></div>
+                        <div t-if="not course or programs" class="mb-3"><label for="program"><t t-if="course">Version du programme (facultative)</t><t t-else="">Formation (facultative pour le sur mesure)</t></label><select id="program" name="program" class="form-select"><option value="">À définir</option><option t-foreach="programs" t-as="p" t-att-value="p['id']" t-att-selected="str(p['id']) == values['program']"><t t-out="p['title']"/> — <t t-out="p['version']"/></option></select></div>
                         <div class="mb-3"><label for="level">Niveau des participants</label><input class="form-control" id="level" name="level" t-att-value="values['level']" type="text" maxlength="5000" required="required"/></div>
                         <div class="mb-3"><label for="objectives">Objectifs attendus</label><textarea id="objectives" name="objectives" class="form-control" required="required" maxlength="5000" t-out="values['objectives']"/></div>
                         <div class="mb-3"><label for="count">Effectif (1 pour une demande individuelle)</label><input id="count" name="count" type="number" min="1" class="form-control" required="required" t-att-value="values['count']"/></div>

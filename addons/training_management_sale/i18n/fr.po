@@ -2319,3 +2319,14 @@ msgstr "Trop de demandes ont été reçues. Veuillez réessayer dans une heure."
 #. module: training_management_sale
 msgid "Too many files were received. Please try again in an hour."
 msgstr "Trop de fichiers ont été reçus. Veuillez réessayer dans une heure."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_requested_course_id
+msgid "Requested Course"
+msgstr "Formation demandée"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/training_public_request.py:0
+msgid "Choose a published course."
+msgstr "Choisissez une formation publiée."

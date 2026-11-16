@@ -42,7 +42,20 @@
         <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
         <p style="white-space:pre-wrap" t-out="course['presentation']"/>
         <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
+        <div id="training_course_actions" class="d-flex flex-wrap gap-2 my-3"/>
+        <details class="mb-4">
+          <summary>Partager cette formation</summary>
+          <div class="d-flex flex-wrap gap-2 my-2">
+            <a class="btn btn-outline-secondary" t-att-href="share_email">Par e-mail</a>
+            <a class="btn btn-outline-secondary" t-att-href="share_whatsapp">Sur WhatsApp</a>
+          </div>
+          <label for="training_share_url">Lien de la fiche</label>
+          <input id="training_share_url" class="form-control" type="url" readonly="readonly" t-att-value="share_url"/>
+        </details>
         <section t-if="course['objectives']"><h2>Objectifs généraux</h2><p style="white-space:pre-wrap" t-out="course['objectives']"/></section>
+        <section t-if="public_programme" id="training_course_programme" aria-label="Programme de la formation" class="mt-4">
+          <div class="o_training_course_programme" t-out="public_programme"/>
+        </section>
         <section t-if="course['offers']"><h2>Offres disponibles</h2>
           <article t-foreach="course['offers']" t-as="offer" class="card my-3"><div class="card-body">
             <h3 class="h5"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></h3>

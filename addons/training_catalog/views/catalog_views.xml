@@ -27,6 +27,7 @@
                         <field name="public_catalogue"/>
                         <field name="presentation"/>
                         <field name="general_objectives"/>
+                        <field name="public_programme"/>
                     </group>
                 </sheet>
             </form>
