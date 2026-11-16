@@ -372,7 +372,9 @@ class TestOrientation(OrientationCase, HttpCase):
             )
         }
         self.authenticate(None, None)
-        self.assertIn(survey.title, self.url_open("/formations/orientation").text)
+        diagnostic_list = self.url_open("/formations/orientation")
+        self.assertIn(survey.title, diagnostic_list.text)
+        self.assertIn("Ce questionnaire facultatif vous aide à choisir votre formation.", diagnostic_list.text)
         self.assertIn("orientation", self.url_open("/formations").text)
         url = f"/formations/orientation/{survey.id}"
         response = self.url_open(url)

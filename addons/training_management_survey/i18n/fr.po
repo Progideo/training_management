@@ -1439,10 +1439,10 @@ msgstr ""
 #. module: training_management_survey
 #: model_terms:ir.ui.view,arch_db:training_management_survey.orientation_list
 msgid ""
-"Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez "
+"Ce questionnaire facultatif vous aide à choisir votre formation. Vous pouvez "
 "aussi consulter directement le catalogue."
 msgstr ""
-"Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez "
+"Ce questionnaire facultatif vous aide à choisir votre formation. Vous pouvez "
 "aussi consulter directement le catalogue."
 
 #. module: training_management_survey

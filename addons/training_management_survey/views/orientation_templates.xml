@@ -8,7 +8,7 @@
         <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a><h1>Diagnostic d’orientation</h1>
-            <p>Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez aussi consulter directement le catalogue.</p>
+            <p>Ce questionnaire facultatif vous aide à choisir votre formation. Vous pouvez aussi consulter directement le catalogue.</p>
             <p t-if="not diagnostics">Aucun questionnaire disponible. Consultez les fiches formation pour demander conseil.</p>
             <ul>
                     <li t-foreach="diagnostics" t-as="d"><a t-att-href="'/formations/orientation/%s' % d[0]" t-out="d[1]"/></li>
