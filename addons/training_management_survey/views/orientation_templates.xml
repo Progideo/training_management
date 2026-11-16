@@ -4,6 +4,9 @@
             <p><a href="/formations/orientation">Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif</a></p>
         </xpath>
     </template>
+    <record id="orientation_catalogue" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
     <template id="orientation_list" name="Orientation diagnostics">
         <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
