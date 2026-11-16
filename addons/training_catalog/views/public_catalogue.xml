@@ -31,9 +31,7 @@
           </article>
         </div>
         <nav t-if="pager['page_count'] &gt; 1" class="d-flex justify-content-center mt-4" aria-label="Pages du catalogue">
-          <t t-call="portal.pager">
-            <t t-set="classname" t-value="'flex-wrap justify-content-center'"/>
-          </t>
+          <t t-call="portal.pager" classname.f="flex-wrap justify-content-center"/>
         </nav>
       </div>
     </t>
