@@ -8,7 +8,14 @@
                 <group string="Course Review" invisible="res_model != 'training.course'">
                     <field name="res_model" invisible="1"/>
                     <field name="course_review_company_id" readonly="1"/>
-                    <field name="is_public_course_review" groups="website.group_website_designer"/>
+                    <field name="is_public_course_review" readonly="1" groups="website.group_website_designer"/>
+                    <button name="action_approve_course_review" type="object" string="Validate and publish"
+                            class="oe_highlight" groups="website.group_website_designer"
+                            invisible="is_public_course_review"/>
+                    <button name="action_reject_course_review" type="object" string="Reject"
+                            groups="website.group_website_designer" invisible="course_review_moderated_at"/>
+                    <button name="action_reject_course_review" type="object" string="Withdraw from catalogue"
+                            groups="website.group_website_designer" invisible="not is_public_course_review"/>
                     <field name="course_review_moderator_id"/>
                     <field name="course_review_moderated_at"/>
                 </group>

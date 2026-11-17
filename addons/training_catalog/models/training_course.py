@@ -70,7 +70,9 @@ class TrainingCourse(models.Model):
             limit=1,
         )
         if existing:
-            return "published" if existing.is_public_course_review else "pending"
+            if existing.is_public_course_review:
+                return "published"
+            return "not_published" if existing.course_review_moderated_at else "pending"
         return "eligible" if self._has_course_review_participation(user) else False
 
     @api.private
@@ -79,7 +81,7 @@ class TrainingCourse(models.Model):
         if not self.active or not self.public_catalogue:
             raise AccessError(self.env._("This course is unavailable."))
         status = self._course_review_status(user)
-        if status in ("pending", "published"):
+        if status in ("pending", "published", "not_published"):
             return
         if status != "eligible":
             raise AccessError(self.env._("Only participants can review this course."))

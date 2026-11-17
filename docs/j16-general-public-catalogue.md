@@ -47,3 +47,5 @@ et les téléchargements privés autorisés sont conservés. Les choix « équip
 Un participant connecté peut déposer une note et un commentaire par formation, avec son accord de publication. Une session avec formateur doit être terminée et comporter une présence positive validée. Le cours autonome doit comporter des activités obligatoires et l’apprenant doit les avoir terminées. Les deux parcours utilisent le même avis sur la fiche commune.
 
 Odoo conserve la note et le commentaire dans ses avis natifs. Le menu **Site Web → Configuration → Avis sur les formations** permet au responsable du site de publier ou de retirer un avis dans ses sociétés. La participation est contrôlée à nouveau avant publication et la dernière décision conserve son auteur et sa date. La fiche publique affiche uniquement la note et le commentaire validés.
+
+L’option **Responsable des avis formation** de la fiche Société désigne un responsable habilité à modérer les avis. Un dépôt planifie l’activité Odoo **Avis formation à valider**, liée à l’avis. La validation et le refus clôturent l’activité. Sans responsable configuré, l’avis reste disponible dans la liste de modération.

@@ -5,8 +5,12 @@ from odoo.exceptions import AccessError, ConcurrencyError, ValidationError
 from odoo.tools import clean_context
 
 
+REVIEW_ACTIVITY = "training_catalog.activity_course_review"
+
+
 class RatingRating(models.Model):
-    _inherit = "rating.rating"
+    _name = "rating.rating"
+    _inherit = ["rating.rating", "mail.thread", "mail.activity.mixin"]
 
     is_public_course_review = fields.Boolean(
         string="Publish on the Training Catalogue",
@@ -46,7 +50,9 @@ class RatingRating(models.Model):
     def _create_course_review(self, course, user, score, feedback):
         # Eligibility and consent are verified by the course service. Preserve
         # the native rating row without creating a public chatter message or token.
-        ratings = self.sudo().with_context(clean_context(self.env.context))
+        ratings = self.sudo().with_context(
+            clean_context(self.env.context), mail_create_nolog=True, mail_create_nosubscribe=True,
+        )
         try:
             with self.env.cr.savepoint():
                 review = super(RatingRating, ratings).create({
@@ -61,10 +67,41 @@ class RatingRating(models.Model):
                     "is_public_course_review": False,
                 })
                 review.flush_recordset(["res_model", "consumed"])
+                review._schedule_course_review_activity()
         except IntegrityError as error:
             if error.diag.constraint_name == "rating_rating_course_review_once":
                 raise ConcurrencyError("Concurrent course review; retry with a fresh snapshot") from error
             raise
+
+    @api.private
+    def _schedule_course_review_activity(self):
+        self.ensure_one()
+        company = self.course_review_company_id
+        user = company.course_review_responsible_id
+        if (
+            user
+            and company._is_course_review_responsible(user)
+            and not self.course_review_moderated_at
+            and not self.activity_search([REVIEW_ACTIVITY], only_automated=True)
+        ):
+            self.with_context(mail_notify_force_send=False).activity_schedule(
+                REVIEW_ACTIVITY,
+                user_id=user.id,
+            )
+
+    def action_approve_course_review(self):
+        self._check_course_review_action()
+        return self.write({"is_public_course_review": True})
+
+    def action_reject_course_review(self):
+        self._check_course_review_action()
+        return self.write({"is_public_course_review": False})
+
+    @api.private
+    def _check_course_review_action(self):
+        self.ensure_one()
+        if self.res_model != "training.course" or not self.consumed:
+            raise AccessError(self.env._("Choose a submitted course review."))
 
     def write(self, vals):
         course_model = self.env["ir.model"]._get_id("training.course")
@@ -94,4 +131,10 @@ class RatingRating(models.Model):
                 "course_review_moderator_id": self.env.user.id,
                 "course_review_moderated_at": fields.Datetime.now(),
             }
-        return super().write(vals)
+        result = super().write(vals)
+        if reviews:
+            feedback = self.env._("Course review approved.") if vals["is_public_course_review"] else self.env._(
+                "Course review rejected or withdrawn."
+            )
+            reviews.sudo().activity_feedback([REVIEW_ACTIVITY], feedback=feedback)
+        return result

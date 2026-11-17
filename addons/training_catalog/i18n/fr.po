@@ -152,6 +152,7 @@ msgstr "La publication exige une participation vérifiée."
 #. module: training_catalog
 #: model:ir.actions.act_window,name:training_catalog.action_course_reviews
 #: model:ir.ui.menu,name:training_catalog.menu_course_reviews
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_company_form_course_reviews
 msgid "Course Reviews"
 msgstr "Avis sur les formations"
 
@@ -164,3 +165,29 @@ msgstr "Responsable de la validation"
 #: model:ir.model.fields,field_description:training_catalog.field_rating_rating__course_review_moderated_at
 msgid "Course Review Moderated At"
 msgstr "Date de validation ou de retrait"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.rating_rating_view_course_publication
+msgid "Withdraw from catalogue"
+msgstr "Retirer du catalogue"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.rating_rating_view_course_publication
+msgid "Reject"
+msgstr "Refuser"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_res_company__course_review_responsible_id
+msgid "Course Review Responsible"
+msgstr "Responsable des avis formation"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.rating_rating_view_course_publication
+msgid "Validate and publish"
+msgstr "Valider et publier"
+
+#. module: training_catalog
+#: model:mail.activity.type,name:training_catalog.activity_course_review
+#: model:mail.activity.type,summary:training_catalog.activity_course_review
+msgid "Course review to moderate"
+msgstr "Avis formation à valider"

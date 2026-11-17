@@ -21,7 +21,9 @@ class TestCourseReviews(AttendanceCase, HttpCase):
             groups="base.group_user,website.group_website_designer",
             company_id=course.company_id.id,
             company_ids=[(6, 0, course.company_id.ids)],
+            notification_type="inbox",
         )
+        course.company_id.course_review_responsible_id = moderator
         other_company = self.env["res.company"].create({"name": "Fictional other review company"})
         other_moderator = new_test_user(
             self.env,
@@ -62,6 +64,15 @@ class TestCourseReviews(AttendanceCase, HttpCase):
             self.assertFalse(review.is_public_course_review)
             self.assertFalse(review.access_token)
             self.assertFalse(review.message_id)
+            activity = review.activity_search(["training_catalog.activity_course_review"])
+            self.assertEqual(len(activity), 1)
+            self.assertEqual(activity.user_id, moderator)
+            self.assertTrue(self.env["mail.notification"].sudo().search_count([
+                ("res_partner_id", "=", moderator.partner_id.id),
+                ("mail_message_id.model", "=", "rating.rating"),
+                ("mail_message_id.res_id", "=", review.id),
+                ("notification_type", "=", "inbox"),
+            ]))
             self.assertFalse(ratings.with_user(self.coordinator).search(domain))
             self.assertFalse(ratings.with_user(other_moderator).search(domain))
             with self.assertRaises(AccessError):
@@ -76,9 +87,36 @@ class TestCourseReviews(AttendanceCase, HttpCase):
 
             self.authenticate(None, None)
             self.assertNotIn("Fictional course review", self.url_open(path).text)
-            review.with_user(moderator).write({"is_public_course_review": True})
+            review.with_user(moderator).action_approve_course_review()
+            self.assertFalse(review.activity_search(["training_catalog.activity_course_review"]))
             self.assertEqual(review.course_review_moderator_id, moderator)
             self.assertTrue(review.course_review_moderated_at)
             self.assertIn("Fictional course review", self.url_open(path).text)
-            review.with_user(moderator).write({"is_public_course_review": False})
+            review.with_user(moderator).action_reject_course_review()
             self.assertNotIn("Fictional course review", self.url_open(path).text)
+
+    def test_rejecting_a_pending_review_closes_the_activity(self):
+        course = self.program.course_id.sudo()
+        course.public_catalogue = True
+        moderator = new_test_user(
+            self.env, login="fictional_rejection_moderator",
+            groups="base.group_user,website.group_website_designer",
+            company_id=course.company_id.id,
+            company_ids=[(6, 0, course.company_id.ids)],
+            notification_type="inbox",
+        )
+        course.company_id.course_review_responsible_id = moderator
+        delivery, session, enrollment = self.scheduled()
+        self.review(self.declare(session, enrollment))
+        with patch("odoo.fields.Datetime.now", return_value=datetime(2027, 2, 2, 10)):
+            delivery.action_start()
+            delivery.action_deliver()
+            course._submit_course_review(self.portal, "3", "Fictional rejected review", "1")
+            review = self.env["rating.rating"].sudo().search(
+                [("res_model", "=", "training.course"), ("res_id", "=", course.id)]
+            )
+            self.assertEqual(review.activity_search(["training_catalog.activity_course_review"]).user_id, moderator)
+            review.with_user(moderator).action_reject_course_review()
+            self.assertFalse(review.activity_search(["training_catalog.activity_course_review"]))
+            self.assertEqual(course._course_review_status(self.portal), "not_published")
+            self.assertFalse(course._public_reviews())

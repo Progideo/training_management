@@ -68,6 +68,7 @@
           <h2>Avis clients</h2>
           <p t-if="review_status == 'pending'" role="status">Votre avis a été reçu. Il sera publié après validation.</p>
           <p t-if="review_status == 'published'">Votre avis est publié.</p>
+          <p t-if="review_status == 'not_published'">Votre avis n’est pas publié.</p>
           <form t-if="review_status == 'eligible'" method="post" t-att-action="review_route" class="border rounded p-3 mb-3">
             <h3 class="h5">Donner mon avis</h3>
             <div t-if="review_error" class="alert alert-danger" role="alert" t-out="review_error"/>
