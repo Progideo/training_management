@@ -29,3 +29,5 @@ from . import training_company_portal
 from . import training_path_sale
 
 from . import payment_transaction
+
+from . import session_registration

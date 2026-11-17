@@ -151,14 +151,6 @@ class TrainingPublicRequest(models.Model):
             if not filename.lower().endswith(".pdf") or not raw.startswith(b"%PDF-") or len(raw) > 10 * 1024 * 1024:
                 raise ValidationError(self.env._("The private specification must be a PDF of at most 10 MB."))
         fingerprint = hashlib.sha256(json.dumps(values, sort_keys=True).encode() + raw + filename.encode()).hexdigest()
-        existing = self.search([("training_submission_key", "=", key)], limit=1)
-        if existing:
-            if existing.training_submission_hash != fingerprint:
-                raise ValidationError(
-                    self.env._("This form was already submitted with different content. Start a new request.")
-                )
-            return existing
-        self._check_public_request_limits(email, len(raw))
         data = {
             "name": self.env._("Training request — %s", values["contact"]),
             "type": "lead",
@@ -187,6 +179,20 @@ class TrainingPublicRequest(models.Model):
             "training_submission_hash": fingerprint,
             "description": self.env._("Dates to discuss") if values.get("dates_flexible") else False,
         }
+        return self._record_public_request(data, email, raw, filename)
+
+    @api.private
+    def _record_public_request(self, data, email, raw=b"", filename=""):
+        existing = self.with_context(active_test=False).search(
+            [("training_submission_key", "=", data["training_submission_key"])], limit=1
+        )
+        if existing:
+            if existing.training_submission_hash != data["training_submission_hash"]:
+                raise ValidationError(
+                    self.env._("This form was already submitted with different content. Start a new request.")
+                )
+            return existing
+        self._check_public_request_limits(email, len(raw))
         try:
             with self.env.cr.savepoint():
                 lead = self.create(data)
@@ -198,7 +204,7 @@ class TrainingPublicRequest(models.Model):
                             "mimetype": "application/pdf",
                             "res_model": "crm.lead",
                             "res_id": lead.id,
-                            "company_id": company.id,
+                            "company_id": lead.company_id.id,
                             "public": False,
                             "access_token": False,
                         }

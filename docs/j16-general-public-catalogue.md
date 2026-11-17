@@ -49,3 +49,16 @@ Un participant connecté peut déposer une note et un commentaire par formation,
 Odoo conserve la note et le commentaire dans ses avis natifs. Le menu **Site Web → Configuration → Avis sur les formations** permet au responsable du site de publier ou de retirer un avis dans ses sociétés. La participation est contrôlée à nouveau avant publication et la dernière décision conserve son auteur et sa date. La fiche publique affiche uniquement la note et le commentaire validés.
 
 L’option **Responsable des avis formation** de la fiche Société désigne un responsable habilité à modérer les avis. Un dépôt planifie l’activité Odoo **Avis formation à valider**, liée à l’avis. La validation et le refus clôturent l’activité. Sans responsable configuré, l’avis reste disponible dans la liste de modération.
+
+## Demandes d’inscription sur la fiche commune
+
+Les dates inter-entreprises ouvertes s’affichent sur la fiche. Le visiteur peut
+demander de une à cinq places, dans la limite des places disponibles. Odoo CRM
+conserve la session choisie, la version du programme et le nombre de participants.
+L’équipe confirme ensuite l’inscription. Les demandes de devis suivent leur
+parcours habituel.
+
+Pour la recette, publier une session future sur une offre visible, demander une
+place puis plusieurs places et vérifier les deux demandes dans le CRM. Remplir
+ou fermer la session, puis vérifier que le lien ne permet plus de soumettre
+une demande.

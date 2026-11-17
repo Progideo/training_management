@@ -2330,3 +2330,28 @@ msgstr "Formation demandée"
 #: code:addons/training_management_sale/models/training_public_request.py:0
 msgid "Choose a published course."
 msgstr "Choisissez une formation publiée."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_requested_delivery_id
+msgid "Requested Session"
+msgstr "Session demandée"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_registration.py:0
+msgid "Inter-company registration request — %s"
+msgstr "Demande d’inscription inter-entreprises — %s"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_registration.py:0
+msgid "Enter your name."
+msgstr "Indiquez votre nom."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_registration.py:0
+msgid "A field exceeds 254 characters."
+msgstr "Un champ dépasse 254 caractères."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_registration.py:0
+msgid "Choose a participant count within the current availability."
+msgstr "Choisissez un nombre de participants compatible avec les places disponibles."
