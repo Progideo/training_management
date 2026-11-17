@@ -129,3 +129,38 @@ msgstr "Copier le lien"
 #: code:addons/training_catalog/controllers/catalogue.py:0
 msgid "Link copied"
 msgstr "Lien copié"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_course.py:0
+msgid "Enter a rating, a comment of up to 2,000 characters and your consent."
+msgstr "Indiquez une note, un commentaire de 2 000 caractères maximum et votre accord de publication."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/rating_rating.py:0
+msgid "Only website designers can moderate course reviews in their companies."
+msgstr "Seuls les responsables du site peuvent modérer les avis des formations de leurs sociétés."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/rating_rating.py:0
+msgid "Publication requires verified participation."
+msgstr "La publication exige une participation vérifiée."
+
+
+#. module: training_catalog
+#: model:ir.actions.act_window,name:training_catalog.action_course_reviews
+#: model:ir.ui.menu,name:training_catalog.menu_course_reviews
+msgid "Course Reviews"
+msgstr "Avis sur les formations"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_rating_rating__course_review_moderator_id
+msgid "Course Review Moderator"
+msgstr "Responsable de la validation"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_rating_rating__course_review_moderated_at
+msgid "Course Review Moderated At"
+msgstr "Date de validation ou de retrait"

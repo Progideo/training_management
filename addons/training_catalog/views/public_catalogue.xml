@@ -66,6 +66,31 @@
         </section>
         <section t-if="general_presentation_published" id="training_course_reviews" class="my-4">
           <h2>Avis clients</h2>
+          <p t-if="review_status == 'pending'" role="status">Votre avis a été reçu. Il sera publié après validation.</p>
+          <p t-if="review_status == 'published'">Votre avis est publié.</p>
+          <form t-if="review_status == 'eligible'" method="post" t-att-action="review_route" class="border rounded p-3 mb-3">
+            <h3 class="h5">Donner mon avis</h3>
+            <div t-if="review_error" class="alert alert-danger" role="alert" t-out="review_error"/>
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <div class="mb-3">
+              <label class="form-label" for="training_review_score">Note sur 5</label>
+              <select id="training_review_score" name="score" class="form-select w-auto" required="required">
+                <option value="">Choisir</option>
+                <option t-foreach="('1', '2', '3', '4', '5')" t-as="score" t-att-value="score"
+                        t-att-selected="review_values.get('score') == score" t-out="score"/>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="training_review_feedback">Votre commentaire</label>
+              <textarea id="training_review_feedback" name="feedback" class="form-control" required="required"
+                        maxlength="2000" rows="4" t-out="review_values.get('feedback', '')"/>
+            </div>
+            <label class="d-block mb-3">
+              <input type="checkbox" name="consent" value="1" required="required"/>
+              J’accepte la publication de ma note et de mon commentaire après validation.
+            </label>
+            <button type="submit" class="btn btn-primary">Envoyer mon avis</button>
+          </form>
           <p t-if="not public_reviews" class="text-muted">Aucun avis publié pour cette formation.</p>
           <ul t-else="" class="list-unstyled">
             <li t-foreach="public_reviews" t-as="review" class="border-bottom py-2">

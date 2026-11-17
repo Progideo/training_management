@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 
 
 class TrainingCourse(models.Model):
@@ -53,6 +53,40 @@ class TrainingCourse(models.Model):
             ],
             limit=1,
         )
+
+    @api.private
+    def _has_course_review_participation(self, user):
+        """Each delivery adapter supplies its verified participation evidence."""
+        return False
+
+    @api.private
+    def _course_review_status(self, user):
+        self.ensure_one()
+        if not user.active or user._is_public():
+            return False
+        existing = self.env["rating.rating"].sudo().search(
+            [("res_model", "=", self._name), ("res_id", "=", self.id),
+             ("partner_id", "=", user.partner_id.id), ("consumed", "=", True)],
+            limit=1,
+        )
+        if existing:
+            return "published" if existing.is_public_course_review else "pending"
+        return "eligible" if self._has_course_review_participation(user) else False
+
+    @api.private
+    def _submit_course_review(self, user, score, feedback, consent):
+        self.ensure_one()
+        if not self.active or not self.public_catalogue:
+            raise AccessError(self.env._("This course is unavailable."))
+        status = self._course_review_status(user)
+        if status in ("pending", "published"):
+            return
+        if status != "eligible":
+            raise AccessError(self.env._("Only participants can review this course."))
+        feedback = feedback.strip()
+        if score not in ("1", "2", "3", "4", "5") or not 0 < len(feedback) <= 2000 or consent != "1":
+            raise ValidationError(self.env._("Enter a rating, a comment of up to 2,000 characters and your consent."))
+        self.env["rating.rating"]._create_course_review(self, user, int(score), feedback)
 
     @api.private
     def _public_reviews(self):

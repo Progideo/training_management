@@ -6,6 +6,7 @@ from markupsafe import Markup
 
 from odoo import http
 from odoo.addons.portal.controllers.portal import pager as portal_pager
+from odoo.exceptions import AccessError, ValidationError
 from odoo.http import request
 from odoo.tools import is_html_empty
 from odoo.tools.misc import formatLang
@@ -71,7 +72,7 @@ class TrainingCatalogue(http.Controller):
         duration = published.live_duration_days if published else 0.0
         formatted_duration = formatLang(request.env, duration, digits=0 if duration.is_integer() else 2)
         url = request.httprequest.url_root.rstrip("/") + f"/formations/catalogue/{course_id}"
-        return request.render(
+        response = request.render(
             "training_catalog.public_course",
             {
                 "course": row,
@@ -82,6 +83,10 @@ class TrainingCatalogue(http.Controller):
                 "live_duration_label": formatted_duration,
                 "public_logo": published.public_logo if published else False,
                 "public_reviews": published._public_reviews() if published else [],
+                "review_status": published._course_review_status(request.env.user) if published else False,
+                "review_error": False,
+                "review_values": {},
+                "review_route": f"/formations/catalogue/{course_id}/avis",
                 "course_share": {
                     "url": url,
                     "title": request.env._("Share this course"),
@@ -92,3 +97,31 @@ class TrainingCatalogue(http.Controller):
                 },
             },
         )
+
+        if not request.env.user._is_public():
+            response.headers["Cache-Control"] = "private, no-store"
+            response.headers.add("Vary", "Cookie")
+        return response
+
+    @http.route(
+        "/formations/catalogue/<int:course_id>/avis", type="http", auth="user", website=True, methods=["POST"]
+    )
+    def course_review(self, course_id, score="", feedback="", consent="", **kwargs):
+        website = request.env.website
+        course = request.env["training.course"]._published_catalogue_course(
+            website.company_id if website else request.env.company, course_id
+        )
+        if not course:
+            raise request.not_found()
+        try:
+            course._submit_course_review(request.env.user, score, feedback, consent)
+        except AccessError:
+            raise request.not_found() from None
+        except ValidationError as error:
+            response = self.course(course_id, **kwargs)
+            response.qcontext.update(
+                review_error=str(error), review_values={"score": score, "feedback": feedback[:2000]},
+            )
+            response.status_code = 422
+            return response
+        return request.redirect(f"/formations/catalogue/{course_id}#training_course_reviews", code=303)
