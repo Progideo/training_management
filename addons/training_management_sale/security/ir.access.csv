@@ -22,3 +22,7 @@ access_path_reuse_coordinator,Reuse prior path learning,training.path.reuse,trai
 rule_path_quote_owner,Path quotation assistant owner,training.path.quote,,crud,"[('create_uid', '=', user.id), ('order_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
 rule_path_quote_line_owner,Path quotation line owner,training.path.quote.line,,crud,"[('create_uid', '=', user.id), ('wizard_id', 'access', 'write'), ('step_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
 rule_path_reuse_owner,Prior learning assistant owner,training.path.reuse,,crud,"[('create_uid', '=', user.id), ('order_id', 'access', 'read')] if user.active else [('id', '=', 0)]"
+access_crm_session_confirmation,Session confirmation assistant,training.crm.session.confirmation,training_management.group_training_coordinator,crud,
+access_crm_session_confirmation_line,Session confirmation participant,training.crm.session.confirmation.line,training_management.group_training_coordinator,crud,
+rule_crm_session_confirmation_owner,Session assistant owner,training.crm.session.confirmation,,crud,"[('create_uid', '=', user.id), ('lead_id', 'access', 'write'), ('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_crm_session_confirmation_line_owner,Session participant assistant owner,training.crm.session.confirmation.line,,crud,"[('create_uid', '=', user.id), ('wizard_id', 'access', 'write')] if user.active else [('id', '=', 0)]"

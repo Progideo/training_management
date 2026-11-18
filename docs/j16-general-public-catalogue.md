@@ -62,3 +62,26 @@ Pour la recette, publier une session future sur une offre visible, demander une
 place puis plusieurs places et vérifier les deux demandes dans le CRM. Remplir
 ou fermer la session, puis vérifier que le lien ne permet plus de soumettre
 une demande.
+
+
+### Confirmation depuis la piste CRM
+
+Le coordinateur ouvre **Confirmer les places de la session** sur la piste.
+La fenêtre présente la session et une ligne par participant. Les contacts se
+sélectionnent ou se créent avec le sélecteur natif Odoo. Le nombre de personnes
+doit correspondre à la demande.
+
+L’origine des places est une ligne de commande confirmée, un lot confirmé
+existant pour cette session ou une invitation gratuite avec son motif.
+Le coordinateur atteste avoir vérifié les prérequis et saisit le motif de
+validation. **Confirmer toutes les places** enregistre le groupe en une seule
+transaction. Odoo vérifie les droits, les contacts distincts, les dates et la
+capacité. Un échec annule toute l’opération et un nouvel envoi conserve les
+inscriptions déjà créées.
+
+Le bouton **Participants à la session** permet ensuite d’ouvrir les inscriptions.
+L’autorisation commerciale et l’ouverture des accès suivent le parcours existant.
+
+Pour la recette, traiter une demande individuelle puis une demande de trois
+personnes. Vérifier les trois origines des places, rejouer la confirmation,
+puis essayer une session complète et un compte commercial sans rôle coordinateur.

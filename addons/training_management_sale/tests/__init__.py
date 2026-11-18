@@ -17,3 +17,5 @@ from . import test_notification_alerts
 from . import test_path_sale
 
 from . import test_session_registration
+
+from . import test_crm_session_confirmation

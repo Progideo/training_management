@@ -31,3 +31,5 @@ from . import training_path_sale
 from . import payment_transaction
 
 from . import session_registration
+
+from . import crm_session_confirmation

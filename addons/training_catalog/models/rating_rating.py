@@ -39,6 +39,13 @@ class RatingRating(models.Model):
             review.course_review_course_id = self.env["training.course"].sudo().browse(review.res_id).exists()
         (self - courses).course_review_course_id = False
 
+    def unlink(self):
+        # mail.thread asks to remove ratings of this rating. Its empty result
+        # must terminate the native cascade, including empty loyalty records.
+        if not self:
+            return True
+        return super().unlink()
+
     @api.model_create_multi
     def create(self, vals_list):
         course_model = self.env["ir.model"]._get_id("training.course")

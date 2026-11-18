@@ -41,6 +41,7 @@ msgstr "Version du programme demandée"
 #. module: training_management_sale
 #: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_attendee_count
 #: model:ir.model.fields,field_description:training_management_sale.field_sale_order__training_attendee_count
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__expected_count
 msgid "Expected Participants"
 msgstr "Participants prévus"
 
@@ -1824,6 +1825,7 @@ msgstr "Bénéficiaires prévus"
 #. module: training_management_sale
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_quote_form
 #: model_terms:ir.ui.view,arch_db:training_management_sale.view_path_reuse_form
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_session_confirmation_form
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -2355,3 +2357,170 @@ msgstr "Un champ dépasse 254 caractères."
 #: code:addons/training_management_sale/models/session_registration.py:0
 msgid "Choose a participant count within the current availability."
 msgstr "Choisissez un nombre de participants compatible avec les places disponibles."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_crm_lead__training_session_enrollment_ids
+msgid "Confirmed Session Participants"
+msgstr "Participants confirmés à la session"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+msgid "Use the session confirmation assistant."
+msgstr "Utilisez la fenêtre de confirmation des participants."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+msgid "Only a training coordinator may confirm session participants."
+msgstr "Seul un coordinateur des formations peut confirmer les participants à une session."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+msgid "Use a request in your active operating companies."
+msgstr "Choisissez une demande dans vos sociétés actives."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+msgid "Choose a session registration request for one to five participants."
+msgstr "Choisissez une demande d’inscription à une session pour une à cinq personnes."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+msgid "A confirmed session request keeps its session and participant count."
+msgstr "La session et le nombre de participants sont figés après confirmation des inscriptions."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_session_confirmation_form
+msgid "Confirm Session Participants"
+msgstr "Confirmer les participants à la session"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_lead_form_training
+msgid "Confirm Session Places"
+msgstr "Confirmer les places de la session"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_lead_form_training
+msgid "Session Participants"
+msgstr "Participants à la session"
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_crm_session_confirmation
+msgid "Confirm CRM Session Participants"
+msgstr "Confirmer les participants depuis le CRM"
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_crm_session_confirmation_line
+msgid "CRM Session Participant"
+msgstr "Participant à la session"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__start_at
+msgid "Session Start"
+msgstr "Début de la session"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__end_at
+msgid "Session End"
+msgstr "Fin de la session"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_crm_session_confirmation__source__order
+msgid "Confirmed Order"
+msgstr "Commande confirmée"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_crm_session_confirmation__source__allocation
+msgid "Existing Confirmed Allocation"
+msgstr "Lot de places confirmé existant"
+
+#. module: training_management_sale
+#: model:ir.model.fields.selection,name:training_management_sale.selection__training_crm_session_confirmation__source__free
+msgid "Free Invitation"
+msgstr "Invitation gratuite"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__source
+msgid "Seat Origin"
+msgstr "Origine des places"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__sale_line_id
+msgid "Confirmed Order Line"
+msgstr "Ligne de commande confirmée"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__allocation_id
+msgid "Confirmed Allocation"
+msgstr "Lot de places confirmé"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__prerequisites_checked
+msgid "I have checked the prerequisites for all participants"
+msgstr "J’ai vérifié les prérequis de tous les participants"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__reason
+msgid "Admission Reason"
+msgstr "Motif de validation des prérequis"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Open a new assistant for another request."
+msgstr "Ouvrez une nouvelle fenêtre pour une autre demande."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Enter the reason for the free invitation."
+msgstr "Renseignez le motif de gratuité."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Choose a confirmed allocation for this session."
+msgstr "Choisissez un lot de places confirmé pour cette session."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Choose a confirmed order line for this session programme and company."
+msgstr "Choisissez une ligne de commande confirmée pour ce programme et cette société."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Enter exactly one distinct contact for each requested participant."
+msgstr "Renseignez un contact distinct pour chaque participant demandé."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Choose individual contacts shared or belonging to the operating company."
+msgstr "Choisissez des contacts individuels actifs, partagés ou appartenant à la société exploitante."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "This request already has participants. Open their enrollments."
+msgstr "Des participants sont déjà confirmés pour cette demande. Ouvrez leurs inscriptions."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "The session has changed or no longer accepts participants. Reopen the assistant."
+msgstr "La session a changé ou n’accepte plus de participants. Ouvrez à nouveau la fenêtre."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Check all participants' prerequisites and enter the admission reason."
+msgstr "Vérifiez les prérequis de tous les participants et renseignez le motif de validation."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/wizard/crm_session_confirmation.py:0
+msgid "Session places confirmed for %s participant(s)."
+msgstr "Places confirmées pour %s participant(s)."
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_session_confirmation_form
+msgid "Confirm All Places"
+msgstr "Confirmer toutes les places"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__line_ids
+msgid "Named Participants"
+msgstr "Participants nominatifs"

@@ -1,0 +1,41 @@
+<odoo>
+    <record id="view_crm_session_confirmation_form" model="ir.ui.view">
+        <field name="name">training.crm.session.confirmation.form</field>
+        <field name="model">training.crm.session.confirmation</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Session Participants">
+                <group>
+                    <field name="lead_id"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="program_id" invisible="1"/>
+                    <field name="delivery_id"/>
+                    <field name="expected_count"/>
+                    <field name="start_at"/>
+                    <field name="end_at"/>
+                    <field name="source"/>
+                    <field name="sale_line_id" invisible="source != 'order'" required="source == 'order'"
+                           domain="[('state', '=', 'sale'), ('company_id', '=', company_id), ('training_program_id', '=', program_id)]"
+                           options="{'no_create': True}"/>
+                    <field name="allocation_id" invisible="source != 'allocation'" required="source == 'allocation'"
+                           domain="[('delivery_id', '=', delivery_id), ('state', '=', 'confirmed')]"
+                           options="{'no_create': True}"/>
+                    <field name="free_reason" invisible="source != 'free'" required="source == 'free'"/>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="company_id" column_invisible="True"/>
+                        <field name="participant_id" required="1" context="{'default_is_company': False}"/>
+                    </list>
+                </field>
+                <group>
+                    <field name="prerequisites_checked"/>
+                    <field name="reason" required="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm All Places" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
