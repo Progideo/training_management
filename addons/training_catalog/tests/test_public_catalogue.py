@@ -42,7 +42,9 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         next_link = root.xpath("//nav//a[starts-with(@href, '/formations/page/2?')]/@href")[0]
         self.assertEqual(parse_qs(urlsplit(next_link).query), {key: [value] for key, value in search.items()})
         second = html.fromstring(self.url_open(next_link).content)
-        self.assertEqual([urlsplit(url).path for url in second.xpath(card_links)], [f"/formations/catalogue/{courses[-1].id}"])
+        self.assertEqual(
+            [urlsplit(url).path for url in second.xpath(card_links)], [f"/formations/catalogue/{courses[-1].id}"]
+        )
         single = html.fromstring(self.url_open("/formations?search=Fictional+pagination+12").content)
         self.assertFalse(single.xpath("//nav[@aria-label='Pages du catalogue']"))
 
@@ -68,9 +70,11 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.assertNotIn(foreign.name, root.text)
         card_content = html.fromstring(root.text).xpath(
             '//div[contains(concat(" ", normalize-space(@class), " "), " o_training_catalogue_card ")]'
-            '//*[self::p or self::li]/text()'
+            "//*[self::p or self::li]/text()"
         )
-        self.assertEqual([value.strip() for value in card_content if value.strip()], ["General presentation", "Quality"])
+        self.assertEqual(
+            [value.strip() for value in card_content if value.strip()], ["General presentation", "Quality"]
+        )
         self.assertEqual(self.url_open("/formations/catalogue/%s" % foreign.id).status_code, 404)
         self.assertNotIn(self.course.name, self.url_open("/formations?search=UNPUBLISHED_SECRET_SEARCH").text)
         self.assertIn(self.course.name, self.url_open("/formations?search=General%20presentation").text)

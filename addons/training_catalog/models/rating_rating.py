@@ -18,10 +18,15 @@ class RatingRating(models.Model):
         copy=False,
     )
     course_review_course_id = fields.Many2one(
-        "training.course", compute="_compute_course_review_course", store=True, ondelete="set null",
+        "training.course",
+        compute="_compute_course_review_course",
+        store=True,
+        ondelete="set null",
     )
     course_review_company_id = fields.Many2one(
-        related="course_review_course_id.company_id", store=True, index="btree_not_null",
+        related="course_review_course_id.company_id",
+        store=True,
+        index="btree_not_null",
     )
     course_review_author_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="set null")
     course_review_moderator_id = fields.Many2one("res.users", readonly=True, copy=False)
@@ -39,33 +44,46 @@ class RatingRating(models.Model):
             review.course_review_course_id = self.env["training.course"].sudo().browse(review.res_id).exists()
         (self - courses).course_review_course_id = False
 
+    def unlink(self):
+        # mail.thread asks to remove ratings of this rating. Its empty result
+        # must terminate the native cascade, including empty loyalty records.
+        if not self:
+            return True
+        return super().unlink()
+
     @api.model_create_multi
     def create(self, vals_list):
         course_model = self.env["ir.model"]._get_id("training.course")
-        if any(vals.get("res_model_id", self.env.context.get("default_res_model_id")) == course_model for vals in vals_list):
+        if any(
+            vals.get("res_model_id", self.env.context.get("default_res_model_id")) == course_model for vals in vals_list
+        ):
             raise AccessError(self.env._("Submit course reviews from the catalogue."))
         return super().create(vals_list)
 
     @api.private
-    def _create_course_review(self, course, user, score, feedback):
+    def _create_course_review(self, course, user, score, feedback):  # pylint: disable=missing-return,super-method-mismatch  # checked private factory keeps public writes blocked
         # Eligibility and consent are verified by the course service. Preserve
         # the native rating row without creating a public chatter message or token.
         ratings = self.sudo().with_context(
-            clean_context(self.env.context), mail_create_nolog=True, mail_create_nosubscribe=True,
+            clean_context(self.env.context),
+            mail_create_nolog=True,
+            mail_create_nosubscribe=True,
         )
         try:
             with self.env.cr.savepoint():
-                review = super(RatingRating, ratings).create({
-                    "res_model_id": self.env["ir.model"]._get_id("training.course"),
-                    "res_id": course.id,
-                    "partner_id": user.partner_id.id,
-                    "course_review_author_id": user.id,
-                    "rating": score,
-                    "feedback": feedback,
-                    "consumed": True,
-                    "access_token": False,
-                    "is_public_course_review": False,
-                })
+                review = super(RatingRating, ratings).create(  # pylint: disable=super-method-mismatch  # server-authorized review factory
+                    {
+                        "res_model_id": self.env["ir.model"]._get_id("training.course"),
+                        "res_id": course.id,
+                        "partner_id": user.partner_id.id,
+                        "course_review_author_id": user.id,
+                        "rating": score,
+                        "feedback": feedback,
+                        "consumed": True,
+                        "access_token": False,
+                        "is_public_course_review": False,
+                    }
+                )
                 review.flush_recordset(["res_model", "consumed"])
                 review._schedule_course_review_activity()
         except IntegrityError as error:
@@ -133,8 +151,10 @@ class RatingRating(models.Model):
             }
         result = super().write(vals)
         if reviews:
-            feedback = self.env._("Course review approved.") if vals["is_public_course_review"] else self.env._(
-                "Course review rejected or withdrawn."
+            feedback = (
+                self.env._("Course review approved.")
+                if vals["is_public_course_review"]
+                else self.env._("Course review rejected or withdrawn.")
             )
             reviews.sudo().activity_feedback([REVIEW_ACTIVITY], feedback=feedback)
         return result

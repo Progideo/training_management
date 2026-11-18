@@ -70,7 +70,9 @@ class TrainingPublicRequest(http.Controller):
                 -20:
             ]
             values["kind"] = values["kind"] if values["kind"] in ("group", "individual") else "group"
-            values["request_type"] = values["request_type"] or ("catalogue" if values["program"] or course else "custom")
+            values["request_type"] = values["request_type"] or (
+                "catalogue" if values["program"] or course else "custom"
+            )
             values["count"] = values["count"] or "1"
             selected = programs.filtered(lambda program: str(program.id) == values["program"])
             if selected and not values["mode"]:
