@@ -103,9 +103,7 @@ class TrainingCatalogue(http.Controller):
             response.headers.add("Vary", "Cookie")
         return response
 
-    @http.route(
-        "/formations/catalogue/<int:course_id>/avis", type="http", auth="user", website=True, methods=["POST"]
-    )
+    @http.route("/formations/catalogue/<int:course_id>/avis", type="http", auth="user", website=True, methods=["POST"])
     def course_review(self, course_id, score="", feedback="", consent="", **kwargs):
         website = request.env.website
         course = request.env["training.course"]._published_catalogue_course(
@@ -120,7 +118,8 @@ class TrainingCatalogue(http.Controller):
         except ValidationError as error:
             response = self.course(course_id, **kwargs)
             response.qcontext.update(
-                review_error=str(error), review_values={"score": score, "feedback": feedback[:2000]},
+                review_error=str(error),
+                review_values={"score": score, "feedback": feedback[:2000]},
             )
             response.status_code = 422
             return response

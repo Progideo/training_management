@@ -1,0 +1,57 @@
+<odoo>
+    <template id="public_course_session_registration" inherit_id="training_catalog.public_course" priority="30">
+        <xpath expr="//div[@id='training_course_actions']" position="after">
+            <section t-if="public_sessions" id="training_public_sessions" class="my-4" aria-labelledby="training_public_sessions_title">
+                <h2 id="training_public_sessions_title" class="h4">Sessions inter-entreprises</h2>
+                <ul class="list-group">
+                    <li t-foreach="public_sessions" t-as="session" class="list-group-item py-3">
+                        <div class="fw-semibold"><t t-out="session['mode']"/> <span t-if="session['guaranteed']" class="badge text-bg-success">Session garantie</span></div>
+                        <p class="mb-2">Du <t t-out="session['start']"/> au <t t-out="session['end']"/></p>
+                        <a t-if="session['limit']" class="btn btn-outline-primary" t-att-href="session['url']">Demander une inscription</a>
+                        <span t-else="" class="text-body-secondary">Session complète</span>
+                    </li>
+                </ul>
+            </section>
+        </xpath>
+    </template>
+
+    <template id="public_session_registration" name="Inter-company session request">
+        <t t-call="portal.frontend_layout">
+            <main id="wrap" class="container py-4 o_training_public_page o_not_editable">
+                <p><a t-att-href="'/formations/catalogue/%s#training_public_sessions' % course_id">Retour à la fiche formation</a></p>
+                <h1>Demander une inscription inter-entreprises</h1>
+                <p class="fw-semibold" t-out="title"/>
+                <p><t t-out="session['mode']"/> · Du <t t-out="session['start']"/> au <t t-out="session['end']"/></p>
+                <p>L’équipe vous recontactera pour confirmer les places et les conditions d’inscription.</p>
+                <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+                <form t-if="session['limit']" method="post" t-att-action="session['url']" class="col-md-8 col-lg-6">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="submission_token" t-att-value="token"/>
+                    <div class="mb-3">
+                        <label class="form-label" for="contact">Votre nom</label>
+                        <input class="form-control" id="contact" name="contact" autocomplete="name" maxlength="254" required="required" t-att-value="values['contact']"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Votre adresse email</label>
+                        <input class="form-control" id="email" name="email" type="email" autocomplete="email" maxlength="254" required="required" t-att-value="values['email']"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="phone">Téléphone (facultatif)</label>
+                        <input class="form-control" id="phone" name="phone" type="tel" autocomplete="tel" maxlength="254" t-att-value="values['phone']"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="organisation">Entreprise (facultatif)</label>
+                        <input class="form-control" id="organisation" name="organisation" autocomplete="organization" maxlength="254" t-att-value="values['organisation']"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="count">Nombre de participants</label>
+                        <select class="form-select" id="count" name="count" required="required">
+                            <option t-foreach="range(1, session['limit'] + 1)" t-as="count" t-att-value="count" t-att-selected="str(count) == values['count']" t-out="count"/>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer la demande d’inscription</button>
+                </form>
+            </main>
+        </t>
+    </template>
+</odoo>
