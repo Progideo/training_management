@@ -21,18 +21,18 @@ class TrainingCourse(models.Model):
     presentation = fields.Text(translate=True, string="General Presentation")
     general_objectives = fields.Text(translate=True)
     public_programme = fields.Html(
-        string="Public Programme",
         translate=True,
         sanitize_overridable=False,
         strip_style=True,
     )
 
-    public_reference = fields.Char(string="Public Reference")
+    public_reference = fields.Char()
     live_duration_days = fields.Float(string="Live Duration (days)")
-    public_logo = fields.Image(string="Public Logo", max_width=256, max_height=256)
+    public_logo = fields.Image(max_width=256, max_height=256)
 
     _live_duration_nonnegative = models.Constraint(
-        "CHECK(live_duration_days >= 0)", "Live duration cannot be negative.",
+        "CHECK(live_duration_days >= 0)",
+        "Live duration cannot be negative.",
     )
 
     @api.constrains("name")
@@ -64,10 +64,18 @@ class TrainingCourse(models.Model):
         self.ensure_one()
         if not user.active or user._is_public():
             return False
-        existing = self.env["rating.rating"].sudo().search(
-            [("res_model", "=", self._name), ("res_id", "=", self.id),
-             ("partner_id", "=", user.partner_id.id), ("consumed", "=", True)],
-            limit=1,
+        existing = (
+            self.env["rating.rating"]
+            .sudo()
+            .search(
+                [
+                    ("res_model", "=", self._name),
+                    ("res_id", "=", self.id),
+                    ("partner_id", "=", user.partner_id.id),
+                    ("consumed", "=", True),
+                ],
+                limit=1,
+            )
         )
         if existing:
             if existing.is_public_course_review:
@@ -93,16 +101,20 @@ class TrainingCourse(models.Model):
     @api.private
     def _public_reviews(self):
         self.ensure_one()
-        return self.env["rating.rating"].sudo().search_read(
-            [
-                ("res_model", "=", self._name),
-                ("res_id", "=", self.id),
-                ("consumed", "=", True),
-                ("is_public_course_review", "=", True),
-            ],
-            ["rating", "feedback"],
-            order="write_date desc, id desc",
-            limit=20,
+        return (
+            self.env["rating.rating"]
+            .sudo()
+            .search_read(
+                [
+                    ("res_model", "=", self._name),
+                    ("res_id", "=", self.id),
+                    ("consumed", "=", True),
+                    ("is_public_course_review", "=", True),
+                ],
+                ["rating", "feedback"],
+                order="write_date desc, id desc",
+                limit=20,
+            )
         )
 
     @api.private
@@ -113,8 +125,7 @@ class TrainingCourse(models.Model):
     @api.private
     def _catalogue_tags(self):
         return {
-            course.id: [{"label": course.category_id.name, "color": 0}] if course.category_id else []
-            for course in self
+            course.id: [{"label": course.category_id.name, "color": 0}] if course.category_id else [] for course in self
         }
 
     @api.private

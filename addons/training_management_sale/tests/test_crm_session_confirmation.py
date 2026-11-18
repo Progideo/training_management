@@ -5,6 +5,7 @@ from datetime import timedelta
 from odoo import Command, fields
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import Form, new_test_user, tagged
+from odoo.tools.translate import load_language
 
 from .test_allocation import TestAllocationCommerce
 
@@ -78,6 +79,7 @@ class TestCrmSessionConfirmation(TestAllocationCommerce):
             self.assertFalse(lead.training_requested_delivery_id.allocation_ids)
 
     def test_french_labels_for_the_confirmation_dialog(self):
+        load_language(self.cr, "fr_FR")
         wizard = self.assistant(self.request()).with_context(lang="fr_FR")
         labels = wizard.fields_get(["prerequisites_checked", "source", "expected_count"])
         self.assertEqual(

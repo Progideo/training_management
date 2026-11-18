@@ -33,7 +33,15 @@ def snapshot(tables, *, business=False, database_env=None):
         # Opt-in additions must remain empty on historical rows. Compare every
         # original column byte-for-byte after explicitly checking the new fields.
         added = {
-            "training_course": ["presentation", "general_objectives", "public_catalogue"],
+            "training_course": [
+                "presentation",
+                "general_objectives",
+                "public_catalogue",
+                "public_programme",
+                "public_reference",
+                "public_logo",
+                "live_duration_days",
+            ],
             "survey_user_input": [
                 "mock_context_key",
                 "mock_reader_group_id",
@@ -59,6 +67,13 @@ def snapshot(tables, *, business=False, database_env=None):
             database_env.cr.execute(SQL("SELECT to_jsonb(t) FROM %s t", SQL.identifier(table)))
             for (row,) in database_env.cr.fetchall():
                 for column in added:
+                    if table == "training_course" and column == "live_duration_days":
+                        assert row.get(column) is None or (type(row[column]) in (int, float) and row[column] == 0), (
+                            table,
+                            row["id"],
+                            column,
+                        )
+                        continue
                     if table == "survey_user_input" and column == "mock_revision_serial":
                         assert row.get(column) is None or (type(row[column]) is int and row[column] == 0), (
                             table,

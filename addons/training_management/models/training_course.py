@@ -83,17 +83,31 @@ class TrainingCourse(models.Model):
     @api.private
     def _has_course_review_participation(self, user):
         self.ensure_one()
-        enrollments = self.env["training.document.policy"].with_user(user)._enrollments().filtered_domain([
-            ("company_id", "=", self.company_id.id),
-            ("program_id.course_id", "=", self.id),
-            ("state", "in", ("confirmed", "closed")),
-            ("delivery_id.kind", "=", "session"),
-            ("delivery_id.state", "in", ("delivered", "closed")),
-            ("delivery_id.end_at", "<=", fields.Datetime.now()),
-        ])
-        attendance = self.env["training.attendance"].sudo().search([
-            ("enrollment_id", "in", enrollments.ids), ("session_id.cancelled", "=", False),
-        ])
+        enrollments = (
+            self.env["training.document.policy"]
+            .with_user(user)
+            ._enrollments()
+            .filtered_domain(
+                [
+                    ("company_id", "=", self.company_id.id),
+                    ("program_id.course_id", "=", self.id),
+                    ("state", "in", ("confirmed", "closed")),
+                    ("delivery_id.kind", "=", "session"),
+                    ("delivery_id.state", "in", ("delivered", "closed")),
+                    ("delivery_id.end_at", "<=", fields.Datetime.now()),
+                ]
+            )
+        )
+        attendance = (
+            self.env["training.attendance"]
+            .sudo()
+            .search(
+                [
+                    ("enrollment_id", "in", enrollments.ids),
+                    ("session_id.cancelled", "=", False),
+                ]
+            )
+        )
         return any(row.state == "validated" and row.minutes > 0 for row in attendance) or (
             super()._has_course_review_participation(user)
         )

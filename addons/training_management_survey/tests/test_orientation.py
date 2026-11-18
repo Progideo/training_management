@@ -378,7 +378,7 @@ class TestOrientation(OrientationCase, HttpCase):
         self.assertIn("Ce questionnaire facultatif vous aide à choisir votre formation.", diagnostic_list.text)
         self.assertIn('action="/formations/orientation"', diagnostic_list.text)
         self.assertIn("data-orientation-step", diagnostic_list.text)
-        self.assertIn("orientation", self.url_open("/formations").text)
+        self.assertNotIn('href="/formations/orientation"', self.url_open("/formations").text)
         url = f"/formations/orientation/{survey.id}"
         response = self.url_open(url)
         self.assertEqual(response.status_code, 200)
@@ -392,7 +392,7 @@ class TestOrientation(OrientationCase, HttpCase):
             self.assertIn("Pourquoi cette recommandation ?", response.text)
             self.assertIn("Explorer les formations", response.text)
             self.assertIn("Start with a guided exercise.", response.text)
-            self.assertIn('/formations?search=Quality+%26+methods', response.text)
+            self.assertIn("/formations?search=Quality+%26+methods", response.text)
             self.assertNotIn("data-orientation-step", response.text)
             self.assertNotIn("Votre pratique ?", response.text)
             self.assertIn("no-store", response.headers["Cache-Control"])

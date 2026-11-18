@@ -7,7 +7,6 @@ class ResCompany(models.Model):
 
     course_review_responsible_id = fields.Many2one(
         "res.users",
-        string="Course Review Responsible",
         domain="[('active', '=', True), ('share', '=', False), ('company_ids', 'in', id)]",
         groups="base.group_system",
     )
