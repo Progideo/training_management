@@ -1,0 +1,33 @@
+<odoo>
+    <record id="rating_rating_view_course_publication" model="ir.ui.view">
+        <field name="name">rating.rating.form.course.catalogue</field>
+        <field name="model">rating.rating</field>
+        <field name="inherit_id" ref="rating.rating_rating_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group[1]" position="after">
+                <group string="Course Review" invisible="res_model != 'training.course'">
+                    <field name="res_model" invisible="1"/>
+                    <field name="course_review_company_id" readonly="1"/>
+                    <field name="is_public_course_review" readonly="1" groups="website.group_website_designer"/>
+                    <button name="action_approve_course_review" type="object" string="Validate and publish"
+                            class="oe_highlight" groups="website.group_website_designer"
+                            invisible="is_public_course_review"/>
+                    <button name="action_reject_course_review" type="object" string="Reject"
+                            groups="website.group_website_designer" invisible="course_review_moderated_at"/>
+                    <button name="action_reject_course_review" type="object" string="Withdraw from catalogue"
+                            groups="website.group_website_designer" invisible="not is_public_course_review"/>
+                    <field name="course_review_moderator_id"/>
+                    <field name="course_review_moderated_at"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_course_reviews" model="ir.actions.act_window">
+        <field name="name">Course Reviews</field>
+        <field name="res_model">rating.rating</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('res_model', '=', 'training.course'), ('consumed', '=', True)]</field>
+    </record>
+    <menuitem id="menu_course_reviews" name="Course Reviews" parent="website.menu_website_configuration"
+              action="action_course_reviews" groups="website.group_website_designer" sequence="70"/>
+</odoo>

@@ -1,4 +1,5 @@
 from io import BytesIO
+from urllib.parse import urlencode
 from uuid import uuid4
 
 from lxml import html
@@ -100,24 +101,49 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         else:
             self.assertIn(image.status_code, (403, 404))
 
+    def test_catalogue_pager_preserves_legacy_quote_context(self):
+        courses = self.env["training.course"].create(
+            [
+                {
+                    "name": f"Fictional quote pagination {number:02d}",
+                    "company_id": self.company.id,
+                    "public_catalogue": True,
+                }
+                for number in range(13)
+            ]
+        )
+        self.authenticate(None, None)
+        root = html.fromstring(self.url_open("/formations?kind=individual&search=Fictional+quote+pagination").content)
+        next_link = root.xpath("//nav//a[starts-with(@href, '/formations/page/2?')]/@href")[0]
+        second = html.fromstring(self.url_open(next_link).content)
+        self.assertEqual(second.xpath("//input[@name='kind']/@value"), ["individual"])
+        self.assertEqual(
+            second.xpath("//article//h2/a/@href"), [f"/formations/catalogue/{courses[-1].id}?kind=individual"]
+        )
+
     def test_http_journeys_preserve_context_and_validation_and_repetition(self):
         program = self.published()
         self.authenticate(None, None)
         page = self.url_open(f"/formations/{program.id}")
+        self.assertIn("Demander un devis pour mon équipe", page.text)
+        self.assertIn("Demander un devis individuel", page.text)
         self.assertIn(f"kind=group&amp;program={program.id}", page.text)
         self.assertIn(f"kind=individual&amp;program={program.id}", page.text)
-        catalogue = self.url_open("/formations?kind=group")
+        public_catalogue = self.url_open("/formations")
+        self.assertNotIn('href="/formations?kind=group"', public_catalogue.text)
+        self.assertNotIn('href="/formations?kind=individual"', public_catalogue.text)
+        self.assertIn("Vous ne trouvez pas la formation qui vous convient ?", public_catalogue.text)
+        self.assertIn("Décrire un projet sur mesure", public_catalogue.text)
+        self.assertIn('href="/formations/demande?kind=group&amp;request_type=custom"', public_catalogue.text)
+        catalogue = self.url_open("/formations?kind=group&" + urlencode({"search": program.title}))
         self.assertIn(f"/formations/{program.id}?kind=group", catalogue.text)
-        self.assertIn("La formation de votre équipe", catalogue.text)
-        self.assertNotIn("Choisir pour mon équipe", catalogue.text)
-        self.assertIn("Changer de parcours", catalogue.text)
+        self.assertNotIn("Changer de parcours", catalogue.text)
         selected = self.url_open(f"/formations/{program.id}?kind=group")
         self.assertIn(f"kind=group&amp;program={program.id}", selected.text)
         self.assertNotIn(f"kind=individual&amp;program={program.id}", selected.text)
         self.assertIn("Demander un devis pour mon équipe", selected.text)
-        individual = self.url_open("/formations?kind=individual")
-        self.assertIn("Votre formation individuelle", individual.text)
-        self.assertNotIn("Choisir pour moi", individual.text)
+        individual = self.url_open("/formations?kind=individual&" + urlencode({"search": program.title}))
+        self.assertNotIn("Changer de parcours", individual.text)
         self.assertIn(f"/formations/{program.id}?kind=individual", individual.text)
         individual_form = html.fromstring(individual.content)
         self.assertEqual(individual_form.xpath("//input[@name='kind']/@value"), ["individual"])
@@ -131,6 +157,7 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         page = self.url_open(f"/formations/demande?kind=group&program={program.id}")
         self.assertEqual(page.status_code, 200)
         form = html.fromstring(page.content)
+        self.assertEqual(form.xpath("//select[@id='kind']/option/@value"), ["group", "individual"])
         payload = {
             "csrf_token": form.xpath("//input[@name='csrf_token']/@value")[0],
             "submission_token": form.xpath("//input[@name='submission_token']/@value")[0],

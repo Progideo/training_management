@@ -8,7 +8,7 @@ Références : [backlog #3](https://github.com/Progideo/training_management/issu
 
 | Besoin | Déjà livré | Écart à traiter | Intégration retenue |
 | --- | --- | --- | --- |
-| P01 #23 | Catalogue interne, CRM, devis, comptes Odoo | Deux entrées publiques, contexte conservé, formulaire approprié | QWeb/HTTP/Portal natifs ; pas de boutique ni de paiement |
+| P01 #23 | Catalogue interne, CRM, devis, comptes Odoo | Catalogue commun, choix équipe ou individuel à la demande de devis | QWeb/HTTP/Portal natifs ; pas de boutique ni de paiement |
 | P02 #24 | `crm.lead`, modalités/dates/effectif/devise, création du devis | Qualification intra, dépôt privé, accusé, répétition | Héritage CRM ; pièces jointes natives et soumission idempotente |
 | P03 #25 | Programme immuable, validation/auteurs, PDF figé | Résultats, livrables, profils, inclusions et informations en attente ; fiche publique | Extension du programme ; sections communes fiche/PDF |
 | P04 #26 | PDF privés S05, évaluations et examens S06 | Extrait et mini-quiz indépendants publiables | Projection publique explicite ; questions de démonstration sans tentative ni résultat |

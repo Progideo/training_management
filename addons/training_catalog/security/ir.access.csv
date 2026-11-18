@@ -5,3 +5,4 @@ rule_course_company,Catalogue course companies,training.course,,crud,"[('company
 access_category_reader,Catalogue category reader,training.category,training_catalog.group_catalog_reader,r,
 access_category_editor,Catalogue category editor,training.category,training_catalog.group_catalog_editor,crud,
 rule_category_company,Catalogue category companies,training.category,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+rule_course_review_company,Course reviews restricted to authorized companies,rating.rating,,crud,"['|', ('res_model', '!=', 'training.course'), ('course_review_company_id', 'in', company_ids)] if user.active and user.has_group('website.group_website_designer') else [('res_model', '!=', 'training.course')]"

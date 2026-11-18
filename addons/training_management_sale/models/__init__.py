@@ -29,3 +29,9 @@ from . import training_company_portal
 from . import training_path_sale
 
 from . import payment_transaction
+
+from . import session_registration
+
+from . import crm_session_confirmation
+
+from . import session_confirmation_notice

@@ -1,11 +1,10 @@
 # P01–P02 — parcours commerciaux et demande guidée
 
 Références : #23, #24 et [matrice C02/C04](p01-p06-coverage.md).
-L’accueil `/formations` privilégie « Former mon équipe », puis « Me former ».
-Le catalogue, la fiche et le formulaire conservent le parcours et la version choisie.
-Après le choix, le catalogue affiche le parcours retenu et propose de changer de
-parcours. Sur la fiche, « Demander un devis individuel » ou « Demander un devis
-pour mon équipe » annonce l’étape suivante sans faire choisir à nouveau l’intention.
+L’accueil `/formations` donne accès au catalogue et à la demande sur mesure.
+Le visiteur choisit « Demander un devis pour mon équipe » ou « Demander un devis
+individuel » depuis l’offre. Le formulaire reprend ce choix et la version de l’offre.
+Les anciens liens avec un parcours choisi transmettent toujours ce choix aux offres.
 Le formulaire garde ses champs lorsque le parcours change ; aucun compte,
 contact, accès, inscription ou devis n’est créé automatiquement.
 
@@ -34,9 +33,9 @@ ou habilitation n’est déduit du nom, du pays ou du domaine email saisi.
 
 ## Recette courte
 
-1. Depuis chaque parcours, rechercher une formation et ouvrir sa fiche, puis le
-   formulaire : vérifier version et parcours conservés. Changer de parcours dans
-   le formulaire ; les valeurs restent présentes.
+1. Depuis le catalogue, rechercher une formation et ouvrir son offre. Tester chaque
+   bouton de devis et vérifier que le formulaire reprend la version et le parcours.
+   Changer de parcours dans le formulaire en vérifiant la conservation des valeurs.
 2. Envoyer une adaptation intra avec PDF, puis une demande sur mesure sans
    programme : retrouver les champs, pièce privée et journal d’accusé dans CRM.
    Configurer le programme et créer le devis natif MAD/EUR après qualification.

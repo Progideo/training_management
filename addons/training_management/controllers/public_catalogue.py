@@ -37,19 +37,21 @@ class TrainingPublicCatalogue(TrainingCatalogue):
     @http.route("/formations/<int:program_id>", type="http", auth="public", website=True, methods=["GET"])
     def programme(self, program_id, **kwargs):
         program = self._program(program_id)
+        course = program.course_id
         return request.render(
             "training_management.public_programme",
             {
                 "program": {
                     "id": program.id,
-                    "course_id": program.course_id.id,
+                    "course_id": course.id,
                     "title": program.title,
                     "version": program.version,
                     "duration": program.duration_hours,
                     "mode": dict(program._fields["delivery_mode"]._description_selection(program.env)).get(
                         program.delivery_mode
                     ),
-                    "presentation": program.course_id.presentation or "",
+                    "presentation": course.presentation or "",
+                    "tags": course._catalogue_tags()[course.id],
                     "sections": program._public_general_sections(),
                 }
             },

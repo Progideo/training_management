@@ -4,11 +4,14 @@
             <p><a href="/formations/orientation">Besoin d’aide pour choisir ? Diagnostic d’orientation facultatif</a></p>
         </xpath>
     </template>
+    <record id="orientation_catalogue" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
     <template id="orientation_list" name="Orientation diagnostics">
         <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a><h1>Diagnostic d’orientation</h1>
-            <p>Ce questionnaire facultatif vous aide à choisir avant achat. Vous pouvez aussi consulter directement le catalogue.</p>
+            <p>Ce questionnaire facultatif vous aide à choisir votre formation. Vous pouvez aussi consulter directement le catalogue.</p>
             <p t-if="not diagnostics">Aucun questionnaire disponible. Consultez les fiches formation pour demander conseil.</p>
             <ul>
                     <li t-foreach="diagnostics" t-as="d"><a t-att-href="'/formations/orientation/%s' % d[0]" t-out="d[1]"/></li>
@@ -20,36 +23,56 @@
         <t t-call="portal.frontend_layout" additional_title.translate="Diagnostic d’orientation">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a><h1 t-out="diagnostic['title']"/>
-            <p>Facultatif, avant achat. Finalité : vous proposer une orientation expliquée. Vos réponses sont traitées pour afficher ce résultat uniquement, sans enregistrement, sans conservation ni transmission à un conseiller.</p>
+            <p t-if="not submitted">Ce questionnaire facultatif vous aide à choisir votre formation. Vos réponses sont traitées pour afficher le bilan, sans enregistrement, sans conservation ni transmission à un conseiller.</p>
             <p>Ce diagnostic ne vaut ni positionnement pédagogique, ni validation des prérequis, ni admission, ni ouverture d’accès. Il ne garantit aucun résultat.</p>
-            <section t-if="submitted" aria-live="polite" class="alert alert-info">
+            <section t-if="submitted" aria-live="polite" class="card card-body my-4" id="orientation-result" tabindex="-1" autofocus="autofocus">
+                    <h2>Bilan d’orientation</h2>
                     <t t-if="result">
-                        <h2>Orientation conseillée : <t t-out="result['name']"/></h2>
+                        <h3 class="h5">Recommandation</h3>
+                        <p class="fw-semibold" t-out="result['name']"/>
+                        <h3 class="h5">Pourquoi cette recommandation ?</h3>
                         <p t-out="result['explanation']"/>
-                        <p>Cette recommandation s’appuie sur :</p>
-                        <ul>
-                            <li t-foreach="result['criteria']" t-as="criterion"><t t-out="criterion[0]"/> : <t t-out="criterion[1]"/></li>
-                        </ul>
-                        <ul>
+                        <h3 class="h5">Prochaine étape</h3>
+                        <p t-if="result['next_step']" t-out="result['next_step']"/>
+                        <ul t-if="result['programs']">
                             <li t-foreach="result['programs']" t-as="p"><a t-att-href="'/formations/%s' % p[0]" t-out="p[1]"/></li>
                         </ul>
+                        <p t-else=""><a t-att-href="catalogue_url" class="btn btn-primary">Explorer les formations</a></p>
                     </t>
                     <t t-else="">
-                        <h2>Demandons conseil à une personne</h2>
+                        <h3 class="h5">Demandons conseil à une personne</h3>
                         <p>Les réponses sont insuffisantes, contradictoires ou ne permettent pas de proposer une orientation disponible sans ambiguïté. Un échange humain vous aidera à choisir.</p>
+                        <h3 class="h5">Prochaine étape</h3>
+                        <p t-if="guided_request"><a href="/formations/demande?advice=1&amp;kind=individual" class="btn btn-primary">Demander conseil</a></p>
+                        <p t-else=""><t t-out="diagnostic['contact']"/></p>
                     </t>
+                    <a class="align-self-start" t-att-href="form_url">Recommencer le diagnostic</a>
                 </section>
-            <p>Pour un conseil humain : <span t-out="diagnostic['contact']"/>.
+            <p t-if="not submitted">Pour un conseil humain : <span t-out="diagnostic['contact']"/>.
                 <a t-if="guided_request" href="/formations/demande?advice=1&amp;kind=individual">Demander conseil</a>
             </p>
-            <form method="post">
+            <form t-if="not submitted" method="post" t-att-action="form_url" data-orientation-form="">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                <fieldset t-foreach="questions" t-as="q" class="my-4"><legend t-out="q['title']"/>
-                    <label t-foreach="q['choices']" t-as="choice" class="d-block py-1">
-                        <input type="radio" t-att-name="q['id']" t-att-value="choice[0]" t-att-checked="answers.get(str(q['id'])) == str(choice[0])"/> <t t-out="choice[1]"/>
-                    </label>
-                </fieldset>
-                <button class="btn btn-primary">Voir mon orientation</button>
+                <p data-orientation-progress="" hidden="hidden" aria-live="polite">Question <span data-orientation-count="">1</span> sur <t t-out="len(questions)"/></p>
+                <div t-foreach="questions" t-as="q" class="my-4" data-orientation-step="" tabindex="-1">
+                    <t t-if="len(q['choices']) &gt; 8">
+                        <label class="form-label h5" t-att-for="'orientation-question-%s' % q['id']" t-out="q['title']"/>
+                        <select class="form-select" t-att-id="'orientation-question-%s' % q['id']" t-att-name="q['id']" required="required">
+                            <option value="">Choisir une réponse</option>
+                            <option t-foreach="q['choices']" t-as="choice" t-att-value="choice[0]" t-out="choice[1]"/>
+                        </select>
+                    </t>
+                    <fieldset t-else=""><legend t-out="q['title']"/>
+                        <label t-foreach="q['choices']" t-as="choice" class="d-block py-1">
+                            <input type="radio" t-att-name="q['id']" t-att-value="choice[0]" t-att-required="choice_first"/> <t t-out="choice[1]"/>
+                        </label>
+                    </fieldset>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-secondary" type="button" data-orientation-previous="" hidden="hidden">Précédent</button>
+                    <button class="btn btn-primary" type="button" data-orientation-next="" hidden="hidden">Suivant</button>
+                    <button class="btn btn-primary" type="submit">Voir mon bilan</button>
+                </div>
             </form>
         </div>
         </t>

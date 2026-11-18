@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="training_catalog.CourseShare">
+        <button type="button" class="btn btn-outline-secondary mb-3" t-on-click="this.share">
+            <i class="fa fa-share-alt me-1" aria-hidden="true"/> Partager
+        </button>
+    </t>
+    <t t-name="training_catalog.CourseShareDialog">
+        <Dialog title="this.props.title" size="'md'">
+            <label for="training_share_url">Lien de la fiche</label>
+            <div class="input-group mb-3">
+                <input id="training_share_url" class="form-control" type="url" readonly="readonly" t-att-value="this.props.url"/>
+                <CopyButton className="'btn btn-outline-primary'" copyText="this.props.copyText" successText="this.props.copied" content="this.props.url"/>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-outline-secondary" t-att-href="this.props.email">Par e-mail</a>
+                <a class="btn btn-outline-secondary" t-att-href="this.props.whatsapp" target="_blank" rel="noopener noreferrer">Sur WhatsApp</a>
+            </div>
+        </Dialog>
+    </t>
+</templates>

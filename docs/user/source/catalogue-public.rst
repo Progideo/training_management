@@ -8,14 +8,14 @@ du catalogue et la demande commerciale ne nécessitent pas de compte apprenant.
 Trouver une formation
 ---------------------
 
-#. Choisir **Former mon équipe** ou **Me former**. Pour un besoin particulier,
-   utiliser **Décrire un projet sur mesure**.
 #. Rechercher par texte et filtrer par catégorie ou modalité.
 #. Ouvrir la fiche et lire objectifs, public, prérequis, durée, modalités,
    et conditions commerciales. La fiche commune distingue les offres avec
    formateur et autonomes.
 #. Utiliser **Demander un devis pour mon équipe** ou **Demander un devis individuel**.
    Le parcours et la version choisie sont repris dans le formulaire.
+
+Pour un besoin particulier, utiliser **Décrire un projet sur mesure** depuis le catalogue.
 
 Le programme détaillé, les supports et les démonstrations restent privés avant
 achat. Une consultation ne crée aucun accès pédagogique. Un examen blanc et un examen officiel sont deux

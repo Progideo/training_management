@@ -1,0 +1,7 @@
+<odoo>
+    <record id="activity_course_review" model="mail.activity.type">
+        <field name="name">Course review to moderate</field>
+        <field name="summary">Course review to moderate</field>
+        <field name="res_model">rating.rating</field>
+    </record>
+</odoo>

@@ -23,10 +23,13 @@ permet l’échange humain.
 
 ## Parcours et règles
 
-Depuis le catalogue, le visiteur choisit un diagnostic facultatif et répond sur
-une page. Il peut consulter directement le catalogue ou demander conseil avant
-toute réponse. Le résultat affiche la cible, l’explication du coordinateur et
-les réponses déterminantes. Le questionnaire reste disponible pour recommencer.
+Depuis le catalogue, le visiteur commence le questionnaire facultatif directement
+si le site publie un seul diagnostic. Quand plusieurs diagnostics sont publiés,
+il choisit celui qui l’intéresse. Les questions défilent une par une. Le bouton
+Précédent conserve les réponses déjà saisies dans le formulaire, qui est envoyé
+à la dernière étape. Le bilan affiche la recommandation, son explication et la
+prochaine action. Le visiteur peut consulter le catalogue, demander conseil ou
+recommencer le diagnostic.
 
 Le coordinateur prépare des questions textuelles à choix unique dans l’éditeur
 Surveys simplifié. « Définir les recommandations » enregistre les questions et

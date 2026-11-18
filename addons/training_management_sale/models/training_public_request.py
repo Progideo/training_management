@@ -28,6 +28,13 @@ class TrainingPublicRequest(models.Model):
     training_tools = fields.Text()
     training_country_id = fields.Many2one("res.country", ondelete="restrict")
     training_advice_requested = fields.Boolean()
+    training_requested_course_id = fields.Many2one(
+        "training.course",
+        string="Requested Course",
+        ondelete="restrict",
+        check_company=True,
+        domain="[('company_id', '=', company_id)]",
+    )
     training_submission_key = fields.Char(copy=False, readonly=True, index=True, groups="base.group_user")
     training_submission_hash = fields.Char(copy=False, readonly=True, groups="base.group_user")
 
@@ -98,10 +105,11 @@ class TrainingPublicRequest(models.Model):
         if kind == "group" and not values.get("organisation", "").strip():
             raise ValidationError(self.env._("Enter the organisation for an intra-company request."))
         try:
-            count, country_id, program_id = (
+            count, country_id, program_id, course_id = (
                 int(values["count"]),
                 int(values["country"]),
                 int(values.get("program") or 0),
+                int(values.get("course") or 0),
             )
             start, end = (date.fromisoformat(values[k]) if values.get(k) else False for k in ("date_from", "date_to"))
         except (ValueError, TypeError):
@@ -122,6 +130,9 @@ class TrainingPublicRequest(models.Model):
             raise ValidationError(self.env._("Choose a country and an active currency independently of the language."))
         if values["mode"] not in ("onsite", "remote", "blended", "elearning"):
             raise ValidationError(self.env._("Choose a valid delivery mode."))
+        course = self.env["training.course"]._published_catalogue_course(company, course_id)
+        if course_id and not course:
+            raise ValidationError(self.env._("Choose a published course."))
         program = self.env["training.program.version"].browse(program_id).exists()
         if (
             program
@@ -130,8 +141,9 @@ class TrainingPublicRequest(models.Model):
                 or program.state != "published"
                 or not program.public_catalogue
                 or not program.course_id.active
+                or (course and program.course_id != course)
             )
-        ) or (not program and (program_id or request_type != "custom")):
+        ) or (not program and (program_id or (not course and request_type != "custom"))):
             raise ValidationError(self.env._("Choose a published programme, or request custom training."))
         raw, filename = b"", ""
         if file and file.filename:
@@ -139,14 +151,6 @@ class TrainingPublicRequest(models.Model):
             if not filename.lower().endswith(".pdf") or not raw.startswith(b"%PDF-") or len(raw) > 10 * 1024 * 1024:
                 raise ValidationError(self.env._("The private specification must be a PDF of at most 10 MB."))
         fingerprint = hashlib.sha256(json.dumps(values, sort_keys=True).encode() + raw + filename.encode()).hexdigest()
-        existing = self.search([("training_submission_key", "=", key)], limit=1)
-        if existing:
-            if existing.training_submission_hash != fingerprint:
-                raise ValidationError(
-                    self.env._("This form was already submitted with different content. Start a new request.")
-                )
-            return existing
-        self._check_public_request_limits(email, len(raw))
         data = {
             "name": self.env._("Training request — %s", values["contact"]),
             "type": "lead",
@@ -159,6 +163,7 @@ class TrainingPublicRequest(models.Model):
             "phone": values.get("phone"),
             "training_request_kind": kind,
             "training_program_id": program.id,
+            "training_requested_course_id": course.id,
             "training_attendee_count": count,
             "training_requested_currency_id": currency.id,
             "training_delivery_mode": values["mode"],
@@ -174,6 +179,20 @@ class TrainingPublicRequest(models.Model):
             "training_submission_hash": fingerprint,
             "description": self.env._("Dates to discuss") if values.get("dates_flexible") else False,
         }
+        return self._record_public_request(data, email, raw, filename)
+
+    @api.private
+    def _record_public_request(self, data, email, raw=b"", filename=""):
+        existing = self.with_context(active_test=False).search(
+            [("training_submission_key", "=", data["training_submission_key"])], limit=1
+        )
+        if existing:
+            if existing.training_submission_hash != data["training_submission_hash"]:
+                raise ValidationError(
+                    self.env._("This form was already submitted with different content. Start a new request.")
+                )
+            return existing
+        self._check_public_request_limits(email, len(raw))
         try:
             with self.env.cr.savepoint():
                 lead = self.create(data)
@@ -185,7 +204,7 @@ class TrainingPublicRequest(models.Model):
                             "mimetype": "application/pdf",
                             "res_model": "crm.lead",
                             "res_id": lead.id,
-                            "company_id": company.id,
+                            "company_id": lead.company_id.id,
                             "public": False,
                             "access_token": False,
                         }

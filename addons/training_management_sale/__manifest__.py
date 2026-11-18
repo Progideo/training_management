@@ -2,7 +2,7 @@
 {
     "name": "Training Management - Sales",
     "summary": "Link training programmes to native Odoo sales and accounting",
-    "version": "20.0.2.5.2",
+    "version": "20.0.2.9.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
@@ -11,7 +11,11 @@
     "data": [
         "security/ir.access.csv",
         "views/crm_lead_views.xml",
+        "views/crm_session_confirmation_views.xml",
+        "data/session_confirmation_template.xml",
+        "views/session_confirmation_notice_views.xml",
         "views/public_request_templates.xml",
+        "views/session_registration_templates.xml",
         "views/res_company_views.xml",
         "views/product_template_views.xml",
         "views/sale_order_views.xml",
