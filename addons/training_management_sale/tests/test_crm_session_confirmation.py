@@ -23,6 +23,7 @@ class TestCrmSessionConfirmation(TestAllocationCommerce):
                     "company_id": self.company.id,
                     "user_id": self.coordinator.id,
                     "type": "lead",
+                    "email_from": "fictional-requester@example.invalid",
                     "training_requested_delivery_id": delivery.id,
                     "training_program_id": self.program.id,
                     "training_requested_course_id": self.course.id,
@@ -38,7 +39,10 @@ class TestCrmSessionConfirmation(TestAllocationCommerce):
         self.assertEqual(len(wizard.line_ids), lead.training_attendee_count)
         self.assertEqual(wizard.start_at, lead.training_requested_delivery_id.start_at)
         contacts = contacts or self.env["res.partner"].create(
-            [{"name": f"Fictional attendee {number}"} for number in range(lead.training_attendee_count)]
+            [
+                {"name": f"Fictional attendee {number}", "email": f"fictional-attendee-{number}@example.invalid"}
+                for number in range(lead.training_attendee_count)
+            ]
         )
         for line, person in zip(wizard.line_ids, contacts):
             line.participant_id = person

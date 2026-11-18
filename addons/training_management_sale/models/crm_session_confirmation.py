@@ -107,3 +107,13 @@ class CrmLead(models.Model):
             "view_mode": "list,form",
             "domain": [("id", "in", self.training_session_enrollment_ids.ids)],
         }
+
+    def action_view_session_confirmation_emails(self):
+        self._check_session_confirmation_access()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Confirmation Emails"),
+            "res_model": "training.session.confirmation.notice",
+            "view_mode": "list,form",
+            "domain": [("lead_id", "=", self.id)],
+        }

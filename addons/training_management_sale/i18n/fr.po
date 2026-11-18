@@ -2524,3 +2524,59 @@ msgstr "Confirmer toutes les places"
 #: model:ir.model.fields,field_description:training_management_sale.field_training_crm_session_confirmation__line_ids
 msgid "Named Participants"
 msgstr "Participants nominatifs"
+
+
+#. module: training_management_sale
+#: model:ir.model,name:training_management_sale.model_training_session_confirmation_notice
+msgid "Session Registration Confirmation Email"
+msgstr "Email de confirmation d’inscription à une session"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_session_confirmation_notice__is_requester
+msgid "Requester"
+msgstr "Demandeur"
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_training_session_confirmation_notice__details_html
+msgid "Session Information"
+msgstr "Informations de la session"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/crm_session_confirmation.py:0
+#: model_terms:ir.ui.view,arch_db:training_management_sale.view_crm_lead_confirmation_email
+msgid "Confirmation Emails"
+msgstr "Emails de confirmation"
+
+#. module: training_management_sale
+msgid "This session confirmation is already prepared for this address."
+msgstr "La confirmation de cette session est déjà préparée pour cette adresse."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "Join the remote session"
+msgstr "Rejoindre la session à distance"
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "Practical access information will be provided before the session."
+msgstr "Les informations pratiques d’accès vous seront communiquées avant la session."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "Enter a valid email address for the requester."
+msgstr "Renseignez une adresse email valide pour le demandeur."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "Enter a valid email address for every participant."
+msgstr "Renseignez une adresse email valide pour chaque participant."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "Confirm the participants before preparing the confirmation emails."
+msgstr "Confirmez les participants avant de préparer les emails de confirmation."
+
+#. module: training_management_sale
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "This session confirmation is no longer authorized for this recipient."
+msgstr "Cette confirmation n’est plus autorisée pour ce destinataire."

@@ -148,6 +148,7 @@ class SessionConfirmation(models.TransientModel):
             enrollments.action_validate_prerequisites(reason=self.reason)
             enrollments.action_confirm(reason=self.reason)
             lead._store_session_confirmation({"training_session_enrollment_ids": [Command.set(enrollments.ids)]})
+            self.env["training.session.confirmation.notice"]._queue(lead)
             lead.message_post(body=self.env._("Session places confirmed for %s participant(s).", len(enrollments)))
             return lead.action_view_session_participants()
 
@@ -164,3 +165,5 @@ class SessionConfirmationLine(models.TransientModel):
         check_company=True,
         domain="[('is_company', '=', False), ('company_id', 'in', [False, company_id])]",
     )
+
+    email = fields.Char(related="participant_id.email", readonly=False, compute_sudo=False)
