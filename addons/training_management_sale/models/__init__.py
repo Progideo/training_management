@@ -33,3 +33,5 @@ from . import payment_transaction
 from . import session_registration
 
 from . import crm_session_confirmation
+
+from . import session_confirmation_notice

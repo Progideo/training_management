@@ -85,3 +85,29 @@ L’autorisation commerciale et l’ouverture des accès suivent le parcours exi
 Pour la recette, traiter une demande individuelle puis une demande de trois
 personnes. Vérifier les trois origines des places, rejouer la confirmation,
 puis essayer une session complète et un compte commercial sans rôle coordinateur.
+
+
+### Emails de confirmation
+
+La confirmation CRM prépare les courriers avec un modèle natif Odoo, dans la
+file d’envoi standard. Le demandeur et chaque participant doivent avoir une
+adresse valide, modifiable pour les participants dans la même fenêtre.
+Une adresse partagée reçoit un seul message par demande, y compris lorsque
+le demandeur participe. Une répétition conserve le courrier initial.
+
+Les messages indiquent la formation, les dates, horaires, fuseau et modalité.
+Les lieux et liens de visioconférence proviennent des créneaux actifs du planning.
+Les informations pratiques manquantes sont annoncées comme restant à communiquer.
+Chaque participant reçoit uniquement les noms des personnes partageant son
+adresse. Les messages utilisent l’identité d’expédition configurée pour la société.
+
+Le bouton **Emails de confirmation** sur la piste affiche les destinataires,
+les informations préparées et l’état natif du courrier. Le modèle se modifie
+dans les modèles d’email Odoo. Une erreur de préparation annule toute la confirmation.
+Le transport revérifie les destinataires, les inscriptions, les dates et le
+planning avant envoi. Les mises à jour de planning utilisent ensuite les
+invitations existantes.
+
+La recette couvre une personne également demandeuse, trois participants,
+une adresse manquante, une panne de préparation, une répétition après envoi,
+un changement de destinataire ou de planning et les accès restreints.

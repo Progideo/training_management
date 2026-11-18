@@ -26,3 +26,5 @@ access_crm_session_confirmation,Session confirmation assistant,training.crm.sess
 access_crm_session_confirmation_line,Session confirmation participant,training.crm.session.confirmation.line,training_management.group_training_coordinator,crud,
 rule_crm_session_confirmation_owner,Session assistant owner,training.crm.session.confirmation,,crud,"[('create_uid', '=', user.id), ('lead_id', 'access', 'write'), ('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 rule_crm_session_confirmation_line_owner,Session participant assistant owner,training.crm.session.confirmation.line,,crud,"[('create_uid', '=', user.id), ('wizard_id', 'access', 'write')] if user.active else [('id', '=', 0)]"
+access_session_confirmation_notice,Session confirmation emails,training.session.confirmation.notice,training_management.group_training_coordinator,r,"[('lead_id','access','read')]"
+rule_session_confirmation_notice_company,Session confirmation email company,training.session.confirmation.notice,,crud,"[('company_id','in',company_ids)] if user.active else [('id','=',0)]"

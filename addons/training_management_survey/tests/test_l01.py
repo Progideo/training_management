@@ -867,7 +867,9 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         self.authenticate(None, None)
         home = self.url_open("/formations")
         self.assertEqual(home.status_code, 200)
-        self.assertLess(home.text.index("Former mon équipe"), home.text.index("Me former"))
+        self.assertNotIn('href="/formations?kind=group"', home.text)
+        self.assertNotIn('href="/formations?kind=individual"', home.text)
+        self.assertIn("Décrire un projet sur mesure", home.text)
         page = self.url_open("/formations/%s?kind=group" % self.public_program.id)
         self.assertEqual(page.status_code, 200)
         original_pdf = self.public_program.pdf_attachment_id.raw.content
@@ -886,6 +888,7 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         form = html.fromstring(
             self.url_open("/formations/demande?kind=group&program=%s" % self.public_program.id).content
         )
+        self.assertEqual(form.xpath("//select[@id='kind']/option/@value"), ["group", "individual"])
         payload = {
             **self._values(),
             "csrf_token": form.xpath("//input[@name='csrf_token']/@value")[0],

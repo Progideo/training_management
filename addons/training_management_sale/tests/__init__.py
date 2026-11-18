@@ -19,3 +19,5 @@ from . import test_path_sale
 from . import test_session_registration
 
 from . import test_crm_session_confirmation
+
+from . import test_session_confirmation_email
