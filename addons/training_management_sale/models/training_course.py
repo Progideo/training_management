@@ -29,6 +29,10 @@ class TrainingCourse(models.Model):
                 taxes = product.taxes_id.filtered(lambda tax: tax.company_id == company)
                 currency = product.currency_id
                 amount = taxes.compute_all(product.list_price, currency, 1.0, product=product)["total_excluded"]
-                price = {"amount": amount, "label": format_amount(self.env, amount, currency)}
+                price = {
+                    "amount": amount,
+                    "label": format_amount(self.env, amount, currency),
+                    "currency": currency.name,
+                }
             facts[course.id]["session_price"] = price
         return facts

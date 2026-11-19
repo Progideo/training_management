@@ -1,4 +1,5 @@
 import io
+from urllib.parse import urlsplit
 
 from lxml import html
 
@@ -169,16 +170,46 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.assertNotEqual(offers[autonomous.title]["kind"], offers[latest.title]["kind"])
         self.assertEqual(autonomous._public_duration_hours().replace(",", "."), "3.5")
         self.authenticate(None, None)
+        path = "/formations/catalogue/" + self.env["ir.http"]._slug((self.course.id, self.course.name))
+        # A version page redirects permanently to its course page; only the latest of each mode is selected.
+        for program, query in ((latest, f"version={latest.id}"), (older, ""), (autonomous, f"version={autonomous.id}")):
+            moved = self.url_open(f"/formations/{program.id}", allow_redirects=False)
+            self.assertEqual(moved.status_code, 301)
+            self.assertEqual(urlsplit(moved.headers["Location"]).path, path)
+            self.assertEqual(urlsplit(moved.headers["Location"]).query, query)
         page = self.url_open(f"/formations/{latest.id}")
         self.assertEqual(page.status_code, 200)
         if "website" in self.env:
             # The page title comes from the Website layout only.
             title = html.fromstring(page.content).findtext(".//title") or ""
-            self.assertIn(latest.title, title)
+            self.assertIn(self.course.name, title)
             self.assertNotIn("Public programme", title)
         self.assertNotIn(f"/formations/{latest.id}/avis", page.text)
-        self.assertNotIn("Prix sur devis", self.url_open(f"/formations/{autonomous.id}").text)
+        root = html.fromstring(page.content)
+        selected = root.xpath("//ul[contains(@class, 'o_training_course_offers')]//a[@aria-current='true']/@href")
+        self.assertEqual([urlsplit(url).query for url in selected], [f"version={latest.id}"])
+        self.assertIn("21 h", root.xpath("string(//dl[contains(@class, 'o_training_course_figures')])"))
         general = self.url_open(f"/formations/catalogue/{self.course.id}")
         self.assertNotIn(older.title, general.text)
         for program in (latest, remote, autonomous):
             self.assertIn(program.title, general.text)
+        # Trainer-led and autonomous versions give the three formats, compared after the description.
+        tree = html.fromstring(general.content)
+        tabs = tree.xpath("//div[@role='tablist']/button/@data-bs-target")
+        self.assertEqual(tabs, ["#training_booking_inter", "#training_booking_intra", "#training_booking_autonomous"])
+        self.assertEqual(
+            tree.xpath("//section[@id='training_course_formats']//thead/tr/th/text()"),
+            ["Inter-entreprises", "Intra-entreprise", "En autonomie"],
+        )
+        sections = tree.xpath("//div[contains(@class, 'col-lg-8')]/section/@id")
+        self.assertLess(sections.index("training_course_modalities"), sections.index("training_course_formats"))
+        # No session yet: the inter-company tab offers the new date alert of the version shown by
+        # default, the latest published one led by a trainer.
+        self.assertTrue(
+            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{remote.id}/date-alert']")
+        )
+        chosen = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}?format=autonomous").content)
+        self.assertEqual(
+            chosen.xpath("//div[@role='tablist']/button[@aria-selected='true']/@data-bs-target"),
+            ["#training_booking_autonomous"],
+        )

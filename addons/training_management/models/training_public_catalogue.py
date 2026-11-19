@@ -55,28 +55,49 @@ class TrainingPublicProgramme(models.Model):
             "conditions": self.env._("Durée indicative : %(hours)s h.", hours=hours)
             if autonomous
             else self.env._("Durée indicative : %(hours)s h. Prix sur devis.", hours=hours),
-            "url": "/formations/%s" % self.id,
+            "program_id": self.id,
+            # The course page shows the details of the chosen version.
+            "url": "/formations/catalogue/%s?version=%s" % (self.course_id.id, self.id),
             "action": self.env._("Consulter l’offre"),
         }
 
     @api.private
     def _public_general_sections(self):
         self.ensure_one()
+        return [(label, self[name]) for name, label in self._public_section_labels() if self[name]]
+
+    @api.private
+    def _public_section_labels(self):
         return [
-            (label, self[name])
-            for name, label in [
-                ("objectives", self.env._("Objectives")),
-                ("target_audience", self.env._("Target audience")),
-                ("prerequisites", self.env._("Prerequisites")),
-                ("access_conditions", self.env._("Access conditions")),
-                ("accessibility_information", self.env._("Accessibility")),
-                ("expected_outcomes", self.env._("Expected outcomes")),
-                ("material_access_duration", self.env._("Material access duration")),
-                ("included_services", self.env._("Included training services")),
-                ("official_exam_details", self.env._("Official exam and inclusion")),
-            ]
-            if self[name]
+            ("objectives", self.env._("Objectives")),
+            ("target_audience", self.env._("Target audience")),
+            ("prerequisites", self.env._("Prerequisites")),
+            ("access_conditions", self.env._("Access conditions")),
+            ("accessibility_information", self.env._("Accessibility")),
+            ("expected_outcomes", self.env._("Expected outcomes")),
+            ("material_access_duration", self.env._("Material access duration")),
+            ("included_services", self.env._("Included training services")),
+            ("official_exam_details", self.env._("Official exam and inclusion")),
         ]
+
+    @api.private
+    def _public_page_sections(self):
+        """Published version details grouped as on the course page; never the detailed content."""
+        self.ensure_one()
+        labels = dict(self._public_section_labels())
+        audience = ("target_audience", "prerequisites", "access_conditions")
+        modalities = (
+            "accessibility_information",
+            "expected_outcomes",
+            "material_access_duration",
+            "included_services",
+            "official_exam_details",
+        )
+        return {
+            "objectives": self.objectives or "",
+            "audience": [(labels[name], self[name]) for name in audience if self[name]],
+            "modalities": [(labels[name], self[name]) for name in modalities if self[name]],
+        }
 
     @api.private
     def _catalogue_sections(self):

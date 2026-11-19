@@ -1,9 +1,4 @@
 <odoo>
-    <template id="public_session_link" inherit_id="training_management.public_programme">
-        <xpath expr="//div[@id='training_request_actions']" position="after">
-            <p><a t-att-href="'/formations/%s/sessions' % program['id']">Dates et disponibilités des sessions</a></p>
-        </xpath>
-    </template>
     <template id="public_session_dates" name="Public session dates">
         <t t-call="portal.frontend_layout">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">

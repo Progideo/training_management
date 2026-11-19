@@ -1,25 +1,32 @@
 <odoo>
     <template id="public_course_session_registration" inherit_id="training_catalog.public_course" priority="30">
-        <xpath expr="//div[@id='training_course_actions']" position="after">
-            <section t-if="public_sessions" id="training_public_sessions" class="my-4" aria-labelledby="training_public_sessions_title">
-                <h2 id="training_public_sessions_title" class="h4">Sessions inter-entreprises</h2>
-                <ul class="list-group">
-                    <li t-foreach="public_sessions" t-as="session" t-attf-class="list-group-item py-3 #{'border-success border-2' if session['confirmed'] else ''}">
-                        <div class="fw-semibold"><span t-if="session['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><t t-out="session['dates']"/></div>
-                        <p class="mb-2"><t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t>
-                            <span t-if="session['few_seats']" class="ms-2 fw-semibold">· Plus que <t t-out="session['seats_left']"/> place(s)</span></p>
-                        <a t-if="session['limit']" class="btn btn-outline-primary" t-att-href="session['url']">Demander une inscription</a>
-                        <span t-else="" class="text-body-secondary">Session complète</span>
-                    </li>
-                </ul>
-            </section>
+        <xpath expr="//div[@id='training_booking_inter_actions']" position="inside">
+            <form t-if="public_sessions" id="training_public_sessions" method="get" class="mb-3"
+                  t-att-action="'/formations/catalogue/%s/inscription' % course['id']">
+                <fieldset>
+                    <legend class="h6">Choisir une session</legend>
+                    <div t-foreach="public_sessions" t-as="session"
+                         t-attf-class="form-check border rounded-0 py-2 pe-2 ps-5 mb-2 #{'border-success border-2' if session['confirmed'] else ''}">
+                        <input class="form-check-input" type="radio" name="session" t-att-id="'training_session_%s' % session['id']"
+                               t-att-value="session['id']" t-att-disabled="not session['limit']" t-att-checked="session['id'] == selected_session"/>
+                        <label class="form-check-label d-block" t-att-for="'training_session_%s' % session['id']">
+                            <span t-if="session['confirmed']" class="badge text-bg-success me-1">Session confirmée</span>
+                            <strong t-out="session['dates']"/>
+                            <span class="d-block small"><t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></span>
+                            <span t-if="session['few_seats']" class="d-block small fw-semibold">Plus que <t t-out="session['seats_left']"/> place(s)</span>
+                            <span t-if="not session['limit']" class="d-block small text-body-secondary">Session complète</span>
+                        </label>
+                    </div>
+                </fieldset>
+                <button t-if="selected_session" type="submit" class="btn btn-primary w-100">S’inscrire</button>
+            </form>
         </xpath>
     </template>
 
     <template id="public_session_registration" name="Inter-company session request">
         <t t-call="portal.frontend_layout">
             <main id="wrap" class="container py-4 o_training_public_page o_not_editable">
-                <p><a t-att-href="'/formations/catalogue/%s#training_public_sessions' % course_id">Retour à la fiche formation</a></p>
+                <p><a t-att-href="'/formations/catalogue/%s?format=inter#training_course_booking' % course_id">Retour à la fiche formation</a></p>
                 <h1>Demander une inscription inter-entreprises</h1>
                 <p class="fw-semibold" t-out="title"/>
                 <p><span t-if="session['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><t t-out="session['dates']"/> · <t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>

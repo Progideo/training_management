@@ -9,11 +9,17 @@ Trouver une formation
 ---------------------
 
 #. Rechercher par texte et filtrer par catégorie ou modalité.
-#. Ouvrir la fiche et lire objectifs, public, prérequis, durée, modalités,
-   et conditions commerciales. La fiche commune distingue les offres avec
-   formateur et autonomes.
-#. Utiliser **Demander un devis pour mon équipe** ou **Demander un devis individuel**.
-   Le parcours et la version choisie sont repris dans le formulaire.
+#. Ouvrir la fiche et lire présentation, objectifs, programme, public, prérequis
+   et modalités. Le sommaire en haut de page mène à chaque section ; le tableau
+   **Comparer les formats** résume les différences d'organisation.
+#. Choisir un format dans la carte de réservation : **Inter-entreprises**
+   (cocher une session puis **S'inscrire**), **Intra-entreprise**
+   (**Demander un devis pour mon équipe**, ou **Demande sur mesure** pour une
+   autre durée) ou **En autonomie**. **Demander un devis individuel** reste
+   proposé. Le parcours et la version choisie sont repris dans le formulaire.
+
+Chaque formation a une seule adresse, avec son nom ; les anciens liens de
+version y mènent directement.
 
 Pour un besoin particulier, utiliser **Décrire un projet sur mesure** depuis le catalogue.
 
@@ -72,7 +78,8 @@ Les dates visibles sont explicitement publiées par l'organisme. Les statuts
 Une session **confirmée** par l'organisme aura lieu : elle est signalée par
 le badge **Session confirmée**.
 
-#. Ouvrir la fiche d'une formation et ses dates publiques.
+#. Ouvrir la fiche d'une formation : les dates publiques sont dans l'onglet
+   **Inter-entreprises**. Sans date, utiliser **Être alerté des nouvelles dates**.
 #. Pour recevoir les prochaines dates, se connecter avec un compte Odoo existant.
 #. Lire les conditions et la politique de conservation, puis donner l'accord
    volontaire demandé. Aucune case ne doit être présumée cochée.
