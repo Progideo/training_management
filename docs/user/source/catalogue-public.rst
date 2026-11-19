@@ -69,8 +69,8 @@ Consulter les dates et gérer ses alertes
 
 Les dates visibles sont explicitement publiées par l'organisme. Les statuts
 **Ouverte**, **Confirmée** ou **Complète** tiennent compte de la disponibilité.
-Le **départ garanti** est un engagement explicite distinct ; une session confirmée
-n'est pas automatiquement garantie.
+Une session **confirmée** par l'organisme aura lieu : elle est signalée par
+le badge **Session confirmée**.
 
 #. Ouvrir la fiche d'une formation et ses dates publiques.
 #. Pour recevoir les prochaines dates, se connecter avec un compte Odoo existant.

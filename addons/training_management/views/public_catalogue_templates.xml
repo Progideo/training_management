@@ -3,11 +3,13 @@
         <t t-call="training_catalog.public_catalogue"/>
     </template>
     <template id="public_programme" name="Public programme">
+        <!-- Set before the call: the layout head is rendered before the call body. -->
+        <t t-set="additional_title" t-value="program['title']"/>
         <t t-call="portal.frontend_layout">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <a href="/formations">Catalogue</a> · <a t-att-href="'/formations/catalogue/%s' % program['course_id']">Présentation générale</a><h1 t-out="program['title']"/>
             <p>Version <t t-out="program['version']"/> · <t t-out="program['duration']"/> h · <t t-out="program['mode']"/></p>
-            <p>Prix sur devis.</p>
+            <p t-if="not program['autonomous']">Prix sur devis.</p>
             <div id="training_request_actions"/>
             <p style="white-space:pre-wrap" t-out="program['presentation']"/>
             <t t-call="training_catalog.public_course_tags" tags="program['tags']"/>

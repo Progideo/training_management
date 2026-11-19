@@ -60,7 +60,7 @@
         </div></t>
     </template>
     <template id="public_programme_publications" inherit_id="training_management.public_programme">
-        <xpath expr="//h1" position="after"><p><a t-att-href="'/formations/%s/avis' % program['id']">Verified reviews and customer cases</a></p></xpath>
+        <xpath expr="//h1" position="after"><p t-if="program.get('publications')"><a t-att-href="'/formations/%s/avis' % program['id']">Verified reviews and customer cases</a></p></xpath>
     </template>
     <template id="portal_publications_link" inherit_id="training_management.portal_trainings">
         <xpath expr="//div[@id='training_personal_links']" position="inside"><t t-if="training_links.get('publications')">

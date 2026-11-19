@@ -53,7 +53,7 @@ class SessionPublicationDelivery(models.Model):
         }
 
 
-PUBLIC_FIELDS = {"session_public", "session_sales_open", "session_first_published_at", "session_guaranteed"}
+PUBLIC_FIELDS = {"session_public", "session_sales_open", "session_first_published_at"}
 
 
 class PublicSessionDelivery(models.Model):
@@ -69,7 +69,6 @@ class PublicSessionDelivery(models.Model):
     session_public = fields.Boolean(readonly=True, copy=False)
     session_sales_open = fields.Boolean(readonly=True, copy=False)
     session_first_published_at = fields.Datetime(readonly=True, copy=False)
-    session_guaranteed = fields.Boolean(string="Guaranteed Departure", readonly=True, copy=False)
 
     _reason_actions = (
         "action_confirm",
@@ -77,8 +76,6 @@ class PublicSessionDelivery(models.Model):
         "action_close",
         "action_publish_session",
         "action_withdraw_session",
-        "action_guarantee_session",
-        "action_revoke_session_guarantee",
         "action_close_session_sales",
     )
 
@@ -88,8 +85,6 @@ class PublicSessionDelivery(models.Model):
             **super()._reason_labels(),
             "action_publish_session": self.env._("Publish and Open Session"),
             "action_withdraw_session": self.env._("Withdraw Public Session"),
-            "action_guarantee_session": self.env._("Guarantee Departure"),
-            "action_revoke_session_guarantee": self.env._("Revoke Departure Guarantee"),
             "action_close_session_sales": self.env._("Close Session Sales"),
         }
 
@@ -127,9 +122,9 @@ class PublicSessionDelivery(models.Model):
 
     @api.private
     def _reset_session_publication(self):
-        for row in self.filtered(lambda d: d.session_public or d.session_guaranteed or d.session_sales_open):
+        for row in self.filtered(lambda d: d.session_public or d.session_sales_open):
             row._store(
-                {"session_public": False, "session_sales_open": False, "session_guaranteed": False},
+                {"session_public": False, "session_sales_open": False},
                 self.env._("Session definition changed; review public decisions."),
             )
 
@@ -157,8 +152,9 @@ class PublicSessionDelivery(models.Model):
             "start_at": self.start_at,
             "end_at": self.end_at,
             "timezone": self.timezone,
+            # "Confirmed" is the single public commitment that the session will take place.
             "status": "full" if full else "confirmed" if self.state == "confirmed" else "open",
-            "guaranteed": self.session_guaranteed,
+            "confirmed": self.state == "confirmed",
         }
 
     @api.private
@@ -169,7 +165,7 @@ class PublicSessionDelivery(models.Model):
             self._serialize()
             reason = self._require_reason(reason)
             for row in self:
-                if decision in ("publish", "guarantee") and not row._session_can_publish():
+                if decision == "publish" and not row._session_can_publish():
                     raise ValidationError(self.env._("Choose a future dated session and a currently public programme."))
                 values = {}
                 if decision == "publish":
@@ -177,11 +173,9 @@ class PublicSessionDelivery(models.Model):
                     if not row.session_first_published_at:
                         values["session_first_published_at"] = fields.Datetime.now()
                 elif decision == "withdraw":
-                    values = {"session_public": False, "session_sales_open": False, "session_guaranteed": False}
-                elif decision == "close":
-                    values = {"session_sales_open": False}
+                    values = {"session_public": False, "session_sales_open": False}
                 else:
-                    values = {"session_guaranteed": decision == "guarantee"}
+                    values = {"session_sales_open": False}
                 changes = {key: value for key, value in values.items() if row[key] != value}
                 first = "session_first_published_at" in changes
                 if changes:
@@ -198,12 +192,6 @@ class PublicSessionDelivery(models.Model):
 
     def action_close_session_sales(self, reason=None):
         return self._session_decide("close", reason)
-
-    def action_guarantee_session(self, reason=None):
-        return self._session_decide("guarantee", reason)
-
-    def action_revoke_session_guarantee(self, reason=None):
-        return self._session_decide("revoke", reason)
 
     def action_change_dates(self, start_at=None, end_at=None, access_start=None, access_end=None, reason=None):
         with self.env.cr.savepoint():

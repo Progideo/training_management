@@ -11,7 +11,7 @@ Le catalogue P03/P04 et le registre S03 restent les références uniques.
 | Publication | Action explicite du coordinateur, limitée à une réalisation datée future et à un programme actuellement publié au catalogue de la même société. Aucune publication implicite d'une réalisation existante ou intra privée. | Une réalisation confirmée reste privée tant qu'elle n'est pas publiée. |
 | Ouverture commerciale | Décision explicite distincte de l'état interne ; seule une session commercialement ouverte peut être présentée. | Préparation ouverte : « Ouverte ». Confirmation interne avec places : « Confirmée ». |
 | Disponibilité | Calcul S03 à l'heure serveur, réservations non expirées et lots inclus. Capacité nulle : illimitée. « Complète » prime sur ouverte/confirmée. | Lot de 10, 7 noms, capacité 10 : complète ; expiration du lot : places disponibles. Aucune nouvelle admission publique. |
-| Départ garanti | Engagement explicite motivé du coordinateur pour la société exploitante, avec auteur/date ; distinct de la confirmation interne et du seuil. | Seuil atteint ou confirmation interne : aucun départ garanti automatique. Un changement des dates ou du fuseau retire l'engagement et la publication jusqu'à nouvelle décision. |
+| Session confirmée | Décision du 19 novembre 2026 : la confirmation de la réalisation est le seul engagement public ; la notion de départ garanti est supprimée. Une session confirmée est mise en évidence sur la fiche. | Seuil atteint sans confirmation : pas de mention. Après « Confirmer » : badge « Session confirmée ». Un changement des dates ou du fuseau retire la publication jusqu'à nouvelle décision. |
 | Informations publiques | Titre du programme, dates de début/fin, fuseau, modalité, statut et engagement autorisé. Aucun nom interne de réalisation, effectif, client, participant, salle privée ou lien distant. | Annulation, début de session, retrait du programme ou fermeture commerciale : projection supprimée à la prochaine lecture, sans cache. |
 | Alerte volontaire | Compte Odoo existant authentifié, choix par formation et société ; case non précochée, texte exact, auteur et date conservés. Pas d'abonnement anonyme dans ce premier incrément. | Un client ne peut abonner ses salariés ; être inscrit ou follower n'abonne pas aux alertes. L'abonnement suit les versions publiées du même cours. |
 | Déclenchement | Première publication d'une nouvelle réalisation datée future après abonnement. Une notification par abonnement/réalisation ; republier ou modifier les dates ne renvoie pas d'alerte. | Deux traitements concurrents ou répétés : un seul courrier. Une nouvelle réalisation : nouvelle alerte. |
@@ -20,7 +20,7 @@ Le catalogue P03/P04 et le registre S03 restent les références uniques.
 | Conservation | Politique SEC02 approuvée avant abonnement, preuve privée ; aucune durée ou purge automatique inventée. | Retrait conserve la preuve sans conserver un abonnement actif. |
 
 Le mainteneur a validé ces règles, y compris les alertes réservées aux comptes
-Odoo existants. Aucun abonnement, publication ou garantie n’est repris
+Odoo existants. Aucun abonnement ni publication n’est repris
 automatiquement sur les dossiers existants.
 
 ## Standard exact et choix technique
@@ -49,9 +49,9 @@ inscription Website ni une résistance concurrente du standard.
 Sur une réalisation, l'action **Session : état et disponibilité** présente l'état
 interne, l'état de publication du programme, les dates/fuseau et la disponibilité
 S03 constatée à l'heure serveur. Réservée au coordinateur dans ses sociétés,
-elle ne prend aucune décision de publication, d'ouverture ou de garantie.
+elle ne prend aucune décision de publication, d'ouverture ou de confirmation.
 Le coordinateur utilise l’onglet **Session publique** pour publier/ouvrir,
-fermer la commercialisation, retirer ou garantir le départ avec motif. Le journal
+fermer la commercialisation ou retirer la session avec motif. Le journal
 S03 conserve auteur, date et décision. Les courriels figurent dans cet onglet.
 L’administrateur sélectionne une politique SEC02 approuvée dans les paramètres
 de notification de la société ; cela n’active pas le transport.

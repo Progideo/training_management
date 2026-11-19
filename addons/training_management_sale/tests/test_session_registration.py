@@ -1,7 +1,9 @@
-from datetime import timedelta
+from datetime import UTC, datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 from lxml import html
 
+from odoo import fields
 from odoo.tests import HttpCase, tagged
 
 from odoo.addons.training_management.tests.test_session_publication import SessionAlertCase
@@ -86,3 +88,46 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertNotIn(url, page)
         self.assertIn('role="alert"', self.url_open(url, data=current_payload).text)
         self.assertFalse(self.env["crm.lead"].search_count([("training_requested_delivery_id", "=", delivery.id)]))
+
+    def test_public_session_card_shows_local_schedule_sitting_mode_and_confirmation(self):
+        zone = ZoneInfo("Europe/Paris")
+        day = fields.Date.today() + timedelta(days=40)
+        first = datetime.combine(day, time(9, 0), tzinfo=zone)
+        last = datetime.combine(day + timedelta(days=2), time(17, 0), tzinfo=zone)
+        delivery = self.delivery(
+            program_id=self.public_program.id,
+            kind="session",
+            capacity=8,
+            timezone="Europe/Paris",
+            start_at=first.astimezone(UTC).replace(tzinfo=None),
+            end_at=last.astimezone(UTC).replace(tzinfo=None),
+        )
+        self.env["training.session"].with_user(self.coordinator).create(
+            {
+                "name": "Fictional remote days",
+                "delivery_id": delivery.id,
+                "instructor_id": self.coordinator.partner_id.id,
+                "mode": "remote",
+                "location": "Fictional private access code",
+                "meeting_url": "https://meeting.example.invalid/fictional-private-room",
+                "start_date": day,
+                "end_date": day + timedelta(days=2),
+                "start_hour": 9,
+                "end_hour": 17,
+            }
+        )
+        self.course.sudo().public_catalogue = True
+        delivery.action_publish_session(reason="Fictional publication")
+        self.authenticate(None, None)
+        self.assertNotIn("Session confirmée", self.url_open(f"/formations/catalogue/{self.course.id}").text)
+        delivery.action_confirm()
+        page = self.url_open(f"/formations/catalogue/{self.course.id}").text
+        self.assertIn("Session confirmée", page)
+        self.assertIn("9 h – 17 h", page)
+        # The sitting is remote although the programme default is on site.
+        self.assertTrue(any(label in page for label in ("Remote", "Distanciel")))
+        self.assertNotIn("Fictional private access code", page)
+        self.assertNotIn("fictional-private-room", page)
+        self.assertNotIn(" Z ", page)
+        self.assertNotIn("+01:00", page)
+        self.assertNotIn("+02:00", page)

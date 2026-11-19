@@ -636,9 +636,9 @@ Le catalogue, les demandes de devis et les parcours P09 déjà livrés sont cons
 
 ## P16 Statuts publics et alertes de session
 
-Afficher les sessions ouvertes, confirmées ou complètes selon les états validés et proposer une alerte volontaire pour de nouvelles dates. Réserver la mention « départ garanti » à une décision explicite de NeoPro. Les alertes respectent les choix du destinataire ; le planning et les changements de séance du socle restent au lancement. Rattachement : INS01, ORG02, NOT01.
+Afficher les sessions ouvertes, confirmées ou complètes selon les états validés et proposer une alerte volontaire pour de nouvelles dates. Mettre en évidence les sessions confirmées par une décision explicite de l'organisme (décision du 19 novembre 2026 : la notion de « départ garanti » est fusionnée dans « session confirmée »). Les alertes respectent les choix du destinataire ; le planning et les changements de séance du socle restent au lancement. Rattachement : INS01, ORG02, NOT01.
 
-Acceptation — Nominal : une session complète n'accepte plus de confirmation au-delà de sa capacité ; une nouvelle date déclenche l'alerte attendue. Erreur : désabonnement effectif, absence de doublons et aucune garantie déduite automatiquement du seul nombre d'inscrits.
+Acceptation — Nominal : une session complète n'accepte plus de confirmation au-delà de sa capacité ; une nouvelle date déclenche l'alerte attendue. Erreur : désabonnement effectif, absence de doublons et aucune confirmation déduite automatiquement du seul nombre d'inscrits.
 
 # 23 Fonctionnalités soumises à validation ultérieure
 

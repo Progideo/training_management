@@ -16,15 +16,64 @@ FORM_FIELDS = ("contact", "email", "phone", "organisation", "count")
 
 class TrainingSessionRegistration(TrainingCommercialCatalogue):
     @staticmethod
-    def _session_card(delivery):
+    def _local_hour(env, value, zone):
+        # Wall-clock hour in the session time zone, written "9 h" or "9 h 30".
+        local = format_datetime(env, value, tz=zone, dt_format="H:mm")
+        hour, minute = local.split(":")
+        return f"{hour} h" if minute == "00" else f"{hour} h {minute}"
+
+    @classmethod
+    def _session_schedule(cls, env, delivery):
+        """Public dates and daily hours, in the session's own time zone, without UTC offset."""
         zone = delivery.timezone
+        start = format_datetime(env, delivery.start_at, tz=zone, dt_format="y-MM-dd")
+        end = format_datetime(env, delivery.end_at, tz=zone, dt_format="y-MM-dd")
+        if start == end:
+            dates = format_datetime(env, delivery.start_at, tz=zone, dt_format="d MMMM y")
+        elif start[:7] == end[:7]:
+            dates = "%s – %s" % (
+                format_datetime(env, delivery.start_at, tz=zone, dt_format="d"),
+                format_datetime(env, delivery.end_at, tz=zone, dt_format="d MMMM y"),
+            )
+        elif start[:4] == end[:4]:
+            dates = "%s – %s" % (
+                format_datetime(env, delivery.start_at, tz=zone, dt_format="d MMMM"),
+                format_datetime(env, delivery.end_at, tz=zone, dt_format="d MMMM y"),
+            )
+        else:
+            dates = "%s – %s" % (
+                format_datetime(env, delivery.start_at, tz=zone, dt_format="d MMMM y"),
+                format_datetime(env, delivery.end_at, tz=zone, dt_format="d MMMM y"),
+            )
+        sittings = delivery.session_ids.filtered(lambda session: not session.cancelled).sorted("start_at")
+        first = sittings[:1]
+        hours = (
+            "%s – %s" % (cls._local_hour(env, first.start_at, zone), cls._local_hour(env, first.end_at, zone))
+            if first and first.start_at and first.end_at
+            else ""
+        )
+        return dates, hours, sittings
+
+    @classmethod
+    def _session_card(cls, delivery):
         program = delivery.program_id
+        env = request.env
+        dates, hours, sittings = cls._session_schedule(env, delivery)
+        # The public mode is the one of the scheduled sittings, not the programme default.
+        # Sitting locations stay private: they may hold practical access instructions.
+        modes = set(sittings.mapped("mode"))
+        if len(modes) == 1:
+            mode = dict(sittings._fields["mode"]._description_selection(delivery.env))[modes.pop()]
+        elif modes:
+            mode = dict(sittings._fields["mode"]._description_selection(delivery.env))["blended"]
+        else:
+            mode = dict(program._fields["delivery_mode"]._description_selection(delivery.env))[program.delivery_mode]
         return {
             "url": f"/formations/catalogue/{program.course_id.id}/inscription/{delivery.id}",
-            "start": format_datetime(request.env, delivery.start_at, tz=zone, dt_format="d MMMM y HH:mm XXX"),
-            "end": format_datetime(request.env, delivery.end_at, tz=zone, dt_format="d MMMM y HH:mm XXX"),
-            "mode": dict(program._fields["delivery_mode"]._description_selection(delivery.env))[program.delivery_mode],
-            "guaranteed": delivery.session_guaranteed,
+            "dates": dates,
+            "hours": hours,
+            "mode": mode,
+            "confirmed": delivery.state == "confirmed",
             "limit": delivery._public_registration_limit(),
         }
 

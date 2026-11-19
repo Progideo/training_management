@@ -4,6 +4,7 @@ from markupsafe import Markup
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import formatLang
 
 
 class TrainingPublicProgramme(models.Model):
@@ -32,6 +33,31 @@ class TrainingPublicProgramme(models.Model):
                 or not (program.preview_filename or "").lower().endswith(".pdf")
             ):
                 raise ValidationError(self.env._("The public extract must be a PDF of at most 10 MB."))
+
+    @api.private
+    def _public_duration_hours(self):
+        """Duration in the website language: "21", "3,5" — never "21.0"."""
+        self.ensure_one()
+        hours = self.duration_hours or 0.0
+        return formatLang(self.env, hours, digits=0 if float(hours).is_integer() else 1)
+
+    @api.private
+    def _catalogue_offer(self):
+        """Scalar catalogue entry; an eLearning version is not sold "with a trainer" nor quoted."""
+        self.ensure_one()
+        hours = self._public_duration_hours()
+        autonomous = self.delivery_mode == "elearning"
+        return {
+            "course_id": self.course_id.id,
+            "title": self.title,
+            "mode": self.delivery_mode,
+            "kind": self.env._("eLearning") if autonomous else self.env._("Avec formateur"),
+            "conditions": self.env._("Durée indicative : %(hours)s h.", hours=hours)
+            if autonomous
+            else self.env._("Durée indicative : %(hours)s h. Prix sur devis.", hours=hours),
+            "url": "/formations/%s" % self.id,
+            "action": self.env._("Consulter l’offre"),
+        }
 
     @api.private
     def _public_general_sections(self):

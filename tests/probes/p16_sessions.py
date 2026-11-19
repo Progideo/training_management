@@ -71,7 +71,6 @@ if phase == "sessions_prepare":
         )
     )
     delivery.action_publish_session(reason="Fictional publication")
-    delivery.action_guarantee_session(reason="Explicit fictional operator commitment")
     notice = env["training.session.alert.notice"].search([("delivery_id", "=", delivery.id)])
     assert len(notice) == 1 and notice.mail_id
     mail = notice.mail_id
@@ -106,7 +105,7 @@ elif phase == "sessions_verify":
         "email": mail.email_to,
         "state": mail.state,
     } == saved["mail"]
-    assert env["training.delivery"].browse(saved["delivery"])._session_public_row()["guaranteed"]
+    assert "guaranteed" not in env["training.delivery"].browse(saved["delivery"])._session_public_row()
     print("P16 and earlier histories/files/consents/mail exactly preserved")
 elif phase == "sessions_concurrency":
     saved = json.loads(params.get_str(key))
@@ -115,7 +114,7 @@ elif phase == "sessions_concurrency":
     original = env["training.delivery"].browse(saved["delivery"])
     second = original.with_user(coord).copy({"name": "Fictional concurrent P16 publication"})
     # No public decisions, history or guarantees are inherited by a new session.
-    assert not second.session_public and not second.session_guaranteed and not second.session_first_published_at
+    assert not second.session_public and not second.session_first_published_at
     candidates = []
     for user_id in (user, saved["peer"]):
         learner = env["res.users"].browse(user_id)
@@ -202,7 +201,6 @@ elif phase == "sessions_concurrency":
         assert not local["training.session.alert.notice"].browse(saved["notice"])._authorized()
         delivery = local["training.delivery"].browse(second.id)
         assert delivery._occupancy() == 1 and delivery._session_public_row()["status"] == "full"
-        assert not delivery.session_guaranteed
     print("P16 concurrent opt-ins/publications/last-place/opt-out versus transport/double opt-out OK")
 else:
     raise RuntimeError("Unknown P16 fixture phase")

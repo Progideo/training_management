@@ -46,13 +46,24 @@ class TrainingPublicCatalogue(TrainingCatalogue):
                     "course_id": course.id,
                     "title": program.title,
                     "version": program.version,
-                    "duration": program.duration_hours,
+                    "duration": program._public_duration_hours(),
+                    "autonomous": program.delivery_mode == "elearning",
                     "mode": dict(program._fields["delivery_mode"]._description_selection(program.env)).get(
                         program.delivery_mode
                     ),
                     "presentation": course.presentation or "",
                     "tags": course._catalogue_tags()[course.id],
                     "sections": program._public_general_sections(),
+                    # Only a count: the link to verified publications is shown when one exists.
+                    "publications": request.env["training.publication"]
+                    .sudo()
+                    .search_count(
+                        [
+                            ("program_id", "=", program.id),
+                            ("company_id", "=", program.company_id.id),
+                            ("state", "=", "published"),
+                        ]
+                    ),
                 }
             },
         )
