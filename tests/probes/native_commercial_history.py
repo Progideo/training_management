@@ -89,7 +89,7 @@ if os.environ["S021_PHASE"] == "prepare":
     for table in tables:
         env.cr.execute(
             "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name=%s "
-            "AND column_name NOT IN ('attendance_before', 'attendance_after') "
+            "AND column_name NOT IN ('attendance_before', 'attendance_after', 'session_guaranteed') "
             "ORDER BY ordinal_position",
             [table],
         )

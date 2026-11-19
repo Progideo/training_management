@@ -114,7 +114,7 @@ elif phase == "sessions_concurrency":
     original = env["training.delivery"].browse(saved["delivery"])
     second = original.with_user(coord).copy({"name": "Fictional concurrent P16 publication"})
     # No public decisions, history or guarantees are inherited by a new session.
-    assert not second.session_public and not second.session_guaranteed and not second.session_first_published_at
+    assert not second.session_public and not second.session_first_published_at
     candidates = []
     for user_id in (user, saved["peer"]):
         learner = env["res.users"].browse(user_id)
@@ -201,7 +201,6 @@ elif phase == "sessions_concurrency":
         assert not local["training.session.alert.notice"].browse(saved["notice"])._authorized()
         delivery = local["training.delivery"].browse(second.id)
         assert delivery._occupancy() == 1 and delivery._session_public_row()["status"] == "full"
-        assert not delivery.session_guaranteed
     print("P16 concurrent opt-ins/publications/last-place/opt-out versus transport/double opt-out OK")
 else:
     raise RuntimeError("Unknown P16 fixture phase")

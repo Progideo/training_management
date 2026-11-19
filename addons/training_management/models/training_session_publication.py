@@ -53,7 +53,7 @@ class SessionPublicationDelivery(models.Model):
         }
 
 
-PUBLIC_FIELDS = {"session_public", "session_sales_open", "session_first_published_at", "session_guaranteed"}
+PUBLIC_FIELDS = {"session_public", "session_sales_open", "session_first_published_at"}
 
 
 class PublicSessionDelivery(models.Model):
@@ -69,9 +69,6 @@ class PublicSessionDelivery(models.Model):
     session_public = fields.Boolean(readonly=True, copy=False)
     session_sales_open = fields.Boolean(readonly=True, copy=False)
     session_first_published_at = fields.Datetime(readonly=True, copy=False)
-    # Retired on 19 November 2026: "Session confirmée" (state confirmed) is the single
-    # public commitment. Kept read-only so upgrades preserve past decisions.
-    session_guaranteed = fields.Boolean(string="Former Guaranteed Departure", readonly=True, copy=False)
 
     _reason_actions = (
         "action_confirm",
