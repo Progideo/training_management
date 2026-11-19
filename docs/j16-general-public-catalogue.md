@@ -25,6 +25,10 @@ liens vers devis, sessions, avis et orientation. Un cours autonome requiert une
 publication générale distincte de sa publication pédagogique ; ses descriptions,
 activités et pages natives restent privées. Ses conditions publiques sont explicites,
 sans publier les prix négociés ni les contrats individuels.
+Pour chaque modalité (présentiel, distanciel, mixte, eLearning), la fiche et le
+catalogue n’affichent que la dernière version publiée ; toutes les modalités
+disponibles restent visibles. Une version eLearning n’est présentée ni « avec
+formateur » ni « sur devis ».
 
 Les anciennes routes publiques PDF/extrait renvoient 404 et le formulaire de
 mini-quiz public est retiré. Les octets existants, la génération des programmes PDF
@@ -52,7 +56,9 @@ L’option **Responsable des avis formation** de la fiche Société désigne un 
 
 ## Demandes d’inscription sur la fiche commune
 
-Les dates inter-entreprises ouvertes s’affichent sur la fiche. Le visiteur peut
+Les dates inter-entreprises ouvertes s’affichent sur la fiche, en heure locale de
+la session et sans décalage UTC ; la modalité est celle des séances planifiées,
+dont le lieu reste privé. Le visiteur peut
 demander de une à cinq places, dans la limite des places disponibles. Odoo CRM
 conserve la session choisie, la version du programme et le nombre de participants.
 L’équipe confirme ensuite l’inscription. Les demandes de devis suivent leur

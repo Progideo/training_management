@@ -1,5 +1,7 @@
 import io
 
+from lxml import html
+
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import HttpCase, tagged
 from odoo.tools.binary import BinaryBytes
@@ -125,3 +127,51 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
                 projected = public_catalogue.TrainingPublicCatalogue._program(program.id)
                 self.assertEqual(projected.title, title)
                 self.assertEqual(bytes(projected.pdf_attachment_id.raw), raw)
+
+    def test_catalogue_offers_latest_version_of_each_mode_with_readable_duration(self):
+        older = self.new_program(public_catalogue=True, version="V1", title="Fictional older on-site version")
+        older.action_validate()
+        older.action_publish()
+        latest = self.new_program(
+            public_catalogue=True, version="V2", title="Fictional latest on-site version", duration_hours=21
+        )
+        latest.action_validate()
+        latest.action_publish()
+        remote = self.new_program(
+            public_catalogue=True, version="V3", title="Fictional remote version", delivery_mode="remote"
+        )
+        remote.action_validate()
+        remote.action_publish()
+        autonomous = self.new_program(
+            public_catalogue=True,
+            version="V4",
+            title="Fictional autonomous version",
+            delivery_mode="elearning",
+            duration_hours=3.5,
+        )
+        autonomous.action_validate()
+        autonomous.action_publish()
+        offers = {
+            offer["title"]: offer
+            for offer in self.env["training.course"]._catalogue_offers(self.company)
+            if offer["course_id"] == self.course.id
+        }
+        # One offer per available mode, each with its latest published version.
+        self.assertEqual(set(offers), {latest.title, remote.title, autonomous.title})
+        self.assertIn("21 h", offers[latest.title]["conditions"])
+        self.assertNotIn("21.0", offers[latest.title]["conditions"])
+        self.assertIn("Prix sur devis", offers[latest.title]["conditions"])
+        self.assertNotIn("Prix sur devis", offers[autonomous.title]["conditions"])
+        self.assertNotEqual(offers[autonomous.title]["kind"], offers[latest.title]["kind"])
+        self.assertEqual(autonomous._public_duration_hours().replace(",", "."), "3.5")
+        self.authenticate(None, None)
+        page = self.url_open(f"/formations/{latest.id}")
+        self.assertEqual(page.status_code, 200)
+        title = html.fromstring(page.content).findtext(".//title") or ""
+        self.assertNotIn("Public programme", title)
+        self.assertNotIn(f"/formations/{latest.id}/avis", page.text)
+        self.assertNotIn("Prix sur devis", self.url_open(f"/formations/{autonomous.id}").text)
+        general = self.url_open(f"/formations/catalogue/{self.course.id}")
+        self.assertNotIn(older.title, general.text)
+        for program in (latest, remote, autonomous):
+            self.assertIn(program.title, general.text)

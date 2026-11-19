@@ -62,23 +62,15 @@ class TrainingCourse(models.Model):
                     ("state", "=", "published"),
                     ("public_catalogue", "=", True),
                     ("course_id.active", "=", True),
-                ]
+                ],
+                order="published_at desc, id desc",
             )
         )
-        return offers + [
-            {
-                "course_id": program.course_id.id,
-                "title": program.title,
-                "mode": program.delivery_mode,
-                "kind": self.env._("Avec formateur"),
-                "conditions": self.env._(
-                    "Durée indicative : %(hours)s h. Prix sur devis.", hours=program.duration_hours
-                ),
-                "url": "/formations/%s" % program.id,
-                "action": self.env._("Consulter l’offre"),
-            }
-            for program in programs
-        ]
+        # Every available delivery mode stays visible, each with its latest published version.
+        latest = {}
+        for program in programs:
+            latest.setdefault((program.course_id.id, program.delivery_mode), program)
+        return offers + [program._catalogue_offer() for program in latest.values()]
 
     @api.private
     def _has_course_review_participation(self, user):

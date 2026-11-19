@@ -37,7 +37,8 @@
     </t>
   </template>
   <template id="public_course" name="General training presentation">
-    <t t-call="portal.frontend_layout" additional_title.translate="Formations">
+    <t t-call="portal.frontend_layout">
+      <t t-set="additional_title" t-value="course['name']"/>
       <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
         <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
         <img t-if="public_logo" t-att-src="image_data_uri(public_logo)" alt="" class="img-fluid d-block my-3"/>
@@ -46,7 +47,7 @@
           <div t-if="public_reference"><dt>Référence</dt><dd t-out="public_reference"/></div>
           <div t-if="live_duration">
             <dt>Durée avec formateur</dt>
-            <dd><t t-out="live_duration_label"/> <t t-if="live_duration == 1">jour</t><t t-else="">jours</t></dd>
+            <dd><t t-out="live_duration_label"/> <t t-if="live_duration &lt; 2">jour</t><t t-else="">jours</t></dd>
           </div>
         </dl>
         <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
@@ -64,7 +65,7 @@
             <a class="btn btn-outline-primary" t-att-href="offer['url']" t-out="offer['action']"/>
           </div></article>
         </section>
-        <section t-if="general_presentation_published" id="training_course_reviews" class="my-4">
+        <section t-if="general_presentation_published and (public_reviews or review_status)" id="training_course_reviews" class="my-4">
           <h2>Avis clients</h2>
           <p t-if="review_status == 'pending'" role="status">Votre avis a été reçu. Il sera publié après validation.</p>
           <p t-if="review_status == 'published'">Votre avis est publié.</p>

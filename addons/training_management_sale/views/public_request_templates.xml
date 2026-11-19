@@ -7,12 +7,12 @@
             </div>
         </xpath>
         <xpath expr="//h2/a" position="attributes">
-            <attribute name="t-att-href">'/formations/catalogue/%s?kind=%s' % (course['id'], kind)</attribute>
+            <attribute name="t-att-href">'/formations/catalogue/%s%s' % (course['id'], '?kind=' + kind if kind else '')</attribute>
         </xpath>
         <xpath expr="//ul/li/a" position="attributes">
-            <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if offer['url'].startswith('/formations/') else '')</attribute>
+            <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
         </xpath>
-        <xpath expr="//form[@action='/formations']" position="inside"><input type="hidden" name="kind" t-att-value="kind"/></xpath>
+        <xpath expr="//form[@action='/formations']" position="inside"><input t-if="kind" type="hidden" name="kind" t-att-value="kind"/></xpath>
     </template>
     <template id="public_general_course_journey" inherit_id="training_catalog.public_course">
         <xpath expr="//div[@id='training_course_actions']" position="inside">
@@ -20,10 +20,10 @@
                t-att-href="'/formations/demande?course=%s&amp;request_type=catalogue%s' % (course['id'], '&amp;kind=' + kind if kind else '')">Demander un devis</a>
         </xpath>
         <xpath expr="//a[@href='/formations']" position="attributes">
-            <attribute name="t-att-href">'/formations?kind=%s' % kind</attribute>
+            <attribute name="t-att-href">'/formations' + ('?kind=' + kind if kind else '')</attribute>
         </xpath>
         <xpath expr="//article//a" position="attributes">
-            <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if offer['url'].startswith('/formations/') else '')</attribute>
+            <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
         </xpath>
     </template>
     <template id="public_programme_actions" inherit_id="training_management.public_programme">
@@ -34,7 +34,7 @@
     </template>
     <template id="public_programme_catalogue_link" inherit_id="training_management.public_programme">
         <xpath expr="//a[@href='/formations']" position="attributes">
-            <attribute name="t-att-href">'/formations?kind=%s' % kind</attribute>
+            <attribute name="t-att-href">'/formations' + ('?kind=' + kind if kind else '')</attribute>
         </xpath>
     </template>
     <template id="public_request" name="Training request">

@@ -5,8 +5,8 @@
                 <h2 id="training_public_sessions_title" class="h4">Sessions inter-entreprises</h2>
                 <ul class="list-group">
                     <li t-foreach="public_sessions" t-as="session" class="list-group-item py-3">
-                        <div class="fw-semibold"><t t-out="session['mode']"/> <span t-if="session['guaranteed']" class="badge text-bg-success">Session garantie</span></div>
-                        <p class="mb-2">Du <t t-out="session['start']"/> au <t t-out="session['end']"/></p>
+                        <div class="fw-semibold"><t t-out="session['dates']"/> <span t-if="session['guaranteed']" class="badge text-bg-success">Session garantie</span></div>
+                        <p class="mb-2"><t t-out="session['mode']"/><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>
                         <a t-if="session['limit']" class="btn btn-outline-primary" t-att-href="session['url']">Demander une inscription</a>
                         <span t-else="" class="text-body-secondary">Session complète</span>
                     </li>
@@ -21,7 +21,7 @@
                 <p><a t-att-href="'/formations/catalogue/%s#training_public_sessions' % course_id">Retour à la fiche formation</a></p>
                 <h1>Demander une inscription inter-entreprises</h1>
                 <p class="fw-semibold" t-out="title"/>
-                <p><t t-out="session['mode']"/> · Du <t t-out="session['start']"/> au <t t-out="session['end']"/></p>
+                <p><t t-out="session['dates']"/> · <t t-out="session['mode']"/><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>
                 <p>L’équipe vous recontactera pour confirmer les places et les conditions d’inscription.</p>
                 <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
                 <form t-if="session['limit']" method="post" t-att-action="session['url']" class="col-md-8 col-lg-6">
