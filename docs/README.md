@@ -158,6 +158,7 @@ c5cfc7033533a76c98c1dd40ba09520014348d5766930ab57a19782ea2392068  docs/reference
 | M01 — préparation de la reprise Odoo 19 | [m01-migration-preparation.md](m01-migration-preparation.md) |
 | L01 — recette intégrée du module | [l01-launch-acceptance.md](l01-launch-acceptance.md) |
 | Lot distinct — catégories et PDF du programme (cadrage validé) | [catalogue-categories-pdf.md](catalogue-categories-pdf.md) |
+| Catalogue public — données de présentation (lot 1) | [catalogue-public-lot1.md](catalogue-public-lot1.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;

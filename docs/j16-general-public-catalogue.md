@@ -2,8 +2,9 @@
 
 Le cadrage validé du 3 novembre remplace l’ancien aperçu P03/P04 : avant achat,
 seuls présentation générale, objectifs, public, prérequis, durée indicative et
-conditions commerciales peuvent être publics. Programme détaillé, ressources,
-questions et démonstrations restent privés.
+conditions commerciales peuvent être publics. Ressources, questions et
+démonstrations restent privées. Décision du 19 novembre 2026 : le programme est
+public, y compris le PDF de référence de chaque version publiée au catalogue.
 
 `training_catalog` fournit `/formations` et les fiches générales. Une même identité
 regroupe les offres TM et autonomes, sans copier de programme ni créer de droit
@@ -30,9 +31,10 @@ catalogue n’affichent que la dernière version publiée ; toutes les modalité
 disponibles restent visibles. Une version eLearning n’est présentée ni « avec
 formateur » ni « sur devis ».
 
-Les anciennes routes publiques PDF/extrait renvoient 404 et le formulaire de
-mini-quiz public est retiré. Les octets existants, la génération des programmes PDF
-et les téléchargements privés autorisés sont conservés. Les choix « équipe » et
+`/formations/<version>/pdf` rend, tel que conservé à la validation, le PDF de
+référence d’une version publiée au catalogue ; la pièce jointe reste privée et une
+version retirée renvoie 404. La route d’extrait renvoie 404 et le formulaire de
+mini-quiz public est retiré. Les téléchargements privés autorisés sont conservés. Les choix « équipe » et
 « individuel » restent transmis entre catalogue, fiche commune et offre TM.
 
 ## Recette courte
@@ -41,8 +43,9 @@ et les téléchargements privés autorisés sont conservés. Les choix « équip
    ou archiver ; contrôler les refus entre sociétés et domaines Website.
 2. Publier une offre TM et un cours autonome pour la même formation : une fiche,
    deux modes, aucun accès pédagogique créé par consultation.
-3. Rechercher un texte privé et appeler directement PDF, extrait, cours et leçon :
-   aucun contenu privé disponible avant achat.
+3. Télécharger le PDF d’une version publiée : mêmes octets que le PDF conservé.
+   Appeler directement l’extrait, la pièce jointe, une version privée ou retirée,
+   un cours et une leçon : aucun contenu privé disponible avant achat.
 4. Rejouer demandes de devis, orientation, sessions et avis ; vérifier la conservation
    du contexte et le téléchargement du programme par un participant autorisé.
 

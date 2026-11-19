@@ -32,6 +32,32 @@
                         <field name="public_logo" widget="image"/>
                         <field name="public_programme"/>
                     </group>
+                    <notebook>
+                        <page string="Website" name="website">
+                            <group>
+                                <group>
+                                    <field name="public_level"/>
+                                    <field name="public_certifying"/>
+                                    <field name="public_published_at"/>
+                                </group>
+                                <group>
+                                    <field name="public_related_course_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                </group>
+                            </group>
+                            <group string="Highlights">
+                                <field name="public_highlights" nolabel="1" colspan="2" placeholder="One highlight per line"/>
+                            </group>
+                            <group string="Frequently Asked Questions">
+                                <field name="public_faq_ids" nolabel="1" colspan="2">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="question"/>
+                                        <field name="answer"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

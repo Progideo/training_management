@@ -37,7 +37,8 @@ Publier une fiche publique
    renseigner ses conditions publiques. Sa publication pédagogique reste distincte.
 #. Retirer la publication lorsque l’offre ne doit plus être proposée.
 
-Le programme détaillé et son PDF restent privés. Les téléchargements autorisés
+Le programme et le PDF de référence d’une version publiée au catalogue sont
+publics (lien **Télécharger le programme (PDF)**). Les téléchargements autorisés
 par le contexte du participant sont conservés. Les anciens extraits et mini-quiz
 sont gardés dans l’historique, sans diffusion publique. Après validation, une
 évolution du programme suit toujours les règles de version et d’approbation.

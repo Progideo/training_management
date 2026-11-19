@@ -14,7 +14,9 @@
             <ul class="list-group my-3">
                     <li t-foreach="rows" t-as="row" class="list-group-item">
                         <p><t t-out="row['start']"/> — <t t-out="row['end']"/> · Fuseau : <t t-out="row['timezone']"/></p>
-                        <p><span t-if="row['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><strong t-if="row['status'] == 'full'">Complète</strong><strong t-elif="row['status'] != 'confirmed'">Ouverte</strong></p>
+                        <p t-if="row['location']" t-out="row['location']"/>
+                        <p><span t-if="row['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><strong t-if="row['status'] == 'full'">Complète</strong><strong t-elif="row['status'] != 'confirmed'">Ouverte</strong>
+                            <span t-if="row['few_seats']" class="ms-2 fw-semibold">Plus que <t t-out="row['seats_left']"/> place(s)</span></p>
                     </li>
                 </ul>
             <a class="btn btn-outline-primary" t-att-href="'/formations/%s/date-alert' % program_id">M’alerter des nouvelles dates</a>

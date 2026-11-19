@@ -191,3 +191,118 @@ msgstr "Valider et publier"
 #: model:mail.activity.type,summary:training_catalog.activity_course_review
 msgid "Course review to moderate"
 msgstr "Avis formation à valider"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_published_at
+msgid "First Catalogue Publication"
+msgstr "Première publication au catalogue"
+
+#. module: training_catalog
+#: model:ir.model.fields,help:training_catalog.field_training_course__public_published_at
+msgid "Set once, when the general presentation is first published. Drives the « New » badge."
+msgstr "Renseignée une seule fois, à la première publication de la présentation générale. Détermine le badge « Nouveau »."
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_level
+msgid "Public Level"
+msgstr "Niveau"
+
+#. module: training_catalog
+#: model:ir.model.fields.selection,name:training_catalog.selection__training_course__public_level__beginner
+msgid "Beginner"
+msgstr "Débutant"
+
+#. module: training_catalog
+#: model:ir.model.fields.selection,name:training_catalog.selection__training_course__public_level__intermediate
+msgid "Intermediate"
+msgstr "Intermédiaire"
+
+#. module: training_catalog
+#: model:ir.model.fields.selection,name:training_catalog.selection__training_course__public_level__advanced
+msgid "Advanced"
+msgstr "Avancé"
+
+#. module: training_catalog
+#: model:ir.model.fields.selection,name:training_catalog.selection__training_course__public_level__expert
+msgid "Expert"
+msgstr "Expert"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_certifying
+msgid "Leads to a Certification"
+msgstr "Certifiante"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_highlights
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Highlights"
+msgstr "Points forts"
+
+#. module: training_catalog
+#: model:ir.model.fields,help:training_catalog.field_training_course__public_highlights
+msgid "One highlight per line; the website shows the first three."
+msgstr "Un point fort par ligne ; le site affiche les trois premiers."
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "One highlight per line"
+msgstr "Un point fort par ligne"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_faq_ids
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Frequently Asked Questions"
+msgstr "Questions fréquentes"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_related_course_ids
+msgid "Related Courses"
+msgstr "Formations associées"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Website"
+msgstr "Site web"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_course.py:0
+msgid "The first publication date is set automatically."
+msgstr "La date de première publication est renseignée automatiquement."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_course.py:0
+msgid "A course cannot be related to itself."
+msgstr "Une formation ne peut pas être associée à elle-même."
+
+#. module: training_catalog
+#: model:ir.model,name:training_catalog.model_training_course_faq
+msgid "Course Frequently Asked Question"
+msgstr "Question fréquente d’une formation"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course_faq__question
+msgid "Question"
+msgstr "Question"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course_faq__answer
+msgid "Answer"
+msgstr "Réponse"
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_res_company__training_catalogue_new_months
+msgid "« New » Badge Duration (months)"
+msgstr "Durée du badge « Nouveau » (mois)"
+
+#. module: training_catalog
+#: model:ir.model.fields,help:training_catalog.field_res_company__training_catalogue_new_months
+msgid "Months after its first publication during which a course is shown as new. 0 disables the badge."
+msgstr "Nombre de mois après la première publication pendant lesquels une formation est signalée comme nouvelle. 0 désactive le badge."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/res_company.py:0
+msgid "The « New » badge duration cannot be negative."
+msgstr "La durée du badge « Nouveau » ne peut pas être négative."

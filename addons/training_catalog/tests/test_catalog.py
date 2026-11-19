@@ -1,4 +1,4 @@
-from odoo import Command
+from odoo import Command, fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import Form, TransactionCase, new_test_user, tagged
 
@@ -93,3 +93,64 @@ class SharedCatalogCase(TransactionCase):
             self.env["ir.module.module"].search([("name", "=", "training_catalog")]).dependencies_id.mapped("name")
         )
         self.assertFalse({"training_management", "training_elearning", "sale_management", "survey"} & set(dependencies))
+
+
+@tagged("post_install", "-at_install")
+class TestCatalogueFacts(SharedCatalogCase):
+    def test_first_publication_new_badge_and_editorial_facts(self):
+        course = self.course.with_user(self.editor)
+        self.assertFalse(course.public_published_at)
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            course.write({"public_published_at": fields.Datetime.now()})
+        course.write(
+            {
+                "public_catalogue": True,
+                "public_level": "advanced",
+                "public_certifying": True,
+                "public_highlights": "One\n\nTwo\nThree\nFour",
+                "public_faq_ids": [
+                    Command.create({"sequence": 2, "question": "Second?", "answer": "B"}),
+                    Command.create({"sequence": 1, "question": "First?", "answer": "A"}),
+                ],
+            }
+        )
+        first = course.public_published_at
+        self.assertTrue(first)
+        # Withdrawing and republishing keeps the first publication date.
+        course.write({"public_catalogue": False})
+        course.write({"public_catalogue": True})
+        self.assertEqual(course.public_published_at, first)
+        hidden = self.env["training.course"].create({"name": "Fictional unpublished related course"})
+        shown = self.env["training.course"].create({"name": "Fictional related course", "public_catalogue": True})
+        course.write({"public_related_course_ids": [Command.set((hidden | shown).ids)]})
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            course.write({"public_related_course_ids": [Command.link(course.id)]})
+        company = self.env["res.company"].browse(course.company_id.id)
+        facts = course.sudo()._catalogue_facts(company)[course.id]
+        self.assertTrue(facts["is_new"])
+        self.assertTrue(facts["certifying"])
+        self.assertTrue(facts["level"])
+        self.assertEqual(facts["highlights"], ["One", "Two", "Three"])
+        self.assertEqual([row["question"] for row in facts["faq"]], ["First?", "Second?"])
+        self.assertEqual(facts["related"], [{"id": shown.id, "name": shown.name}])
+        company.training_catalogue_new_months = 0
+        self.assertFalse(course.sudo()._catalogue_facts(company)[course.id]["is_new"])
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            company.write({"training_catalogue_new_months": -1})
+        # Unpublished general presentation: no editorial fact is projected.
+        course.write({"public_catalogue": False})
+        facts = course.sudo()._catalogue_facts(company)[course.id]
+        self.assertEqual((facts["level"], facts["certifying"], facts["faq"], facts["related"]), ("", False, [], []))
+
+    def test_faq_rights_follow_the_catalogue(self):
+        faq = (
+            self.env["training.course.faq"]
+            .with_user(self.editor)
+            .create({"course_id": self.course.id, "question": "Fictional?", "answer": "Yes"})
+        )
+        self.assertEqual(faq.with_user(self.reader).question, "Fictional?")
+        with self.assertRaises(AccessError):
+            faq.with_user(self.reader).write({"answer": "No"})
+        for user in (self.portal, self.env.ref("base.public_user")):
+            with self.assertRaises(AccessError):
+                faq.with_user(user).read(["question"])

@@ -11,6 +11,7 @@
             <p>Version <t t-out="program['version']"/> · <t t-out="program['duration']"/> h · <t t-out="program['mode']"/></p>
             <p t-if="not program['autonomous']">Prix sur devis.</p>
             <div id="training_request_actions"/>
+            <p t-if="program['pdf']"><a t-att-href="'/formations/%s/pdf' % program['id']">Télécharger le programme (PDF)</a></p>
             <p style="white-space:pre-wrap" t-out="program['presentation']"/>
             <t t-call="training_catalog.public_course_tags" tags="program['tags']"/>
             <section t-foreach="program['sections']" t-as="s" class="my-4">

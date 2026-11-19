@@ -5,6 +5,11 @@ from odoo.exceptions import ValidationError
 class ResCompany(models.Model):
     _inherit = "res.company"
 
+    training_catalogue_new_months = fields.Integer(
+        string="« New » Badge Duration (months)",
+        default=6,
+        help="Months after its first publication during which a course is shown as new. 0 disables the badge.",
+    )
     course_review_responsible_id = fields.Many2one(
         "res.users",
         domain="[('active', '=', True), ('share', '=', False), ('company_ids', 'in', id)]",
@@ -20,6 +25,11 @@ class ResCompany(models.Model):
             and self in user.company_ids
             and user.has_group("website.group_website_designer")
         )
+
+    @api.constrains("training_catalogue_new_months")
+    def _check_catalogue_new_months(self):
+        if any(company.training_catalogue_new_months < 0 for company in self):
+            raise ValidationError(self.env._("The « New » badge duration cannot be negative."))
 
     @api.constrains("course_review_responsible_id")
     def _check_course_review_responsible(self):

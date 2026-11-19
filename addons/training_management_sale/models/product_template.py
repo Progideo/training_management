@@ -19,6 +19,29 @@ class ProductTemplate(models.Model):
         ],
     )
 
+    training_public_session_price = fields.Boolean(
+        string="Public Inter-company Price",
+        copy=False,
+        help="Price per participant, excluding taxes, shown on the website for the inter-company sessions of this course.",
+    )
+
+    @api.constrains("training_public_session_price", "training_course_id", "training_price_basis", "sale_ok", "active")
+    def _check_public_session_price(self):
+        for product in self.filtered("training_public_session_price"):
+            if product.training_price_basis != "person" or not product.sale_ok:
+                raise ValidationError(
+                    self.env._("The public inter-company price must be a saleable per-person tariff.")
+                )
+            others = self.search_count(
+                [
+                    ("id", "!=", product.id),
+                    ("training_course_id", "=", product.training_course_id.id),
+                    ("training_public_session_price", "=", True),
+                ]
+            )
+            if others:
+                raise ValidationError(self.env._("A course has only one public inter-company price."))
+
     @api.constrains("training_course_id", "training_price_basis", "type")
     def _check_training_product(self):
         for product in self:

@@ -253,6 +253,26 @@ class TestPublicSessionRules(SessionAlertCase):
         self.assertNotIn("guaranteed", delivery._session_public_row())
         self.assertFalse(hasattr(delivery, "action_guarantee_session"))
 
+    def test_public_location_seats_left_and_next_session_fact(self):
+        delivery = self.dated_delivery(capacity=4, public_location="Fictional City")
+        delivery.action_publish_session(reason="Fictional publication")
+        row = delivery._session_public_row()
+        self.assertEqual((row["location"], row["seats_left"], row["few_seats"]), ("Fictional City", 4, False))
+        self.lot(delivery, quantity=2)
+        row = delivery._session_public_row()
+        self.assertEqual((row["seats_left"], row["few_seats"]), (2, True))
+        self.company.training_few_seats_threshold = 0
+        self.assertFalse(delivery._session_public_row()["few_seats"])
+        course = self.public_program.course_id
+        facts = course.sudo()._catalogue_facts(self.company)[course.id]
+        live = self.public_program.delivery_mode in ("onsite", "remote", "blended")
+        self.assertEqual((facts["live"], facts["elearning"]), (live, not live))
+        self.assertEqual(facts["next_session"]["location"], "Fictional City")
+        self.assertEqual(facts["next_session"]["start_at"], delivery.start_at)
+        unlimited = self.dated_delivery(capacity=0)
+        unlimited.action_publish_session(reason="Fictional publication")
+        self.assertIsNone(unlimited._session_public_row()["seats_left"])
+
     def test_complete_and_expired_reservations_are_live(self):
         delivery = self.dated_delivery()
         delivery.action_publish_session(reason="Fictional publication")

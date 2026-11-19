@@ -871,7 +871,9 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         page = self.url_open("/formations/%s?kind=group" % self.public_program.id)
         self.assertEqual(page.status_code, 200)
         original_pdf = self.public_program.pdf_attachment_id.raw.content
-        self.assertEqual(self.url_open("/formations/%s/pdf" % self.public_program.id).status_code, 404)
+        # The programme PDF is public (decision of 19 November 2026); extracts stay private.
+        public_pdf = self.url_open("/formations/%s/pdf" % self.public_program.id)
+        self.assertEqual((public_pdf.status_code, public_pdf.content), (200, original_pdf))
         self.assertEqual(self.url_open("/formations/%s/apercu.pdf" % self.public_program.id).status_code, 404)
         question = self.public_program.preview_question_ids
         result = self.url_open(

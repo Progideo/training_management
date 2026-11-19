@@ -52,7 +52,7 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.assertIn("Not included", response.text)
         for value in ("Public chapter", "Public detail", "pr84_unsafe", "Public example?", "Public explanation"):
             self.assertNotIn(value, response.text)
-        self.assertNotIn("Programme PDF de cette version", response.text)
+        self.assertIn(f"/formations/{program.id}/pdf", response.text)
         general = self.url_open(f"/formations/catalogue/{program.course_id.id}")
         self.assertEqual(general.status_code, 200)
         self.assertIn(program.title, general.text)
@@ -63,7 +63,11 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         response = self.url_open(f"/formations/{program.id}", data={"csrf_token": token, str(question.id): "a"})
         self.assertIn(response.status_code, (400, 403, 404, 405))
         self.assertNotIn("Public explanation", response.text)
-        self.assertEqual(self.url_open(f"/formations/{program.id}/pdf").status_code, 404)
+        # The programme is public: its frozen reference PDF is served as stored.
+        public_pdf = self.url_open(f"/formations/{program.id}/pdf")
+        self.assertEqual(public_pdf.status_code, 200)
+        self.assertEqual(public_pdf.content, raw)
+        self.assertEqual(public_pdf.headers["Content-Type"], "application/pdf")
         self.assertEqual(self.url_open(f"/formations/{program.id}/apercu.pdf").status_code, 404)
         self.assertEqual(bytes(program.pdf_attachment_id.raw), raw)
         self.assertIn(

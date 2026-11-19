@@ -2580,3 +2580,25 @@ msgstr "Confirmez les participants avant de préparer les emails de confirmation
 #: code:addons/training_management_sale/models/session_confirmation_notice.py:0
 msgid "This session confirmation is no longer authorized for this recipient."
 msgstr "Cette confirmation n’est plus autorisée pour ce destinataire."
+
+#. module: training_management_sale
+#: model:ir.model.fields,field_description:training_management_sale.field_product_template__training_public_session_price
+msgid "Public Inter-company Price"
+msgstr "Tarif inter-entreprises public"
+
+#. module: training_management_sale
+#: model:ir.model.fields,help:training_management_sale.field_product_template__training_public_session_price
+msgid "Price per participant, excluding taxes, shown on the website for the inter-company sessions of this course."
+msgstr "Prix par participant, hors taxes, affiché sur le site pour les sessions inter-entreprises de cette formation."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/product_template.py:0
+msgid "The public inter-company price must be a saleable per-person tariff."
+msgstr "Le tarif inter-entreprises public doit être un tarif par personne vendable."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/product_template.py:0
+msgid "A course has only one public inter-company price."
+msgstr "Une formation n’a qu’un seul tarif inter-entreprises public."
