@@ -212,3 +212,36 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.assertEqual((data["@type"], data["name"], data["courseCode"]), ("Course", self.course.name, "FIC-01"))
         self.assertEqual(data["description"], "Fictional tagline")
         self.assertTrue(data["url"].endswith(path))
+
+    def test_editor_previews_an_unpublished_course_from_its_form(self):
+        self.course.with_user(self.editor).write(
+            {"public_level": "beginner", "public_highlights": "Fictional highlight"}
+        )
+        action = self.course.with_user(self.editor).action_open_public_page()
+        self.assertEqual(action["type"], "ir.actions.act_url")
+        self.assertEqual(action["url"], self.course_path(self.course) + "?preview=1")
+        with self.assertRaises(AccessError):
+            self.course.with_user(self.reader).action_open_public_page()
+        url = action["url"]
+        # Visitors, readers and portal users never see an unpublished course, even asking for a preview.
+        self.authenticate(None, None)
+        self.assertEqual(self.url_open(url).status_code, 404)
+        for user in (self.reader, self.portal):
+            self.authenticate(user.login, user.login)
+            self.assertEqual(self.url_open(url).status_code, 404)
+        self.authenticate(self.editor.login, self.editor.login)
+        page = self.url_open(url)
+        self.assertEqual(page.status_code, 200)
+        self.assertIn("no-store", page.headers["Cache-Control"])
+        root = html.fromstring(page.content)
+        self.assertTrue(root.xpath("//p[@role='status'][contains(@class, 'alert-warning')]"))
+        text = " ".join(root.text_content().split())
+        for value in ("General presentation", "Apply a method", "Fictional highlight"):
+            self.assertIn(value, text)
+        # The preview neither publishes the course nor lists it in the catalogue.
+        self.assertFalse(self.course.public_catalogue)
+        self.assertNotIn(self.course.name, self.url_open("/formations").text)
+        self.assertEqual(self.url_open(self.course_path(self.course)).status_code, 404)
+        self.course.with_user(self.editor).public_catalogue = True
+        published = html.fromstring(self.url_open(url).content)
+        self.assertFalse(published.xpath("//p[@role='status'][contains(@class, 'alert-warning')]"))

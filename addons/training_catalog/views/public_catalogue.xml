@@ -134,6 +134,7 @@
     <t t-set="additional_title" t-value="course['name']"/>
     <t t-call="portal.frontend_layout">
       <div id="wrap" class="o_training_public_page o_training_course_page o_not_editable">
+        <p t-if="preview_unpublished" class="alert alert-warning rounded-0 mb-0 text-center" role="status">Aperçu : cette présentation générale n’est pas publiée et n’est visible que par les éditeurs du catalogue.</p>
         <section class="bg-primary text-white py-4 py-md-5 o_training_course_banner">
           <div class="container">
             <nav aria-label="Fil d’Ariane">
