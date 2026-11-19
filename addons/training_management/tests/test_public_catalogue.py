@@ -167,8 +167,11 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.authenticate(None, None)
         page = self.url_open(f"/formations/{latest.id}")
         self.assertEqual(page.status_code, 200)
-        title = html.fromstring(page.content).findtext(".//title") or ""
-        self.assertNotIn("Public programme", title)
+        if "website" in self.env:
+            # The page title comes from the Website layout only.
+            title = html.fromstring(page.content).findtext(".//title") or ""
+            self.assertIn(latest.title, title)
+            self.assertNotIn("Public programme", title)
         self.assertNotIn(f"/formations/{latest.id}/avis", page.text)
         self.assertNotIn("Prix sur devis", self.url_open(f"/formations/{autonomous.id}").text)
         general = self.url_open(f"/formations/catalogue/{self.course.id}")

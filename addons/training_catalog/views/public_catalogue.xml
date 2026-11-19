@@ -37,8 +37,9 @@
     </t>
   </template>
   <template id="public_course" name="General training presentation">
+    <!-- Set before the call: the layout head is rendered before the call body. -->
+    <t t-set="additional_title" t-value="course['name']"/>
     <t t-call="portal.frontend_layout">
-      <t t-set="additional_title" t-value="course['name']"/>
       <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
         <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
         <img t-if="public_logo" t-att-src="image_data_uri(public_logo)" alt="" class="img-fluid d-block my-3"/>

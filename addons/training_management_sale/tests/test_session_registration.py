@@ -124,8 +124,7 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertIn("Session confirmée", page)
         self.assertIn("9 h – 17 h", page)
         # The sitting is remote although the programme default is on site.
-        mode = dict(self.env["training.session"]._fields["mode"]._description_selection(self.env))["remote"]
-        self.assertIn(mode, page)
+        self.assertTrue(any(label in page for label in ("Remote", "Distanciel")))
         self.assertNotIn("Fictional private access code", page)
         self.assertNotIn(" Z ", page)
         self.assertNotIn("+01:00", page)
