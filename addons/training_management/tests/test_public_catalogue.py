@@ -164,7 +164,7 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.assertIn(labels["remote"].lower(), latest._modes_label())
         self.assertEqual(older._modes_label(), labels["onsite"])
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
-            self.new_program(delivery_mode="elearning", also_onsite=True)
+            self.new_program(version="V9", delivery_mode="elearning", also_onsite=True)
         offers = {
             offer["title"]: offer
             for offer in self.env["training.course"]._catalogue_offers(self.company)
