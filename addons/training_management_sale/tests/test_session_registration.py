@@ -1,3 +1,4 @@
+import json
 from datetime import UTC, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
@@ -44,9 +45,26 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         delivery.action_publish_session(reason="Fictional publication")
         response = self.url_open(course_url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(url, response.text)
+        page = html.fromstring(response.content)
+        # The open session is preselected in the inter-company tab of the booking card.
+        self.assertEqual(
+            page.xpath("//div[@id='training_booking_inter']//input[@name='session'][@checked]/@value"),
+            [str(delivery.id)],
+        )
+        self.assertEqual(page.xpath("//form[@id='training_public_sessions']/@action"), [f"{course_url}/inscription"])
+        chosen = self.url_open(f"{course_url}/inscription?session={delivery.id}", allow_redirects=False)
+        self.assertEqual((chosen.status_code, chosen.headers["Location"].split("?")[0].endswith(url)), (303, True))
+        self.assertEqual(self.url_open(f"{course_url}/inscription?session=x", allow_redirects=False).status_code, 404)
         self.assertNotIn(delivery.name, response.text)
         self.assertIn(f"/formations/demande?course={self.course.id}", response.text)
+        # The session is structured data of the course page.
+        (schema,) = [
+            item
+            for item in map(json.loads, page.xpath("//script[@type='application/ld+json']/text()"))
+            if isinstance(item, dict) and item.get("@type") == "Course"
+        ]
+        (instance,) = schema["hasCourseInstance"]
+        self.assertEqual((instance["@type"], instance["courseMode"]), ("CourseInstance", "onsite"))
         group = self._form_payload(url, count="3")
         self.assertIn('role="alert"', self.url_open(url, data={**group, "count": "4"}).text)
         self.assertEqual(self.url_open(url, data={**group, "submission_token": "forged"}).status_code, 404)
@@ -86,7 +104,9 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertEqual(self.url_open(url).status_code, 404)
         page = self.url_open(f"/formations/catalogue/{self.course.id}").text
         self.assertIn("Session complète", page)
-        self.assertNotIn(url, page)
+        full = html.fromstring(page).xpath(f"//input[@name='session'][@value='{delivery.id}']")
+        self.assertTrue(full and full[0].get("disabled"))
+        self.assertNotIn("S’inscrire</button>", page)
         self.assertIn('role="alert"', self.url_open(url, data=current_payload).text)
         self.assertFalse(self.env["crm.lead"].search_count([("training_requested_delivery_id", "=", delivery.id)]))
 

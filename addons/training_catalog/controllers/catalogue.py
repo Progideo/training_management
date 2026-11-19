@@ -1,5 +1,6 @@
 """Public general information, with optional offers supplied by each application."""
 
+import json
 from urllib.parse import quote, urlencode
 
 from dateutil.relativedelta import relativedelta
@@ -14,6 +15,16 @@ from odoo.tools import format_date, is_html_empty
 from odoo.tools.misc import formatLang
 
 CARDS_PER_PAGE = 12
+FORMAT_LABELS = {"inter": "Inter-entreprises", "intra": "Intra-entreprise", "autonomous": "En autonomie"}
+
+
+class StructuredData(dict):
+    """schema.org data, serialised when the page renders, once every application has completed it."""
+
+    def __html__(self):
+        text = json.dumps(self, ensure_ascii=False, default=str)
+        # Inside <script>, only these characters could close or alter the element.
+        return text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
 
 
 class TrainingCatalogue(http.Controller):
@@ -25,6 +36,24 @@ class TrainingCatalogue(http.Controller):
 
     def _catalogue_options(self, **kwargs):
         return {}
+
+    @staticmethod
+    def _course_path(course_id, name):
+        """Canonical public address of a course: its name, then its identifier."""
+        return "/formations/catalogue/" + request.env["ir.http"]._slug((course_id, name))
+
+    @classmethod
+    def _linked(cls, row):
+        """Row with its canonical address; offer links to the course page follow it."""
+        path = cls._course_path(row["id"], row["name"])
+        prefix = "/formations/catalogue/%s?" % row["id"]
+        offers = [
+            {**offer, "url": path + "?" + offer["url"][len(prefix) :]}
+            if offer.get("url", "").startswith(prefix)
+            else offer
+            for offer in row["offers"]
+        ]
+        return {**row, "url": path, "offers": offers}
 
     # Facet values are fixed keys: visitor input never reaches a domain or a template unchecked.
     DURATIONS = ("short", "medium", "long")
@@ -60,7 +89,7 @@ class TrainingCatalogue(http.Controller):
         soon_limit = fields.Datetime.now() + relativedelta(months=3)
         checks = {
             "category": lambda: str(row["category_id"]) == facets["category"],
-            "mode": lambda: any(offer["mode"] == facets["mode"] for offer in row["offers"]),
+            "mode": lambda: any(facets["mode"] in offer.get("modes", [offer["mode"]]) for offer in row["offers"]),
             "format": lambda: self._formats(row).get(facets["format"], False),
             "level": lambda: row.get("level_key") == facets["level"],
             "duration": lambda: self._duration_bucket(row.get("duration_days")) == facets["duration"],
@@ -90,7 +119,7 @@ class TrainingCatalogue(http.Controller):
         price = row.get("session_price") or (row.get("autonomous") or {}).get("price")
         days = row.get("duration_days") or 0.0
         return {
-            **row,
+            **self._linked(row),
             "formats": formats,
             "next_label": next_label,
             "price_label": price["label"] if price else "",
@@ -291,27 +320,169 @@ class TrainingCatalogue(http.Controller):
         course = request.env["training.course"]
         return list(course._fields["public_level"]._description_selection(request.env))
 
-    @http.route("/formations/catalogue/<int:course_id>", type="http", auth="public", website=True, methods=["GET"])
-    def course(self, course_id, **kwargs):
+    # Shared wording of the format comparison; each value describes how the course is organised.
+    COMPARISON = (
+        (
+            "Pour qui",
+            {
+                "inter": "Participants de plusieurs entreprises",
+                "intra": "Votre équipe",
+                "autonomous": "Chaque apprenant, individuellement",
+            },
+        ),
+        ("Dates", {"inter": "Sessions planifiées", "intra": "À convenir avec vous", "autonomous": "À votre rythme"}),
+        (
+            "Lieu",
+            {
+                "inter": "Lieu de la session ou à distance",
+                "intra": "Vos locaux ou à distance",
+                "autonomous": "En ligne",
+            },
+        ),
+        ("Accompagnement", {"inter": "Avec formateur", "intra": "Avec formateur", "autonomous": "Parcours en ligne"}),
+    )
+
+    def _course_values(self, row, published, **kwargs):
+        """Page values every application may complete before the page renders."""
+        env = request.env
+        card = self._card(row)
+        formats = dict(card["formats"])
+        # A course led by a trainer can be followed in an inter-company session, even
+        # before dates are published: the tab then offers the new date alert.
+        formats["inter"] = formats["inter"] or bool(row.get("live"))
+        tabs = [key for key in ("inter", "intra", "autonomous") if formats[key]]
+        active = kwargs.get("format") if kwargs.get("format") in tabs else (tabs[0] if tabs else "")
+        presentation = (row["presentation"] or "").strip()
+        paragraphs = [part.strip() for part in presentation.replace("\r\n", "\n").split("\n\n") if part.strip()]
+        autonomous = row.get("autonomous") or {}
+        session_price = row.get("session_price")
+        duration = card["duration_label"] and "%s %s" % (
+            card["duration_label"],
+            "jours" if card["duration_plural"] else "jour",
+        )
+        autonomous_hours = autonomous.get("hours")
+        prices = {
+            "inter": "%s HT par participant" % session_price["label"] if session_price else "Sur devis",
+            "intra": "Sur devis",
+            "autonomous": "%s HT" % autonomous["price"]["label"] if autonomous.get("price") else "Sur devis",
+        }
+        durations = {
+            "inter": duration,
+            "intra": duration,
+            "autonomous": "%s h"
+            % formatLang(env, autonomous_hours, digits=0 if float(autonomous_hours).is_integer() else 1)
+            if autonomous_hours
+            else "",
+        }
+        registrations = {
+            "inter": "Inscription à une session",
+            "intra": "Demande de devis",
+            "autonomous": "Achat en ligne" if autonomous.get("price") else "Sur demande",
+        }
+        comparison = [(label, [values[key] for key in tabs]) for label, values in self.COMPARISON]
+        # The place follows the possible modes declared by the version led by a trainer.
+        live_modes = set(row.get("live_modes") or [])
+        places = {
+            frozenset({"onsite"}): {"inter": "Lieu de la session", "intra": "Vos locaux"},
+            frozenset({"remote"}): {"inter": "À distance", "intra": "À distance"},
+        }.get(frozenset(live_modes), {})
+        comparison = [
+            (label, [places.get(key, value) for key, value in zip(tabs, values, strict=True)])
+            if label == "Lieu"
+            else (label, values)
+            for label, values in comparison
+        ]
+        comparison += [
+            ("Durée", [durations[key] or "—" for key in tabs]),
+            ("Tarif", [prices[key] for key in tabs]),
+            ("Inscription", [registrations[key] for key in tabs]),
+        ]
+        url = request.httprequest.url_root.rstrip("/") + card["url"]
+        company = env.website.company_id if env.website else env.company
+        schema = StructuredData(
+            {
+                "@context": "https://schema.org",
+                "@type": "Course",
+                "name": row["name"],
+                "description": paragraphs[0] if paragraphs else row["name"],
+                "url": url,
+                "provider": {"@type": "Organization", "name": company.name, "url": request.httprequest.url_root},
+            }
+        )
+        if published and published.public_reference:
+            schema["courseCode"] = published.public_reference
+        if row.get("level"):
+            schema["educationalLevel"] = row["level"]
+        if session_price and session_price.get("currency"):
+            schema["offers"] = [
+                {
+                    "@type": "Offer",
+                    "category": FORMAT_LABELS["inter"],
+                    "price": session_price["amount"],
+                    "priceCurrency": session_price["currency"],
+                }
+            ]
+        return {
+            "course": card,
+            "formats": formats,
+            "tabs": [{"key": key, "label": FORMAT_LABELS[key], "price": prices[key]} for key in tabs],
+            "active_format": active,
+            "tagline": paragraphs[0] if paragraphs else "",
+            "presentation_more": "\n\n".join(paragraphs[1:]),
+            "duration_label": duration,
+            "autonomous_duration": durations["autonomous"],
+            "autonomous_offers": [offer for offer in card["offers"] if offer["mode"] == "autonomous"],
+            "comparison": comparison if len(tabs) > 1 else [],
+            "comparison_heads": [FORMAT_LABELS[key] for key in tabs],
+            "mobile_price": session_price["label"]
+            if session_price
+            else (autonomous.get("price") or {}).get("label", ""),
+            "mobile_price_per_participant": bool(session_price),
+            "related": [
+                {**other, "url": self._course_path(other["id"], other["name"])} for other in row.get("related") or []
+            ],
+            "course_schema": schema,
+            # Completed by the programme adapter: published version details.
+            "version_details": False,
+            "audience_sections": [],
+            "modality_sections": [],
+            "programme_pdf_url": False,
+            "publications_url": False,
+            "sessions_url": False,
+            "alert_url": False,
+        }
+
+    @http.route(
+        ["/formations/catalogue/<int:course_id>", "/formations/catalogue/<string:slug>-<int:course_id>"],
+        type="http",
+        auth="public",
+        website=True,
+        methods=["GET"],
+    )
+    def course(self, course_id, slug=None, **kwargs):
         row = next((row for row in self._rows() if row["id"] == course_id), None)
         if not row:
             raise request.not_found()
+        canonical = request.env["ir.http"]._slug((row["id"], row["name"]))
+        # One public address per course: the bare identifier and former names redirect permanently.
+        if request.httprequest.method == "GET" and canonical != (f"{slug}-{course_id}" if slug else str(course_id)):
+            query = request.httprequest.query_string.decode()
+            return request.redirect(
+                self._course_path(row["id"], row["name"]) + ("?" + query if query else ""), code=301
+            )
         courses = request.env["training.course"]
         company = request.env.website.company_id if request.env.website else request.env.company
         published = courses._published_catalogue_course(company, course_id)
         programme = published.public_programme if published else False
-        duration = published.live_duration_days if published else 0.0
-        formatted_duration = formatLang(request.env, duration, digits=0 if duration.is_integer() else 2)
-        url = request.httprequest.url_root.rstrip("/") + f"/formations/catalogue/{course_id}"
+        values = self._course_values(row, published, **kwargs)
+        url = values["course_schema"]["url"]
         response = request.render(
             "training_catalog.public_course",
             {
-                "course": row,
+                **values,
                 "general_presentation_published": bool(published),
                 "public_programme": Markup(programme) if not is_html_empty(programme) else "",
                 "public_reference": published.public_reference if published else False,
-                "live_duration": duration,
-                "live_duration_label": formatted_duration,
                 "public_logo": published.public_logo if published else False,
                 "public_reviews": published._public_reviews() if published else [],
                 "review_status": published._course_review_status(request.env.user) if published else False,

@@ -13,7 +13,7 @@
           <span t-if="course['category']" class="small fw-bold text-uppercase text-primary o_training_catalogue_domain" t-out="course['category']"/>
           <span t-if="course.get('is_new')" class="badge text-bg-primary ms-auto">Nouveau</span>
         </div>
-        <h2 class="h5 mb-0 o_training_catalogue_title"><a class="stretched-link text-decoration-none" t-att-href="'/formations/catalogue/%s' % course['id']" t-out="course['name']"/></h2>
+        <h2 class="h5 mb-0 o_training_catalogue_title"><a class="stretched-link text-decoration-none" t-att-href="course['url']" t-out="course['name']"/></h2>
         <p t-if="course['presentation']" class="mb-0 o_training_catalogue_summary" style="white-space:pre-wrap" t-out="course['presentation']"/>
         <div class="d-flex flex-wrap gap-1 small">
           <span t-if="course['duration_label']" class="border px-2 py-1"><t t-out="course['duration_label']"/> <t t-if="course['duration_plural']">jours</t><t t-else="">jour</t></span>
@@ -133,68 +133,242 @@
     <!-- Set before the call: the layout head is rendered before the call body. -->
     <t t-set="additional_title" t-value="course['name']"/>
     <t t-call="portal.frontend_layout">
-      <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
-        <a href="/formations">Catalogue</a><h1 t-out="course['name']"/>
-        <img t-if="public_logo" t-att-src="image_data_uri(public_logo)" alt="" class="img-fluid d-block my-3"/>
-        <p style="white-space:pre-wrap" t-out="course['presentation']"/>
-        <dl t-if="public_reference or live_duration" class="d-flex flex-wrap gap-4 my-3">
-          <div t-if="public_reference"><dt>Référence</dt><dd t-out="public_reference"/></div>
-          <div t-if="live_duration">
-            <dt>Durée avec formateur</dt>
-            <dd><t t-out="live_duration_label"/> <t t-if="live_duration &lt; 2">jour</t><t t-else="">jours</t></dd>
+      <div id="wrap" class="o_training_public_page o_training_course_page o_not_editable">
+        <section class="bg-primary text-white py-4 py-md-5 o_training_course_banner">
+          <div class="container">
+            <nav aria-label="Fil d’Ariane">
+              <ol class="breadcrumb mb-3 small">
+                <li class="breadcrumb-item"><a class="text-white" href="/formations">Catalogue</a></li>
+                <li t-if="course['category']" class="breadcrumb-item text-white-50" t-out="course['category']"/>
+                <li class="breadcrumb-item active text-white" aria-current="page" t-out="course['name']"/>
+              </ol>
+            </nav>
+            <ul class="list-unstyled d-flex flex-wrap gap-2 mb-2" aria-label="Caractéristiques">
+              <li t-if="course.get('is_new')"><span class="badge text-bg-warning">Nouveau</span></li>
+              <li t-if="course['category']"><span class="badge text-bg-light" t-out="course['category']"/></li>
+              <li t-if="course.get('level')"><span class="badge text-bg-light" t-out="course['level']"/></li>
+              <li t-if="course.get('certifying')"><span class="badge text-bg-warning">Certifiante</span></li>
+            </ul>
+            <h1 class="text-white" t-out="course['name']"/>
+            <p t-if="tagline" class="lead mb-4 o_training_course_tagline" style="white-space:pre-wrap" t-out="tagline"/>
+            <dl class="row row-cols-2 row-cols-md-4 g-3 mb-0 o_training_course_figures">
+              <div t-if="duration_label or version_details" class="col">
+                <dt class="small text-white-50 fw-normal">Durée</dt>
+                <dd class="mb-0 fw-semibold"><t t-out="duration_label"/><t t-if="duration_label and version_details and version_details['hours']"> · </t><t t-if="version_details and version_details['hours']"><t t-out="version_details['hours']"/> h</t></dd>
+              </div>
+              <div t-if="tabs" class="col">
+                <dt class="small text-white-50 fw-normal">Formats</dt>
+                <dd class="mb-0 fw-semibold"><t t-foreach="tabs" t-as="tab"><t t-out="tab['label']"/><t t-if="not tab_last"> · </t></t></dd>
+              </div>
+              <div t-if="course.get('certifying')" class="col">
+                <dt class="small text-white-50 fw-normal">Validation</dt>
+                <dd class="mb-0 fw-semibold">Certification</dd>
+              </div>
+              <div t-if="public_reference" class="col">
+                <dt class="small text-white-50 fw-normal">Référence</dt>
+                <dd class="mb-0 fw-semibold" t-out="public_reference"/>
+              </div>
+            </dl>
           </div>
-        </dl>
-        <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
-        <div id="training_course_actions" class="d-flex flex-wrap gap-2 my-3"/>
-        <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
-        <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
-        <section t-if="course['objectives']"><h2>Objectifs généraux</h2><p style="white-space:pre-wrap" t-out="course['objectives']"/></section>
-        <section t-if="public_programme" id="training_course_programme" aria-label="Programme de la formation" class="mt-4">
-          <div class="o_training_course_programme" t-out="public_programme"/>
         </section>
-        <section t-if="course['offers']"><h2>Offres disponibles</h2>
-          <article t-foreach="course['offers']" t-as="offer" class="card my-3"><div class="card-body">
-            <h3 class="h5"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></h3>
-            <p style="white-space:pre-wrap" t-out="offer['conditions']"/>
-            <a class="btn btn-outline-primary" t-att-href="offer['url']" t-out="offer['action']"/>
-          </div></article>
-        </section>
-        <section t-if="general_presentation_published and (public_reviews or review_status)" id="training_course_reviews" class="my-4">
-          <h2>Avis clients</h2>
-          <p t-if="review_status == 'pending'" role="status">Votre avis a été reçu. Il sera publié après validation.</p>
-          <p t-if="review_status == 'published'">Votre avis est publié.</p>
-          <p t-if="review_status == 'not_published'">Votre avis n’est pas publié.</p>
-          <form t-if="review_status == 'eligible'" method="post" t-att-action="review_route" class="border rounded p-3 mb-3">
-            <h3 class="h5">Donner mon avis</h3>
-            <div t-if="review_error" class="alert alert-danger" role="alert" t-out="review_error"/>
-            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-            <div class="mb-3">
-              <label class="form-label" for="training_review_score">Note sur 5</label>
-              <select id="training_review_score" name="score" class="form-select w-auto" required="required">
-                <option value="">Choisir</option>
-                <option t-foreach="('1', '2', '3', '4', '5')" t-as="score" t-att-value="score"
-                        t-att-selected="review_values.get('score') == score" t-out="score"/>
-              </select>
+        <nav class="sticky-top bg-body border-bottom o_training_course_toc" aria-label="Sommaire de la formation">
+          <div class="container">
+            <ul class="nav flex-nowrap overflow-auto small">
+              <li class="nav-item"><a class="nav-link" href="#training_course_presentation">Présentation</a></li>
+              <li t-if="course['objectives'] or (version_details and version_details['objectives'])" class="nav-item"><a class="nav-link" href="#training_course_objectives">Objectifs</a></li>
+              <li t-if="public_programme or programme_pdf_url" class="nav-item"><a class="nav-link" href="#training_course_programme">Programme</a></li>
+              <li t-if="audience_sections" class="nav-item"><a class="nav-link" href="#training_course_audience">Public et prérequis</a></li>
+              <li t-if="modality_sections or course['offers']" class="nav-item"><a class="nav-link" href="#training_course_modalities">Modalités</a></li>
+              <li t-if="comparison" class="nav-item"><a class="nav-link" href="#training_course_formats">Formats</a></li>
+              <li t-if="course.get('faq')" class="nav-item"><a class="nav-link" href="#training_course_faq">FAQ</a></li>
+              <li t-if="general_presentation_published and (public_reviews or review_status)" class="nav-item"><a class="nav-link" href="#training_course_reviews">Avis</a></li>
+            </ul>
+          </div>
+        </nav>
+        <div class="container py-4">
+          <div class="row g-4">
+            <aside class="col-lg-4 order-lg-last">
+              <div id="training_course_booking" class="card rounded-0 border-primary o_training_course_booking" tabindex="-1" aria-label="Choisir un format">
+                <t t-if="tabs">
+                  <div class="card-header bg-body p-0">
+                    <div class="nav nav-pills flex-column flex-sm-row nav-fill o_training_course_tabs" role="tablist">
+                      <button t-foreach="tabs" t-as="tab" type="button" role="tab" data-bs-toggle="tab"
+                              t-attf-class="nav-link rounded-0 #{'active' if tab['key'] == active_format else ''}"
+                              t-att-id="'training_booking_%s_tab' % tab['key']"
+                              t-att-data-bs-target="'#training_booking_%s' % tab['key']"
+                              t-att-aria-controls="'training_booking_%s' % tab['key']"
+                              t-att-aria-selected="'true' if tab['key'] == active_format else 'false'">
+                        <span class="d-block fw-semibold" t-out="tab['label']"/>
+                        <span class="d-block small" t-out="tab['price']"/>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body tab-content">
+                    <div t-if="formats['inter']" id="training_booking_inter" role="tabpanel" aria-labelledby="training_booking_inter_tab"
+                         t-attf-class="tab-pane fade #{'show active' if active_format == 'inter' else ''}">
+                      <p class="h4 mb-1"><t t-if="course.get('session_price')"><t t-out="course['session_price']['label']"/> HT</t><t t-else="">Sur devis</t></p>
+                      <p class="small text-body-secondary"><t t-if="course.get('session_price')">Par participant. </t>Session à date fixe, avec des participants d’autres entreprises.</p>
+                      <p t-if="course['next_label']" class="mb-2">Prochaine session : <strong t-out="course['next_label']"/></p>
+                      <p t-elif="not course.get('next_session')" class="mb-2">Aucune session programmée pour le moment.</p>
+                      <div id="training_booking_inter_actions"/>
+                      <p t-if="alert_url and not course.get('next_session')"><a class="btn btn-outline-primary" t-att-href="alert_url">Être alerté des nouvelles dates</a></p>
+                      <p t-if="sessions_url" class="small mb-0"><a t-att-href="sessions_url">Toutes les dates et disponibilités</a></p>
+                    </div>
+                    <div t-if="formats['intra']" id="training_booking_intra" role="tabpanel" aria-labelledby="training_booking_intra_tab"
+                         t-attf-class="tab-pane fade #{'show active' if active_format == 'intra' else ''}">
+                      <p class="h4 mb-1">Sur devis</p>
+                      <p class="small text-body-secondary">Pour votre équipe, aux dates et dans le lieu qui vous conviennent, avec le programme et la durée de la formation.</p>
+                      <div id="training_booking_intra_actions"/>
+                    </div>
+                    <div t-if="formats['autonomous']" id="training_booking_autonomous" role="tabpanel" aria-labelledby="training_booking_autonomous_tab"
+                         t-attf-class="tab-pane fade #{'show active' if active_format == 'autonomous' else ''}">
+                      <t t-set="autonomous" t-value="course.get('autonomous') or {}"/>
+                      <p class="h4 mb-1"><t t-if="autonomous.get('price')"><t t-out="autonomous['price']['label']"/> HT</t><t t-else="">Sur devis</t></p>
+                      <p class="small text-body-secondary">En ligne, à votre rythme.</p>
+                      <ul t-if="autonomous" class="list-unstyled small">
+                        <li t-if="autonomous_duration">Durée du contenu : <t t-out="autonomous_duration"/></li>
+                        <li t-if="autonomous.get('modules')"><t t-out="autonomous['modules']"/> activité(s)</li>
+                        <li t-if="autonomous.get('access_months')">Accès pendant <t t-out="autonomous['access_months']"/> mois</li>
+                      </ul>
+                      <div id="training_booking_autonomous_actions" class="d-grid gap-2">
+                        <a t-foreach="autonomous_offers" t-as="offer"
+                           class="btn btn-primary" t-att-href="offer['url']" t-out="offer['action']"/>
+                      </div>
+                    </div>
+                  </div>
+                </t>
+                <div t-else="" class="card-body">
+                  <p class="mb-2">Contactez-nous pour organiser cette formation.</p>
+                  <div id="training_course_actions" class="d-flex flex-wrap gap-2"/>
+                </div>
+              </div>
+            </aside>
+            <div class="col-lg-8">
+              <section id="training_course_presentation" class="mb-5" aria-labelledby="training_course_presentation_title">
+                <h2 id="training_course_presentation_title" class="h3">Présentation</h2>
+                <img t-if="public_logo" t-att-src="image_data_uri(public_logo)" alt="" class="img-fluid d-block my-3"/>
+                <p t-if="presentation_more" style="white-space:pre-wrap" t-out="presentation_more"/>
+                <p t-elif="not course.get('highlights')" style="white-space:pre-wrap" t-out="course['presentation']"/>
+                <ul t-if="course.get('highlights')" class="list-unstyled d-grid gap-2 o_training_course_highlights">
+                  <li t-foreach="course['highlights']" t-as="highlight" class="border-start border-4 border-warning ps-3" t-out="highlight"/>
+                </ul>
+                <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
+                <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
+                <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
+              </section>
+              <section t-if="course['objectives'] or (version_details and version_details['objectives'])" id="training_course_objectives" class="mb-5">
+                <h2 class="h3">Objectifs</h2>
+                <p style="white-space:pre-wrap" t-out="course['objectives'] or version_details['objectives']"/>
+              </section>
+              <section t-if="public_programme or programme_pdf_url" id="training_course_programme" aria-label="Programme de la formation" class="mb-5">
+                <h2 class="h3">Programme</h2>
+                <div t-if="public_programme" class="o_training_course_programme" t-out="public_programme"/>
+                <p t-if="programme_pdf_url"><a class="btn btn-outline-primary" t-att-href="programme_pdf_url">Télécharger le programme (PDF)</a></p>
+              </section>
+              <section t-if="audience_sections" id="training_course_audience" class="mb-5">
+                <h2 class="h3">Public et prérequis</h2>
+                <t t-foreach="audience_sections" t-as="section">
+                  <h3 class="h5" t-out="section[0]"/>
+                  <p style="white-space:pre-wrap" t-out="section[1]"/>
+                </t>
+              </section>
+              <section t-if="modality_sections or course['offers']" id="training_course_modalities" class="mb-5">
+                <h2 class="h3">Modalités</h2>
+                <p t-if="version_details" class="text-body-secondary">Version <t t-out="version_details['version']"/> · <t t-out="version_details['mode']"/><t t-if="version_details['hours']"> · <t t-out="version_details['hours']"/> h</t></p>
+                <t t-foreach="modality_sections" t-as="section">
+                  <h3 class="h5" t-out="section[0]"/>
+                  <p style="white-space:pre-wrap" t-out="section[1]"/>
+                </t>
+                <t t-if="course['offers']">
+                  <h3 class="h5">Offres disponibles</h3>
+                  <ul class="list-unstyled d-grid gap-2 o_training_course_offers">
+                    <li t-foreach="course['offers']" t-as="offer" t-attf-class="border p-3 #{'border-primary' if version_details and offer.get('program_id') == version_details['id'] else ''}">
+                      <p class="fw-semibold mb-1"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></p>
+                      <p t-if="offer['conditions']" class="small mb-2" style="white-space:pre-wrap" t-out="offer['conditions']"/>
+                      <a t-att-href="offer['url']" t-att-aria-current="'true' if version_details and offer.get('program_id') == version_details['id'] else None" t-out="offer['action']"/>
+                    </li>
+                  </ul>
+                </t>
+              </section>
+              <section t-if="comparison" id="training_course_formats" class="mb-5">
+                <h2 class="h3">Comparer les formats</h2>
+                <div class="table-responsive">
+                  <table class="table table-bordered align-middle o_training_course_comparison">
+                    <caption class="visually-hidden">Organisation de la formation selon le format</caption>
+                    <thead><tr><td/><th t-foreach="comparison_heads" t-as="head" scope="col" t-out="head"/></tr></thead>
+                    <tbody>
+                      <tr t-foreach="comparison" t-as="line">
+                        <th scope="row" t-out="line[0]"/>
+                        <td t-foreach="line[1]" t-as="value" t-out="value"/>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <section t-if="course.get('faq')" id="training_course_faq" class="mb-5">
+                <h2 class="h3">Questions fréquentes</h2>
+                <details t-foreach="course['faq']" t-as="item" class="border-bottom py-2">
+                  <summary class="fw-semibold" t-out="item['question']"/>
+                  <p class="mt-2 mb-0" style="white-space:pre-wrap" t-out="item['answer']"/>
+                </details>
+              </section>
+              <section t-if="related" id="training_course_related" class="mb-5">
+                <h2 class="h3">Formations associées</h2>
+                <ul class="list-unstyled d-flex flex-wrap gap-2">
+                  <li t-foreach="related" t-as="other"><a class="btn btn-outline-secondary rounded-0" t-att-href="other['url']" t-out="other['name']"/></li>
+                </ul>
+              </section>
+              <p t-if="publications_url"><a t-att-href="publications_url">Avis vérifiés et cas clients</a></p>
+              <section t-if="general_presentation_published and (public_reviews or review_status)" id="training_course_reviews" class="mb-5">
+                <h2 class="h3">Avis clients</h2>
+              <p t-if="review_status == 'pending'" role="status">Votre avis a été reçu. Il sera publié après validation.</p>
+              <p t-if="review_status == 'published'">Votre avis est publié.</p>
+              <p t-if="review_status == 'not_published'">Votre avis n’est pas publié.</p>
+              <form t-if="review_status == 'eligible'" method="post" t-att-action="review_route" class="border rounded p-3 mb-3">
+                <h3 class="h5">Donner mon avis</h3>
+                <div t-if="review_error" class="alert alert-danger" role="alert" t-out="review_error"/>
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div class="mb-3">
+                  <label class="form-label" for="training_review_score">Note sur 5</label>
+                  <select id="training_review_score" name="score" class="form-select w-auto" required="required">
+                    <option value="">Choisir</option>
+                    <option t-foreach="('1', '2', '3', '4', '5')" t-as="score" t-att-value="score"
+                            t-att-selected="review_values.get('score') == score" t-out="score"/>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="training_review_feedback">Votre commentaire</label>
+                  <textarea id="training_review_feedback" name="feedback" class="form-control" required="required"
+                            maxlength="2000" rows="4" t-out="review_values.get('feedback', '')"/>
+                </div>
+                <label class="d-block mb-3">
+                  <input type="checkbox" name="consent" value="1" required="required"/>
+                  J’accepte la publication de ma note et de mon commentaire après validation.
+                </label>
+                <button type="submit" class="btn btn-primary">Envoyer mon avis</button>
+              </form>
+              <p t-if="not public_reviews" class="text-muted">Aucun avis publié pour cette formation.</p>
+              <ul t-else="" class="list-unstyled">
+                <li t-foreach="public_reviews" t-as="review" class="border-bottom py-2">
+                  <p class="fw-semibold"><t t-out="review['rating']"/> / 5</p>
+                  <p t-if="review['feedback']" class="text-break" t-out="review['feedback']"/>
+                </li>
+              </ul>
+              </section>
             </div>
-            <div class="mb-3">
-              <label class="form-label" for="training_review_feedback">Votre commentaire</label>
-              <textarea id="training_review_feedback" name="feedback" class="form-control" required="required"
-                        maxlength="2000" rows="4" t-out="review_values.get('feedback', '')"/>
+          </div>
+        </div>
+        <div class="fixed-bottom d-lg-none bg-body border-top p-2 o_training_course_mobile_bar">
+          <div class="container d-flex justify-content-between align-items-center gap-2">
+            <div class="small">
+              <strong t-if="mobile_price" class="d-block"><t t-out="mobile_price"/> HT</strong>
+              <strong t-else="" class="d-block">Sur devis</strong>
+              <span t-if="mobile_price_per_participant" class="text-body-secondary">par participant</span>
             </div>
-            <label class="d-block mb-3">
-              <input type="checkbox" name="consent" value="1" required="required"/>
-              J’accepte la publication de ma note et de mon commentaire après validation.
-            </label>
-            <button type="submit" class="btn btn-primary">Envoyer mon avis</button>
-          </form>
-          <p t-if="not public_reviews" class="text-muted">Aucun avis publié pour cette formation.</p>
-          <ul t-else="" class="list-unstyled">
-            <li t-foreach="public_reviews" t-as="review" class="border-bottom py-2">
-              <p class="fw-semibold"><t t-out="review['rating']"/> / 5</p>
-              <p t-if="review['feedback']" class="text-break" t-out="review['feedback']"/>
-            </li>
-          </ul>
-        </section>
+            <a class="btn btn-primary" href="#training_course_booking"><t t-if="formats['inter']">S’inscrire</t><t t-else="">Voir les formats</t></a>
+          </div>
+        </div>
+        <script type="application/ld+json" t-out="course_schema"/>
       </div>
     </t>
   </template>

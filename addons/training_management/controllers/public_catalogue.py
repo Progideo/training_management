@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from odoo import http
 from odoo.http import request
 from odoo.http.stream import Stream
@@ -34,40 +36,71 @@ class TrainingPublicCatalogue(TrainingCatalogue):
             raise request.not_found()
         return program
 
-    @http.route("/formations/<int:program_id>", type="http", auth="public", website=True, methods=["GET"])
-    def programme(self, program_id, **kwargs):
-        program = self._program(program_id)
-        course = program.course_id
-        return request.render(
-            "training_management.public_programme",
+    @http.route()
+    def course(self, course_id, **kwargs):
+        response = super().course(course_id, **kwargs)
+        if not getattr(response, "is_qweb", False):
+            return response
+        values = response.qcontext
+        offered = [offer["program_id"] for offer in values["course"]["offers"] if offer.get("program_id")]
+        programs = self._programs().filtered(lambda program: program.id in offered)
+        # Details of the chosen version, else of the latest version led by a trainer.
+        program = programs.filtered(lambda program: str(program.id) == kwargs.get("version"))
+        if not program:
+            ordered = [programs.browse(program_id) for program_id in offered]
+            live = [program for program in ordered if program.delivery_mode != "elearning"]
+            program = (live or ordered or [programs.browse()])[0]
+        if not program:
+            return response
+        sections = program._public_page_sections()
+        hours = program._public_duration_hours() if program.duration_hours else ""
+        values.update(
             {
-                "program": {
+                "version_details": {
                     "id": program.id,
-                    "course_id": course.id,
                     "title": program.title,
                     "version": program.version,
-                    "duration": program._public_duration_hours(),
-                    "autonomous": program.delivery_mode == "elearning",
-                    "mode": dict(program._fields["delivery_mode"]._description_selection(program.env)).get(
-                        program.delivery_mode
-                    ),
-                    "presentation": course.presentation or "",
-                    "pdf": bool(program.pdf_attachment_id),
-                    "tags": course._catalogue_tags()[course.id],
-                    "sections": program._public_general_sections(),
-                    # Only a count: the link to verified publications is shown when one exists.
-                    "publications": request.env["training.publication"]
-                    .sudo()
-                    .search_count(
-                        [
-                            ("program_id", "=", program.id),
-                            ("company_id", "=", program.company_id.id),
-                            ("state", "=", "published"),
-                        ]
-                    ),
-                }
-            },
+                    "hours": hours,
+                    "mode": program._modes_label(),
+                    "objectives": sections["objectives"],
+                },
+                "audience_sections": sections["audience"],
+                "modality_sections": sections["modalities"],
+                "programme_pdf_url": "/formations/%s/pdf" % program.id if program.pdf_attachment_id else False,
+                # Only a count: the link to verified publications is shown when one exists.
+                "publications_url": "/formations/%s/avis" % program.id
+                if request.env["training.publication"]
+                .sudo()
+                .search_count(
+                    [
+                        ("program_id", "=", program.id),
+                        ("company_id", "=", program.company_id.id),
+                        ("state", "=", "published"),
+                    ]
+                )
+                else False,
+            }
         )
+        if program.delivery_mode != "elearning":
+            values["sessions_url"] = "/formations/%s/sessions" % program.id
+            values["alert_url"] = "/formations/%s/date-alert" % program.id
+        if program.duration_hours:
+            whole = int(program.duration_hours)
+            minutes = round((program.duration_hours - whole) * 60)
+            values["course_schema"]["timeRequired"] = "PT%sH%s" % (whole, "%sM" % minutes if minutes else "")
+        return response
+
+    @http.route("/formations/<int:program_id>", type="http", auth="public", website=True, methods=["GET"])
+    def programme(self, program_id, **kwargs):
+        # A version is presented on its course page: one canonical address per course.
+        program = self._program(program_id)
+        course = program.course_id
+        args = dict(request.httprequest.args)
+        latest = request.env["training.course"]._catalogue_offers(self._company())
+        if any(offer.get("program_id") == program.id for offer in latest):
+            args["version"] = program.id
+        path = self._course_path(course.id, course.name)
+        return request.redirect(path + ("?" + urlencode(args) if args else ""), code=301)
 
     @http.route("/formations/<int:program_id>/pdf", type="http", auth="public", website=True, methods=["GET"])
     def public_programme_pdf(self, program_id, **kwargs):

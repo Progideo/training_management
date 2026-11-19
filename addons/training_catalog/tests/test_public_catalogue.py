@@ -1,5 +1,6 @@
 """General pages work with the catalogue alone; public ORM grants stay closed."""
 
+import json
 from urllib.parse import parse_qs, urlencode, urlsplit
 
 from lxml import html
@@ -11,6 +12,9 @@ from .test_catalog import SharedCatalogCase
 
 @tagged("post_install", "-at_install")
 class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
+    def course_path(self, course):
+        return "/formations/catalogue/" + self.env["ir.http"]._slug((course.id, course.name))
+
     def test_pagination_applies_after_search_and_category(self):
         course_model = self.env["training.course"]
         courses = course_model.create(
@@ -37,14 +41,12 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         card_links = "//article//h2/a/@href"
         self.assertEqual(
             [urlsplit(url).path for url in root.xpath(card_links)],
-            [f"/formations/catalogue/{course.id}" for course in courses[:12]],
+            [self.course_path(course) for course in courses[:12]],
         )
         next_link = root.xpath("//nav//a[starts-with(@href, '/formations/page/2?')]/@href")[0]
         self.assertEqual(parse_qs(urlsplit(next_link).query), {key: [value] for key, value in search.items()})
         second = html.fromstring(self.url_open(next_link).content)
-        self.assertEqual(
-            [urlsplit(url).path for url in second.xpath(card_links)], [f"/formations/catalogue/{courses[-1].id}"]
-        )
+        self.assertEqual([urlsplit(url).path for url in second.xpath(card_links)], [self.course_path(courses[-1])])
         single = html.fromstring(self.url_open("/formations?search=Fictional+pagination+12").content)
         self.assertFalse(single.xpath("//nav[@aria-label='Pages du catalogue']"))
 
@@ -149,3 +151,64 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         loose = html.fromstring(self.url_open("/formations?search=Fictional+facet&level=x&sort=x&format=x").content)
         self.assertEqual(len(loose.xpath("//article//h2/a")), 2)
         self.assertFalse(loose.xpath("//ul[@aria-label='Filtres actifs']"))
+
+    def test_course_page_has_one_address_and_presents_the_course_facts(self):
+        company = self.course.sudo().company_id
+        model = self.env["training.course"]
+        related = model.create({"name": "Fictional related course", "company_id": company.id, "public_catalogue": True})
+        self.course.with_user(self.editor).write(
+            {
+                "public_catalogue": True,
+                "presentation": "Fictional tagline\n\nFictional detailed presentation",
+                "public_level": "beginner",
+                "public_certifying": True,
+                "public_reference": "FIC-01",
+                "live_duration_days": 2,
+                "public_highlights": "Fictional first highlight\nFictional second highlight",
+                "public_related_course_ids": [(6, 0, related.ids)],
+                "public_faq_ids": [(0, 0, {"question": "Fictional question?", "answer": "Fictional answer"})],
+            }
+        )
+        self.authenticate(None, None)
+        path = self.course_path(self.course)
+        self.assertNotEqual(path, "/formations/catalogue/%s" % self.course.id)
+        # The bare identifier and a former name redirect permanently, keeping the query.
+        for old in ("/formations/catalogue/%s" % self.course.id, "/formations/catalogue/old-name-%s" % self.course.id):
+            response = self.url_open(old + "?format=intra", allow_redirects=False)
+            self.assertEqual(response.status_code, 301)
+            self.assertEqual(urlsplit(response.headers["Location"]).path, path)
+            self.assertEqual(urlsplit(response.headers["Location"]).query, "format=intra")
+        response = self.url_open(path, allow_redirects=False)
+        self.assertEqual(response.status_code, 200)
+        root = html.fromstring(response.content)
+        text = " ".join(root.text_content().split())
+        self.assertEqual(root.xpath("//h1/text()"), [self.course.name])
+        self.assertEqual(root.xpath("//p[contains(@class, 'o_training_course_tagline')]/text()"), ["Fictional tagline"])
+        for value in (
+            "Fictional detailed presentation",
+            "Fictional first highlight",
+            "Apply a method",
+            "Fictional question?",
+            "Fictional answer",
+            "FIC-01",
+            "2 jours",
+            "Certifiante",
+        ):
+            self.assertIn(value, text)
+        self.assertEqual(root.xpath("//section[@id='training_course_related']//a/@href"), [self.course_path(related)])
+        toc = root.xpath("//nav[@aria-label='Sommaire de la formation']//a/@href")
+        self.assertEqual(toc, ["#training_course_presentation", "#training_course_objectives", "#training_course_faq"])
+        for anchor in toc:
+            self.assertTrue(root.xpath("//*[@id='%s']" % anchor[1:]))
+        # Without an offering application, the booking card invites a contact and no format is compared.
+        self.assertFalse(root.xpath("//*[@role='tablist']"))
+        self.assertFalse(root.xpath("//section[@id='training_course_formats']"))
+        # Other modules may add their own structured data: keep the course description.
+        (data,) = [
+            item
+            for item in map(json.loads, root.xpath("//script[@type='application/ld+json']/text()"))
+            if isinstance(item, dict) and item.get("@type") == "Course"
+        ]
+        self.assertEqual((data["@type"], data["name"], data["courseCode"]), ("Course", self.course.name, "FIC-01"))
+        self.assertEqual(data["description"], "Fictional tagline")
+        self.assertTrue(data["url"].endswith(path))

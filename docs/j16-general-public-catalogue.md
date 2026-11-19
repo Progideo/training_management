@@ -14,8 +14,7 @@ La grille affiche jusqu’à douze fiches par page et conserve la recherche, la
 catégorie et la modalité dans les liens de pagination.
 Le site courant natif Odoo 20 (`env.website`) fixe la société exploitante.
 La présentation générale et les étiquettes appartiennent à la fiche commune.
-Les étiquettes s’affichent sous le résumé, dans la grille et sur les pages de
-la fiche et du programme. Le catalogue seul affiche la catégorie. Quand
+Les étiquettes s’affichent sous le résumé, dans la grille et sur la fiche. Le catalogue seul affiche la catégorie. Quand
 eLearning est installé, le champ « Étiquettes publiques » permet de sélectionner
 les étiquettes natives et reprend leur libellé traduit et leur couleur. Les
 étiquettes sans couleur restent internes selon la règle native d’Odoo.
@@ -26,16 +25,22 @@ liens vers devis, sessions, avis et orientation. Un cours autonome requiert une
 publication générale distincte de sa publication pédagogique ; ses descriptions,
 activités et pages natives restent privées. Ses conditions publiques sont explicites,
 sans publier les prix négociés ni les contrats individuels.
-Pour chaque modalité (présentiel, distanciel, mixte, eLearning), la fiche et le
-catalogue n’affichent que la dernière version publiée ; toutes les modalités
-disponibles restent visibles. Une version eLearning n’est présentée ni « avec
+La fiche et le catalogue affichent la dernière version publiée avec formateur et
+la dernière version eLearning. Une version avec formateur a une modalité principale
+et peut déclarer d’autres modalités possibles (présentiel, distanciel, mixte) ;
+chaque session fixe la sienne par ses séances. Toutes les modalités déclarées
+restent visibles et filtrables. Une version eLearning n’est présentée ni « avec
 formateur » ni « sur devis ».
+Depuis le lot 3, une version n’a plus de page propre : `/formations/<version>`
+redirige (301) vers la fiche commune, à l’adresse unique
+`/formations/catalogue/<nom>-<id>`, qui présente la version choisie (voir
+[catalogue-public-lot3.md](catalogue-public-lot3.md)).
 
 `/formations/<version>/pdf` rend, tel que conservé à la validation, le PDF de
 référence d’une version publiée au catalogue ; la pièce jointe reste privée et une
 version retirée renvoie 404. La route d’extrait renvoie 404 et le formulaire de
 mini-quiz public est retiré. Les téléchargements privés autorisés sont conservés. Les choix « équipe » et
-« individuel » restent transmis entre catalogue, fiche commune et offre TM.
+« individuel » restent transmis entre catalogue et fiche commune.
 
 ## Recette courte
 
@@ -59,7 +64,7 @@ L’option **Responsable des avis formation** de la fiche Société désigne un 
 
 ## Demandes d’inscription sur la fiche commune
 
-Les dates inter-entreprises ouvertes s’affichent sur la fiche, en heure locale de
+Les dates inter-entreprises ouvertes s’affichent dans l’onglet Inter de la fiche, à cocher, en heure locale de
 la session et sans décalage UTC ; la modalité est celle des séances planifiées,
 dont le lieu reste privé. Le visiteur peut
 demander de une à cinq places, dans la limite des places disponibles. Odoo CRM

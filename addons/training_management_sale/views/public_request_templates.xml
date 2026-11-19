@@ -10,10 +10,10 @@
     </template>
     <template id="public_journeys_card" inherit_id="training_catalog.public_catalogue_card">
         <xpath expr="//h2[hasclass('o_training_catalogue_title')]/a" position="attributes">
-            <attribute name="t-att-href">'/formations/catalogue/%s%s' % (course['id'], '?kind=' + kind if kind else '')</attribute>
+            <attribute name="t-att-href">course['url'] + ('?kind=' + kind if kind else '')</attribute>
         </xpath>
         <xpath expr="//ul[hasclass('o_training_catalogue_offers')]/li/a" position="attributes">
-            <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
+            <attribute name="t-att-href">offer['url'] + (('&amp;' if '?' in offer['url'] else '?') + 'kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
         </xpath>
     </template>
     <template id="public_general_course_journey" inherit_id="training_catalog.public_course">
@@ -21,22 +21,26 @@
             <a t-if="general_presentation_published" class="btn btn-primary"
                t-att-href="'/formations/demande?course=%s&amp;request_type=catalogue%s' % (course['id'], '&amp;kind=' + kind if kind else '')">Demander un devis</a>
         </xpath>
+        <xpath expr="//div[@id='training_booking_intra_actions']" position="inside">
+            <div t-if="kind != 'individual'" class="d-grid gap-2">
+                <a class="btn btn-primary"
+                   t-att-href="'/formations/demande?%skind=group&amp;request_type=catalogue%s' % ('course=%s&amp;' % course['id'] if general_presentation_published else '', '&amp;program=%s' % version_details['id'] if version_details else '')">Demander un devis pour mon équipe</a>
+                <a class="small" t-att-href="'/formations/demande?%skind=group&amp;request_type=custom' % ('course=%s&amp;' % course['id'] if general_presentation_published else '')">Besoin d’une autre durée ? Demande sur mesure</a>
+            </div>
+        </xpath>
+        <xpath expr="//div[@id='training_booking_inter_actions']" position="after">
+            <p t-if="kind != 'group' and version_details" class="small">Aucune date ne vous convient ?
+                <a t-att-href="'/formations/demande?kind=individual&amp;program=%s' % version_details['id']">Demander un devis individuel</a></p>
+        </xpath>
+        <xpath expr="//div[@id='training_booking_autonomous_actions']" position="inside">
+            <a t-if="kind != 'group' and version_details and not autonomous_offers"
+               class="btn btn-outline-primary" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % version_details['id']">Demander un devis individuel</a>
+        </xpath>
         <xpath expr="//a[@href='/formations']" position="attributes">
             <attribute name="t-att-href">'/formations' + ('?kind=' + kind if kind else '')</attribute>
         </xpath>
-        <xpath expr="//article//a" position="attributes">
-            <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
-        </xpath>
-    </template>
-    <template id="public_programme_actions" inherit_id="training_management.public_programme">
-        <xpath expr="//div[@id='training_request_actions']" position="inside">
-            <a t-if="kind != 'individual'" class="btn btn-primary me-2 mb-3" t-att-href="'/formations/demande?kind=group&amp;program=%s' % program['id']">Demander un devis pour mon équipe</a>
-            <a t-if="kind != 'group'" class="btn btn-outline-primary mb-3" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % program['id']">Demander un devis individuel</a>
-        </xpath>
-    </template>
-    <template id="public_programme_catalogue_link" inherit_id="training_management.public_programme">
-        <xpath expr="//a[@href='/formations']" position="attributes">
-            <attribute name="t-att-href">'/formations' + ('?kind=' + kind if kind else '')</attribute>
+        <xpath expr="//ul[hasclass('o_training_course_offers')]//a" position="attributes">
+            <attribute name="t-att-href">offer['url'] + (('&amp;' if '?' in offer['url'] else '?') + 'kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
         </xpath>
     </template>
     <template id="public_request" name="Training request">

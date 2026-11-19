@@ -26,3 +26,41 @@
         min-height: 32px;
     }
 }
+
+// Course page: sticky summary and booking card, fixed action bar on small screens.
+.o_training_course_page {
+    padding-bottom: 4.5rem;
+
+    section[id] {
+        scroll-margin-top: 4rem;
+    }
+
+    .o_training_course_toc .nav-link {
+        white-space: nowrap;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .o_training_course_tabs .nav-link {
+        min-height: 44px;
+        border-bottom: 4px solid transparent;
+
+        &.active {
+            border-bottom-color: var(--bs-warning);
+        }
+    }
+
+    .o_training_course_mobile_bar {
+        z-index: 1030;
+    }
+
+    @media (min-width: 992px) {
+        padding-bottom: 0;
+
+        .o_training_course_booking {
+            position: sticky;
+            top: 4rem;
+        }
+    }
+}

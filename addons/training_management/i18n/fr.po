@@ -146,6 +146,7 @@ msgstr "Archivé"
 #: model:ir.model.fields.selection,name:training_management.selection__training_program_version__delivery_mode__blended
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__blended
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__blended
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 msgid "Blended"
 msgstr "Mixte"
 
@@ -1078,6 +1079,7 @@ msgstr "Sur devis"
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__onsite
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__onsite
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__mode__onsite
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 msgid "On site"
 msgstr "Présentiel"
 
@@ -1217,6 +1219,7 @@ msgstr "Référence"
 #: model:ir.model.fields.selection,name:training_management.selection__training_session__mode__remote
 #: model:ir.model.fields.selection,name:training_management.selection__training_session_edit__mode__remote
 #: model:ir.model.fields.selection,name:training_management.selection__training_tutoring_slot__mode__remote
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 msgid "Remote"
 msgstr "Distanciel"
 
@@ -15366,3 +15369,35 @@ msgstr "Lieu public"
 #: model:ir.model.fields,help:training_management.field_training_delivery__public_location
 msgid "Shown to visitors, e.g. a city or « Virtual classroom ». Sitting locations stay private."
 msgstr "Affiché aux visiteurs, par exemple une ville ou « Classe virtuelle ». Les lieux des séances restent privés."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__also_onsite
+msgid "Also On Site"
+msgstr "Également en présentiel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__also_remote
+msgid "Also Remote"
+msgstr "Également en distanciel"
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_program_version__also_blended
+msgid "Also Blended"
+msgstr "Également en mixte"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
+msgid "Other possible modes"
+msgstr "Autres modalités possibles"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "An eLearning version has no other delivery mode."
+msgstr "Une version eLearning n’a pas d’autre modalité."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_program.py:0
+msgid "%(modes)s or %(last)s"
+msgstr "%(modes)s ou %(last)s"

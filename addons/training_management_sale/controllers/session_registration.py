@@ -81,12 +81,46 @@ class TrainingSessionRegistration(TrainingCommercialCatalogue):
             "limit": delivery._public_registration_limit(),
         }
 
+    # schema.org course modes of the public sittings.
+    SCHEMA_MODES = {"onsite": "onsite", "remote": "online", "blended": "blended"}
+
+    @classmethod
+    def _session_schema(cls, delivery):
+        # Dates in UTC: the page shows the local schedule of the session time zone.
+        modes = set(delivery.session_ids.filtered(lambda session: not session.cancelled).mapped("mode"))
+        mode = modes.pop() if len(modes) == 1 else "blended" if modes else delivery.program_id.delivery_mode
+        instance = {
+            "@type": "CourseInstance",
+            "courseMode": cls.SCHEMA_MODES.get(mode, "onsite"),
+            "startDate": delivery.start_at.isoformat() + "Z",
+            "endDate": delivery.end_at.isoformat() + "Z",
+        }
+        if delivery.public_location:
+            instance["location"] = {"@type": "Place", "name": delivery.public_location}
+        return instance
+
     @http.route()
     def course(self, course_id, **kwargs):
         response = super().course(course_id, **kwargs)
+        if not getattr(response, "is_qweb", False):
+            return response
         rows = request.env["training.delivery"]._public_registration_sessions(self._company(), course_id)
-        response.qcontext["public_sessions"] = [self._session_card(row) for row in rows]
+        cards = [{**self._session_card(row), "id": row.id} for row in rows]
+        response.qcontext["public_sessions"] = cards
+        # The first session open to requests is preselected.
+        response.qcontext["selected_session"] = next((card["id"] for card in cards if card["limit"]), False)
+        if rows:
+            response.qcontext["course_schema"]["hasCourseInstance"] = [self._session_schema(row) for row in rows]
         return response
+
+    @http.route(
+        "/formations/catalogue/<int:course_id>/inscription", type="http", auth="public", website=True, methods=["GET"]
+    )
+    def session_choice(self, course_id, session="", **kwargs):
+        # The session chosen on the course page; the request page checks it again.
+        if not session.isascii() or not session.isdecimal() or len(session) > 10:
+            raise request.not_found()
+        return request.redirect(f"/formations/catalogue/{course_id}/inscription/{int(session)}", code=303)
 
     @http.route(
         "/formations/catalogue/<int:course_id>/inscription/<int:delivery_id>",

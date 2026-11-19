@@ -118,17 +118,23 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         second = html.fromstring(self.url_open(next_link).content)
         self.assertEqual(second.xpath("//input[@name='kind']/@value"), ["individual"])
         self.assertEqual(
-            second.xpath("//article//h2/a/@href"), [f"/formations/catalogue/{courses[-1].id}?kind=individual"]
+            second.xpath("//article//h2/a/@href"),
+            [
+                "/formations/catalogue/%s?kind=individual"
+                % self.env["ir.http"]._slug((courses[-1].id, courses[-1].name))
+            ],
         )
 
     def test_http_journeys_preserve_context_and_validation_and_repetition(self):
         program = self.published()
         self.authenticate(None, None)
+        offer = "?version=%s" % program.id
         page = self.url_open(f"/formations/{program.id}")
         self.assertIn("Demander un devis pour mon équipe", page.text)
         self.assertIn("Demander un devis individuel", page.text)
-        self.assertIn(f"kind=group&amp;program={program.id}", page.text)
+        self.assertIn(f"kind=group&amp;request_type=catalogue&amp;program={program.id}", page.text)
         self.assertIn(f"kind=individual&amp;program={program.id}", page.text)
+        self.assertIn("Besoin d’une autre durée ? Demande sur mesure", page.text)
         public_catalogue = self.url_open("/formations")
         self.assertNotIn('href="/formations?kind=group"', public_catalogue.text)
         self.assertNotIn('href="/formations?kind=individual"', public_catalogue.text)
@@ -136,20 +142,20 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         self.assertIn("Décrire un projet sur mesure", public_catalogue.text)
         self.assertIn('href="/formations/demande?kind=group&amp;request_type=custom"', public_catalogue.text)
         catalogue = self.url_open("/formations?kind=group&" + urlencode({"search": program.title}))
-        self.assertIn(f"/formations/{program.id}?kind=group", catalogue.text)
+        self.assertIn(f"{offer}&amp;kind=group", catalogue.text)
         self.assertNotIn("Changer de parcours", catalogue.text)
         selected = self.url_open(f"/formations/{program.id}?kind=group")
-        self.assertIn(f"kind=group&amp;program={program.id}", selected.text)
+        self.assertIn(f"kind=group&amp;request_type=catalogue&amp;program={program.id}", selected.text)
         self.assertNotIn(f"kind=individual&amp;program={program.id}", selected.text)
         self.assertIn("Demander un devis pour mon équipe", selected.text)
         individual = self.url_open("/formations?kind=individual&" + urlencode({"search": program.title}))
         self.assertNotIn("Changer de parcours", individual.text)
-        self.assertIn(f"/formations/{program.id}?kind=individual", individual.text)
+        self.assertIn(f"{offer}&amp;kind=individual", individual.text)
         individual_form = html.fromstring(individual.content)
         self.assertEqual(individual_form.xpath("//input[@name='kind']/@value"), ["individual"])
         general_page = self.url_open(f"/formations/catalogue/{program.course_id.id}?kind=individual")
         self.assertEqual(general_page.status_code, 200)
-        self.assertIn(f"/formations/{program.id}?kind=individual", general_page.text)
+        self.assertIn(f"{offer}&amp;kind=individual", general_page.text)
         self.assertIn("/formations?kind=individual", general_page.text)
         individual_detail = self.url_open(f"/formations/{program.id}?kind=individual")
         self.assertIn("Demander un devis individuel", individual_detail.text)

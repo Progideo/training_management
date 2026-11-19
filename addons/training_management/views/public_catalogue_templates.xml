@@ -2,23 +2,4 @@
     <template id="public_catalogue" name="Training catalogue">
         <t t-call="training_catalog.public_catalogue"/>
     </template>
-    <template id="public_programme" name="Public programme">
-        <!-- Set before the call: the layout head is rendered before the call body. -->
-        <t t-set="additional_title" t-value="program['title']"/>
-        <t t-call="portal.frontend_layout">
-            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
-            <a href="/formations">Catalogue</a> · <a t-att-href="'/formations/catalogue/%s' % program['course_id']">Présentation générale</a><h1 t-out="program['title']"/>
-            <p>Version <t t-out="program['version']"/> · <t t-out="program['duration']"/> h · <t t-out="program['mode']"/></p>
-            <p t-if="not program['autonomous']">Prix sur devis.</p>
-            <div id="training_request_actions"/>
-            <p t-if="program['pdf']"><a t-att-href="'/formations/%s/pdf' % program['id']">Télécharger le programme (PDF)</a></p>
-            <p style="white-space:pre-wrap" t-out="program['presentation']"/>
-            <t t-call="training_catalog.public_course_tags" tags="program['tags']"/>
-            <section t-foreach="program['sections']" t-as="s" class="my-4">
-                    <h2 t-out="s[0]"/>
-                    <div style="white-space:pre-wrap" t-out="s[1]"/>
-                </section>
-        </div>
-        </t>
-    </template>
 </odoo>
