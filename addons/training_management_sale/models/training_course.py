@@ -24,7 +24,7 @@ class TrainingCourse(models.Model):
         for course in self:
             product = products.filtered(lambda p, c=course: p.training_course_id == c)[:1]
             price = None
-            if product and course.public_catalogue:
+            if product and course._catalogue_presented():
                 # Amount excluding taxes, in the operator's currency; « HT » is added by the page.
                 taxes = product.taxes_id.filtered(lambda tax: tax.company_id == company)
                 currency = product.currency_id

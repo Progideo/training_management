@@ -100,6 +100,22 @@ class TrainingCourse(models.Model):
             if course in course.public_related_course_ids:
                 raise ValidationError(self.env._("A course cannot be related to itself."))
 
+    def action_open_public_page(self):
+        """Public page of the course; unpublished, it opens as a preview for catalogue editors."""
+        self.ensure_one()
+        self.check_access("write")
+        return {
+            "type": "ir.actions.act_url",
+            "url": "/formations/catalogue/%s?preview=1" % self.env["ir.http"]._slug((self.id, self.name)),
+            "target": "new",
+        }
+
+    @api.private
+    def _catalogue_presented(self):
+        """Published general presentation, or a course previewed by its editor (controller context)."""
+        self.ensure_one()
+        return self.public_catalogue or self.id in self.env.context.get("training_catalogue_preview", ())
+
     @api.private
     def _published_catalogue_course(self, company, course_id):
         return self.sudo().search(
@@ -196,7 +212,7 @@ class TrainingCourse(models.Model):
         months = company.training_catalogue_new_months
         new_since = fields.Datetime.now() - relativedelta(months=months)
         levels = dict(self._fields["public_level"]._description_selection(self.env))
-        published = self.filtered("public_catalogue")
+        published = self.filtered(lambda course: course._catalogue_presented())
         facts = {}
         for course in self:
             presented = course in published
@@ -230,13 +246,16 @@ class TrainingCourse(models.Model):
         # Exact website operator and explicit publication grants only. Public
         # ORM access stays denied; neither privileged records nor private fields
         # are passed to a template or searched using visitor input.
+        previewed = list(self.env.context.get("training_catalogue_preview", ()))
         courses = self.sudo().search(
             [
                 ("company_id", "=", company.id),
                 ("active", "=", True),
                 "|",
+                "|",
                 ("public_catalogue", "=", True),
                 ("id", "in", [offer["course_id"] for offer in offers]),
+                ("id", "in", previewed),
             ]
         )
         tags_by_course = courses._catalogue_tags()

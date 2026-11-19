@@ -31,7 +31,13 @@ gardent leurs références d'origine.
 Publier une fiche publique
 --------------------------
 
-#. Compléter la fiche commune : intitulé, catégorie, présentation et objectifs généraux.
+#. Compléter la fiche commune dans l'onglet **Site web** : présentation (le premier
+   paragraphe sert d'accroche sous le titre), objectifs, points forts (un par ligne),
+   logo, référence, durée, niveau, certification et formations associées. Les
+   onglets **Programme** et **Questions fréquentes** complètent la fiche.
+#. Utiliser **Aperçu de la fiche publique** : la fiche s'ouvre telle qu'elle sera
+   publiée, avec un bandeau d'aperçu tant qu'elle ne l'est pas. Seuls les éditeurs
+   du catalogue voient cet aperçu.
 #. Sur le programme, vérifier objectifs, public, prérequis, durée indicative et
    conditions commerciales avant d’approuver sa présence au catalogue.
 #. Valider puis publier la version selon les actions de la fiche.

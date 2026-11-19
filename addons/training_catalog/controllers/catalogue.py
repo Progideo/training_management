@@ -460,6 +460,10 @@ class TrainingCatalogue(http.Controller):
         methods=["GET"],
     )
     def course(self, course_id, slug=None, **kwargs):
+        # A catalogue editor may preview an unpublished course of the website operator.
+        preview = kwargs.get("preview") == "1" and request.env.user.has_group("training_catalog.group_catalog_editor")
+        if preview:
+            request.update_context(training_catalogue_preview=(course_id,))
         row = next((row for row in self._rows() if row["id"] == course_id), None)
         if not row:
             raise request.not_found()
@@ -473,14 +477,20 @@ class TrainingCatalogue(http.Controller):
         courses = request.env["training.course"]
         company = request.env.website.company_id if request.env.website else request.env.company
         published = courses._published_catalogue_course(company, course_id)
+        unpublished = preview and not published
+        if unpublished:
+            published = courses.sudo().search(
+                [("id", "=", course_id), ("company_id", "=", company.id), ("active", "=", True)], limit=1
+            )
         programme = published.public_programme if published else False
         values = self._course_values(row, published, **kwargs)
+        values["preview_unpublished"] = unpublished
         url = values["course_schema"]["url"]
         response = request.render(
             "training_catalog.public_course",
             {
                 **values,
-                "general_presentation_published": bool(published),
+                "general_presentation_published": bool(published) and not unpublished,
                 "public_programme": Markup(programme) if not is_html_empty(programme) else "",
                 "public_reference": published.public_reference if published else False,
                 "public_logo": published.public_logo if published else False,

@@ -256,6 +256,7 @@ msgstr "Questions fréquentes"
 
 #. module: training_catalog
 #: model:ir.model.fields,field_description:training_catalog.field_training_course__public_related_course_ids
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
 msgid "Related Courses"
 msgstr "Formations associées"
 
@@ -321,3 +322,28 @@ msgstr "Une recherche par ligne, proposée sous le champ de recherche du catalog
 #: model_terms:ir.ui.view,arch_db:training_catalog.view_company_form_course_reviews
 msgid "One search per line"
 msgstr "Une recherche par ligne"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Programme"
+msgstr "Programme"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Published"
+msgstr "Publiée"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Key Facts"
+msgstr "Informations clés"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "Preview Public Page"
+msgstr "Aperçu de la fiche publique"
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
+msgid "First paragraph: tagline shown under the title"
+msgstr "Premier paragraphe : accroche affichée sous le titre"
