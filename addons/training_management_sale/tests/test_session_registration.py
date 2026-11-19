@@ -1,5 +1,6 @@
 import json
 from datetime import UTC, datetime, time, timedelta
+from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
 
 from lxml import html
@@ -7,6 +8,7 @@ from lxml import html
 from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.tests import HttpCase, tagged
+from odoo.tools import format_date
 
 from odoo.addons.training_management.tests.test_session_publication import SessionAlertCase
 
@@ -176,3 +178,28 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertIn("1", facts["session_price"]["label"])
         tariff.training_public_session_price = False
         self.assertIsNone(self.course.sudo()._catalogue_facts(company)[self.course.id]["session_price"])
+
+    def test_catalogue_shows_the_next_session_date_in_its_own_time_zone(self):
+        # 23:30 UTC is already the next day in Tokyo: the card shows the local date.
+        day = fields.Date.today() + timedelta(days=60)
+        start = datetime.combine(day, time(23, 30))
+        delivery = self.delivery(
+            program_id=self.public_program.id,
+            kind="session",
+            capacity=4,
+            timezone="Asia/Tokyo",
+            start_at=start,
+            end_at=start + timedelta(hours=8),
+        )
+        delivery.action_publish_session(reason="Fictional publication")
+        self.course.sudo().public_catalogue = True
+        website = self.env["website"].search([("company_id", "=", self.company.id)], limit=1)
+        lang = website.default_lang_id.code if website else self.env.lang
+        env = self.env(context={**self.env.context, "lang": lang})
+        local, utc = (format_date(env, value, date_format="d MMM y") for value in (day + timedelta(days=1), day))
+        self.authenticate(None, None)
+        root = html.fromstring(self.url_open("/formations?" + urlencode({"search": self.course.name})).content)
+        (card,) = [node for node in root.xpath("//article") if self.course.name in node.xpath("string(.//h2)")]
+        footer = " ".join(card.xpath("string(.//div[contains(@class, 'card-footer')])").split())
+        self.assertIn(local, footer)
+        self.assertNotIn(utc, footer)

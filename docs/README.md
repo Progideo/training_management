@@ -162,6 +162,7 @@ c5cfc7033533a76c98c1dd40ba09520014348d5766930ab57a19782ea2392068  docs/reference
 | Catalogue public — page catalogue (lot 2) | [catalogue-public-lot2.md](catalogue-public-lot2.md) |
 | Catalogue public — page formation (lot 3) | [catalogue-public-lot3.md](catalogue-public-lot3.md) |
 | Catalogue public — contenu et back-office (lot 4) | [catalogue-public-lot4.md](catalogue-public-lot4.md) |
+| Catalogue public — qualité (lot 5) | [catalogue-public-lot5.md](catalogue-public-lot5.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;

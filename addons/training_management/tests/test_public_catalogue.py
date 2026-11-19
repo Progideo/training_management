@@ -231,3 +231,37 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
             chosen.xpath("//div[@role='tablist']/button[@aria-selected='true']/@data-bs-target"),
             ["#training_booking_autonomous"],
         )
+
+    def test_course_page_without_session_price_or_review_stays_usable(self):
+        program = self.new_program(public_catalogue=True, version="EMPTY-1", title="Fictional bare version")
+        program.action_validate()
+        program.action_publish()
+        self.authenticate(None, None)
+        page = self.url_open(f"/formations/catalogue/{self.course.id}")
+        self.assertEqual(page.status_code, 200)
+        tree = html.fromstring(page.content)
+        inter = " ".join(tree.xpath("string(//div[@id='training_booking_inter'])").split())
+        # No session and no inter-company price: the visitor is told so and can ask for new dates.
+        self.assertIn("Sur devis", inter)
+        self.assertIn("Aucune session programmée", inter)
+        self.assertTrue(
+            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{program.id}/date-alert']")
+        )
+        self.assertFalse(tree.xpath("//section[@id='training_course_reviews']"))
+        self.assertFalse(
+            tree.xpath("//nav[@aria-label='Sommaire de la formation']//a[@href='#training_course_reviews']")
+        )
+        self.assertIn("Sur devis", tree.xpath("string(//div[contains(@class, 'o_training_course_mobile_bar')])"))
+        # Accessible tabs: labelled list, each tab controls a focusable panel.
+        self.assertEqual(tree.xpath("//div[@role='tablist']/@aria-label"), ["Formats de la formation"])
+        for tab in tree.xpath("//div[@role='tablist']/button[@role='tab']"):
+            (panel,) = tree.xpath("//*[@id='%s']" % tab.get("aria-controls"))
+            self.assertEqual((panel.get("role"), panel.get("tabindex")), ("tabpanel", "0"))
+            self.assertEqual(panel.get("aria-labelledby"), tab.get("id"))
+        self.assertEqual(
+            tree.xpath("//div[@role='tablist']/button[@aria-selected='true']/@data-bs-target"),
+            ["#training_booking_inter"],
+        )
+        # Every anchor of the summary leads to a section of the page.
+        for anchor in tree.xpath("//nav[@aria-label='Sommaire de la formation']//a/@href"):
+            self.assertTrue(tree.xpath("//*[@id='%s']" % anchor[1:]), anchor)
