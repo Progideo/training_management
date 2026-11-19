@@ -109,6 +109,7 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
                 "instructor_id": self.coordinator.partner_id.id,
                 "mode": "remote",
                 "location": "Fictional private access code",
+                "meeting_url": "https://meeting.example.invalid/fictional-private-room",
                 "start_date": day,
                 "end_date": day + timedelta(days=2),
                 "start_hour": 9,
@@ -126,6 +127,7 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         # The sitting is remote although the programme default is on site.
         self.assertTrue(any(label in page for label in ("Remote", "Distanciel")))
         self.assertNotIn("Fictional private access code", page)
+        self.assertNotIn("fictional-private-room", page)
         self.assertNotIn(" Z ", page)
         self.assertNotIn("+01:00", page)
         self.assertNotIn("+02:00", page)
