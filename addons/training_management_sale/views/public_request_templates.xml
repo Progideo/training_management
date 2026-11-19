@@ -1,18 +1,20 @@
 <odoo>
     <template id="public_journeys" inherit_id="training_catalog.public_catalogue">
-        <xpath expr="//h1" position="after">
-            <div t-if="kind != 'individual'" class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 rounded-3 border bg-body-tertiary p-3 p-md-4 mb-4">
+        <xpath expr="//div[@id='training_catalogue_aside']" position="inside">
+            <div t-if="kind != 'individual'" class="d-flex flex-column align-items-start gap-3 bg-primary text-white p-3 p-md-4">
                 <p class="mb-0 fw-semibold">Vous ne trouvez pas la formation qui vous convient ?</p>
-                <a class="btn btn-outline-primary" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
+                <a class="btn btn-warning rounded-0 fw-bold" href="/formations/demande?kind=group&amp;request_type=custom">Décrire un projet sur mesure</a>
             </div>
         </xpath>
-        <xpath expr="//h2/a" position="attributes">
+        <xpath expr="//form[@action='/formations']" position="inside"><input t-if="kind" type="hidden" name="kind" t-att-value="kind"/></xpath>
+    </template>
+    <template id="public_journeys_card" inherit_id="training_catalog.public_catalogue_card">
+        <xpath expr="//h2[hasclass('o_training_catalogue_title')]/a" position="attributes">
             <attribute name="t-att-href">'/formations/catalogue/%s%s' % (course['id'], '?kind=' + kind if kind else '')</attribute>
         </xpath>
-        <xpath expr="//ul/li/a" position="attributes">
+        <xpath expr="//ul[hasclass('o_training_catalogue_offers')]/li/a" position="attributes">
             <attribute name="t-att-href">offer['url'] + ('?kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
         </xpath>
-        <xpath expr="//form[@action='/formations']" position="inside"><input t-if="kind" type="hidden" name="kind" t-att-value="kind"/></xpath>
     </template>
     <template id="public_general_course_journey" inherit_id="training_catalog.public_course">
         <xpath expr="//div[@id='training_course_actions']" position="inside">

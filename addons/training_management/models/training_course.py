@@ -116,6 +116,7 @@ class TrainingCourse(models.Model):
                     # Live training with a trainer, and/or an eLearning version of the programme.
                     "live": bool(modes & {"onsite", "remote", "blended"}),
                     "elearning": "elearning" in modes,
+                    "live_modes": sorted(modes - {"elearning"}),
                     "next_session": upcoming,
                 }
             )

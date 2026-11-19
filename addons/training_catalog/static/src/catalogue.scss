@@ -1,0 +1,28 @@
+// Public catalogue layout. Colours come from the website theme (primary, warning).
+.o_training_catalogue {
+    .o_training_catalogue_formats_nav a {
+        border-top: 4px solid transparent;
+        min-height: 44px;
+
+        &[aria-current="page"] {
+            border-top-color: var(--bs-warning);
+            background-color: var(--bs-body-bg);
+        }
+    }
+
+    .o_training_catalogue_search input[type="search"] {
+        min-width: 0;
+        flex-basis: 16rem;
+    }
+
+    .o_training_catalogue_summary {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    aside a {
+        min-height: 32px;
+    }
+}

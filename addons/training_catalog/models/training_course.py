@@ -206,6 +206,7 @@ class TrainingCourse(models.Model):
             highlights = [line.strip() for line in (course.public_highlights or "").splitlines() if line.strip()]
             facts[course.id] = {
                 "level": levels.get(course.public_level, "") if presented else "",
+                "level_key": (course.public_level or "") if presented else "",
                 "certifying": presented and course.public_certifying,
                 "is_new": bool(
                     presented and months and course.public_published_at and course.public_published_at >= new_since
@@ -218,6 +219,8 @@ class TrainingCourse(models.Model):
                 if presented
                 else [],
                 "related": [{"id": other.id, "name": other.name} for other in related] if presented else [],
+                "duration_days": course.live_duration_days if presented else 0.0,
+                "published_at": course.public_published_at if presented else False,
             }
         return facts
 
