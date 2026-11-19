@@ -68,13 +68,13 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         root = self.url_open("/formations")
         self.assertIn(self.course.name, root.text)
         self.assertNotIn(foreign.name, root.text)
-        card_content = html.fromstring(root.text).xpath(
+        card = html.fromstring(root.text).xpath(
             '//div[contains(concat(" ", normalize-space(@class), " "), " o_training_catalogue_card ")]'
-            "//*[self::p or self::li]/text()"
-        )
-        self.assertEqual(
-            [value.strip() for value in card_content if value.strip()], ["General presentation", "Quality"]
-        )
+        )[0]
+        card_text = " ".join(card.text_content().split())
+        for value in ("General presentation", "Quality", "Sur demande", "Sur devis"):
+            self.assertIn(value, card_text)
+        self.assertNotIn("Apply a method", card_text)
         self.assertEqual(self.url_open("/formations/catalogue/%s" % foreign.id).status_code, 404)
         self.assertNotIn(self.course.name, self.url_open("/formations?search=UNPUBLISHED_SECRET_SEARCH").text)
         self.assertIn(self.course.name, self.url_open("/formations?search=General%20presentation").text)
@@ -111,3 +111,41 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.assertNotIn(self.course.name, root.text)
         own = self.url_open("/formations/catalogue/%s" % self.course.id, headers=headers, allow_redirects=False)
         self.assertEqual(own.status_code, 404)
+
+    def test_facets_formats_sort_and_suggestions_keep_the_query(self):
+        company = self.course.company_id
+        model = self.env["training.course"]
+        base = {"company_id": company.id, "public_catalogue": True, "category_id": self.category.id}
+        short = model.create(
+            {**base, "name": "Fictional facet short", "live_duration_days": 1, "public_level": "beginner"}
+        )
+        long = model.create(
+            {
+                **base,
+                "name": "Fictional facet long",
+                "live_duration_days": 5,
+                "public_level": "expert",
+                "public_certifying": True,
+            }
+        )
+        company.training_catalogue_suggestions = "Fictional facet\n\nUnused"
+        self.authenticate(None, None)
+        page = html.fromstring(self.url_open("/formations?search=Fictional+facet").content)
+        titles = page.xpath("//article//h2/a/text()")
+        self.assertEqual(sorted(titles), sorted([short.name, long.name]))
+        self.assertIn("/formations?search=Fictional+facet", page.xpath("//section//p//a/@href"))
+        certifying = html.fromstring(self.url_open("/formations?search=Fictional+facet&certifying=1").content)
+        self.assertEqual(certifying.xpath("//article//h2/a/text()"), [long.name])
+        # The active filter keeps the search and can be removed on its own.
+        remove = certifying.xpath("//ul[@aria-label='Filtres actifs']//a/@href")[0]
+        self.assertEqual(parse_qs(urlsplit(remove).query), {"search": ["Fictional facet"]})
+        level = html.fromstring(self.url_open("/formations?search=Fictional+facet&level=beginner").content)
+        self.assertEqual(level.xpath("//article//h2/a/text()"), [short.name])
+        duration = html.fromstring(self.url_open("/formations?search=Fictional+facet&sort=duration").content)
+        self.assertEqual(duration.xpath("//article//h2/a/text()"), [short.name, long.name])
+        long_first = html.fromstring(self.url_open("/formations?search=Fictional+facet&duration=long").content)
+        self.assertEqual(long_first.xpath("//article//h2/a/text()"), [long.name])
+        # Unknown values are ignored rather than trusted.
+        loose = html.fromstring(self.url_open("/formations?search=Fictional+facet&level=x&sort=x&format=x").content)
+        self.assertEqual(len(loose.xpath("//article//h2/a")), 2)
+        self.assertFalse(loose.xpath("//ul[@aria-label='Filtres actifs']"))

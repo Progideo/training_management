@@ -6,35 +6,128 @@
           t-out="tag['label']"/>
     </ul>
   </template>
+  <template id="public_catalogue_card" name="Public catalogue card">
+    <article class="col">
+      <div class="card h-100 rounded-0 border o_training_catalogue_card"><div class="card-body d-flex flex-column gap-2 position-relative text-break">
+        <div class="d-flex justify-content-between align-items-center gap-2">
+          <span t-if="course['category']" class="small fw-bold text-uppercase text-primary o_training_catalogue_domain" t-out="course['category']"/>
+          <span t-if="course.get('is_new')" class="badge text-bg-primary ms-auto">Nouveau</span>
+        </div>
+        <h2 class="h5 mb-0 o_training_catalogue_title"><a class="stretched-link text-decoration-none" t-att-href="'/formations/catalogue/%s' % course['id']" t-out="course['name']"/></h2>
+        <p t-if="course['presentation']" class="mb-0 o_training_catalogue_summary" style="white-space:pre-wrap" t-out="course['presentation']"/>
+        <div class="d-flex flex-wrap gap-1 small">
+          <span t-if="course['duration_label']" class="border px-2 py-1"><t t-out="course['duration_label']"/> <t t-if="course['duration_plural']">jours</t><t t-else="">jour</t></span>
+          <span t-if="course.get('level')" class="border px-2 py-1" t-out="course['level']"/>
+          <span t-if="course.get('certifying')" class="border border-warning bg-warning-subtle px-2 py-1 fw-semibold">Certifiante</span>
+          <span t-if="course.get('live')" class="border px-2 py-1 d-inline-flex align-items-center gap-1">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Avec formateur</span>
+          <span t-if="course['formats']['autonomous']" class="border px-2 py-1 d-inline-flex align-items-center gap-1">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M2 20h20"/></svg>eLearning</span>
+        </div>
+        <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
+        <ul class="list-unstyled d-flex flex-wrap gap-1 small mb-0 o_training_catalogue_formats" aria-label="Formats disponibles">
+          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['inter'] else 'text-body-secondary text-decoration-line-through'}">Inter</li>
+          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['intra'] else 'text-body-secondary text-decoration-line-through'}">Intra</li>
+          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['autonomous'] else 'text-body-secondary text-decoration-line-through'}">Autonomie</li>
+        </ul>
+        <ul t-if="course['offers']" class="small mb-0 o_training_catalogue_offers">
+          <li t-foreach="course['offers']" t-as="offer"><a class="position-relative z-2" t-att-href="offer['url']"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></a></li>
+        </ul>
+      </div>
+      <div class="card-footer bg-body-tertiary d-flex justify-content-between align-items-end gap-2 small">
+        <div>
+          <span class="d-block text-body-secondary"><t t-if="course['next_label']">Prochaine session</t><t t-else="">Sessions</t></span>
+          <strong t-if="course['next_label']" t-out="course['next_label']"/>
+          <strong t-else="">Sur demande</strong>
+        </div>
+        <div class="text-end">
+          <span class="d-block text-body-secondary"><t t-if="course['price_per_participant']">Par participant</t><t t-else="">Tarif</t></span>
+          <strong t-if="course['price_label']"><t t-out="course['price_label']"/> HT</strong>
+          <strong t-else="">Sur devis</strong>
+        </div>
+      </div></div>
+    </article>
+  </template>
   <template id="public_catalogue" name="General training catalogue">
     <t t-call="portal.frontend_layout" additional_title.translate="Formations">
-      <div id="wrap" class="container py-4 o_training_public_page o_not_editable">
-        <h1>Formations</h1>
-        <form action="/formations" method="get" class="row g-3 mb-4">
-          <div class="col-md-4"><label for="search">Rechercher</label><input id="search" name="search" class="form-control" t-att-value="search"/></div>
-          <div class="col-md-3"><label for="category">Catégorie</label><select id="category" name="category" class="form-select"><option value="">Toutes</option><option t-foreach="categories" t-as="item" t-att-value="item[0]" t-att-selected="str(item[0]) == category" t-out="item[1]"/></select></div>
-          <div class="col-md-3"><label for="mode">Modalité</label><select id="mode" name="mode" class="form-select"><option value="">Toutes</option><option value="onsite" t-att-selected="mode == 'onsite'">Présentiel</option><option value="remote" t-att-selected="mode == 'remote'">Distanciel</option><option value="blended" t-att-selected="mode == 'blended'">Mixte</option><option value="autonomous" t-att-selected="mode == 'autonomous'">Autonome</option></select></div>
-          <div class="col-md-2 align-self-end"><button class="btn btn-primary">Rechercher</button></div>
-        </form>
-        <p t-if="not courses">Aucune formation publiée.</p>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
-          <article t-foreach="courses" t-as="course" class="col">
-            <div class="card h-100 rounded-0 border o_training_catalogue_card"><div class="card-body d-flex flex-column position-relative text-break">
-              <h2 class="h5"><a class="stretched-link text-decoration-none" t-att-href="'/formations/catalogue/%s' % course['id']" t-out="course['name']"/></h2>
-              <p t-if="course['presentation']" class="mb-2" style="white-space:pre-wrap" t-out="course['presentation']"/>
-              <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
-              <ul t-if="course['offers']" class="small mb-2">
-                <li t-foreach="course['offers']" t-as="offer"><a class="position-relative z-2" t-att-href="offer['url']"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></a></li>
-              </ul>
-              <span class="mt-auto pt-2 fw-bold text-primary" aria-hidden="true">Voir la fiche →</span>
-            </div></div>
-          </article>
-        </div>
-        <nav t-if="pager['page_count'] &gt; 1" class="d-flex justify-content-center mt-4" aria-label="Pages du catalogue">
-          <t t-call="portal.pager" classname.f="flex-wrap justify-content-center"/>
+      <div id="wrap" class="o_training_public_page o_training_catalogue o_not_editable">
+        <section class="bg-primary text-white py-4 py-md-5">
+          <div class="container">
+            <h1 class="text-white">Formations</h1>
+            <p class="lead mb-3"><t t-out="published_count"/> formation(s), en session inter-entreprises, pour votre équipe ou en autonomie.</p>
+            <form action="/formations" method="get" role="search" class="d-flex flex-wrap gap-0 o_training_catalogue_search">
+              <label for="search" class="visually-hidden">Rechercher une formation</label>
+              <input id="search" name="search" type="search" class="form-control form-control-lg rounded-0 flex-grow-1" placeholder="Intitulé, outil, certification…" t-att-value="search"/>
+              <input t-foreach="hidden_options.items()" t-as="item" type="hidden" t-att-name="item[0]" t-att-value="item[1]"/>
+              <button class="btn btn-lg btn-warning rounded-0 fw-bold">Rechercher</button>
+            </form>
+            <p t-if="suggestions" class="small mt-3 mb-0 d-flex flex-wrap gap-2 align-items-center">
+              <span>Recherches fréquentes :</span>
+              <a t-foreach="suggestions" t-as="item" class="btn btn-sm btn-outline-light rounded-0" t-att-href="item['url']" t-out="item['label']"/>
+            </p>
+          </div>
+        </section>
+        <nav class="bg-body-tertiary border-bottom" aria-label="Formats de formation">
+          <div class="container d-flex flex-wrap o_training_catalogue_formats_nav">
+            <a t-foreach="formats" t-as="item" t-att-href="item['url']" t-att-aria-current="'page' if item['selected'] else None"
+               class="px-3 py-3 text-decoration-none text-body">
+              <span class="d-block fw-bold"><t t-out="item['label']"/> <span class="fw-normal">(<t t-out="item['count']"/>)</span></span>
+              <span t-if="item['hint']" class="d-block small text-body-secondary" t-out="item['hint']"/>
+            </a>
+          </div>
         </nav>
+        <div class="container py-4">
+          <div class="row g-4">
+            <aside class="col-lg-3" aria-label="Filtres">
+              <details class="d-lg-none mb-3"><summary class="btn btn-outline-primary w-100">Filtrer<t t-if="active_facets"> (<t t-out="len(active_facets)"/>)</t></summary>
+                <t t-call="training_catalog.public_catalogue_facets"/>
+              </details>
+              <div class="d-none d-lg-block"><t t-call="training_catalog.public_catalogue_facets"/></div>
+              <div id="training_catalogue_aside" class="mt-4"/>
+            </aside>
+            <section class="col-lg-9" aria-label="Résultats">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <p class="mb-0" role="status"><strong t-out="result_count"/> formation(s)</p>
+                <nav class="small d-flex flex-wrap gap-2 align-items-center" aria-label="Trier les résultats">
+                  <span>Trier par :</span>
+                  <a t-foreach="sorts" t-as="item" t-att-href="item['url']" t-att-aria-current="'true' if item['selected'] else None"
+                     t-attf-class="text-decoration-none #{'fw-bold text-body' if item['selected'] else ''}" t-out="item['label']"/>
+                </nav>
+              </div>
+              <ul t-if="active_facets" class="list-unstyled d-flex flex-wrap gap-2 mb-3" aria-label="Filtres actifs">
+                <li t-foreach="active_facets" t-as="item"><a class="btn btn-sm btn-light border rounded-0" t-att-href="item['url']"><t t-out="item['label']"/> <span aria-hidden="true">×</span><span class="visually-hidden"> (retirer)</span></a></li>
+                <li><a class="btn btn-sm btn-link" t-att-href="clear_url">Tout effacer</a></li>
+              </ul>
+              <p t-if="not courses">Aucune formation ne correspond à ces critères.</p>
+              <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                <t t-foreach="courses" t-as="course"><t t-call="training_catalog.public_catalogue_card"/></t>
+              </div>
+              <nav t-if="pager['page_count'] &gt; 1" class="d-flex justify-content-center mt-4" aria-label="Pages du catalogue">
+                <t t-call="portal.pager" classname.f="flex-wrap justify-content-center"/>
+              </nav>
+            </section>
+          </div>
+        </div>
       </div>
     </t>
+  </template>
+  <template id="public_catalogue_facets" name="Public catalogue filters">
+    <div class="d-flex justify-content-between align-items-baseline mb-2">
+      <h2 class="h5 mb-0">Affiner</h2>
+      <a t-if="active_facets" class="small" t-att-href="clear_url">Tout effacer</a>
+    </div>
+    <div t-foreach="facet_groups" t-as="group" class="border-top py-3">
+      <h3 class="h6 fw-bold" t-out="group[0]"/>
+      <ul class="list-unstyled mb-0 d-flex flex-column gap-1 small">
+        <li t-foreach="group[1]" t-as="item">
+          <a t-att-href="item['url']" t-att-aria-current="'true' if item['selected'] else None"
+             t-attf-class="d-flex justify-content-between gap-2 text-decoration-none py-1 #{'fw-bold' if item['selected'] else 'text-body'}">
+            <span><span t-if="item['selected']" aria-hidden="true">✓ </span><t t-out="item['label']"/></span>
+            <span class="text-body-secondary" t-out="item['count']"/>
+          </a>
+        </li>
+      </ul>
+    </div>
   </template>
   <template id="public_course" name="General training presentation">
     <!-- Set before the call: the layout head is rendered before the call body. -->

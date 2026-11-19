@@ -10,6 +10,11 @@ class ResCompany(models.Model):
         default=6,
         help="Months after its first publication during which a course is shown as new. 0 disables the badge.",
     )
+    training_catalogue_suggestions = fields.Text(
+        string="Catalogue Search Suggestions",
+        translate=True,
+        help="One search per line, offered under the catalogue search field (eight at most).",
+    )
     course_review_responsible_id = fields.Many2one(
         "res.users",
         domain="[('active', '=', True), ('share', '=', False), ('company_ids', 'in', id)]",

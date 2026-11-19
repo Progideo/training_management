@@ -2,7 +2,7 @@
 {
     "name": "Training Catalogue",
     "summary": "Shared course identities without attendance or learner progression",
-    "version": "20.0.1.8.0",
+    "version": "20.0.1.9.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
@@ -12,6 +12,7 @@
         "web.assets_frontend": [
             "training_catalog/static/src/course_share.js",
             "training_catalog/static/src/course_share.xml",
+            "training_catalog/static/src/catalogue.scss",
         ],
     },
     "data": [

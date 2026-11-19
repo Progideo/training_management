@@ -9,6 +9,7 @@
                     <group>
                         <field name="course_review_responsible_id" options="{'no_create': True}"/>
                         <field name="training_catalogue_new_months"/>
+                        <field name="training_catalogue_suggestions" placeholder="One search per line"/>
                     </group>
                 </page>
             </xpath>

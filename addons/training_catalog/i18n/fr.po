@@ -306,3 +306,18 @@ msgstr "Nombre de mois après la première publication pendant lesquels une form
 #: code:addons/training_catalog/models/res_company.py:0
 msgid "The « New » badge duration cannot be negative."
 msgstr "La durée du badge « Nouveau » ne peut pas être négative."
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_res_company__training_catalogue_suggestions
+msgid "Catalogue Search Suggestions"
+msgstr "Recherches fréquentes du catalogue"
+
+#. module: training_catalog
+#: model:ir.model.fields,help:training_catalog.field_res_company__training_catalogue_suggestions
+msgid "One search per line, offered under the catalogue search field (eight at most)."
+msgstr "Une recherche par ligne, proposée sous le champ de recherche du catalogue (huit au maximum)."
+
+#. module: training_catalog
+#: model_terms:ir.ui.view,arch_db:training_catalog.view_company_form_course_reviews
+msgid "One search per line"
+msgstr "Une recherche par ligne"
