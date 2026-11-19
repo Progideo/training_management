@@ -71,7 +71,6 @@ if phase == "sessions_prepare":
         )
     )
     delivery.action_publish_session(reason="Fictional publication")
-    delivery.action_guarantee_session(reason="Explicit fictional operator commitment")
     notice = env["training.session.alert.notice"].search([("delivery_id", "=", delivery.id)])
     assert len(notice) == 1 and notice.mail_id
     mail = notice.mail_id
@@ -106,7 +105,7 @@ elif phase == "sessions_verify":
         "email": mail.email_to,
         "state": mail.state,
     } == saved["mail"]
-    assert env["training.delivery"].browse(saved["delivery"])._session_public_row()["guaranteed"]
+    assert "guaranteed" not in env["training.delivery"].browse(saved["delivery"])._session_public_row()
     print("P16 and earlier histories/files/consents/mail exactly preserved")
 elif phase == "sessions_concurrency":
     saved = json.loads(params.get_str(key))
