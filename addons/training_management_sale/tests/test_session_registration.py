@@ -58,8 +58,12 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertNotIn(delivery.name, response.text)
         self.assertIn(f"/formations/demande?course={self.course.id}", response.text)
         # The session is structured data of the course page.
-        (schema,) = page.xpath("//script[@type='application/ld+json']/text()")
-        (instance,) = json.loads(schema)["hasCourseInstance"]
+        (schema,) = [
+            item
+            for item in map(json.loads, page.xpath("//script[@type='application/ld+json']/text()"))
+            if isinstance(item, dict) and item.get("@type") == "Course"
+        ]
+        (instance,) = schema["hasCourseInstance"]
         self.assertEqual((instance["@type"], instance["courseMode"]), ("CourseInstance", "onsite"))
         group = self._form_payload(url, count="3")
         self.assertIn('role="alert"', self.url_open(url, data={**group, "count": "4"}).text)

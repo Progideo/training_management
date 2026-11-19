@@ -203,8 +203,12 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         # Without an offering application, the booking card invites a contact and no format is compared.
         self.assertFalse(root.xpath("//*[@role='tablist']"))
         self.assertFalse(root.xpath("//section[@id='training_course_formats']"))
-        (schema,) = root.xpath("//script[@type='application/ld+json']/text()")
-        data = json.loads(schema)
+        # Other modules may add their own structured data: keep the course description.
+        (data,) = [
+            item
+            for item in map(json.loads, root.xpath("//script[@type='application/ld+json']/text()"))
+            if isinstance(item, dict) and item.get("@type") == "Course"
+        ]
         self.assertEqual((data["@type"], data["name"], data["courseCode"]), ("Course", self.course.name, "FIC-01"))
         self.assertEqual(data["description"], "Fictional tagline")
         self.assertTrue(data["url"].endswith(path))
