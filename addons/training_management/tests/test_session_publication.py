@@ -265,7 +265,8 @@ class TestPublicSessionRules(SessionAlertCase):
         self.assertFalse(delivery._session_public_row()["few_seats"])
         course = self.public_program.course_id
         facts = course.sudo()._catalogue_facts(self.company)[course.id]
-        self.assertTrue(facts["live"])
+        live = self.public_program.delivery_mode in ("onsite", "remote", "blended")
+        self.assertEqual((facts["live"], facts["elearning"]), (live, not live))
         self.assertEqual(facts["next_session"]["location"], "Fictional City")
         self.assertEqual(facts["next_session"]["start_at"], delivery.start_at)
         unlimited = self.dated_delivery()
