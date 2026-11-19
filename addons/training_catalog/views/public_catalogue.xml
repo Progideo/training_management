@@ -26,9 +26,9 @@
         </div>
         <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
         <ul class="list-unstyled d-flex flex-wrap gap-1 small mb-0 o_training_catalogue_formats" aria-label="Formats disponibles">
-          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['inter'] else 'text-body-secondary text-decoration-line-through'}">Inter</li>
-          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['intra'] else 'text-body-secondary text-decoration-line-through'}">Intra</li>
-          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['autonomous'] else 'text-body-secondary text-decoration-line-through'}">Autonomie</li>
+          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['inter'] else 'text-body-secondary text-decoration-line-through'}">Inter<span class="visually-hidden"><t t-if="course['formats']['inter']"> : disponible</t><t t-else=""> : non disponible</t></span></li>
+          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['intra'] else 'text-body-secondary text-decoration-line-through'}">Intra<span class="visually-hidden"><t t-if="course['formats']['intra']"> : disponible</t><t t-else=""> : non disponible</t></span></li>
+          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['autonomous'] else 'text-body-secondary text-decoration-line-through'}">Autonomie<span class="visually-hidden"><t t-if="course['formats']['autonomous']"> : disponible</t><t t-else=""> : non disponible</t></span></li>
         </ul>
         <ul t-if="course['offers']" class="small mb-0 o_training_catalogue_offers">
           <li t-foreach="course['offers']" t-as="offer"><a class="position-relative z-2" t-att-href="offer['url']"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></a></li>
@@ -88,7 +88,7 @@
             <section class="col-lg-9" aria-label="Résultats">
               <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                 <p class="mb-0" role="status"><strong t-out="result_count"/> formation(s)</p>
-                <nav class="small d-flex flex-wrap gap-2 align-items-center" aria-label="Trier les résultats">
+                <nav class="small d-flex flex-wrap gap-2 align-items-center o_training_catalogue_sorts" aria-label="Trier les résultats">
                   <span>Trier par :</span>
                   <a t-foreach="sorts" t-as="item" t-att-href="item['url']" t-att-aria-current="'true' if item['selected'] else None"
                      t-attf-class="text-decoration-none #{'fw-bold text-body' if item['selected'] else ''}" t-out="item['label']"/>
@@ -123,7 +123,7 @@
           <a t-att-href="item['url']" t-att-aria-current="'true' if item['selected'] else None"
              t-attf-class="d-flex justify-content-between gap-2 text-decoration-none py-1 #{'fw-bold' if item['selected'] else 'text-body'}">
             <span><span t-if="item['selected']" aria-hidden="true">✓ </span><t t-out="item['label']"/></span>
-            <span class="text-body-secondary" t-out="item['count']"/>
+            <span class="text-body-secondary"><t t-out="item['count']"/><span class="visually-hidden"> formation(s)</span></span>
           </a>
         </li>
       </ul>
@@ -132,6 +132,7 @@
   <template id="public_course" name="General training presentation">
     <!-- Set before the call: the layout head is rendered before the call body. -->
     <t t-set="additional_title" t-value="course['name']"/>
+    <t t-set="head"><meta name="description" t-att-content="page_description"/></t>
     <t t-call="portal.frontend_layout">
       <div id="wrap" class="o_training_public_page o_training_course_page o_not_editable">
         <p t-if="preview_unpublished" class="alert alert-warning rounded-0 mb-0 text-center" role="status">Aperçu : cette présentation générale n’est pas publiée et n’est visible que par les éditeurs du catalogue.</p>
@@ -140,7 +141,7 @@
             <nav aria-label="Fil d’Ariane">
               <ol class="breadcrumb mb-3 small">
                 <li class="breadcrumb-item"><a class="text-white" href="/formations">Catalogue</a></li>
-                <li t-if="course['category']" class="breadcrumb-item text-white-50" t-out="course['category']"/>
+                <li t-if="course['category']" class="breadcrumb-item text-white" t-out="course['category']"/>
                 <li class="breadcrumb-item active text-white" aria-current="page" t-out="course['name']"/>
               </ol>
             </nav>
@@ -154,19 +155,19 @@
             <p t-if="tagline" class="lead mb-4 o_training_course_tagline" style="white-space:pre-wrap" t-out="tagline"/>
             <dl class="row row-cols-2 row-cols-md-4 g-3 mb-0 o_training_course_figures">
               <div t-if="duration_label or version_details" class="col">
-                <dt class="small text-white-50 fw-normal">Durée</dt>
+                <dt class="small text-white fw-normal">Durée</dt>
                 <dd class="mb-0 fw-semibold"><t t-out="duration_label"/><t t-if="duration_label and version_details and version_details['hours']"> · </t><t t-if="version_details and version_details['hours']"><t t-out="version_details['hours']"/> h</t></dd>
               </div>
               <div t-if="tabs" class="col">
-                <dt class="small text-white-50 fw-normal">Formats</dt>
+                <dt class="small text-white fw-normal">Formats</dt>
                 <dd class="mb-0 fw-semibold"><t t-foreach="tabs" t-as="tab"><t t-out="tab['label']"/><t t-if="not tab_last"> · </t></t></dd>
               </div>
               <div t-if="course.get('certifying')" class="col">
-                <dt class="small text-white-50 fw-normal">Validation</dt>
+                <dt class="small text-white fw-normal">Validation</dt>
                 <dd class="mb-0 fw-semibold">Certification</dd>
               </div>
               <div t-if="public_reference" class="col">
-                <dt class="small text-white-50 fw-normal">Référence</dt>
+                <dt class="small text-white fw-normal">Référence</dt>
                 <dd class="mb-0 fw-semibold" t-out="public_reference"/>
               </div>
             </dl>
@@ -192,7 +193,7 @@
               <div id="training_course_booking" class="card rounded-0 border-primary o_training_course_booking" tabindex="-1" aria-label="Choisir un format">
                 <t t-if="tabs">
                   <div class="card-header bg-body p-0">
-                    <div class="nav nav-pills flex-column flex-sm-row nav-fill o_training_course_tabs" role="tablist">
+                    <div class="nav nav-pills flex-column flex-sm-row nav-fill o_training_course_tabs" role="tablist" aria-label="Formats de la formation">
                       <button t-foreach="tabs" t-as="tab" type="button" role="tab" data-bs-toggle="tab"
                               t-attf-class="nav-link rounded-0 #{'active' if tab['key'] == active_format else ''}"
                               t-att-id="'training_booking_%s_tab' % tab['key']"
@@ -205,7 +206,7 @@
                     </div>
                   </div>
                   <div class="card-body tab-content">
-                    <div t-if="formats['inter']" id="training_booking_inter" role="tabpanel" aria-labelledby="training_booking_inter_tab"
+                    <div t-if="formats['inter']" id="training_booking_inter" role="tabpanel" tabindex="0" aria-labelledby="training_booking_inter_tab"
                          t-attf-class="tab-pane fade #{'show active' if active_format == 'inter' else ''}">
                       <p class="h4 mb-1"><t t-if="course.get('session_price')"><t t-out="course['session_price']['label']"/> HT</t><t t-else="">Sur devis</t></p>
                       <p class="small text-body-secondary"><t t-if="course.get('session_price')">Par participant. </t>Session à date fixe, avec des participants d’autres entreprises.</p>
@@ -215,13 +216,13 @@
                       <p t-if="alert_url and not course.get('next_session')"><a class="btn btn-outline-primary" t-att-href="alert_url">Être alerté des nouvelles dates</a></p>
                       <p t-if="sessions_url" class="small mb-0"><a t-att-href="sessions_url">Toutes les dates et disponibilités</a></p>
                     </div>
-                    <div t-if="formats['intra']" id="training_booking_intra" role="tabpanel" aria-labelledby="training_booking_intra_tab"
+                    <div t-if="formats['intra']" id="training_booking_intra" role="tabpanel" tabindex="0" aria-labelledby="training_booking_intra_tab"
                          t-attf-class="tab-pane fade #{'show active' if active_format == 'intra' else ''}">
                       <p class="h4 mb-1">Sur devis</p>
                       <p class="small text-body-secondary">Pour votre équipe, aux dates et dans le lieu qui vous conviennent, avec le programme et la durée de la formation.</p>
                       <div id="training_booking_intra_actions"/>
                     </div>
-                    <div t-if="formats['autonomous']" id="training_booking_autonomous" role="tabpanel" aria-labelledby="training_booking_autonomous_tab"
+                    <div t-if="formats['autonomous']" id="training_booking_autonomous" role="tabpanel" tabindex="0" aria-labelledby="training_booking_autonomous_tab"
                          t-attf-class="tab-pane fade #{'show active' if active_format == 'autonomous' else ''}">
                       <t t-set="autonomous" t-value="course.get('autonomous') or {}"/>
                       <p class="h4 mb-1"><t t-if="autonomous.get('price')"><t t-out="autonomous['price']['label']"/> HT</t><t t-else="">Sur devis</t></p>

@@ -184,6 +184,8 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         text = " ".join(root.text_content().split())
         self.assertEqual(root.xpath("//h1/text()"), [self.course.name])
         self.assertEqual(root.xpath("//p[contains(@class, 'o_training_course_tagline')]/text()"), ["Fictional tagline"])
+        # One description for search engines: the tagline.
+        self.assertEqual(root.xpath("//head/meta[@name='description']/@content"), ["Fictional tagline"])
         for value in (
             "Fictional detailed presentation",
             "Fictional first highlight",
@@ -245,3 +247,76 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.course.with_user(self.editor).public_catalogue = True
         published = html.fromstring(self.url_open(url).content)
         self.assertFalse(published.xpath("//p[@role='status'][contains(@class, 'alert-warning')]"))
+
+    def test_combined_filters_counts_and_accessible_labels(self):
+        company = self.course.sudo().company_id
+        model = self.env["training.course"]
+        other_category = self.env["training.category"].create(
+            {"name": "Fictional combined other", "company_id": company.id}
+        )
+        base = {"company_id": company.id, "public_catalogue": True, "category_id": self.category.id}
+        target = model.create(
+            {
+                **base,
+                "name": "Fictional combined target",
+                "live_duration_days": 2,
+                "public_level": "intermediate",
+                "public_certifying": True,
+            }
+        )
+        model.create(
+            [
+                {
+                    **base,
+                    "name": "Fictional combined uncertified",
+                    "live_duration_days": 2,
+                    "public_level": "intermediate",
+                },
+                {
+                    **base,
+                    "name": "Fictional combined long",
+                    "live_duration_days": 5,
+                    "public_level": "intermediate",
+                    "public_certifying": True,
+                },
+                {
+                    **base,
+                    "category_id": other_category.id,
+                    "name": "Fictional combined elsewhere",
+                    "live_duration_days": 2,
+                    "public_level": "intermediate",
+                    "public_certifying": True,
+                },
+            ]
+        )
+        self.authenticate(None, None)
+        query = {
+            "search": "Fictional combined",
+            "category": str(self.category.id),
+            "level": "intermediate",
+            "duration": "medium",
+            "certifying": "1",
+        }
+        root = html.fromstring(self.url_open("/formations?" + urlencode(query)).content)
+        self.assertEqual(root.xpath("//article//h2/a/text()"), [target.name])
+        self.assertEqual(
+            len(root.xpath("//ul[@aria-label='Filtres actifs']/li")), 5
+        )  # four filters and « Tout effacer »
+        # Each count is the number of courses the choice would show with the other filters kept.
+        desktop = root.xpath("//aside/div[contains(@class, 'd-lg-block')]")[0]
+
+        def count(label):
+            (link,) = desktop.xpath(".//a[.//text()[normalize-space()='%s']]" % label)
+            return " ".join(link.xpath("string(./span[last()])").split())
+
+        self.assertEqual(count("4 jours et plus"), "1 formation(s)")
+        self.assertEqual(count("Certifiante"), "1 formation(s)")
+        self.assertEqual(count("Fictional combined other"), "1 formation(s)")
+        # Unavailable formats are announced in words, not only struck through.
+        formats = " ".join(root.xpath("string(//ul[contains(@class, 'o_training_catalogue_formats')])").split())
+        self.assertIn("Inter : non disponible", formats)
+        # Mobile: the filters open from a labelled disclosure showing the number of active filters.
+        summary = " ".join(root.xpath("string(//aside/details/summary)").split())
+        self.assertEqual(summary, "Filtrer (4)")
+        clear = root.xpath("//ul[@aria-label='Filtres actifs']//a[normalize-space()='Tout effacer']/@href")[0]
+        self.assertEqual(parse_qs(urlsplit(clear).query), {})

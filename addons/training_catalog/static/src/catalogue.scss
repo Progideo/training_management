@@ -23,7 +23,8 @@
     }
 
     aside a {
-        min-height: 32px;
+        min-height: 44px;
+        align-items: center;
     }
 }
 
@@ -62,5 +63,45 @@
             position: sticky;
             top: 4rem;
         }
+    }
+}
+
+// Accessibility (lot 5), on both public pages: AA contrast for secondary text,
+// 44 px targets for buttons and navigation, a visible focus ring.
+.o_training_catalogue,
+.o_training_course_page {
+    // Themes may soften secondary text below 4.5:1; keep the body colour.
+    --bs-secondary-color: var(--bs-body-color);
+
+    .btn {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .o_training_catalogue_sorts a,
+    .page-link {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    summary:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    .tab-pane:focus-visible {
+        outline: 3px solid var(--bs-warning);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+
+    .o_training_catalogue_card:focus-within {
+        outline: 3px solid var(--bs-warning);
+        outline-offset: 2px;
     }
 }

@@ -1,6 +1,7 @@
 """Public general information, with optional offers supplied by each application."""
 
 import json
+import textwrap
 from urllib.parse import quote, urlencode
 
 from dateutil.relativedelta import relativedelta
@@ -428,6 +429,10 @@ class TrainingCatalogue(http.Controller):
             "tabs": [{"key": key, "label": FORMAT_LABELS[key], "price": prices[key]} for key in tabs],
             "active_format": active,
             "tagline": paragraphs[0] if paragraphs else "",
+            # Search result snippet: the tagline, cut at a word near 160 characters.
+            "page_description": textwrap.shorten(
+                " ".join((paragraphs[0] if paragraphs else row["name"]).split()), 160, placeholder=" …"
+            ),
             "presentation_more": "\n\n".join(paragraphs[1:]),
             "duration_label": duration,
             "autonomous_duration": durations["autonomous"],
