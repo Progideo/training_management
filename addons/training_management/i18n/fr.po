@@ -13784,12 +13784,12 @@ msgstr "Gérer mes alertes de dates ou me désabonner"
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_session_publication_inspection_form
 msgid ""
-"This private diagnostic does not publish the session, open registration or "
-"guarantee departure. Availability is checked at the server time shown below."
+"This private diagnostic does not publish or confirm the session, nor open "
+"registration. Availability is checked at the server time shown below."
 msgstr ""
-"Ce diagnostic privé ne publie pas la session, n’ouvre pas les inscriptions "
-"et ne garantit pas le départ. La disponibilité est constatée à l’heure "
-"serveur indiquée ci-dessous."
+"Ce diagnostic privé ne publie ni ne confirme la session et n’ouvre pas les "
+"inscriptions. La disponibilité est constatée à l’heure serveur indiquée "
+"ci-dessous."
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
@@ -13799,12 +13799,14 @@ msgstr "Session publique"
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_delivery_public_session
 msgid ""
-"Publication, commercial opening and guaranteed departure require explicit "
-"decisions. No private client or participant information is published."
+"Publication and commercial opening require explicit decisions. Once "
+"confirmed, the session is shown as confirmed to visitors. No private client "
+"or participant information is published."
 msgstr ""
-"La publication, l’ouverture commerciale et le départ garanti nécessitent des"
-" décisions explicites. Aucune information privée sur les clients ou "
-"participants n’est publiée."
+"La publication et l’ouverture commerciale nécessitent des décisions "
+"explicites. Une fois confirmée, la session est signalée comme confirmée aux "
+"visiteurs. Aucune information privée sur les clients ou participants n’est "
+"publiée."
 
 #. module: training_management
 #: model:ir.model.fields,field_description:training_management.field_training_session_publication_inspection__internal_state

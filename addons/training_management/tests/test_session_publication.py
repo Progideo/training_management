@@ -248,11 +248,10 @@ class TestPublicSessionRules(SessionAlertCase):
         self.assertFalse(delivery._session_public_row())
         delivery.action_publish_session(reason="Public inter-company session approved")
         self.assertEqual(delivery._session_public_row()["status"], "confirmed")
-        self.assertFalse(delivery._session_public_row()["guaranteed"])
-        delivery.action_guarantee_session(reason="Explicit operator commitment")
-        self.assertTrue(delivery._session_public_row()["guaranteed"])
-        delivery.action_revoke_session_guarantee(reason="Commitment revoked")
-        self.assertFalse(delivery._session_public_row()["guaranteed"])
+        # Confirmation is the single public commitment; there is no separate guarantee.
+        self.assertTrue(delivery._session_public_row()["confirmed"])
+        self.assertNotIn("guaranteed", delivery._session_public_row())
+        self.assertFalse(hasattr(delivery, "action_guarantee_session"))
 
     def test_complete_and_expired_reservations_are_live(self):
         delivery = self.dated_delivery()
@@ -270,7 +269,6 @@ class TestPublicSessionRules(SessionAlertCase):
         self.subscribe()
         delivery = self.dated_delivery()
         delivery.action_publish_session(reason="Approved")
-        delivery.action_guarantee_session(reason="Committed")
         first = delivery.session_first_published_at
         delivery.action_change_dates(
             start_at=delivery.start_at + timedelta(days=1),
@@ -278,7 +276,6 @@ class TestPublicSessionRules(SessionAlertCase):
             reason="Rescheduled",
         )
         self.assertFalse(delivery._session_public_row())
-        self.assertFalse(delivery.session_guaranteed)
         delivery.action_publish_session(reason="Reviewed new dates")
         self.assertEqual(delivery.session_first_published_at, first)
         self.assertEqual(len(self.notices(delivery)), 1)
@@ -286,7 +283,6 @@ class TestPublicSessionRules(SessionAlertCase):
         self.assertTrue(delivery._session_public_row())
         delivery.write({"timezone": "America/Montreal"})
         self.assertFalse(delivery._session_public_row())
-        self.assertFalse(delivery.session_guaranteed)
 
     def test_retirement_cancellation_start_and_sales_close_hide_session(self):
         delivery = self.dated_delivery()
@@ -306,7 +302,6 @@ class TestPublicSessionRules(SessionAlertCase):
         for key, value in (
             ("session_public", True),
             ("session_sales_open", True),
-            ("session_guaranteed", True),
             ("session_first_published_at", fields.Datetime.now()),
         ):
             with self.assertRaises(ValidationError):

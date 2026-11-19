@@ -99,16 +99,17 @@ capacité globale et l'engagement commercial, réduire explicitement le lot ou
 l'annuler après traitement des inscriptions. Une réduction sous les noms encore
 occupants est refusée. Aucun de ces gestes ne crée de facture, d'avoir ou de remboursement.
 
-Publier une session et garantir son départ
-------------------------------------------
+Publier et confirmer une session
+--------------------------------
 
 Sur la réalisation, **Session : état et disponibilité** est un diagnostic de
 la situation. Dans l'onglet **Session publique**, décider séparément de
-l'ouverture commerciale, de la publication et du départ garanti motivé.
+l'ouverture commerciale et de la publication. Le bouton **Confirmer** de la
+réalisation signale la session comme confirmée aux visiteurs.
 La session doit être future, datée et liée à un programme actuellement public.
 
-La complétude prime sur ouverte/confirmée. Une confirmation interne ou un seuil
-atteint ne donne pas un départ garanti. Changer dates ou fuseau retire
-l'engagement et la publication jusqu'à nouvelle décision. Une session annulée,
+La complétude prime sur ouverte/confirmée. Un seuil atteint ne confirme pas
+la session. Changer dates ou fuseau retire la publication jusqu'à nouvelle
+décision. Une session annulée,
 commencée, fermée commercialement ou privée n'est plus projetée au public.
 Voir :doc:`catalogue-public` pour le parcours d'alerte volontaire.

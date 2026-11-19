@@ -89,7 +89,7 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertIn('role="alert"', self.url_open(url, data=current_payload).text)
         self.assertFalse(self.env["crm.lead"].search_count([("training_requested_delivery_id", "=", delivery.id)]))
 
-    def test_public_session_card_shows_local_schedule_sitting_mode_and_guarantee(self):
+    def test_public_session_card_shows_local_schedule_sitting_mode_and_confirmation(self):
         zone = ZoneInfo("Europe/Paris")
         day = fields.Date.today() + timedelta(days=40)
         first = datetime.combine(day, time(9, 0), tzinfo=zone)
@@ -106,6 +106,7 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
             {
                 "name": "Fictional remote days",
                 "delivery_id": delivery.id,
+                "instructor_id": self.coordinator.partner_id.id,
                 "mode": "remote",
                 "location": "Fictional private access code",
                 "start_date": day,
@@ -116,10 +117,11 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         )
         self.course.sudo().public_catalogue = True
         delivery.action_publish_session(reason="Fictional publication")
-        delivery.action_guarantee_session(reason="Fictional guarantee")
         self.authenticate(None, None)
+        self.assertNotIn("Session confirmée", self.url_open(f"/formations/catalogue/{self.course.id}").text)
+        delivery.action_confirm()
         page = self.url_open(f"/formations/catalogue/{self.course.id}").text
-        self.assertIn("Session garantie", page)
+        self.assertIn("Session confirmée", page)
         self.assertIn("9 h – 17 h", page)
         # The sitting is remote although the programme default is on site.
         mode = dict(self.env["training.session"]._fields["mode"]._description_selection(self.env))["remote"]

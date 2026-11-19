@@ -4,7 +4,7 @@
         <field name="model">training.session.publication.inspection</field>
         <field name="arch" type="xml">
             <form create="0" edit="0" delete="0">
-                <p>This private diagnostic does not publish the session, open registration or guarantee departure. Availability is checked at the server time shown below.</p>
+                <p>This private diagnostic does not publish or confirm the session, nor open registration. Availability is checked at the server time shown below.</p>
                 <group>
                     <field name="company_id" invisible="1"/>
                     <field name="delivery_id" readonly="1"/>
@@ -55,18 +55,15 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="Public Session" groups="training_management.group_training_coordinator">
-            <p>Publication, commercial opening and guaranteed departure require explicit decisions. No private client or participant information is published.</p>
+            <p>Publication and commercial opening require explicit decisions. Once confirmed, the session is shown as confirmed to visitors. No private client or participant information is published.</p>
             <group>
                         <field name="session_public"/>
                         <field name="session_sales_open"/>
                         <field name="session_first_published_at"/>
-                        <field name="session_guaranteed"/>
                     </group>
             <button name="action_open_reason" type="object" string="Publish and Open Session" context="{'reason_action': 'action_publish_session'}" invisible="kind != 'session' or state not in ('preparation', 'confirmed') or (session_public and session_sales_open)"/>
             <button name="action_open_reason" type="object" string="Withdraw Public Session" context="{'reason_action': 'action_withdraw_session'}" invisible="not session_public"/>
             <button name="action_open_reason" type="object" string="Close Session Sales" context="{'reason_action': 'action_close_session_sales'}" invisible="not session_sales_open"/>
-            <button name="action_open_reason" type="object" string="Guarantee Departure" context="{'reason_action': 'action_guarantee_session'}" invisible="session_guaranteed or kind != 'session' or state not in ('preparation', 'confirmed')"/>
-            <button name="action_open_reason" type="object" string="Revoke Departure Guarantee" context="{'reason_action': 'action_revoke_session_guarantee'}" invisible="not session_guaranteed"/>
             <field name="session_alert_notice_ids" readonly="1">
                         <list create="0" edit="0" delete="0">
                             <field name="recipient_id"/>

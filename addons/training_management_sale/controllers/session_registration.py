@@ -73,7 +73,7 @@ class TrainingSessionRegistration(TrainingCommercialCatalogue):
             "dates": dates,
             "hours": hours,
             "mode": mode,
-            "guaranteed": delivery.session_guaranteed,
+            "confirmed": delivery.state == "confirmed",
             "limit": delivery._public_registration_limit(),
         }
 
