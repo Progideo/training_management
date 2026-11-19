@@ -2,7 +2,7 @@
 > consolidé v1 et ses 41 décisions remplacent les prescriptions contradictoires
 > ci-dessous. TM couvre les formations avec formateur ; eLearning est autonome.
 > Catalogue commun, programmes et suivis distincts. Aucune reprise métier/Odoo 19.
-> Avant achat : présentation générale seulement, sans programme détaillé ni démo.
+> Avant achat : présentation générale et programme (PDF compris, décision du 19 novembre 2026), sans démo.
 > P15 reste annulé, P17–P19 reportés, P20 encadré préservé. La cible et l'état
 > de la première tranche sont décrits dans [J1](../j1-shared-catalog.md).
 > Cette révision ne déclare pas les fonctionnalités cibles déjà livrées.
@@ -552,7 +552,7 @@ Acceptation — Nominal : la demande et ses pièces sont retrouvées dans le dos
 
 ## P03 Présentation générale avant achat — révision du 3 novembre 2026
 
-La fiche commune présente l’intitulé, la catégorie, la présentation et les objectifs généraux, puis distingue les offres avec formateur et autonomes. Les objectifs, le public, les prérequis, la durée indicative et les conditions commerciales peuvent être exposés. Les inclusions éventuelles d’un examen officiel sont explicites ; un examen blanc ne constitue pas une certification officielle. Le programme détaillé et les ressources restent privés. Rattachement : CAT01, DOC02 et décision D28 du cadrage consolidé.
+La fiche commune présente l’intitulé, la catégorie, la présentation et les objectifs généraux, puis distingue les offres avec formateur et autonomes. Les objectifs, le public, les prérequis, la durée indicative et les conditions commerciales peuvent être exposés. Les inclusions éventuelles d’un examen officiel sont explicites ; un examen blanc ne constitue pas une certification officielle. Le programme et le PDF de référence des versions publiées sont publics (décision du 19 novembre 2026) ; les ressources restent privées. Rattachement : CAT01, DOC02 et décision D28 du cadrage consolidé.
 
 Acceptation — Nominal : une même formation présente ses offres distinctes, sans créer de droit d’accès par consultation. Erreur : ni lien direct ni recherche ne révèle un contenu pédagogique privé ; aucun examen blanc ou objectif Qualiopi n’est présenté comme une certification acquise.
 
@@ -560,7 +560,7 @@ Acceptation — Nominal : une même formation présente ses offres distinctes, s
 
 Les extraits PDF et mini-quiz publics prévus antérieurement sont retirés du périmètre de lancement par la décision D28. Les anciens liens publics sont fermés. Les données et octets historiques sont conservés, ainsi que la génération des programmes et les fonctions privées autorisées ; aucun retrait des fonctions encadrées privées n’est déduit de cette décision.
 
-Acceptation — Les routes publiques de programme détaillé, extrait et démonstration ne donnent aucun contenu. Un participant disposant du contexte autorisé conserve son téléchargement privé du programme applicable.
+Acceptation — Le PDF de référence d'une version publiée est téléchargeable tel que conservé ; les routes d'extrait et de démonstration ne donnent aucun contenu. Un participant disposant du contexte autorisé conserve son téléchargement privé du programme applicable.
 
 # 20 Phase 1 Entreprises et examens blancs
 

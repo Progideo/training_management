@@ -17,8 +17,8 @@ Trouver une formation
 
 Pour un besoin particulier, utiliser **Décrire un projet sur mesure** depuis le catalogue.
 
-Le programme détaillé, les supports et les démonstrations restent privés avant
-achat. Une consultation ne crée aucun accès pédagogique. Un examen blanc et un examen officiel sont deux
+Le programme et son PDF sont consultables par tous ; les supports et les
+démonstrations restent privés avant achat. Une consultation ne crée aucun accès pédagogique. Un examen blanc et un examen officiel sont deux
 prestations différentes : vérifier les inclusions indiquées sur la fiche et le devis.
 
 .. figure:: images/catalogue.jpg

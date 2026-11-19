@@ -15,7 +15,7 @@ viendront aux lots suivants.
 | Lieu public | Champ de la réalisation (ville, « Classe virtuelle »). Les lieux des séances restent privés. |
 | Places restantes | Calculées comme les disponibilités S03 ; signalées sous le seuil de la société (3 par défaut, 0 le désactive). Capacité nulle : aucun décompte. |
 | Prochaine session | Première session publique, ouverte, future et non complète d'une version publiée. |
-| Programme | Affiché en entier depuis la fiche formation ; le PDF de programme reste privé (cadrage du 3 novembre). |
+| Programme | Affiché en entier depuis la fiche formation ; PDF de référence de chaque version publiée téléchargeable par tous (décision du 19 novembre 2026, voir J16). |
 
 Le tarif et les durées de l'offre autonome relèvent du dépôt eLearning.
 

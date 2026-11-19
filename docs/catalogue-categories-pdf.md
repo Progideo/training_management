@@ -24,7 +24,7 @@ et mini-quiz restent P04 (#26). Aucun changement aux convocations S04.
 | --- | --- | --- |
 | Classement | Une catégorie pédagogique par formation, liste plate propre à la société ; facultative en brouillon, demandée avant une nouvelle validation/publication | Une seule sélection, pas d'arborescence ni d'étiquettes multiples. Les formations historiques restent utilisables sans reclassement forcé. |
 | PDF de référence | Génération et conservation automatiques lors de la validation du programme | Aucun bouton supplémentaire pour figer le document. Un échec PDF empêche la validation ; les téléchargements suivants rendent exactement le même fichier. |
-| Diffusion initiale | Téléchargement interne par les profils déjà autorisés ; transmission au client volontaire dans le circuit commercial existant | Aucun compte ni action imposés au client, aucun envoi automatique. L'accès direct client/formateur et le téléchargement public seront traités dans leurs lots respectifs. |
+| Diffusion initiale | Téléchargement interne par les profils déjà autorisés ; transmission au client volontaire dans le circuit commercial existant | Aucun compte ni action imposés au client, aucun envoi automatique. L'accès direct client/formateur sera traité dans son lot. Téléchargement public des versions publiées : voir [J16](j16-general-public-catalogue.md) (19 novembre 2026). |
 
 Le catalogue public et le téléchargement portail restent hors de ce lot : ils
 nécessitent leurs routes, leur sélection des versions et leur recette d'accès.

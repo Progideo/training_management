@@ -52,6 +52,7 @@ class TrainingPublicCatalogue(TrainingCatalogue):
                         program.delivery_mode
                     ),
                     "presentation": course.presentation or "",
+                    "pdf": bool(program.pdf_attachment_id),
                     "tags": course._catalogue_tags()[course.id],
                     "sections": program._public_general_sections(),
                     # Only a count: the link to verified publications is shown when one exists.
@@ -68,22 +69,29 @@ class TrainingPublicCatalogue(TrainingCatalogue):
             },
         )
 
-    @http.route(
-        ["/formations/<int:program_id>/pdf", "/formations/<int:program_id>/apercu.pdf"],
-        type="http",
-        auth="public",
-        website=True,
-        methods=["GET"],
-    )
+    @http.route("/formations/<int:program_id>/pdf", type="http", auth="public", website=True, methods=["GET"])
+    def public_programme_pdf(self, program_id, **kwargs):
+        # Decision of 19 November 2026: the programme is public. Only the frozen
+        # reference PDF of a currently published public version is served, as
+        # stored at validation; the attachment itself stays private.
+        program = self._program(program_id)
+        attachment = program.pdf_attachment_id
+        if not attachment:
+            raise request.not_found()
+        raw = bytes(attachment.raw or b"")
+        if not raw.startswith(b"%PDF-"):
+            raise request.not_found()
+        return self._pdf(raw, attachment.name or "programme-%s.pdf" % program.id)
+
+    @http.route("/formations/<int:program_id>/apercu.pdf", type="http", auth="public", website=True, methods=["GET"])
     def retired_public_file(self, program_id, **kwargs):
-        # November 3 scope: detailed programmes and demonstrations stay private.
-        # The original frozen PDF and authorized participant download are kept.
+        # Demonstration extracts stay private (November 3 scope).
         raise request.not_found()
 
     @staticmethod
     def _pdf(raw, filename):
-        # Shared response builder for already-authorized private company files.
-        # No public programme route calls this helper.
+        # Shared response builder for already-authorized files: private company
+        # files, and the frozen PDF of a currently published public programme.
         response = Stream(type="data", data=raw, mimetype="application/pdf", download_name=filename).get_response(
             as_attachment=True
         )
