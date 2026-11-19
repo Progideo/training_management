@@ -269,7 +269,7 @@ class TestPublicSessionRules(SessionAlertCase):
         self.assertEqual((facts["live"], facts["elearning"]), (live, not live))
         self.assertEqual(facts["next_session"]["location"], "Fictional City")
         self.assertEqual(facts["next_session"]["start_at"], delivery.start_at)
-        unlimited = self.dated_delivery()
+        unlimited = self.dated_delivery(capacity=0)
         unlimited.action_publish_session(reason="Fictional publication")
         self.assertIsNone(unlimited._session_public_row()["seats_left"])
 

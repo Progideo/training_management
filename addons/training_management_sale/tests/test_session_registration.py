@@ -137,6 +137,7 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         products = self.env["product.template"]
         values = {
             "name": "Fictional inter-company tariff",
+            "company_id": self.course.company_id.id,
             "type": "service",
             "training_course_id": self.course.id,
             "training_price_basis": "person",
@@ -149,8 +150,9 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             products.create({**values, "training_price_basis": "package", "training_public_session_price": True})
         self.course.sudo().public_catalogue = True
-        facts = self.course.sudo()._catalogue_facts(self.company)[self.course.id]
+        company = self.course.company_id
+        facts = self.course.sudo()._catalogue_facts(company)[self.course.id]
         self.assertEqual(facts["session_price"]["amount"], 1200.0)
         self.assertIn("1", facts["session_price"]["label"])
         tariff.training_public_session_price = False
-        self.assertIsNone(self.course.sudo()._catalogue_facts(self.company)[self.course.id]["session_price"])
+        self.assertIsNone(self.course.sudo()._catalogue_facts(company)[self.course.id]["session_price"])
