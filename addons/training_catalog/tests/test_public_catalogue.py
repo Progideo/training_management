@@ -113,7 +113,7 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.assertEqual(own.status_code, 404)
 
     def test_facets_formats_sort_and_suggestions_keep_the_query(self):
-        company = self.course.company_id
+        company = self.course.sudo().company_id
         model = self.env["training.course"]
         base = {"company_id": company.id, "public_catalogue": True, "category_id": self.category.id}
         short = model.create(
@@ -128,7 +128,7 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
                 "public_certifying": True,
             }
         )
-        company.training_catalogue_suggestions = "Fictional facet\n\nUnused"
+        company.sudo().training_catalogue_suggestions = "Fictional facet\n\nUnused"
         self.authenticate(None, None)
         page = html.fromstring(self.url_open("/formations?search=Fictional+facet").content)
         titles = page.xpath("//article//h2/a/text()")
