@@ -66,10 +66,11 @@ class TrainingCourse(models.Model):
                 order="published_at desc, id desc",
             )
         )
-        # Every available delivery mode stays visible, each with its latest published version.
+        # The latest published version led by a trainer, which declares its possible
+        # modes, and the latest eLearning version: every available mode stays visible.
         latest = {}
         for program in programs:
-            latest.setdefault((program.course_id.id, program.delivery_mode), program)
+            latest.setdefault((program.course_id.id, program.delivery_mode == "elearning"), program)
         return offers + [program._catalogue_offer() for program in latest.values()]
 
     @api.private
@@ -84,7 +85,8 @@ class TrainingCourse(models.Model):
                     ("company_id", "=", company.id),
                     ("state", "=", "published"),
                     ("public_catalogue", "=", True),
-                ]
+                ],
+                order="published_at desc, id desc",
             )
         )
         # Public, open, future sessions only; each row is re-checked by its own projection.
@@ -104,7 +106,11 @@ class TrainingCourse(models.Model):
             )
         )
         for course in self:
-            modes = set(programs.filtered(lambda p, c=course: p.course_id == c).mapped("delivery_mode"))
+            published = programs.filtered(lambda p, c=course: p.course_id == c)
+            latest_live = published.filtered(lambda p: p.delivery_mode != "elearning")[:1]
+            modes = set(latest_live._live_modes() if latest_live else []) | (
+                {"elearning"} if "elearning" in published.mapped("delivery_mode") else set()
+            )
             upcoming = None
             for delivery in deliveries.filtered(lambda d, c=course: d.program_id.course_id == c):
                 row = delivery._session_public_row()

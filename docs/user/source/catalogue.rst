@@ -12,7 +12,11 @@ Créer une formation et sa version
 #. Identifier la formation et sa catégorie. Les catégories se gèrent dans
    :menuselection:`Formations --> Configuration --> Catégories de formation`.
 #. Préparer une version dans **Versions de programme** : objectifs, public,
-   prérequis, contenu, durée, modalités et moyens pédagogiques.
+   prérequis, contenu, durée, modalités et moyens pédagogiques. Une version avec
+   formateur a une modalité principale, qui préremplit les séances, et peut
+   déclarer d'**autres modalités possibles** (par exemple présentiel ou
+   distanciel) : chaque session fixe ensuite la sienne par ses séances. Une
+   version eLearning reste distincte.
 #. Renseigner les informations destinées au choix : résultats attendus,
    exercices/livrables, durée d'accès, inclusions, préparation et statut de
    l'examen officiel lorsqu'il existe.

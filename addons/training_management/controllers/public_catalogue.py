@@ -61,9 +61,7 @@ class TrainingPublicCatalogue(TrainingCatalogue):
                     "title": program.title,
                     "version": program.version,
                     "hours": hours,
-                    "mode": dict(program._fields["delivery_mode"]._description_selection(program.env)).get(
-                        program.delivery_mode
-                    ),
+                    "mode": program._modes_label(),
                     "objectives": sections["objectives"],
                 },
                 "audience_sections": sections["audience"],

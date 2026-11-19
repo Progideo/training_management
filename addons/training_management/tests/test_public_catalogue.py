@@ -133,20 +133,19 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
                 self.assertEqual(projected.title, title)
                 self.assertEqual(bytes(projected.pdf_attachment_id.raw), raw)
 
-    def test_catalogue_offers_latest_version_of_each_mode_with_readable_duration(self):
+    def test_catalogue_offers_latest_trainer_led_and_elearning_versions_with_their_modes(self):
         older = self.new_program(public_catalogue=True, version="V1", title="Fictional older on-site version")
         older.action_validate()
         older.action_publish()
         latest = self.new_program(
-            public_catalogue=True, version="V2", title="Fictional latest on-site version", duration_hours=21
+            public_catalogue=True,
+            version="V2",
+            title="Fictional on-site or remote version",
+            duration_hours=21,
+            also_remote=True,
         )
         latest.action_validate()
         latest.action_publish()
-        remote = self.new_program(
-            public_catalogue=True, version="V3", title="Fictional remote version", delivery_mode="remote"
-        )
-        remote.action_validate()
-        remote.action_publish()
         autonomous = self.new_program(
             public_catalogue=True,
             version="V4",
@@ -156,45 +155,65 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         )
         autonomous.action_validate()
         autonomous.action_publish()
+        # A version led by a trainer declares its possible modes, main mode first.
+        self.assertEqual(latest._live_modes(), ["onsite", "remote"])
+        self.assertEqual(older._live_modes(), ["onsite"])
+        self.assertEqual(autonomous._live_modes(), [])
+        labels = dict(latest._fields["delivery_mode"]._description_selection(latest.env))
+        self.assertIn(labels["onsite"], latest._modes_label())
+        self.assertIn(labels["remote"].lower(), latest._modes_label())
+        self.assertEqual(older._modes_label(), labels["onsite"])
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            self.new_program(delivery_mode="elearning", also_onsite=True)
         offers = {
             offer["title"]: offer
             for offer in self.env["training.course"]._catalogue_offers(self.company)
             if offer["course_id"] == self.course.id
         }
-        # One offer per available mode, each with its latest published version.
-        self.assertEqual(set(offers), {latest.title, remote.title, autonomous.title})
+        # The latest version led by a trainer and the latest eLearning version.
+        self.assertEqual(set(offers), {latest.title, autonomous.title})
+        self.assertEqual(offers[latest.title]["modes"], ["onsite", "remote"])
         self.assertIn("21 h", offers[latest.title]["conditions"])
+        self.assertIn(latest._modes_label(), offers[latest.title]["conditions"])
         self.assertNotIn("21.0", offers[latest.title]["conditions"])
         self.assertIn("Prix sur devis", offers[latest.title]["conditions"])
         self.assertNotIn("Prix sur devis", offers[autonomous.title]["conditions"])
         self.assertNotEqual(offers[autonomous.title]["kind"], offers[latest.title]["kind"])
         self.assertEqual(autonomous._public_duration_hours().replace(",", "."), "3.5")
+        facts = self.course.sudo()._catalogue_facts(self.company)[self.course.id]
+        self.assertEqual((facts["live_modes"], facts["elearning"]), (["onsite", "remote"], True))
         self.authenticate(None, None)
         path = "/formations/catalogue/" + self.env["ir.http"]._slug((self.course.id, self.course.name))
-        # A version page redirects permanently to its course page; only the latest of each mode is selected.
+        # A version page redirects permanently to its course page; only the latest versions are selected.
         for program, query in ((latest, f"version={latest.id}"), (older, ""), (autonomous, f"version={autonomous.id}")):
             moved = self.url_open(f"/formations/{program.id}", allow_redirects=False)
             self.assertEqual(moved.status_code, 301)
             self.assertEqual(urlsplit(moved.headers["Location"]).path, path)
             self.assertEqual(urlsplit(moved.headers["Location"]).query, query)
-        page = self.url_open(f"/formations/{latest.id}")
+        # Both declared modes are found by the catalogue filters.
+        for mode in ("onsite", "remote"):
+            self.assertIn(self.course.name, self.url_open(f"/formations?mode={mode}").text)
+        self.assertIn(self.course.name, self.url_open("/formations?remote=1").text)
+        page = self.url_open(f"/formations/{autonomous.id}")
         self.assertEqual(page.status_code, 200)
         if "website" in self.env:
             # The page title comes from the Website layout only.
             title = html.fromstring(page.content).findtext(".//title") or ""
             self.assertIn(self.course.name, title)
             self.assertNotIn("Public programme", title)
-        self.assertNotIn(f"/formations/{latest.id}/avis", page.text)
+        self.assertNotIn(f"/formations/{autonomous.id}/avis", page.text)
         root = html.fromstring(page.content)
         selected = root.xpath("//ul[contains(@class, 'o_training_course_offers')]//a[@aria-current='true']/@href")
-        self.assertEqual([urlsplit(url).query for url in selected], [f"version={latest.id}"])
-        self.assertIn("21 h", root.xpath("string(//dl[contains(@class, 'o_training_course_figures')])"))
+        self.assertEqual([urlsplit(url).query for url in selected], [f"version={autonomous.id}"])
         general = self.url_open(f"/formations/catalogue/{self.course.id}")
         self.assertNotIn(older.title, general.text)
-        for program in (latest, remote, autonomous):
+        for program in (latest, autonomous):
             self.assertIn(program.title, general.text)
-        # Trainer-led and autonomous versions give the three formats, compared after the description.
+        # By default the page presents the version led by a trainer.
         tree = html.fromstring(general.content)
+        self.assertIn("21 h", tree.xpath("string(//dl[contains(@class, 'o_training_course_figures')])"))
+        self.assertIn("Version V2", tree.xpath("string(//section[@id='training_course_modalities']/p[1])"))
+        # Trainer-led and autonomous versions give the three formats, compared after the description.
         tabs = tree.xpath("//div[@role='tablist']/button/@data-bs-target")
         self.assertEqual(tabs, ["#training_booking_inter", "#training_booking_intra", "#training_booking_autonomous"])
         self.assertEqual(
@@ -203,10 +222,9 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         )
         sections = tree.xpath("//div[contains(@class, 'col-lg-8')]/section/@id")
         self.assertLess(sections.index("training_course_modalities"), sections.index("training_course_formats"))
-        # No session yet: the inter-company tab offers the new date alert of the version shown by
-        # default, the latest published one led by a trainer.
+        # No session yet: the inter-company tab offers the new date alert of that version.
         self.assertTrue(
-            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{remote.id}/date-alert']")
+            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{latest.id}/date-alert']")
         )
         chosen = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}?format=autonomous").content)
         self.assertEqual(

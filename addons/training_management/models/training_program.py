@@ -64,6 +64,11 @@ class TrainingProgramVersion(models.Model):
             ("elearning", "eLearning"),
         ]
     )
+    # A version led by a trainer may be delivered in several modes; each session
+    # then sets its own mode through its sittings. The main mode prefills them.
+    also_onsite = fields.Boolean(string="Also On Site")
+    also_remote = fields.Boolean()
+    also_blended = fields.Boolean()
     language_id = fields.Many2one(
         "res.lang",
         string="Programme Language",
@@ -176,6 +181,41 @@ class TrainingProgramVersion(models.Model):
             course.lock_for_update()
             prepared.append(vals)
         return super().create(prepared)
+
+    LIVE_MODES = ("onsite", "remote", "blended")
+
+    @api.constrains("delivery_mode", "also_onsite", "also_remote", "also_blended")
+    def _check_possible_modes(self):
+        for program in self:
+            if program.delivery_mode == "elearning" and (
+                program.also_onsite or program.also_remote or program.also_blended
+            ):
+                raise ValidationError(self.env._("An eLearning version has no other delivery mode."))
+
+    @api.onchange("delivery_mode")
+    def _onchange_delivery_mode_possible_modes(self):
+        if self.delivery_mode == "elearning":
+            self.also_onsite = self.also_remote = self.also_blended = False
+
+    @api.private
+    def _live_modes(self):
+        """Modes in which this version led by a trainer may be delivered, main mode first."""
+        self.ensure_one()
+        if self.delivery_mode not in self.LIVE_MODES:
+            return []
+        return [self.delivery_mode] + [
+            mode for mode in self.LIVE_MODES if mode != self.delivery_mode and self["also_" + mode]
+        ]
+
+    @api.private
+    def _modes_label(self):
+        """« Présentiel », « Présentiel ou distanciel », « eLearning »: the possible modes, in words."""
+        self.ensure_one()
+        labels = dict(self._fields["delivery_mode"]._description_selection(self.env))
+        names = [labels[mode] for mode in self._live_modes()] or [labels.get(self.delivery_mode, "")]
+        if len(names) == 1:
+            return names[0]
+        return self.env._("%(modes)s or %(last)s", modes=", ".join(names[:-1]), last=names[-1].lower())
 
     @api.constrains("title", "version")
     def _check_identification(self):

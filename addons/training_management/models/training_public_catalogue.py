@@ -51,10 +51,13 @@ class TrainingPublicProgramme(models.Model):
             "course_id": self.course_id.id,
             "title": self.title,
             "mode": self.delivery_mode,
+            "modes": self._live_modes() or [self.delivery_mode],
             "kind": self.env._("eLearning") if autonomous else self.env._("Avec formateur"),
             "conditions": self.env._("Durée indicative : %(hours)s h.", hours=hours)
             if autonomous
-            else self.env._("Durée indicative : %(hours)s h. Prix sur devis.", hours=hours),
+            else self.env._(
+                "Durée indicative : %(hours)s h. %(modes)s. Prix sur devis.", hours=hours, modes=self._modes_label()
+            ),
             "program_id": self.id,
             # The course page shows the details of the chosen version.
             "url": "/formations/catalogue/%s?version=%s" % (self.course_id.id, self.id),

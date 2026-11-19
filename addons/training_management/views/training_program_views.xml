@@ -44,6 +44,12 @@
                         <group>
                             <field name="duration_hours" readonly="state != 'draft'"/>
                             <field name="delivery_mode" readonly="state != 'draft'"/>
+                            <label for="also_blended" string="Other possible modes" invisible="delivery_mode in (False, 'elearning')"/>
+                            <div class="o_row" invisible="delivery_mode in (False, 'elearning')">
+                                <span invisible="delivery_mode == 'onsite'"><field name="also_onsite" nolabel="1" readonly="state != 'draft'"/> <label for="also_onsite" string="On site"/></span>
+                                <span invisible="delivery_mode == 'remote'"><field name="also_remote" nolabel="1" readonly="state != 'draft'"/> <label for="also_remote" string="Remote"/></span>
+                                <span invisible="delivery_mode == 'blended'"><field name="also_blended" nolabel="1" readonly="state != 'draft'"/> <span>Blended</span></span>
+                            </div>
                             <field name="language_id" readonly="state != 'draft'"/>
                             <field name="pricing_mode" readonly="state != 'draft'"/>
                         </group>

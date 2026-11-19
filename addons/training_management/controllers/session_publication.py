@@ -55,9 +55,7 @@ class SessionPublicationPortal(http.Controller):
                 {
                     "program_id": program.id,
                     "title": program.title,
-                    "mode": dict(program._fields["delivery_mode"]._description_selection(request.env)).get(
-                        program.delivery_mode
-                    ),
+                    "mode": program._modes_label(),
                     "rows": rows,
                 },
             )

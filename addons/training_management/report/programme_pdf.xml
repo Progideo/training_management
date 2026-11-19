@@ -46,7 +46,7 @@
                             <div class="meta">
                                 <div><strong>Version: </strong><span t-out="o.version"/></div>
                                 <div><strong>Duration (hours): </strong><span t-out="o.duration_hours"/></div>
-                                <div><strong>Delivery mode: </strong><span t-field="o.delivery_mode"/></div>
+                                <div><strong>Delivery mode: </strong><span t-out="o._modes_label()"/></div>
                                 <div><strong>Language: </strong><span t-out="o.language_id.name"/></div>
                                 <div><strong>Price: </strong><span>On quotation</span></div>
                             </div>

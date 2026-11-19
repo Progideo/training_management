@@ -89,7 +89,7 @@ class TrainingCatalogue(http.Controller):
         soon_limit = fields.Datetime.now() + relativedelta(months=3)
         checks = {
             "category": lambda: str(row["category_id"]) == facets["category"],
-            "mode": lambda: any(offer["mode"] == facets["mode"] for offer in row["offers"]),
+            "mode": lambda: any(facets["mode"] in offer.get("modes", [offer["mode"]]) for offer in row["offers"]),
             "format": lambda: self._formats(row).get(facets["format"], False),
             "level": lambda: row.get("level_key") == facets["level"],
             "duration": lambda: self._duration_bucket(row.get("duration_days")) == facets["duration"],
@@ -380,6 +380,18 @@ class TrainingCatalogue(http.Controller):
             "autonomous": "Achat en ligne" if autonomous.get("price") else "Sur demande",
         }
         comparison = [(label, [values[key] for key in tabs]) for label, values in self.COMPARISON]
+        # The place follows the possible modes declared by the version led by a trainer.
+        live_modes = set(row.get("live_modes") or [])
+        places = {
+            frozenset({"onsite"}): {"inter": "Lieu de la session", "intra": "Vos locaux"},
+            frozenset({"remote"}): {"inter": "À distance", "intra": "À distance"},
+        }.get(frozenset(live_modes), {})
+        comparison = [
+            (label, [places.get(key, value) for key, value in zip(tabs, values, strict=True)])
+            if label == "Lieu"
+            else (label, values)
+            for label, values in comparison
+        ]
         comparison += [
             ("Durée", [durations[key] or "—" for key in tabs]),
             ("Tarif", [prices[key] for key in tabs]),

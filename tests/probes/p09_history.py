@@ -59,6 +59,7 @@ def snapshot(tables, *, business=False, database_env=None):
                 "session_guaranteed",
                 "public_location",
             ],
+            "training_program_version": ["also_onsite", "also_remote", "also_blended"],
             "training_learning_activity": [
                 "exam_obligation",
                 "project_rubric_id",
@@ -86,8 +87,10 @@ def snapshot(tables, *, business=False, database_env=None):
                             column,
                         )
                         continue
-                    if (table == "training_delivery" and column != "session_first_published_at") or (
-                        table == "training_course" and column in ("public_catalogue", "public_certifying")
+                    if (
+                        (table == "training_delivery" and column != "session_first_published_at")
+                        or (table == "training_course" and column in ("public_catalogue", "public_certifying"))
+                        or table == "training_program_version"
                     ):
                         assert row.get(column) is None or row.get(column) is False, (table, row["id"], column)
                     else:
