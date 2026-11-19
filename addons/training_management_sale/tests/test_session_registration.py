@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 from lxml import html
 
 from odoo import fields
+from odoo.exceptions import ValidationError
 from odoo.tests import HttpCase, tagged
 
 from odoo.addons.training_management.tests.test_session_publication import SessionAlertCase
@@ -131,3 +132,25 @@ class TestPublicSessionRegistration(SessionAlertCase, HttpCase):
         self.assertNotIn(" Z ", page)
         self.assertNotIn("+01:00", page)
         self.assertNotIn("+02:00", page)
+
+    def test_public_inter_company_price_is_unique_per_course_and_excludes_taxes(self):
+        products = self.env["product.template"]
+        values = {
+            "name": "Fictional inter-company tariff",
+            "type": "service",
+            "training_course_id": self.course.id,
+            "training_price_basis": "person",
+            "list_price": 1200.0,
+            "taxes_id": [(5, 0, 0)],
+        }
+        tariff = products.create({**values, "training_public_session_price": True})
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            products.create({**values, "name": "Fictional second tariff", "training_public_session_price": True})
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            products.create({**values, "training_price_basis": "package", "training_public_session_price": True})
+        self.course.sudo().public_catalogue = True
+        facts = self.course.sudo()._catalogue_facts(self.company)[self.course.id]
+        self.assertEqual(facts["session_price"]["amount"], 1200.0)
+        self.assertIn("1", facts["session_price"]["label"])
+        tariff.training_public_session_price = False
+        self.assertIsNone(self.course.sudo()._catalogue_facts(self.company)[self.course.id]["session_price"])

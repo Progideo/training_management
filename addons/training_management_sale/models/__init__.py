@@ -35,3 +35,4 @@ from . import session_registration
 from . import crm_session_confirmation
 
 from . import session_confirmation_notice
+from . import training_course

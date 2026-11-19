@@ -60,6 +60,7 @@
                         <field name="session_public"/>
                         <field name="session_sales_open"/>
                         <field name="session_first_published_at"/>
+                        <field name="public_location"/>
                     </group>
             <button name="action_open_reason" type="object" string="Publish and Open Session" context="{'reason_action': 'action_publish_session'}" invisible="kind != 'session' or state not in ('preparation', 'confirmed') or (session_public and session_sales_open)"/>
             <button name="action_open_reason" type="object" string="Withdraw Public Session" context="{'reason_action': 'action_withdraw_session'}" invisible="not session_public"/>

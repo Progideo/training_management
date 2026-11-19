@@ -73,6 +73,55 @@ class TrainingCourse(models.Model):
         return offers + [program._catalogue_offer() for program in latest.values()]
 
     @api.private
+    def _catalogue_facts(self, company):
+        facts = super()._catalogue_facts(company)
+        programs = (
+            self.env["training.program.version"]
+            .sudo()
+            .search(
+                [
+                    ("course_id", "in", self.ids),
+                    ("company_id", "=", company.id),
+                    ("state", "=", "published"),
+                    ("public_catalogue", "=", True),
+                ]
+            )
+        )
+        # Public, open, future sessions only; each row is re-checked by its own projection.
+        deliveries = (
+            self.env["training.delivery"]
+            .sudo()
+            .search(
+                [
+                    ("company_id", "=", company.id),
+                    ("program_id", "in", programs.ids),
+                    ("kind", "=", "session"),
+                    ("session_public", "=", True),
+                    ("session_sales_open", "=", True),
+                    ("start_at", ">", fields.Datetime.now()),
+                ],
+                order="start_at, id",
+            )
+        )
+        for course in self:
+            modes = set(programs.filtered(lambda p, c=course: p.course_id == c).mapped("delivery_mode"))
+            upcoming = None
+            for delivery in deliveries.filtered(lambda d, c=course: d.program_id.course_id == c):
+                row = delivery._session_public_row()
+                if row and row["status"] != "full":
+                    upcoming = {"start_at": row["start_at"], "timezone": row["timezone"], "location": row["location"]}
+                    break
+            facts[course.id].update(
+                {
+                    # Live training with a trainer, and/or an eLearning version of the programme.
+                    "live": bool(modes & {"onsite", "remote", "blended"}),
+                    "elearning": "elearning" in modes,
+                    "next_session": upcoming,
+                }
+            )
+        return facts
+
+    @api.private
     def _has_course_review_participation(self, user):
         self.ensure_one()
         enrollments = (

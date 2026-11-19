@@ -59,6 +59,7 @@ class TrainingSessionRegistration(TrainingCommercialCatalogue):
         program = delivery.program_id
         env = request.env
         dates, hours, sittings = cls._session_schedule(env, delivery)
+        public = delivery._session_public_row() or {}
         # The public mode is the one of the scheduled sittings, not the programme default.
         # Sitting locations stay private: they may hold practical access instructions.
         modes = set(sittings.mapped("mode"))
@@ -74,6 +75,9 @@ class TrainingSessionRegistration(TrainingCommercialCatalogue):
             "hours": hours,
             "mode": mode,
             "confirmed": delivery.state == "confirmed",
+            "location": delivery.public_location or "",
+            "seats_left": public.get("seats_left"),
+            "few_seats": public.get("few_seats", False),
             "limit": delivery._public_registration_limit(),
         }
 

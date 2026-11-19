@@ -8,6 +8,7 @@
                 <page string="Course Reviews" groups="base.group_system">
                     <group>
                         <field name="course_review_responsible_id" options="{'no_create': True}"/>
+                        <field name="training_catalogue_new_months"/>
                     </group>
                 </page>
             </xpath>

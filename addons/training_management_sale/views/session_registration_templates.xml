@@ -6,7 +6,8 @@
                 <ul class="list-group">
                     <li t-foreach="public_sessions" t-as="session" t-attf-class="list-group-item py-3 #{'border-success border-2' if session['confirmed'] else ''}">
                         <div class="fw-semibold"><span t-if="session['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><t t-out="session['dates']"/></div>
-                        <p class="mb-2"><t t-out="session['mode']"/><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>
+                        <p class="mb-2"><t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t>
+                            <span t-if="session['few_seats']" class="ms-2 fw-semibold">· Plus que <t t-out="session['seats_left']"/> place(s)</span></p>
                         <a t-if="session['limit']" class="btn btn-outline-primary" t-att-href="session['url']">Demander une inscription</a>
                         <span t-else="" class="text-body-secondary">Session complète</span>
                     </li>
@@ -21,7 +22,7 @@
                 <p><a t-att-href="'/formations/catalogue/%s#training_public_sessions' % course_id">Retour à la fiche formation</a></p>
                 <h1>Demander une inscription inter-entreprises</h1>
                 <p class="fw-semibold" t-out="title"/>
-                <p><span t-if="session['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><t t-out="session['dates']"/> · <t t-out="session['mode']"/><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>
+                <p><span t-if="session['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><t t-out="session['dates']"/> · <t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>
                 <p>L’équipe vous recontactera pour confirmer les places et les conditions d’inscription.</p>
                 <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
                 <form t-if="session['limit']" method="post" t-att-action="session['url']" class="col-md-8 col-lg-6">

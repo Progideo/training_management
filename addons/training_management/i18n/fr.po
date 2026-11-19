@@ -15340,3 +15340,29 @@ msgstr "Choisissez une seule durée positive, en jours ou en mois calendaires, e
 #: model_terms:ir.ui.view,arch_db:training_management.company_training
 msgid "Your agreement on this version has been recorded."
 msgstr "Votre accord sur cette version a été enregistré."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_res_company__training_few_seats_threshold
+msgid "« Few Seats Left » Threshold"
+msgstr "Seuil « Plus que quelques places »"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_res_company__training_few_seats_threshold
+msgid "A public session with this number of seats left or fewer is flagged. 0 disables the flag."
+msgstr "Une session publique ayant ce nombre de places restantes ou moins est signalée. 0 désactive le signalement."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_publication.py:0
+msgid "The few seats threshold cannot be negative."
+msgstr "Le seuil de places restantes ne peut pas être négatif."
+
+#. module: training_management
+#: model:ir.model.fields,field_description:training_management.field_training_delivery__public_location
+msgid "Public Location"
+msgstr "Lieu public"
+
+#. module: training_management
+#: model:ir.model.fields,help:training_management.field_training_delivery__public_location
+msgid "Shown to visitors, e.g. a city or « Virtual classroom ». Sitting locations stay private."
+msgstr "Affiché aux visiteurs, par exemple une ville ou « Classe virtuelle ». Les lieux des séances restent privés."

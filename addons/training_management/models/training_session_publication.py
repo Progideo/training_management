@@ -56,6 +56,21 @@ class SessionPublicationDelivery(models.Model):
 PUBLIC_FIELDS = {"session_public", "session_sales_open", "session_first_published_at"}
 
 
+class PublicSessionCompany(models.Model):
+    _inherit = "res.company"  # pylint: disable=consider-merging-classes-inherited
+
+    training_few_seats_threshold = fields.Integer(
+        string="« Few Seats Left » Threshold",
+        default=3,
+        help="A public session with this number of seats left or fewer is flagged. 0 disables the flag.",
+    )
+
+    @api.constrains("training_few_seats_threshold")
+    def _check_few_seats_threshold(self):
+        if any(company.training_few_seats_threshold < 0 for company in self):
+            raise ValidationError(self.env._("The few seats threshold cannot be negative."))
+
+
 class PublicSessionDelivery(models.Model):
     _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # public decisions separate from diagnostic
 
@@ -69,6 +84,9 @@ class PublicSessionDelivery(models.Model):
     session_public = fields.Boolean(readonly=True, copy=False)
     session_sales_open = fields.Boolean(readonly=True, copy=False)
     session_first_published_at = fields.Datetime(readonly=True, copy=False)
+    public_location = fields.Char(
+        help="Shown to visitors, e.g. a city or « Virtual classroom ». Sitting locations stay private.",
+    )
 
     _reason_actions = (
         "action_confirm",
@@ -147,11 +165,18 @@ class PublicSessionDelivery(models.Model):
         self.ensure_one()
         if not self.session_public or not self.session_sales_open or not self._session_can_publish():
             return False
-        full = bool(self.capacity and self._occupancy() >= self.capacity)
+        occupancy = self._occupancy()
+        full = bool(self.capacity and occupancy >= self.capacity)
+        seats_left = max(0, self.capacity - occupancy) if self.capacity else None
+        threshold = self.company_id.training_few_seats_threshold
         return {
             "start_at": self.start_at,
             "end_at": self.end_at,
             "timezone": self.timezone,
+            "location": self.public_location or "",
+            # None means unlimited capacity: no count is shown.
+            "seats_left": seats_left,
+            "few_seats": bool(seats_left is not None and 0 < seats_left <= threshold),
             # "Confirmed" is the single public commitment that the session will take place.
             "status": "full" if full else "confirmed" if self.state == "confirmed" else "open",
             "confirmed": self.state == "confirmed",
