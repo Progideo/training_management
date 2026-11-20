@@ -155,7 +155,6 @@ class TestPublicRequest(CatalogueCase, HttpCase):
         self.assertEqual(individual_form.xpath("//input[@name='kind']/@value"), ["individual"])
         general_page = self.url_open(f"/formations/catalogue/{program.course_id.id}?kind=individual")
         self.assertEqual(general_page.status_code, 200)
-        self.assertIn(f"{offer}&amp;kind=individual", general_page.text)
         self.assertIn("/formations?kind=individual", general_page.text)
         individual_detail = self.url_open(f"/formations/{program.id}?kind=individual")
         self.assertIn("Demander un devis individuel", individual_detail.text)

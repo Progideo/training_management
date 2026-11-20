@@ -53,3 +53,19 @@ formations associées en cartes. Carte de réservation : onglets courts (Inter,
 Intra, Autonomie), accroche du format, prix en grand, note de prix, liste à
 coches, sessions avec places restantes, bouton principal pleine largeur et
 bouton secondaire. Barre mobile : prix et action du premier format.
+
+## Retours du 20 novembre 2026 (après déploiement)
+
+- Liste « Offres disponibles » supprimée (doublon de la carte de réservation) : la
+  ligne de version des modalités donne la référence et l'intitulé de la version
+  présentée ; l'onglet Autonomie donne l'intitulé et les conditions publiques de
+  l'offre eLearning.
+- Comparatif : titre de la colonne choisie lisible (couleurs de cellule Bootstrap
+  surchargées) ; la colonne mise en avant suit l'onglet choisi dans la carte de
+  réservation, et les boutons du comparatif ouvrent l'onglet sans recharger la page
+  (`static/src/course_page.js` ; sans JavaScript, `?format=` recharge la page).
+- Partage : bloc « Partager cette formation » sous la présentation, avec le lien
+  de la fiche à copier et des liens vers LinkedIn, Facebook, X, WhatsApp et
+  l'e-mail (adresses construites dans le navigateur).
+- Prix inter : un tarif fixe s'affiche dès qu'un produit de formation de la
+  formation est coché « Tarif inter-entreprises public » (vendu par personne).

@@ -319,8 +319,12 @@
             font-weight: 700;
         }
 
+        // Bootstrap paints table cells with its own variables: set them, not the background.
         thead .o_training_course_selected {
-            background: var(--bs-primary);
+            --bs-table-bg: var(--bs-primary);
+            --bs-table-color: #fff;
+            --bs-table-bg-state: var(--bs-primary);
+            --bs-table-color-state: #fff;
             color: #fff;
 
             span {
@@ -329,24 +333,78 @@
         }
 
         tbody .o_training_course_selected {
-            background: #f5f8fc;
+            --bs-table-bg: #f5f8fc;
+            --bs-table-bg-state: #f5f8fc;
+        }
+
+        th,
+        td {
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .o_training_course_choose {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            white-space: nowrap;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
         }
     }
 
-    .o_training_course_offers {
+    // Share
+    .o_training_course_share {
+        margin-top: 1.75rem;
+        padding: 1.25rem;
+        background: var(--o-training-soft);
+    }
+
+    .o_training_course_section .o_training_course_share_title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .o_training_course_share_link {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.9rem;
+
+        .form-control {
+            min-height: 44px;
+            border-radius: 0;
+            background: var(--bs-body-bg);
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            border-radius: 0;
+            white-space: nowrap;
+        }
+    }
+
+    .o_training_course_share_networks {
         list-style: none;
         padding: 0;
         margin: 0;
-        display: grid;
-        gap: 0.6rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
 
-        li {
-            border: 1px solid var(--o-training-line);
-            padding: 1rem;
-        }
+        a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: #fff;
+            font-size: 1.15rem;
+            text-decoration: none;
 
-        .o_training_course_selected {
-            border-color: var(--o-training-link);
+            &:hover {
+                background: var(--o-training-link);
+                color: #fff;
+            }
         }
     }
 
