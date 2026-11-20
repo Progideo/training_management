@@ -60,8 +60,12 @@ bouton secondaire. Barre mobile : prix et action du premier format.
   ligne de version des modalités donne la référence et l'intitulé de la version
   présentée ; l'onglet Autonomie donne l'intitulé et les conditions publiques de
   l'offre eLearning.
-- Comparatif : titre de la colonne choisie lisible (couleurs de cellule Bootstrap
-  surchargées) ; la colonne mise en avant suit l'onglet choisi dans la carte de
+- Couleurs : Odoo compile Bootstrap sans ses variables CSS (`--bs-primary`,
+  `--bs-warning`… sont vides sur le site) ; la feuille de style passe par les
+  variables Sass du thème (`$primary`, `$warning`, `$success`) et la palette du site
+  (`--o-color-1..3`). Les filets d'accent, la colonne choisie du comparatif, le
+  contour de focus et le contraste du texte secondaire (lot 5) s'affichent désormais.
+- Comparatif : titre de la colonne choisie lisible ; la colonne mise en avant suit l'onglet choisi dans la carte de
   réservation, et les boutons du comparatif ouvrent l'onglet sans recharger la page
   (`static/src/course_page.js` ; sans JavaScript, `?format=` recharge la page).
 - Partage : bloc « Partager cette formation » sous la présentation, avec le lien
