@@ -36,3 +36,20 @@ leurs extensions) sont supprimées par la mise à jour des modules.
 3. Sans session : « Être alerté des nouvelles dates » dans l'onglet Inter.
 4. Mobile : barre fixe, onglets lisibles, ancres du sommaire.
 5. Vérifier les données structurées avec l'outil de test des résultats enrichis.
+
+## Présentation alignée sur la maquette (20 novembre 2026)
+
+Sans changement du serveur ni du modèle de données, la fiche reprend la maquette
+« Fiche formation – versions (desktop) » : bandeau sombre avec badges (Nouveau,
+domaine, « Niveau … », certifiante), filet d'accent sous le titre et sous chaque
+titre de section, chiffres clés en ligne ; sommaire en gras souligné au survol ;
+comparatif « Trois façons de suivre cette formation » à sa place (après les
+modalités, avant les questions fréquentes, décision du 20 novembre), colonne du format choisi mise en avant et bouton par format
+(`?format=` ouvre l'onglet de la carte de réservation) ; objectifs en liste à
+coches quand ils sont saisis un par ligne ; points forts en tuiles (« Titre :
+texte ») ; programme par blocs encadrés ; public et prérequis en deux colonnes ;
+modalités en liste de définitions ; questions fréquentes en accordéon ;
+formations associées en cartes. Carte de réservation : onglets courts (Inter,
+Intra, Autonomie), accroche du format, prix en grand, note de prix, liste à
+coches, sessions avec places restantes, bouton principal pleine largeur et
+bouton secondaire. Barre mobile : prix et action du premier format.
