@@ -202,13 +202,15 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
             self.assertIn(self.course.name, title)
             self.assertNotIn("Public programme", title)
         self.assertNotIn(f"/formations/{autonomous.id}/avis", page.text)
+        # The chosen version is the one described under « Modalités »; offers are not listed twice.
         root = html.fromstring(page.content)
-        selected = root.xpath("//ul[contains(@class, 'o_training_course_offers')]//a[@aria-current='true']/@href")
-        self.assertEqual([urlsplit(url).query for url in selected], [f"version={autonomous.id}"])
+        line = root.xpath("string(//section[@id='training_course_modalities']/p[1])")
+        self.assertIn("Version V4", line)
+        self.assertIn(autonomous.title, line)
+        self.assertFalse(root.xpath("//*[contains(@class, 'o_training_course_offers')]"))
         general = self.url_open(f"/formations/catalogue/{self.course.id}")
         self.assertNotIn(older.title, general.text)
-        for program in (latest, autonomous):
-            self.assertIn(program.title, general.text)
+        self.assertIn(latest.title, general.text)
         # By default the page presents the version led by a trainer.
         tree = html.fromstring(general.content)
         self.assertIn("21 h", tree.xpath("string(//dl[contains(@class, 'o_training_course_figures')])"))
@@ -231,6 +233,17 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         # No session yet: the inter-company tab offers the new date alert of that version.
         self.assertTrue(
             tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{latest.id}/date-alert']")
+        )
+        # Each column of the comparison carries its format, so the chosen tab can be highlighted.
+        self.assertEqual(
+            tree.xpath("//section[@id='training_course_formats']//th[@data-format]/@data-format"),
+            ["inter", "intra", "autonomous"],
+        )
+        self.assertEqual(
+            tree.xpath(
+                "//section[@id='training_course_formats']//*[contains(@class, 'o_training_course_selected')]/@data-format"
+            ),
+            ["inter"] * 9,
         )
         chosen = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}?format=autonomous").content)
         self.assertEqual(

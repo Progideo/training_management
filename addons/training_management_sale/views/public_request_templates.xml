@@ -39,9 +39,6 @@
         <xpath expr="//a[@href='/formations']" position="attributes">
             <attribute name="t-att-href">'/formations' + ('?kind=' + kind if kind else '')</attribute>
         </xpath>
-        <xpath expr="//ul[hasclass('o_training_course_offers')]//a" position="attributes">
-            <attribute name="t-att-href">offer['url'] + (('&amp;' if '?' in offer['url'] else '?') + 'kind=%s' % kind if kind and offer['url'].startswith('/formations/') else '')</attribute>
-        </xpath>
     </template>
     <template id="public_request" name="Training request">
         <t t-call="portal.frontend_layout">

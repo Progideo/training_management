@@ -188,7 +188,7 @@
               <li t-if="objective_text" class="nav-item"><a class="nav-link" href="#training_course_objectives">Objectifs</a></li>
               <li t-if="public_programme or programme_pdf_url" class="nav-item"><a class="nav-link" href="#training_course_programme">Programme</a></li>
               <li t-if="audience_sections" class="nav-item"><a class="nav-link" href="#training_course_audience">Public et prérequis</a></li>
-              <li t-if="modality_sections or course['offers']" class="nav-item"><a class="nav-link" href="#training_course_modalities">Modalités</a></li>
+              <li t-if="modality_sections or version_details" class="nav-item"><a class="nav-link" href="#training_course_modalities">Modalités</a></li>
               <li t-if="comparison" class="nav-item"><a class="nav-link" href="#training_course_formats">Comparer les formats</a></li>
               <li t-if="course.get('faq')" class="nav-item"><a class="nav-link" href="#training_course_faq">Questions fréquentes</a></li>
               <li t-if="general_presentation_published and (public_reviews or review_status)" class="nav-item"><a class="nav-link" href="#training_course_reviews">Avis</a></li>
@@ -251,6 +251,10 @@
                         <li t-if="autonomous.get('modules')"><t t-out="autonomous['modules']"/> activité(s)</li>
                         <li t-if="autonomous.get('access_months')">Accès pendant <t t-out="autonomous['access_months']"/> mois</li>
                       </ul>
+                      <div t-foreach="autonomous_offers" t-as="offer" class="small mb-3">
+                        <p class="fw-bold mb-1" t-out="offer['title']"/>
+                        <p t-if="offer['conditions']" class="mb-0" style="white-space:pre-wrap" t-out="offer['conditions']"/>
+                      </div>
                       <div id="training_booking_autonomous_actions" class="d-grid gap-2">
                         <a t-foreach="autonomous_offers" t-as="offer"
                            class="btn btn-primary btn-lg w-100" t-att-href="offer['url']" t-out="offer['action']"/>
@@ -279,8 +283,11 @@
                   </li>
                 </ul>
                 <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
-                <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
-                <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
+                <div class="o_training_course_share">
+                  <h3 class="o_training_course_share_title">Partager cette formation</h3>
+                  <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
+                  <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
+                </div>
               </section>
               <section t-if="objective_text" id="training_course_objectives" class="o_training_course_section">
                 <h2>Objectifs pédagogiques</h2>
@@ -313,26 +320,16 @@
                   </div>
                 </div>
               </section>
-              <section t-if="modality_sections or course['offers']" id="training_course_modalities" class="o_training_course_section">
+              <section t-if="modality_sections or version_details" id="training_course_modalities" class="o_training_course_section">
                 <h2>Modalités</h2>
                 <div class="o_training_course_rule" aria-hidden="true"/>
-                <p t-if="version_details" class="small">Version <t t-out="version_details['version']"/> · <t t-out="version_details['mode']"/><t t-if="version_details['hours']"> · <t t-out="version_details['hours']"/> h</t></p>
+                <p t-if="version_details" class="small">Version <t t-out="version_details['version']"/> — <t t-out="version_details['title']"/> · <t t-out="version_details['mode']"/><t t-if="version_details['hours']"> · <t t-out="version_details['hours']"/> h</t></p>
                 <dl t-if="modality_sections" class="o_training_course_columns o_training_course_modalities">
                   <div t-foreach="modality_sections" t-as="section">
                     <dt t-out="section[0]"/>
                     <dd style="white-space:pre-wrap" t-out="section[1]"/>
                   </div>
                 </dl>
-                <t t-if="course['offers']">
-                  <h3>Offres disponibles</h3>
-                  <ul class="o_training_course_offers">
-                    <li t-foreach="course['offers']" t-as="offer" t-att-class="'o_training_course_selected' if version_details and offer.get('program_id') == version_details['id'] else None">
-                      <p class="fw-bold mb-1"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></p>
-                      <p t-if="offer['conditions']" class="small mb-2" style="white-space:pre-wrap" t-out="offer['conditions']"/>
-                      <a t-att-href="offer['url']" t-att-aria-current="'true' if version_details and offer.get('program_id') == version_details['id'] else None" t-out="offer['action']"/>
-                    </li>
-                  </ul>
-                </t>
               </section>
               <section t-if="comparison" id="training_course_formats" class="o_training_course_section">
                 <h2><t t-if="len(tabs) == 3">Trois façons</t><t t-else="">Deux façons</t> de suivre cette formation</h2>
@@ -343,18 +340,18 @@
                     <thead>
                       <tr>
                         <td/>
-                        <th t-foreach="tabs" t-as="tab" scope="col" t-att-class="'o_training_course_selected' if tab['key'] == active_format else None"><t t-out="tab['label']"/><span class="d-block" t-out="format_taglines[tab['key']]"/></th>
+                        <th t-foreach="tabs" t-as="tab" scope="col" t-att-data-format="tab['key']" t-att-class="'o_training_course_selected' if tab['key'] == active_format else None"><t t-out="tab['label']"/><span class="d-block" t-out="format_taglines[tab['key']]"/></th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr t-foreach="comparison" t-as="line">
                         <th scope="row" t-out="line[0]"/>
-                        <td t-foreach="line[1]" t-as="value" t-att-class="'o_training_course_selected' if tabs[value_index]['key'] == active_format else None" t-out="value"/>
+                        <td t-foreach="line[1]" t-as="value" t-att-data-format="tabs[value_index]['key']" t-att-class="'o_training_course_selected' if tabs[value_index]['key'] == active_format else None" t-out="value"/>
                       </tr>
                       <tr>
                         <td/>
-                        <td t-foreach="tabs" t-as="tab" t-att-class="'o_training_course_selected' if tab['key'] == active_format else None">
-                          <a class="btn btn-outline-primary" t-att-href="'?format=%s#training_course_booking' % tab['key']"><t t-out="format_choices[tab['key']]"/><span class="visually-hidden"> : <t t-out="tab['label']"/></span></a>
+                        <td t-foreach="tabs" t-as="tab" t-att-data-format="tab['key']" t-att-class="'o_training_course_selected' if tab['key'] == active_format else None">
+                          <a class="btn btn-outline-primary w-100 o_training_course_choose" t-att-data-format="tab['key']" t-att-href="'?format=%s#training_course_booking' % tab['key']"><t t-out="format_choices[tab['key']]"/><span class="visually-hidden"> : <t t-out="tab['label']"/></span></a>
                         </td>
                       </tr>
                     </tbody>

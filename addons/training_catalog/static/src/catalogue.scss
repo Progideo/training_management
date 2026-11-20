@@ -1,3 +1,14 @@
+// Colours: Odoo compiles Bootstrap without its CSS variables (--bs-*), so the
+// theme reaches these pages through Sass variables and the website palette
+// (--o-color-1..3, when a website theme defines it).
+.o_training_catalogue,
+.o_training_course_page {
+    --o-training-primary: var(--o-color-1, #{$primary});
+    --o-training-accent: #{$warning};
+    --o-training-link: var(--o-color-2, #{$primary});
+    --o-training-soft: var(--o-color-3, #{$gray-100});
+}
+
 // Public catalogue layout. Colours come from the website theme (primary, warning).
 .o_training_catalogue {
     .o_training_catalogue_formats_nav a {
@@ -5,8 +16,8 @@
         min-height: 44px;
 
         &[aria-current="page"] {
-            border-top-color: var(--bs-warning);
-            background-color: var(--bs-body-bg);
+            border-top-color: var(--o-training-accent);
+            background-color: #fff;
         }
     }
 
@@ -32,9 +43,6 @@
 // headings, sticky summary and booking card, fixed action bar on small screens.
 // Colours come from the website theme: primary, warning (accent), --o-color-2/3.
 .o_training_course_page {
-    --o-training-accent: var(--bs-warning);
-    --o-training-link: var(--o-color-2, var(--bs-primary));
-    --o-training-soft: var(--o-color-3, var(--bs-tertiary-bg));
     --o-training-line: #e3e8ef;
     padding-bottom: 4.5rem;
 
@@ -91,7 +99,7 @@
         text-transform: uppercase;
         border-color: var(--o-training-accent);
         background: var(--o-training-accent);
-        color: var(--bs-primary);
+        color: var(--o-training-primary);
     }
 
     .o_training_course_tagline {
@@ -145,7 +153,7 @@
         white-space: nowrap;
         font-weight: 700;
         font-size: 0.875rem;
-        color: var(--bs-primary);
+        color: var(--o-training-primary);
         border-bottom: 3px solid transparent;
 
         &:hover,
@@ -163,14 +171,14 @@
             margin: 0 0 0.4rem;
             font-size: 1.625rem;
             font-weight: 800;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
         }
 
         h3 {
             margin: 0 0 0.4rem;
             font-size: 1.25rem;
             font-weight: 800;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
         }
     }
 
@@ -195,7 +203,7 @@
 
         strong {
             display: block;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
             font-size: 0.95rem;
             margin-bottom: 0.25rem;
         }
@@ -244,7 +252,7 @@
 
         dt {
             font-weight: 800;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
         }
 
         dd {
@@ -265,7 +273,7 @@
             background: #fafbfd;
             font-size: 1rem;
             font-weight: 800;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
         }
 
         h2 + ul,
@@ -302,25 +310,25 @@
         thead th,
         thead td {
             background: var(--o-training-soft);
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
             font-size: 0.95rem;
             font-weight: 800;
 
             span {
                 font-weight: 500;
                 font-size: 0.78rem;
-                color: var(--bs-body-color);
+                color: inherit;
             }
         }
 
         tbody th {
             width: 22%;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
             font-weight: 700;
         }
 
         thead .o_training_course_selected {
-            background: var(--bs-primary);
+            background: var(--o-training-primary);
             color: #fff;
 
             span {
@@ -331,22 +339,75 @@
         tbody .o_training_course_selected {
             background: #f5f8fc;
         }
+
+        th,
+        td {
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .o_training_course_choose {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            white-space: nowrap;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
     }
 
-    .o_training_course_offers {
+    // Share
+    .o_training_course_share {
+        margin-top: 1.75rem;
+        padding: 1.25rem;
+        background: var(--o-training-soft);
+    }
+
+    .o_training_course_section .o_training_course_share_title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .o_training_course_share_link {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.9rem;
+
+        .form-control {
+            min-height: 44px;
+            border-radius: 0;
+            background: #fff;
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            border-radius: 0;
+            white-space: nowrap;
+        }
+    }
+
+    .o_training_course_share_networks {
         list-style: none;
         padding: 0;
         margin: 0;
-        display: grid;
-        gap: 0.6rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
 
-        li {
-            border: 1px solid var(--o-training-line);
-            padding: 1rem;
-        }
+        a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--o-training-primary);
+            color: #fff;
+            font-size: 1.15rem;
+            text-decoration: none;
 
-        .o_training_course_selected {
-            border-color: var(--o-training-link);
+            &:hover {
+                background: var(--o-training-link);
+                color: #fff;
+            }
         }
     }
 
@@ -364,7 +425,7 @@
             min-height: 44px;
             padding: 1.1rem 1.25rem;
             font-weight: 800;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
 
             &::-webkit-details-marker {
                 display: none;
@@ -398,7 +459,7 @@
             border: 1px solid var(--o-training-line);
             border-top: 4px solid var(--o-training-accent);
             font-weight: 700;
-            color: var(--bs-primary);
+            color: var(--o-training-primary);
             text-decoration: none;
         }
     }
@@ -406,7 +467,7 @@
     // Booking card
     .o_training_course_booking {
         margin-top: 2.25rem;
-        background: var(--bs-body-bg);
+        background: #fff;
         border: 1px solid #d5deea;
         border-top: 5px solid var(--o-training-accent);
         box-shadow: 0 14px 34px rgba(11, 37, 69, 0.1);
@@ -422,13 +483,13 @@
             border: 0;
             border-radius: 0;
             background: var(--o-training-soft);
-            color: var(--bs-body-color);
+            color: inherit;
             font-weight: 800;
             font-size: 0.875rem;
 
             &.active {
-                background: var(--bs-body-bg);
-                color: var(--bs-primary);
+                background: #fff;
+                color: var(--o-training-primary);
                 box-shadow: inset 0 -3px 0 var(--o-training-link);
             }
         }
@@ -448,7 +509,7 @@
         font-size: 1.875rem;
         font-weight: 800;
         line-height: 1.2;
-        color: var(--bs-primary);
+        color: var(--o-training-primary);
     }
 
     .o_training_course_price_note {
@@ -459,7 +520,7 @@
     .o_training_course_legend {
         font-size: 0.875rem;
         font-weight: 800;
-        color: var(--bs-primary);
+        color: var(--o-training-primary);
         margin-bottom: 0.5rem;
     }
 
@@ -483,7 +544,7 @@
             font-size: 0.8125rem;
 
             strong {
-                color: var(--bs-primary);
+                color: var(--o-training-primary);
                 font-size: 0.875rem;
             }
         }
@@ -495,7 +556,7 @@
     }
 
     .o_training_course_session_confirmed {
-        border-left: 4px solid var(--bs-success);
+        border-left: 4px solid #{$success};
     }
 
     .o_training_course_session_main {
@@ -535,7 +596,9 @@
 .o_training_catalogue,
 .o_training_course_page {
     // Themes may soften secondary text below 4.5:1; keep the body colour.
-    --bs-secondary-color: var(--bs-body-color);
+    .text-body-secondary {
+        color: inherit !important;
+    }
 
     .btn {
         min-height: 44px;
@@ -559,13 +622,13 @@
     input:focus-visible,
     select:focus-visible,
     .tab-pane:focus-visible {
-        outline: 3px solid var(--bs-warning);
+        outline: 3px solid var(--o-training-accent);
         outline-offset: 2px;
         box-shadow: none;
     }
 
     .o_training_catalogue_card:focus-within {
-        outline: 3px solid var(--bs-warning);
+        outline: 3px solid var(--o-training-accent);
         outline-offset: 2px;
     }
 }
