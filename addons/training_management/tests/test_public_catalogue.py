@@ -220,10 +220,9 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
             tree.xpath("//section[@id='training_course_formats']//thead/tr/th/text()"),
             ["Inter-entreprises", "Intra-entreprise", "En autonomie"],
         )
-        # The comparison follows the description, before the details and the questions.
+        # The comparison closes the details of the course, before the questions.
         sections = tree.xpath("//div[contains(@class, 'col-lg-8')]/section/@id")
-        self.assertEqual(sections[:2], ["training_course_presentation", "training_course_formats"])
-        self.assertLess(sections.index("training_course_formats"), sections.index("training_course_modalities"))
+        self.assertLess(sections.index("training_course_modalities"), sections.index("training_course_formats"))
         # Each format can be chosen from the comparison, which opens its tab of the booking card.
         self.assertEqual(
             tree.xpath("//section[@id='training_course_formats']//tbody/tr[last()]//a/@href"),

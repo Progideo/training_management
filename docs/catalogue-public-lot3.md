@@ -43,8 +43,8 @@ Sans changement du serveur ni du modèle de données, la fiche reprend la maquet
 « Fiche formation – versions (desktop) » : bandeau sombre avec badges (Nouveau,
 domaine, « Niveau … », certifiante), filet d'accent sous le titre et sous chaque
 titre de section, chiffres clés en ligne ; sommaire en gras souligné au survol ;
-**comparatif « Trois façons de suivre cette formation » juste après la
-présentation**, colonne du format choisi mise en avant et bouton par format
+comparatif « Trois façons de suivre cette formation » à sa place (après les
+modalités, avant les questions fréquentes, décision du 20 novembre), colonne du format choisi mise en avant et bouton par format
 (`?format=` ouvre l'onglet de la carte de réservation) ; objectifs en liste à
 coches quand ils sont saisis un par ligne ; points forts en tuiles (« Titre :
 texte ») ; programme par blocs encadrés ; public et prérequis en deux colonnes ;
