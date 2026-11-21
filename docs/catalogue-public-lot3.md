@@ -96,3 +96,6 @@ autonomie seule, présentation sans programme publié
   l'autonomie reprend celles de sa version eLearning.
 - Sans session inter ouverte, le comparatif indique « Aucune date programmée » et
   la barre mobile propose « Voir les formats » au lieu de « S’inscrire ».
+- Onglet Inter : affiché si une session inter est ouverte ou si un tarif inter
+  public existe ; sans tarif ni session, la formation n'est proposée qu'en intra
+  (décision du 21 novembre 2026).

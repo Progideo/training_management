@@ -214,13 +214,16 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         self.publish_version(course, "BARE-REMOTE", "remote", 3.5)
         root = self.page(course)
         self.assertCoherent(root)
-        self.assertEqual(self.tabs(root), ["inter", "intra"])
+        # Neither inter-company price nor session: only the intra-company quotation is offered.
+        self.assertEqual(self.tabs(root), ["intra"])
+        self.assertFalse(root.xpath("//div[@id='training_booking_inter']"))
+        self.assertFalse(root.xpath("//a[contains(@href, '/date-alert')]"))
         self.assertFalse(root.xpath("//p[contains(@class, 'o_training_course_tagline')]"))
-        compared = self.comparison(root)
-        self.assertEqual(compared["Tarif"], ["Sur devis", "Sur devis"])
-        self.assertEqual(compared["Lieu"], ["À distance", "À distance"])
-        # Without days, the duration of the version is compared.
-        self.assertEqual([value.replace(",", ".") for value in compared["Durée"]], ["3.5 h", "3.5 h"])
+        intra = self.text(root, "//div[@id='training_booking_intra']")
+        self.assertIn("Sur devis", intra)
+        # Without days, the duration of the version is given.
+        self.assertIn("3.5 h", intra.replace(",", "."))
+        self.assertFalse(root.xpath("//section[@id='training_course_formats']"))
         for section in ("presentation", "faq", "related", "reviews"):
             self.assertFalse(root.xpath("//section[@id='training_course_%s']" % section), section)
         self.assertIn("Sur devis", self.text(root, "//div[contains(@class, 'o_training_course_mobile_bar')]"))
@@ -240,7 +243,8 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         for value in (private.name, "Private city", closed.name, "Closed city"):
             self.assertNotIn(value, page)
         self.assertFalse(root.xpath("//input[@name='session']"))
-        self.assertIn("Aucune session programmée", self.text(root, "//div[@id='training_booking_inter']"))
+        # Without a public session nor an inter-company price, only the intra-company tab remains.
+        self.assertEqual(self.tabs(root), ["intra"])
         self.assertIn("Sur devis", self.text(root, "//div[@id='training_booking_intra']"))
         self.assertNotIn("hasCourseInstance", self.course_schema(root))
 

@@ -363,9 +363,10 @@ class TrainingCatalogue(http.Controller):
         env = request.env
         card = self._card(row)
         formats = dict(card["formats"])
-        # A course led by a trainer can be followed in an inter-company session, even
-        # before dates are published: the tab then offers the new date alert.
-        formats["inter"] = formats["inter"] or bool(row.get("live"))
+        # A course led by a trainer with a public inter-company price can be followed in an
+        # inter-company session before dates are published: the tab then offers the new date
+        # alert. Without a price nor a session, the inter-company tab is hidden (21 Nov. 2026).
+        formats["inter"] = formats["inter"] or bool(row.get("live") and row.get("session_price"))
         tabs = [key for key in ("inter", "intra", "autonomous") if formats[key]]
         active = kwargs.get("format") if kwargs.get("format") in tabs else (tabs[0] if tabs else "")
         presentation = (row["presentation"] or "").strip()
