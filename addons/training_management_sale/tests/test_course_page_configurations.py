@@ -133,13 +133,16 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
             public_faq_ids=[(0, 0, {"question": "Fictional question?", "answer": "Fictional answer"})],
         )
         live = self.publish_version(course, "FULL-LIVE", "blended", 21, also_onsite=True)
+        # Without a public autonomous price (sold by the eLearning application), the eLearning
+        # version is not presented (decision of 21 November 2026).
         self.publish_version(course, "FULL-AUTO", "elearning", 10)
         self.inter_price(course, 4500)
         delivery = self.dated_session(live, public_location="Fictional city")
         delivery.action_publish_session(reason="Fictional publication")
         root = self.page(course)
         self.assertCoherent(root)
-        self.assertEqual(self.tabs(root), ["inter", "intra", "autonomous"])
+        self.assertEqual(self.tabs(root), ["inter", "intra"])
+        self.assertFalse(root.xpath("//div[@id='training_booking_autonomous']"))
         inter = self.text(root, "//div[@id='training_booking_inter']")
         self.assertIn("4", inter)
         self.assertIn("HT par participant", inter)
@@ -149,12 +152,11 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
             [str(delivery.id)],
         )
         self.assertIn("Sur devis", self.text(root, "//div[@id='training_booking_intra']"))
-        self.assertIn("10 h", self.text(root, "//div[@id='training_booking_autonomous']"))
         compared = self.comparison(root)
         self.assertEqual(compared["Dates"][0], "Sessions planifiées")
-        self.assertEqual(compared["Durée"], ["3 jours", "3 jours", "10 h"])
+        self.assertEqual(compared["Durée"], ["3 jours", "3 jours"])
         self.assertIn("HT par participant", compared["Tarif"][0])
-        self.assertEqual(compared["Tarif"][1:], ["Sur devis", "Sur devis"])
+        self.assertEqual(compared["Tarif"][1:], ["Sur devis"])
         self.assertIn("S’inscrire", self.text(root, "//div[contains(@class, 'o_training_course_mobile_bar')]"))
         self.assertEqual(
             root.xpath("//nav[@aria-label='Sommaire de la formation']//a/@href"),
@@ -250,7 +252,9 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         self.assertIn("Sur devis", self.text(root, "//div[@id='training_booking_intra']"))
         self.assertNotIn("hasCourseInstance", self.course_schema(root))
 
-    def test_autonomy_only_course_has_no_comparison_nor_session(self):
+    def test_autonomy_without_public_price_is_not_presented(self):
+        # Decision of 21 November 2026: no autonomy without a public price. The course keeps
+        # its general presentation and invites a contact, like a course without programme.
         course = self.new_course(
             "Fictional autonomous course",
             presentation="Fictional autonomous tagline",
@@ -259,20 +263,17 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         self.publish_version(course, "AUTO-ONLY", "elearning", 5)
         root = self.page(course)
         self.assertCoherent(root)
-        self.assertEqual(self.tabs(root), ["autonomous"])
-        self.assertIn("5 h", self.text(root, "//div[@id='training_booking_autonomous']"))
+        self.assertFalse(root.xpath("//div[@role='tablist']"))
+        self.assertFalse(root.xpath("//div[@id='training_booking_autonomous']"))
         self.assertFalse(root.xpath("//section[@id='training_course_formats']"))
-        self.assertFalse(root.xpath("//a[contains(@href, '/date-alert')]"))
-        self.assertFalse(root.xpath("//input[@name='session']"))
-        self.assertIn("Voir les formats", self.text(root, "//div[contains(@class, 'o_training_course_mobile_bar')]"))
-        # Highlights alone justify the presentation section.
+        self.assertFalse(root.xpath("//a[contains(@href, 'kind=individual')]"))
+        self.assertTrue(root.xpath("//div[@id='training_course_actions']"))
         self.assertIn("Own pace", self.text(root, "//section[@id='training_course_presentation']"))
-        # Asking for a format the course does not offer falls back to the one it offers.
-        chosen = self.page(course, "?format=inter")
-        self.assertEqual(
-            chosen.xpath("//div[@role='tablist']/button[@aria-selected='true']/@data-bs-target"),
-            ["#training_booking_autonomous"],
-        )
+        self.authenticate(None, None)
+        self.assertNotIn(course.name, self.url_open("/formations?format=autonomous").text)
+        # A course listed only through its eLearning version leaves the catalogue with it.
+        course.public_catalogue = False
+        self.assertNotIn(course.name, self.url_open("/formations").text)
 
     def test_presented_course_without_published_programme_invites_a_contact(self):
         course = self.new_course("Fictional course without programme", presentation="Fictional lone tagline")

@@ -99,3 +99,7 @@ autonomie seule, présentation sans programme publié
 - Onglet Inter : affiché si une session inter est publiée (même complète) ou si
   un tarif inter public existe ; sinon la formation n'est proposée qu'en intra,
   avec un lien « Demander un devis individuel » (décision du 21 novembre 2026).
+- Autonomie : présentée seulement avec un tarif public, fourni par l'application
+  qui vend l'offre eLearning (décision du 21 novembre 2026). Sans tarif, ni l'onglet,
+  ni le format au catalogue, ni la version eLearning ne sont présentés ; une formation
+  listée uniquement par cette version quitte le catalogue.

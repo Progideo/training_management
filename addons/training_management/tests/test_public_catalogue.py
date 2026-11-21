@@ -1,5 +1,6 @@
 import io
 import json
+from unittest.mock import patch
 from urllib.parse import urlsplit
 
 from lxml import html
@@ -14,6 +15,21 @@ from .test_catalogue import CatalogueCase
 
 @tagged("post_install", "-at_install")
 class TestPublicCatalogue(CatalogueCase, HttpCase):
+    @staticmethod
+    def priced_autonomy(env, amount=990.0):
+        """Public autonomous price, as projected by the application selling the eLearning offer."""
+        course_class = type(env["training.course"])
+        facts = course_class._catalogue_facts
+
+        def priced(records, company):
+            rows = facts(records, company)
+            for row in rows.values():
+                if row.get("elearning"):
+                    row["autonomous"] = {**(row.get("autonomous") or {}), "price": {"amount": amount, "label": "990"}}
+            return rows
+
+        return patch.object(course_class, "_catalogue_facts", priced)
+
     def test_public_version_pdf_demo_and_private_boundaries(self):
         program = self.new_program(
             public_catalogue=True,
@@ -193,6 +209,13 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         facts = self.course.sudo()._catalogue_facts(self.company)[self.course.id]
         self.assertEqual((facts["live_modes"], facts["elearning"]), (["onsite", "remote"], True))
         self.authenticate(None, None)
+        # Without a public price, the eLearning version is not presented (decision of 21 November 2026).
+        bare = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}").content)
+        self.assertEqual(bare.xpath("//div[@role='tablist']/button/@data-bs-target"), ["#training_booking_intra"])
+        self.assertNotIn(self.course.name, self.url_open("/formations?format=autonomous").text)
+        priced = self.priced_autonomy(self.env)
+        priced.start()
+        self.addCleanup(priced.stop)
         path = "/formations/catalogue/" + self.env["ir.http"]._slug((self.course.id, self.course.name))
         # A version page redirects permanently to its course page; only the latest versions are selected.
         for program, query in ((latest, f"version={latest.id}"), (older, ""), (autonomous, f"version={autonomous.id}")):
