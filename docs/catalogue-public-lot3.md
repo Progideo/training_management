@@ -73,3 +73,11 @@ bouton secondaire. Barre mobile : prix et action du premier format.
   l'e-mail (adresses construites dans le navigateur).
 - Prix inter : un tarif fixe s'affiche dès qu'un produit de formation de la
   formation est coché « Tarif inter-entreprises public » (vendu par personne).
+
+## Retours du 21 novembre 2026
+
+- Partage replié par défaut : lien discret « Partager cette formation » sous la
+  présentation, qui ouvre le lien à copier et les réseaux. Les icônes sont dessinées
+  en SVG dans le composant (le site n'a pas de police d'icônes de marques).
+- Modalités : la ligne de version (référence, intitulé, modalité, durée) est
+  supprimée ; la section n'apparaît que si la version a des modalités publiées.
