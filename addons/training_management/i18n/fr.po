@@ -15401,3 +15401,57 @@ msgstr "Une version eLearning n’a pas d’autre modalité."
 #: code:addons/training_management/models/training_program.py:0
 msgid "%(modes)s or %(last)s"
 msgstr "%(modes)s ou %(last)s"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "I wish to receive an email at this address when new dates are published for this training by this operator. I can unsubscribe from each email at any time. This does not enroll me in a session."
+msgstr "Je souhaite recevoir un courriel à cette adresse lorsque cet organisme publie de nouvelles dates pour cette formation. Je peux me désabonner à tout moment depuis chaque courriel. Cet accord ne constitue pas une inscription à une session."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "Enter a valid email address."
+msgstr "Saisissez une adresse email valide."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "Confirm your new date alert"
+msgstr "Confirmez votre alerte de nouvelles dates"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "You asked to be told when new dates are published for this training:"
+msgstr "Vous avez demandé à être prévenu de la publication de nouvelles dates pour cette formation :"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "Confirm my alert"
+msgstr "Confirmer mon alerte"
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "If you did not ask for it, ignore this email: no alert is activated without confirmation."
+msgstr "Si vous n’êtes pas à l’origine de cette demande, ignorez ce courriel : aucune alerte n’est activée sans confirmation."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/training_session_alert.py:0
+msgid "This confirmation link has expired. Ask for the alert again."
+msgstr "Ce lien de confirmation a expiré. Demandez à nouveau l’alerte."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_mail.py:0
+msgid "This date alert confirmation is no longer valid."
+msgstr "Cette confirmation d’alerte n’est plus valable."
+
+#. module: training_management
+#. odoo-python
+#: code:addons/training_management/models/mail_mail.py:0
+msgid "A date alert confirmation contains only its confirmation link."
+msgstr "Une confirmation d’alerte ne contient que son lien de confirmation."

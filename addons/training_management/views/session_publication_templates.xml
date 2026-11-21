@@ -15,7 +15,7 @@
                     </li>
                 </ul>
             <a class="btn btn-outline-primary" t-att-href="'/formations/%s/date-alert' % program_id">M’alerter des nouvelles dates</a>
-            <p class="mt-2">Abonnement volontaire depuis votre compte existant.</p>
+            <p class="mt-2">Abonnement volontaire, par votre compte ou par une adresse email confirmée.</p>
             <a href="/my/training-date-alerts">Gérer mes alertes ou me désabonner</a>
         </div>
         </t>
@@ -27,14 +27,20 @@
             <p t-if="error" class="alert alert-danger o_training_feedback" role="alert" t-out="error" tabindex="-1"/>
             <p t-if="policy">Finalité : vous prévenir des nouvelles dates de cette formation. Conservation des preuves prévue par la politique approuvée : <t t-if="policy['unit'] == 'months'"><t t-out="policy['months']"/> mois calendaires</t><t t-else=""><t t-out="policy['days']"/> jours</t>. Pour une demande de suppression, contactez l’organisme. Le désabonnement est immédiat et ne supprime pas les preuves de votre choix.</p>
             <p t-else="">Les alertes ne sont pas encore disponibles pour cette formation. Contactez l’organisme.</p>
-            <form t-if="policy" method="post">
+            <form t-if="policy" method="post" class="col-md-8 col-lg-6">
                 <input type="hidden" name="definition" t-att-value="definition"/>
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div t-if="visitor" class="my-3">
+                    <label class="form-label" for="date-alert-email">Votre adresse email</label>
+                    <input class="form-control" id="date-alert-email" name="email" type="email" autocomplete="email" maxlength="254" required="required" t-att-value="email"/>
+                    <p class="form-text">Vous recevrez un lien pour confirmer votre alerte. Rien n’est activé sans cette confirmation.</p>
+                </div>
                 <div class="form-check my-3"><input type="checkbox" id="date-alert-consent" name="accepted" value="yes" required="required" class="form-check-input"/>
                     <label for="date-alert-consent" class="form-check-label" t-out="wording"/></div>
                 <button class="btn btn-primary">Activer mon alerte</button>
             </form>
-            <a class="d-inline-block mt-3" href="/my/training-date-alerts">Mes alertes et désabonnement</a>
+            <a t-if="not visitor" class="d-inline-block mt-3" href="/my/training-date-alerts">Mes alertes et désabonnement</a>
+            <p t-else="" class="mt-3 mb-0">Vous avez un compte ? <a t-att-href="'/web/login?redirect=/formations/%s/date-alert' % program_id">Connectez-vous</a> pour gérer vos alertes depuis votre espace.</p>
         </div>
         </t>
     </template>
@@ -53,6 +59,45 @@
                 <a t-if="not row['active'] and row['subscribe_url']" t-att-href="row['subscribe_url']" class="btn btn-outline-primary">Me réabonner</a>
             </li>
                 </ul>
+            <a class="d-inline-block mt-3" href="/formations">Catalogue</a>
+        </div>
+        </t>
+    </template>
+
+    <template id="session_date_check_email" name="New date alert: check your email">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
+            <h1>Confirmez votre alerte</h1>
+            <p>Si cette adresse peut recevoir l’alerte « <t t-out="title"/> », un courriel de confirmation vient de lui être envoyé. Ouvrez-le et confirmez l’alerte dans les 7 jours.</p>
+            <a href="/formations">Retour au catalogue</a>
+        </div>
+        </t>
+    </template>
+    <template id="session_date_confirm" name="New date alert: confirmation">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
+            <h1>Alerte de nouvelles dates</h1>
+            <p class="fw-semibold" t-out="title"/>
+            <p t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+            <p t-if="active">Votre alerte est active. Chaque courriel d’alerte contient un lien de désabonnement.</p>
+            <form t-elif="not error" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button class="btn btn-primary">Confirmer mon alerte</button>
+            </form>
+            <a class="d-inline-block mt-3" href="/formations">Catalogue</a>
+        </div>
+        </t>
+    </template>
+    <template id="session_date_unsubscribe" name="New date alert: unsubscription">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
+            <h1>Alerte de nouvelles dates</h1>
+            <p class="fw-semibold" t-out="title"/>
+            <p t-if="not active">Vous êtes désabonné de cette alerte. Le désabonnement prend effet aussi sur les courriels encore en attente d’envoi.</p>
+            <form t-else="" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button class="btn btn-outline-secondary">Me désabonner</button>
+            </form>
             <a class="d-inline-block mt-3" href="/formations">Catalogue</a>
         </div>
         </t>

@@ -36,6 +36,24 @@ class MailMail(models.Model):
                 or self.body_html != body
             ):
                 raise ValidationError(self.env._("Learning notifications contain only the authorized sign-in link."))
+        if self.model == "training.session.alert.subscription":
+            # Confirmation of a visitor's date alert: the latest pending link, to the requested address only.
+            subscription = self.env[self.model].sudo().browse(self.res_id).exists()
+            if subscription:
+                subscription.company_id.sudo()._lock_training_schedule()
+                subscription.invalidate_recordset()
+            if not subscription or not subscription._confirmation_authorized(self):
+                raise ValidationError(self.env._("This date alert confirmation is no longer valid."))
+            subject, body = subscription._confirmation_content()
+            if (
+                self.email_cc
+                or self.recipient_ids
+                or self.recipient_cc_ids
+                or self.attachment_ids
+                or self.subject != subject
+                or self.body_html != body
+            ):
+                raise ValidationError(self.env._("A date alert confirmation contains only its confirmation link."))
         if self.model == "training.feedback.notice":
             notice = self.env["training.feedback.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
             if not notice or not notice._authorized():
