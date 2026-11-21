@@ -88,7 +88,6 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         self.assertFalse(delivery.enrollment_ids)
         self.assertFalse(self.env["training.session.alert.subscription"].search([]))
         self.assertEqual(allocation.sale_line_id.order_id, order)
-        self.company.training_session_alert_retention_id = self.retention
         subscriptions = self.env["training.session.alert.subscription"].with_user(self.portal)
         definition = subscriptions._definition(self.public_program.sudo())
         sub = subscriptions._subscribe(self.public_program.sudo(), accepted=True, definition=definition)

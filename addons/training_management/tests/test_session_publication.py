@@ -179,7 +179,6 @@ class SessionAlertCase(EnrollmentCase):
             )
         )
         cls.policy.action_approve()
-        cls.company.training_session_alert_retention_id = cls.policy
         names = (
             "title",
             "objectives",
@@ -357,13 +356,14 @@ class TestPublicSessionRules(SessionAlertCase):
 
 @tagged("post_install", "-at_install")
 class TestSessionDateAlerts(SessionAlertCase):
-    def test_explicit_consent_and_policy_required(self):
+    def test_explicit_consent_required_without_retention_policy(self):
+        # Retention is the operator's matter (21 November 2026): no policy is required nor recorded.
         model = self.env["training.session.alert.subscription"].with_user(self.portal)
         with self.assertRaises(ValidationError):
             model._subscribe(self.public_program.sudo(), accepted=False)
-        self.company.training_session_alert_retention_id = False
-        with self.assertRaises(ValidationError):
-            self.subscribe()
+        sub = self.subscribe()
+        self.assertTrue(sub.active_consent)
+        self.assertFalse(sub.retention_id)
         with self.assertRaises(AccessError):
             self.subscribe(self.env.ref("base.public_user"))
 
@@ -487,40 +487,13 @@ class TestSessionDateAlerts(SessionAlertCase):
 
 @tagged("post_install", "-at_install")
 class TestSessionDatesHttp(SessionAlertCase, HttpCase):
-    def test_calendar_months_are_shown_and_bound_to_consent(self):
-        from lxml import html
-
-        policy = self.policy.copy(
-            {
-                "name": "Fictional three calendar months",
-                "duration_unit": "months",
-                "duration_days": 0,
-                "duration_months": 3,
-            }
-        )
-        policy.action_approve()
-        self.company.training_session_alert_retention_id = policy
+    def test_consent_page_shows_no_retention_policy(self):
         self.authenticate(self.portal.login, self.portal.login)
-        url = "/formations/%s/date-alert" % self.public_program.id
-        response = self.url_open(url)
+        response = self.url_open("/formations/%s/date-alert" % self.public_program.id)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("3 mois calendaires", response.text)
+        self.assertIn("Finalité", response.text)
         self.assertNotIn("90 jours", response.text)
-        tree = html.fromstring(response.content)
-        response = self.url_open(
-            url,
-            data={
-                "csrf_token": tree.xpath("//input[@name='csrf_token']/@value")[0],
-                "definition": tree.xpath("//input[@name='definition']/@value")[0],
-                "accepted": "yes",
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        subscription = self.env["training.session.alert.subscription"].search([("owner_id", "=", self.portal.id)])
-        self.assertEqual(subscription.retention_id, policy)
-        self.assertTrue(subscription.active_consent)
-        self.assertEqual(self.policy.duration_unit, "days")
-        self.assertEqual(self.policy.duration_days, 90)
+        self.assertNotIn("politique", response.text.lower())
 
     def test_public_projection_and_authenticated_consent_withdrawal(self):
         from lxml import html
@@ -694,13 +667,6 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
             with self.assertRaises(ValidationError):
                 late._confirm_by_token()
         self.assertFalse(late.active_consent)
-
-    def test_alert_link_needs_an_approved_policy(self):
-        self.company.training_session_alert_retention_id = False
-        self.course.sudo().public_catalogue = True
-        self.authenticate(None, None)
-        page = self.url_open("/formations/catalogue/%s" % self.course.id).text
-        self.assertNotIn("/date-alert", page)
 
     def test_public_dates_disambiguate_daylight_saving_offsets(self):
         import calendar

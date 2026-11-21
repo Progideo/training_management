@@ -92,10 +92,7 @@ class TrainingPublicCatalogue(TrainingCatalogue):
         )
         if program.delivery_mode != "elearning":
             values["sessions_url"] = "/formations/%s/sessions" % program.id
-            # Date alerts are offered only once the operator approved their retention policy.
-            policy = program.company_id.sudo().training_session_alert_retention_id
-            if policy and policy.approved_at:
-                values["alert_url"] = "/formations/%s/date-alert" % program.id
+            values["alert_url"] = "/formations/%s/date-alert" % program.id
         if program.duration_hours:
             whole = int(program.duration_hours)
             minutes = round((program.duration_hours - whole) * 60)

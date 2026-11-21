@@ -83,7 +83,6 @@ class SessionPublicationPortal(http.Controller):
                 return request.redirect("/my/training-date-alerts", code=303)
             except (AccessError, ValidationError) as exc:
                 error = str(exc)
-        policy = program.company_id.sudo().training_session_alert_retention_id
         response = self._private(
             request.render(
                 "training_management.session_date_consent",
@@ -94,13 +93,6 @@ class SessionPublicationPortal(http.Controller):
                     "email": email,
                     "wording": model._email_wording() if visitor else model._wording(),
                     "definition": model._definition(program),
-                    "policy": {
-                        "unit": policy.duration_unit,
-                        "days": policy.duration_days,
-                        "months": policy.duration_months,
-                    }
-                    if policy and policy.approved_at
-                    else False,
                     "error": error,
                 },
             )
