@@ -32,6 +32,11 @@
             <p t-if="kind != 'group' and version_details" class="mt-2 mb-0">
                 <a class="btn btn-outline-primary w-100" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % version_details['id']">Demander un devis individuel</a></p>
         </xpath>
+        <xpath expr="//div[@id='training_booking_intra_actions']" position="after">
+            <!-- No inter-company tab: an individual can still ask for a quotation. -->
+            <p t-if="not formats['inter'] and kind != 'group' and version_details and version_details.get('id') and sessions_url" class="mt-2 mb-0">
+                <a class="btn btn-outline-primary w-100" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % version_details['id']">Demander un devis individuel</a></p>
+        </xpath>
         <xpath expr="//div[@id='training_booking_autonomous_actions']" position="inside">
             <a t-if="kind != 'group' and version_details and not autonomous_offers"
                class="btn btn-outline-primary w-100" t-att-href="'/formations/demande?kind=individual&amp;program=%s' % version_details['id']">Demander un devis individuel</a>

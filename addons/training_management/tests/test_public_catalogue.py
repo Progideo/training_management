@@ -225,12 +225,13 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.assertIn("21 h", tree.xpath("string(//dl[contains(@class, 'o_training_course_figures')])"))
         self.assertEqual(self.course_schema(tree)["timeRequired"], "PT21H")
         self.assertNotIn("Version V2", tree.xpath("string(//section[@id='training_course_modalities'])"))
-        # Trainer-led and autonomous versions give the three formats, compared after the description.
+        # Without an inter-company price nor session, the trainer-led version is offered in intra
+        # only; with the autonomous version, both formats are compared after the description.
         tabs = tree.xpath("//div[@role='tablist']/button/@data-bs-target")
-        self.assertEqual(tabs, ["#training_booking_inter", "#training_booking_intra", "#training_booking_autonomous"])
+        self.assertEqual(tabs, ["#training_booking_intra", "#training_booking_autonomous"])
         self.assertEqual(
             tree.xpath("//section[@id='training_course_formats']//thead/tr/th/text()"),
-            ["Inter-entreprises", "Intra-entreprise", "En autonomie"],
+            ["Intra-entreprise", "En autonomie"],
         )
         # The comparison closes the details of the course, before the questions.
         sections = tree.xpath("//div[contains(@class, 'col-lg-8')]/section/@id")
@@ -238,22 +239,19 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         # Each format can be chosen from the comparison, which opens its tab of the booking card.
         self.assertEqual(
             tree.xpath("//section[@id='training_course_formats']//tbody/tr[last()]//a/@href"),
-            [f"?format={key}#training_course_booking" for key in ("inter", "intra", "autonomous")],
+            [f"?format={key}#training_course_booking" for key in ("intra", "autonomous")],
         )
-        # No session yet: the inter-company tab offers the new date alert of that version.
-        self.assertTrue(
-            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{latest.id}/date-alert']")
-        )
+        self.assertFalse(tree.xpath("//div[@id='training_booking_inter']"))
         # Each column of the comparison carries its format, so the chosen tab can be highlighted.
         self.assertEqual(
             tree.xpath("//section[@id='training_course_formats']//th[@data-format]/@data-format"),
-            ["inter", "intra", "autonomous"],
+            ["intra", "autonomous"],
         )
         self.assertEqual(
             tree.xpath(
                 "//section[@id='training_course_formats']//*[contains(@class, 'o_training_course_selected')]/@data-format"
             ),
-            ["inter"] * 9,
+            ["intra"] * 9,
         )
         chosen = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}?format=autonomous").content)
         self.assertEqual(
@@ -269,13 +267,10 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         page = self.url_open(f"/formations/catalogue/{self.course.id}")
         self.assertEqual(page.status_code, 200)
         tree = html.fromstring(page.content)
-        inter = " ".join(tree.xpath("string(//div[@id='training_booking_inter'])").split())
-        # No session and no inter-company price: the visitor is told so and can ask for new dates.
-        self.assertIn("Sur devis", inter)
-        self.assertIn("Aucune session programmée", inter)
-        self.assertTrue(
-            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{program.id}/date-alert']")
-        )
+        # No session and no inter-company price: no inter-company tab, the intra quotation remains.
+        self.assertFalse(tree.xpath("//div[@id='training_booking_inter']"))
+        self.assertFalse(tree.xpath(f"//a[@href='/formations/{program.id}/date-alert']"))
+        self.assertIn("Sur devis", tree.xpath("string(//div[@id='training_booking_intra'])"))
         self.assertFalse(tree.xpath("//section[@id='training_course_reviews']"))
         self.assertFalse(
             tree.xpath("//nav[@aria-label='Sommaire de la formation']//a[@href='#training_course_reviews']")
@@ -289,7 +284,7 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
             self.assertEqual(panel.get("aria-labelledby"), tab.get("id"))
         self.assertEqual(
             tree.xpath("//div[@role='tablist']/button[@aria-selected='true']/@data-bs-target"),
-            ["#training_booking_inter"],
+            ["#training_booking_intra"],
         )
         # Every anchor of the summary leads to a section of the page.
         for anchor in tree.xpath("//nav[@aria-label='Sommaire de la formation']//a/@href"):

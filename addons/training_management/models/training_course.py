@@ -112,8 +112,10 @@ class TrainingCourse(models.Model):
                 {"elearning"} if "elearning" in published.mapped("delivery_mode") else set()
             )
             upcoming = None
+            public_session = False
             for delivery in deliveries.filtered(lambda d, c=course: d.program_id.course_id == c):
                 row = delivery._session_public_row()
+                public_session = public_session or bool(row)
                 if row and row["status"] != "full":
                     upcoming = {"start_at": row["start_at"], "timezone": row["timezone"], "location": row["location"]}
                     break
@@ -124,6 +126,8 @@ class TrainingCourse(models.Model):
                     "elearning": "elearning" in modes,
                     "live_modes": sorted(modes - {"elearning"}),
                     "next_session": upcoming,
+                    # A public session, even full: the inter-company format stays presented.
+                    "public_session": public_session,
                 }
             )
         return facts

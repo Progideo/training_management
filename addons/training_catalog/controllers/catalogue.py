@@ -343,14 +343,32 @@ class TrainingCatalogue(http.Controller):
         ("Accompagnement", {"inter": "Avec formateur", "intra": "Avec formateur", "autonomous": "Parcours en ligne"}),
     )
 
+    @staticmethod
+    def _complete_durations(values, durations):
+        """Give a duration to the formats without one, e.g. from the hours of their version."""
+        known = values.get("format_durations") or {}
+        for key, label in durations.items():
+            if label and not known.get(key):
+                known[key] = label
+        values["format_durations"] = known
+        values["autonomous_duration"] = known.get("autonomous") or ""
+        keys = [tab["key"] for tab in values["tabs"]]
+        values["comparison"] = [
+            (label, [known.get(key) or "—" for key in keys]) if label == "Durée" else (label, cells)
+            for label, cells in values["comparison"]
+        ]
+
     def _course_values(self, row, published, **kwargs):
         """Page values every application may complete before the page renders."""
         env = request.env
         card = self._card(row)
         formats = dict(card["formats"])
-        # A course led by a trainer can be followed in an inter-company session, even
-        # before dates are published: the tab then offers the new date alert.
-        formats["inter"] = formats["inter"] or bool(row.get("live"))
+        # A course led by a trainer with a public inter-company price can be followed in an
+        # inter-company session before dates are published: the tab then offers the new date
+        # alert. Without a price nor a public session, the inter-company tab is hidden (21 Nov. 2026).
+        formats["inter"] = formats["inter"] or bool(
+            row.get("live") and (row.get("session_price") or row.get("public_session"))
+        )
         tabs = [key for key in ("inter", "intra", "autonomous") if formats[key]]
         active = kwargs.get("format") if kwargs.get("format") in tabs else (tabs[0] if tabs else "")
         presentation = (row["presentation"] or "").strip()
@@ -381,6 +399,20 @@ class TrainingCatalogue(http.Controller):
             "autonomous": "Achat en ligne" if autonomous.get("price") else "Sur demande",
         }
         comparison = [(label, [values[key] for key in tabs]) for label, values in self.COMPARISON]
+        if not row.get("next_session"):
+            # No inter-company session open yet: the dates are not announced as planned.
+            comparison = [
+                (
+                    label,
+                    [
+                        "Aucune date programmée" if key == "inter" else value
+                        for key, value in zip(tabs, values, strict=True)
+                    ],
+                )
+                if label == "Dates"
+                else (label, values)
+                for label, values in comparison
+            ]
         # The place follows the possible modes declared by the version led by a trainer.
         live_modes = set(row.get("live_modes") or [])
         places = {
@@ -435,6 +467,7 @@ class TrainingCatalogue(http.Controller):
             ),
             "presentation_more": "\n\n".join(paragraphs[1:]),
             "duration_label": duration,
+            "format_durations": durations,
             "autonomous_duration": durations["autonomous"],
             "autonomous_offers": [offer for offer in card["offers"] if offer["mode"] == "autonomous"],
             "comparison": comparison if len(tabs) > 1 else [],

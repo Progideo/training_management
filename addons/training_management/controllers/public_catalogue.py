@@ -52,6 +52,15 @@ class TrainingPublicCatalogue(TrainingCatalogue):
             program = (live or ordered or [programs.browse()])[0]
         if not program:
             return response
+        # Formats without a duration in days take the hours of their latest version.
+        latest = {}
+        for offered_program in (programs.browse(program_id) for program_id in offered):
+            if offered_program.duration_hours:
+                key = "autonomous" if offered_program.delivery_mode == "elearning" else "live"
+                latest.setdefault(key, "%s h" % offered_program._public_duration_hours())
+        self._complete_durations(
+            values, {"inter": latest.get("live"), "intra": latest.get("live"), "autonomous": latest.get("autonomous")}
+        )
         sections = program._public_page_sections()
         hours = program._public_duration_hours() if program.duration_hours else ""
         values.update(

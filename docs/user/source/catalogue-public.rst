@@ -80,6 +80,8 @@ le badge **Session confirmée**.
 
 #. Ouvrir la fiche d'une formation : les dates publiques sont dans l'onglet
    **Inter-entreprises**. Sans date, utiliser **Être alerté des nouvelles dates**.
+   Cet onglet n'apparaît que si la formation a un tarif inter-entreprises public
+   ou une session publiée.
 #. Pour recevoir les prochaines dates, se connecter avec un compte Odoo existant.
 #. Lire les conditions et la politique de conservation, puis donner l'accord
    volontaire demandé. Aucune case ne doit être présumée cochée.
