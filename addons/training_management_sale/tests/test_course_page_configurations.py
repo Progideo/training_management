@@ -74,7 +74,7 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
             }
         )
 
-    def session(self, program, days=30, **values):
+    def dated_session(self, program, days=30, **values):
         start = fields.Datetime.now() + timedelta(days=days)
         return self.delivery(
             program_id=program.id,
@@ -135,7 +135,7 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         live = self.publish_version(course, "FULL-LIVE", "blended", 21, also_onsite=True)
         self.publish_version(course, "FULL-AUTO", "elearning", 10)
         self.inter_price(course, 4500)
-        delivery = self.session(live, public_location="Fictional city")
+        delivery = self.dated_session(live, public_location="Fictional city")
         delivery.action_publish_session(reason="Fictional publication")
         root = self.page(course)
         self.assertCoherent(root)
@@ -230,8 +230,8 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
     def test_dated_intra_session_for_a_customer_stays_private(self):
         course = self.new_course("Fictional course with a customer date", presentation="Fictional customer tagline")
         live = self.publish_version(course, "INTRA-DATED", "onsite", 7)
-        private = self.session(live, days=20, name="PRIVATE_CUSTOMER_SESSION", public_location="Private city")
-        closed = self.session(live, days=40, name="CLOSED_SALES_SESSION", public_location="Closed city")
+        private = self.dated_session(live, days=20, name="PRIVATE_CUSTOMER_SESSION", public_location="Private city")
+        closed = self.dated_session(live, days=40, name="CLOSED_SALES_SESSION", public_location="Closed city")
         closed.action_publish_session(reason="Fictional publication")
         closed.action_close_session_sales(reason="Fictional closing")
         root = self.page(course)
