@@ -17,25 +17,6 @@ CONFIRMATION_THROTTLE = timedelta(minutes=15)
 CONFIRMATIONS_PER_DAY = 5
 
 
-class SessionAlertCompany(models.Model):
-    _inherit = "res.company"  # pylint: disable=consider-merging-classes-inherited
-
-    training_session_alert_retention_id = fields.Many2one(
-        "training.retention.category",
-        string="Date Alert Retention Policy",
-        groups="base.group_system",
-        ondelete="restrict",
-        copy=False,
-    )
-
-    @api.constrains("training_session_alert_retention_id")
-    def _check_session_alert_policy(self):
-        for company in self:
-            policy = company.training_session_alert_retention_id
-            if policy and (policy.company_id != company or not policy.approved_at):
-                raise ValidationError(self.env._("Choose an approved retention policy of this operator company."))
-
-
 class SessionAlertSubscription(models.Model):
     _name = "training.session.alert.subscription"
     _inherit = "training.learning.evidence"
@@ -53,9 +34,8 @@ class SessionAlertSubscription(models.Model):
     access_token = fields.Char(groups="base.group_system", copy=False)
     confirmation_requested_at = fields.Datetime(readonly=True)
     confirmation_mail_id = fields.Many2one("mail.mail", ondelete="set null", readonly=True)
-    retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
-    )
+    # Historical only: retention is the operator's matter, outside the generic module (21 November 2026).
+    retention_id = fields.Many2one("training.retention.category", ondelete="restrict", check_company=True)
     public_title = fields.Char(required=True)
     active_consent = fields.Boolean()
     subscribed_at = fields.Datetime(required=True)
@@ -95,9 +75,8 @@ class SessionAlertSubscription(models.Model):
 
     @api.private
     def _definition(self, program):
-        policy = program.company_id.sudo().training_session_alert_retention_id
         wording = self._wording() if not self.env.user._is_public() else self._email_wording()
-        return hashlib.sha256((str(program.id) + ":" + str(policy.id) + ":" + wording).encode()).hexdigest()
+        return hashlib.sha256((str(program.id) + ":" + wording).encode()).hexdigest()
 
     @api.private
     def _subscribe(self, program, accepted=False, definition=None):
@@ -117,9 +96,6 @@ class SessionAlertSubscription(models.Model):
                 raise ValidationError(self.env._("This programme is no longer public."))
             if definition != self._definition(program):
                 raise ValidationError(self.env._("The date alert terms changed. Review and accept them again."))
-            policy = program.company_id.sudo().training_session_alert_retention_id
-            if not policy or not policy.approved_at or policy.company_id != program.company_id:
-                raise ValidationError(self.env._("Date alerts require an approved retention policy."))
             row = self.sudo().search(
                 [
                     ("owner_id", "=", user.id),
@@ -133,7 +109,6 @@ class SessionAlertSubscription(models.Model):
                 "active_consent": True,
                 "subscribed_at": fields.Datetime.now(),
                 "consent_wording": self._wording(),
-                "retention_id": policy.id,
             }
             if row:
                 row._owner()
@@ -164,10 +139,7 @@ class SessionAlertSubscription(models.Model):
             raise ValidationError(self.env._("This programme is no longer public."))
         if definition != self._definition(program):
             raise ValidationError(self.env._("The date alert terms changed. Review and accept them again."))
-        policy = program.company_id.sudo().training_session_alert_retention_id
-        if not policy or not policy.approved_at or policy.company_id != program.company_id:
-            raise ValidationError(self.env._("Date alerts require an approved retention policy."))
-        return policy
+        return True
 
     @api.private
     def _request_by_email(self, program, email, accepted=False, definition=None):
@@ -180,7 +152,7 @@ class SessionAlertSubscription(models.Model):
             raise ValidationError(self.env._("Enter a valid email address."))
         with self.env.cr.savepoint():
             program.company_id.sudo()._lock_training_schedule()
-            policy = self._check_public_program(program, accepted, definition)
+            self._check_public_program(program, accepted, definition)
             now = fields.Datetime.now()
             model = self.sudo()
             row = model.search(
@@ -210,7 +182,6 @@ class SessionAlertSubscription(models.Model):
                 "active_consent": False,
                 "subscribed_at": now,
                 "consent_wording": self._email_wording(),
-                "retention_id": policy.id,
                 "access_token": secrets.token_urlsafe(32),
                 "confirmation_requested_at": now,
                 "language": self.env.lang or "en_US",
@@ -363,7 +334,7 @@ class SessionAlertEvent(models.Model):
     operation = fields.Selection([("subscribe", "Subscribe"), ("unsubscribe", "Unsubscribe")], required=True)
     occurred_at = fields.Datetime(required=True)
     wording = fields.Text(required=True)
-    retention_id = fields.Many2one("training.retention.category", required=True, ondelete="restrict")
+    retention_id = fields.Many2one("training.retention.category", ondelete="restrict")  # historical only
     revision = fields.Integer(required=True)
     _once = models.Constraint("UNIQUE(subscription_id, revision)", "This consent transition is already recorded.")
 

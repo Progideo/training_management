@@ -50,7 +50,6 @@ if phase == "sessions_prepare":
     prior = json.loads(params.get_str("training_management_test.p14"))
     coord = env["res.users"].browse(prior["coord"])
     program = env["training.delivery"].browse(prior["delivery"]).program_id
-    program.company_id.training_session_alert_retention_id = prior["policy"]
     sub = subscribe(env(user=prior["users"][0]), program.id)
     now = fields.Datetime.now()
     delivery = (

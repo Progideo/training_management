@@ -15,11 +15,10 @@ Le catalogue P03/P04 et le registre S03 restent les références uniques.
 | Informations publiques | Titre du programme, dates de début/fin, fuseau, modalité, statut et engagement autorisé. Aucun nom interne de réalisation, effectif, client, participant, salle privée ou lien distant. | Annulation, début de session, retrait du programme ou fermeture commerciale : projection supprimée à la prochaine lecture, sans cache. |
 | Alerte volontaire | Compte Odoo existant authentifié, choix par formation et société ; case non précochée, texte exact, auteur et date conservés. Pas d'abonnement anonyme dans ce premier incrément. | Un client ne peut abonner ses salariés ; être inscrit ou follower n'abonne pas aux alertes. L'abonnement suit les versions publiées du même cours. |
 | Alerte sans compte | Décision du 21 novembre 2026 : un visiteur s'abonne avec son adresse. Double consentement : le lien reçu par courriel (valable 7 jours) ouvre une page de confirmation, une simple ouverture ne confirme rien. Réponse identique que l'adresse soit connue ou non ; au plus un courriel de confirmation par abonnement toutes les 15 minutes et 5 par adresse et par jour. Chaque alerte contient un lien de désabonnement. L'abonnement dure jusqu'au désabonnement. | Lien ouvert sans confirmer : aucune alerte. Confirmation puis publication d'une session : une alerte, avec son lien de désabonnement. |
-| Lien d'alerte | Affiché seulement si la société a une politique de conservation approuvée. | Sans politique : aucun lien « Être alerté des nouvelles dates ». |
 | Déclenchement | Première publication d'une nouvelle réalisation datée future après abonnement. Une notification par abonnement/réalisation ; republier ou modifier les dates ne renvoie pas d'alerte. | Deux traitements concurrents ou répétés : un seul courrier. Une nouvelle réalisation : nouvelle alerte. |
 | Désabonnement | Gestion depuis le compte, indépendante des accès pédagogiques ; effet immédiat, y compris sur les courriers encore en file. Réabonnement explicite sans rejeu des anciennes dates. | Désabonnement puis envoi de la file : aucun transport. |
 | Courriel | File native `mail.mail`, destinataire unique ; lien vers la fiche publique et gestion des alertes. Consentement, adresse actuelle, société et publication revérifiés au transport. | Retrait/annulation après mise en file : envoi refusé ; aucune adresse collective ni donnée privée. |
-| Conservation | Politique SEC02 approuvée avant abonnement, preuve privée ; aucune durée ou purge automatique inventée. | Retrait conserve la preuve sans conserver un abonnement actif. |
+| Conservation | Décision du 21 novembre 2026 : la conservation relève de l'organisme (son dossier réglementaire), pas du module générique. Aucune politique n'est exigée ni affichée ; la preuve privée de l'accord et du retrait est conservée, sans purge automatique. | Retrait conserve la preuve sans conserver un abonnement actif. |
 
 Le mainteneur a validé ces règles, y compris les alertes réservées aux comptes
 Odoo existants. Aucun abonnement ni publication n’est repris
@@ -62,8 +61,8 @@ La fiche catalogue mène aux dates publiques et à l’accord volontaire. Le com
 retrouve ses alertes et leur retrait dans `/my/training-date-alerts`, même sans
 accès pédagogique actif. Après retrait, **Me réabonner** rouvre le consentement
 pour une version encore publique du même cours et de la même société.
-L’accord porte sur les conditions affichées et leur
-politique de conservation ; une modification oblige à relire avant validation.
+L’accord porte sur les conditions affichées ; une modification oblige à relire
+avant validation.
 La file native conserve les erreurs visibles ; aucun cron supplémentaire.
 Les verrous et révisions S03/société sérialisent publication, abonnement,
 désabonnement et préparation du transport. Les contraintes d’unicité complètent
