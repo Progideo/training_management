@@ -81,3 +81,18 @@ bouton secondaire. Barre mobile : prix et action du premier format.
   en SVG dans le composant (le site n'a pas de police d'icônes de marques).
 - Modalités : la ligne de version (référence, intitulé, modalité, durée) est
   supprimée ; la section n'apparaît que si la version a des modalités publiées.
+
+### Fiche selon la configuration de la formation
+
+Recette sur six configurations : inter avec session et prix, inter et intra sans
+date, intra sur devis sans champs facultatifs, session client non publiée,
+autonomie seule, présentation sans programme publié
+(`training_management_sale/tests/test_course_page_configurations.py`).
+
+- Le premier paragraphe de présentation est l'accroche du bandeau : la section
+  « Présentation » ne le répète pas et n'apparaît (avec son entrée de sommaire)
+  qu'avec un second paragraphe, des points forts ou un logo.
+- Sans durée en jours, le comparatif reprend les heures de la dernière version ;
+  l'autonomie reprend celles de sa version eLearning.
+- Sans session inter ouverte, le comparatif indique « Aucune date programmée » et
+  la barre mobile propose « Voir les formats » au lieu de « S’inscrire ».
