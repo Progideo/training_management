@@ -652,7 +652,11 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         self.assertTrue(sub._confirmation_authorized(mail))
         # A repeated request neither tells whether the address is known nor sends another email.
         repeated = self.url_open(url, data={**data, "email": "visitor@example.invalid", "accepted": "yes"})
-        self.assertEqual(repeated.text, response.text)
+        self.assertEqual(repeated.status_code, response.status_code)
+        # The website layout contains per-request tokens. Compare the public message itself.
+        pages = [html.fromstring(result.content).xpath("//div[@id='wrap']/p") for result in (response, repeated)]
+        self.assertEqual([len(page) for page in pages], [1, 1])
+        self.assertEqual(pages[0][0].text_content(), pages[1][0].text_content())
         self.assertEqual(sub.confirmation_mail_id, mail)
         self.assertEqual(self.url_open("/formations/date-alert/confirm/forged-token").status_code, 404)
         # Opening the link does not confirm: mail scanners open links without consent.
