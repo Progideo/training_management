@@ -2602,3 +2602,33 @@ msgstr "Le tarif inter-entreprises public doit être un tarif par personne venda
 #: code:addons/training_management_sale/models/product_template.py:0
 msgid "A course has only one public inter-company price."
 msgstr "Une formation n’a qu’un seul tarif inter-entreprises public."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_registration_payment.py:0
+msgid "You are already registered to this session. Your registration is in your account."
+msgstr "Vous êtes déjà inscrit à cette session. Votre inscription figure dans votre espace."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_registration_payment.py:0
+msgid "This session is not confirmed and opens no more registrations online. Contact us."
+msgstr "Cette session n’est pas confirmée et n’accepte plus d’inscription en ligne. Contactez-nous."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_registration_payment.py:0
+msgid "This session has no public price."
+msgstr "Cette session n’a pas de tarif public."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_registration_payment.py:0
+msgid "The places of this registration were released before the order was confirmed."
+msgstr "Les places de cette inscription ont été libérées avant la confirmation de la commande."
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_registration_payment.py:0
+msgid "This registration can be paid only once the session is confirmed and its places held."
+msgstr "Cette inscription ne peut être payée qu’une fois la session confirmée et ses places conservées."

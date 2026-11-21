@@ -51,8 +51,8 @@ class TrainingDelivery(models.Model):
         # A late registration to a confirmed session is paid at once: its places last until the start.
         return release if release > fields.Datetime.now() else self.start_at
 
-    def action_confirm(self, reason=None):
-        result = super().action_confirm(reason)
+    def action_confirm(self, reason=None, conflict_reason=None):
+        result = super().action_confirm(reason=reason, conflict_reason=conflict_reason)
         # Elevated search: a coordinator may lack Sales rights. Only the named buyer of each
         # registration receives its request, through the document policy of the order.
         orders = (
