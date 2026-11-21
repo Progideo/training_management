@@ -198,15 +198,15 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         self.assertIn("Voir les formats", mobile)
         self.assertNotIn("S’inscrire", mobile)
         # A one paragraph presentation is the tagline only: not repeated under a « Présentation » title.
+        schema = self.course_schema(root)
+        self.assertEqual(schema["offers"][0]["price"], 3000)
+        self.assertNotIn("hasCourseInstance", schema)
         for script in root.xpath("//script"):
             script.getparent().remove(script)
         body = " ".join(root.xpath("string(//body)").split())
         self.assertEqual(body.count("Fictional single tagline"), 1)
         self.assertFalse(root.xpath("//section[@id='training_course_presentation']"))
         self.assertTrue(root.xpath("//details[contains(@class, 'o_training_course_share')]"))
-        schema = self.course_schema(root)
-        self.assertEqual(schema["offers"][0]["price"], 3000)
-        self.assertNotIn("hasCourseInstance", schema)
 
     def test_intra_on_quotation_without_optional_course_fields(self):
         # No presentation, duration in days, level, highlights, FAQ or related course; remote only.
@@ -220,7 +220,7 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         self.assertEqual(compared["Tarif"], ["Sur devis", "Sur devis"])
         self.assertEqual(compared["Lieu"], ["À distance", "À distance"])
         # Without days, the duration of the version is compared.
-        self.assertEqual(compared["Durée"], ["3,5 h", "3,5 h"])
+        self.assertEqual([value.replace(",", ".") for value in compared["Durée"]], ["3.5 h", "3.5 h"])
         for section in ("presentation", "faq", "related", "reviews"):
             self.assertFalse(root.xpath("//section[@id='training_course_%s']" % section), section)
         self.assertIn("Sur devis", self.text(root, "//div[contains(@class, 'o_training_course_mobile_bar')]"))

@@ -246,7 +246,7 @@
                       <p class="o_training_course_booking_tagline" t-out="format_taglines['autonomous']"/>
                       <p class="o_training_course_price"><t t-if="autonomous.get('price')"><t t-out="autonomous['price']['label']"/> HT</t><t t-else="">Sur devis</t></p>
                       <p class="o_training_course_price_note"><t t-if="autonomous.get('price')">par apprenant</t><t t-else="">tarif communiqué sur demande</t><t t-if="autonomous.get('access_months')"> · accès <t t-out="autonomous['access_months']"/> mois</t></p>
-                      <ul t-if="autonomous" class="o_training_course_checks">
+                      <ul t-if="autonomous or autonomous_duration" class="o_training_course_checks">
                         <li t-if="autonomous_duration">Durée du contenu : <t t-out="autonomous_duration"/></li>
                         <li t-if="autonomous.get('modules')"><t t-out="autonomous['modules']"/> activité(s)</li>
                         <li t-if="autonomous.get('access_months')">Accès pendant <t t-out="autonomous['access_months']"/> mois</li>
