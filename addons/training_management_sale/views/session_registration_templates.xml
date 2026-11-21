@@ -65,4 +65,46 @@
             </main>
         </t>
     </template>
+
+    <template id="public_session_paid_registration" name="Inter-company session registration">
+        <t t-call="portal.frontend_layout">
+            <main id="wrap" class="container py-4 o_training_public_page o_not_editable">
+                <p><a t-att-href="'/formations/catalogue/%s?format=inter#training_course_booking' % course_id">Retour à la fiche formation</a></p>
+                <h1>S’inscrire à une session inter-entreprises</h1>
+                <p class="fw-semibold" t-out="title"/>
+                <p><span t-if="session['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><t t-out="session['dates']"/> · <t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></p>
+                <p><strong><t t-out="price"/> HT</strong> par participant</p>
+                <p t-if="session['confirmed']" id="training_registration_payment_now">Cette session est confirmée : vous réglez votre inscription à l’étape suivante pour confirmer votre participation.</p>
+                <p t-else="" id="training_registration_payment_later">Cette session n’est pas encore confirmée. Votre inscription est enregistrée sans paiement : dès la confirmation de la session, vous recevrez une demande de paiement pour confirmer votre participation.</p>
+                <div t-if="error" class="alert alert-danger" role="alert" t-out="error"/>
+                <form t-if="session['limit']" method="post" t-att-action="session['url']" class="col-md-8 col-lg-6">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="submission_token" t-att-value="token"/>
+                    <p>Inscription au nom de <strong t-out="partner.name"/> (<t t-out="partner.email"/>).</p>
+                    <div class="mb-3">
+                        <label class="form-label" for="count">Nombre de participants</label>
+                        <select class="form-select" id="count" name="count" required="required">
+                            <option t-foreach="range(1, session['limit'] + 1)" t-as="number" t-att-value="number" t-att-selected="str(number) == count" t-out="number"/>
+                        </select>
+                    </div>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <button type="submit" class="btn btn-primary"><t t-if="session['confirmed']">Continuer vers le paiement</t><t t-else="">Confirmer mon inscription</t></button>
+                    </div>
+                </form>
+                <p class="mt-3 mb-0"><a t-att-href="'/formations/demande?kind=individual&amp;program=%s' % program_id">Besoin d’un devis pour votre entreprise ?</a></p>
+            </main>
+        </t>
+    </template>
+
+    <template id="public_session_registration_waiting" name="Inter-company registration recorded">
+        <t t-call="portal.frontend_layout">
+            <main id="wrap" class="container py-4 o_training_public_page o_not_editable">
+                <h1>Inscription enregistrée</h1>
+                <p class="fw-semibold" t-out="title"/>
+                <p><t t-out="session['dates']"/> · <t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t></p>
+                <p>Votre place est réservée. Cette session n’est pas encore confirmée : n’effectuez aucun paiement pour le moment. Dès sa confirmation, nous vous enverrons une demande de paiement pour confirmer votre participation.</p>
+                <a t-att-href="'/formations/catalogue/%s' % course_id">Retour à la fiche formation</a>
+            </main>
+        </t>
+    </template>
 </odoo>
