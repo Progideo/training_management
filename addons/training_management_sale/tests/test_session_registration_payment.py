@@ -149,7 +149,8 @@ class TestSessionRegistrationPayment(SessionAlertCase, HttpCase):
         requests = self.env["mail.mail"].search([("model", "=", "sale.order"), ("res_id", "=", order.id)]) - waiting
         self.assertEqual(len(requests), 1)
         self.assertEqual(requests.recipient_ids, self.portal.partner_id)
-        self.assertIn(order.get_portal_url(), requests.body_html)
+        self.assertIn(order.access_url, requests.body_html)
+        self.assertNotIn("access_token", requests.body_html)
         order._training_request_payment()
         self.assertEqual(
             len(self.env["mail.mail"].search([("model", "=", "sale.order"), ("res_id", "=", order.id)])), 2

@@ -26,6 +26,8 @@
         </field>
     </record>
 
+    <!-- The named buyer signs in to pay: the link carries no access token, which rendering
+         the template would otherwise generate on a sample order when it is checked. -->
     <record id="mail_template_session_registration_payment" model="mail.template">
         <field name="name">Session confirmée — demande de paiement</field>
         <field name="model_id" ref="sale.model_sale_order"/>
@@ -48,7 +50,7 @@
                     passé ce délai, la place est libérée.
                 </p>
                 <p>
-                    <a t-att-href="object.get_base_url() + object.get_portal_url()"
+                    <a t-att-href="object.get_base_url() + object.access_url"
                        style="background-color:#875A7B;padding:8px 16px;color:#fff;border-radius:5px;text-decoration:none">Payer et confirmer ma participation</a>
                 </p>
                 <p>Pour toute question, vous pouvez répondre à ce message.</p>
