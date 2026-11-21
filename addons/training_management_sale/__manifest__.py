@@ -13,6 +13,7 @@
         "views/crm_lead_views.xml",
         "views/crm_session_confirmation_views.xml",
         "data/session_confirmation_template.xml",
+        "data/session_registration_mail_templates.xml",
         "views/session_confirmation_notice_views.xml",
         "views/public_request_templates.xml",
         "views/session_registration_templates.xml",
