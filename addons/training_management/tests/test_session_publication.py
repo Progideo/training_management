@@ -617,6 +617,87 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         notice = self.notices(delivery)
         self.assertEqual(notice.mail_id.subject, "De nouvelles dates de formation sont disponibles")
 
+    def test_visitor_double_opt_in_and_unsubscribe_from_the_email(self):
+        from freezegun import freeze_time
+        from lxml import html
+
+        def form(url, **values):
+            tree = html.fromstring(self.url_open(url).content)
+            data = {"csrf_token": tree.xpath("//input[@name='csrf_token']/@value")[0]}
+            definition = tree.xpath("//input[@name='definition']/@value")
+            if definition:
+                data["definition"] = definition[0]
+            return tree, {**data, **values}
+
+        model = self.env["training.session.alert.subscription"]
+        url = "/formations/%s/date-alert" % self.public_program.id
+        self.authenticate(None, None)
+        tree, data = form(url)
+        self.assertTrue(tree.xpath("//input[@name='email'][@type='email']"))
+        self.assertFalse(tree.xpath("//input[@name='accepted']/@checked"))
+        self.assertEqual(self.url_open(url, data={**data, "email": "visitor@example.invalid"}).status_code, 400)
+        self.assertEqual(
+            self.url_open(url, data={**data, "email": "not an address", "accepted": "yes"}).status_code, 400
+        )
+        response = self.url_open(url, data={**data, "email": " Visitor@Example.invalid ", "accepted": "yes"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Confirmez votre alerte", response.text)
+        sub = model.search([("email", "=", "visitor@example.invalid")])
+        self.assertEqual((len(sub), sub.active_consent, sub.owner_id), (1, False, self.env["res.users"]))
+        mail = sub.confirmation_mail_id
+        self.assertEqual(mail.email_to, "visitor@example.invalid")
+        self.assertFalse(mail.recipient_ids)
+        link = "/formations/date-alert/confirm/%s" % sub.sudo().access_token
+        self.assertIn(link, mail.body_html)
+        self.assertTrue(sub._confirmation_authorized(mail))
+        # A repeated request neither tells whether the address is known nor sends another email.
+        repeated = self.url_open(url, data={**data, "email": "visitor@example.invalid", "accepted": "yes"})
+        self.assertEqual(repeated.text, response.text)
+        self.assertEqual(sub.confirmation_mail_id, mail)
+        self.assertEqual(self.url_open("/formations/date-alert/confirm/forged-token").status_code, 404)
+        # Opening the link does not confirm: mail scanners open links without consent.
+        page, confirm = form(link)
+        sub.invalidate_recordset()
+        self.assertFalse(sub.active_consent)
+        self.assertIn("Confirmer mon alerte", page.text_content())
+        self.assertIn("Votre alerte est active", self.url_open(link, data=confirm).text)
+        sub.invalidate_recordset()
+        self.assertTrue(sub.active_consent)
+        self.assertFalse(sub._confirmation_authorized(mail))
+        self.assertEqual(
+            self.env["training.session.alert.event"].search([("subscription_id", "=", sub.id)]).operation, "subscribe"
+        )
+        # A session first published after the confirmation is announced to the confirmed address only.
+        delivery = self.dated_delivery()
+        delivery.action_publish_session(reason="After visitor consent")
+        notice = self.notices(delivery)
+        self.assertEqual(
+            (notice.recipient_email, notice.recipient_id), ("visitor@example.invalid", self.env["res.users"])
+        )
+        self.assertTrue(notice._authorized())
+        unsubscribe = "/formations/date-alert/unsubscribe/%s" % sub.sudo().access_token
+        self.assertIn(unsubscribe, notice.mail_id.body_html)
+        _page, values = form(unsubscribe)
+        self.assertIn("Vous êtes désabonné", self.url_open(unsubscribe, data=values).text)
+        sub.invalidate_recordset()
+        self.assertFalse(sub.active_consent)
+        self.assertFalse(notice._authorized())
+        # A confirmation link expires after seven days.
+        self.url_open(url, data={**data, "email": "late@example.invalid", "accepted": "yes"})
+        late = model.search([("email", "=", "late@example.invalid")])
+        with freeze_time(late.confirmation_requested_at + timedelta(days=8)):
+            self.assertFalse(late._confirmation_authorized(late.confirmation_mail_id))
+            with self.assertRaises(ValidationError):
+                late._confirm_by_token()
+        self.assertFalse(late.active_consent)
+
+    def test_alert_link_needs_an_approved_policy(self):
+        self.company.training_session_alert_retention_id = False
+        self.course.sudo().public_catalogue = True
+        self.authenticate(None, None)
+        page = self.url_open("/formations/catalogue/%s" % self.course.id).text
+        self.assertNotIn("/date-alert", page)
+
     def test_public_dates_disambiguate_daylight_saving_offsets(self):
         import calendar
         from datetime import datetime

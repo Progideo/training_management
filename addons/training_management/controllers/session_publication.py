@@ -62,15 +62,24 @@ class SessionPublicationPortal(http.Controller):
         )
 
     @http.route(
-        "/formations/<int:program_id>/date-alert", type="http", auth="user", website=True, methods=["GET", "POST"]
+        "/formations/<int:program_id>/date-alert", type="http", auth="public", website=True, methods=["GET", "POST"]
     )
     def subscribe(self, program_id, **post):
         program = TrainingPublicCatalogue._program(program_id)
         model = request.env["training.session.alert.subscription"]
+        # A visitor subscribes with an email address confirmed by a link (double opt-in).
+        visitor = request.env.user._is_public()
         error = False
+        email = (post.get("email") or "").strip()
         if request.httprequest.method == "POST":
             try:
-                model._subscribe(program, accepted=post.get("accepted") == "yes", definition=post.get("definition"))
+                accepted = post.get("accepted") == "yes"
+                if visitor:
+                    model._request_by_email(program, email, accepted=accepted, definition=post.get("definition"))
+                    return self._private(
+                        request.render("training_management.session_date_check_email", {"title": program.title})
+                    )
+                model._subscribe(program, accepted=accepted, definition=post.get("definition"))
                 return request.redirect("/my/training-date-alerts", code=303)
             except (AccessError, ValidationError) as exc:
                 error = str(exc)
@@ -81,7 +90,9 @@ class SessionPublicationPortal(http.Controller):
                 {
                     "program_id": program.id,
                     "title": program.title,
-                    "wording": model._wording(),
+                    "visitor": visitor,
+                    "email": email,
+                    "wording": model._email_wording() if visitor else model._wording(),
                     "definition": model._definition(program),
                     "policy": {
                         "unit": policy.duration_unit,
@@ -97,6 +108,47 @@ class SessionPublicationPortal(http.Controller):
         if error:
             response.status_code = 400
         return response
+
+    def _token_page(self, token, action, template):
+        row = request.env["training.session.alert.subscription"]._from_token(token)
+        if not row:
+            raise request.not_found()
+        error = done = False
+        if request.httprequest.method == "POST":
+            try:
+                getattr(row, action)()
+                done = True
+            except ValidationError as exc:
+                error = str(exc)
+        # A GET never changes the subscription: mail scanners open links without consent.
+        return self._private(
+            request.render(
+                template,
+                {"title": row.public_title, "active": row.active_consent, "done": done, "error": error},
+            )
+        )
+
+    @http.route(
+        "/formations/date-alert/confirm/<string:token>",
+        type="http",
+        auth="public",
+        website=True,
+        methods=["GET", "POST"],
+        sitemap=False,
+    )
+    def confirm_by_email(self, token, **kwargs):
+        return self._token_page(token, "_confirm_by_token", "training_management.session_date_confirm")
+
+    @http.route(
+        "/formations/date-alert/unsubscribe/<string:token>",
+        type="http",
+        auth="public",
+        website=True,
+        methods=["GET", "POST"],
+        sitemap=False,
+    )
+    def unsubscribe_by_email(self, token, **kwargs):
+        return self._token_page(token, "_unsubscribe_by_token", "training_management.session_date_unsubscribe")
 
     @http.route("/my/training-date-alerts", type="http", auth="user", website=True, methods=["GET"])
     def subscriptions(self, **kwargs):
