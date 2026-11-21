@@ -184,7 +184,7 @@
         <nav class="sticky-top bg-body border-bottom o_training_course_toc" aria-label="Sommaire de la formation">
           <div class="container">
             <ul class="nav flex-nowrap overflow-auto">
-              <li class="nav-item"><a class="nav-link" href="#training_course_presentation">Présentation</a></li>
+              <li t-if="presentation_more or course.get('highlights') or public_logo" class="nav-item"><a class="nav-link" href="#training_course_presentation">Présentation</a></li>
               <li t-if="objective_text" class="nav-item"><a class="nav-link" href="#training_course_objectives">Objectifs</a></li>
               <li t-if="public_programme or programme_pdf_url" class="nav-item"><a class="nav-link" href="#training_course_programme">Programme</a></li>
               <li t-if="audience_sections" class="nav-item"><a class="nav-link" href="#training_course_audience">Public et prérequis</a></li>
@@ -269,12 +269,17 @@
               </div>
             </aside>
             <div class="col-lg-8">
-              <section id="training_course_presentation" class="o_training_course_section" aria-labelledby="training_course_presentation_title">
-                <h2 id="training_course_presentation_title">Présentation</h2>
-                <div class="o_training_course_rule" aria-hidden="true"/>
+              <!-- The first paragraph is the tagline of the banner: the section gives the rest only.
+                   Without more to present, the tags and the share control stand without a heading. -->
+              <t t-set="presentation_titled" t-value="presentation_more or course.get('highlights') or public_logo"/>
+              <section t-att-id="'training_course_presentation' if presentation_titled else None" class="o_training_course_section"
+                       t-att-aria-labelledby="'training_course_presentation_title' if presentation_titled else None">
+                <t t-if="presentation_titled">
+                  <h2 id="training_course_presentation_title">Présentation</h2>
+                  <div class="o_training_course_rule" aria-hidden="true"/>
+                </t>
                 <img t-if="public_logo" t-att-src="image_data_uri(public_logo)" alt="" class="img-fluid d-block mb-3"/>
                 <p t-if="presentation_more" class="o_training_course_text" style="white-space:pre-wrap" t-out="presentation_more"/>
-                <p t-elif="not course.get('highlights')" class="o_training_course_text" style="white-space:pre-wrap" t-out="course['presentation']"/>
                 <ul t-if="course.get('highlights')" class="o_training_course_highlights">
                   <li t-foreach="course['highlights']" t-as="highlight">
                     <t t-set="highlight_parts" t-value="highlight.split(' : ', 1)"/>
@@ -421,7 +426,7 @@
         <div class="fixed-bottom d-lg-none bg-body border-top p-2 o_training_course_mobile_bar">
           <div class="container d-flex justify-content-between align-items-center gap-2">
             <strong class="small" t-out="tabs[0]['price'] if tabs else 'Sur devis'"/>
-            <a class="btn btn-primary" href="#training_course_booking"><t t-if="tabs and tabs[0]['key'] == 'inter'">S’inscrire</t><t t-else="">Voir les formats</t></a>
+            <a class="btn btn-primary" href="#training_course_booking"><t t-if="tabs and tabs[0]['key'] == 'inter' and course.get('next_session')">S’inscrire</t><t t-else="">Voir les formats</t></a>
           </div>
         </div>
         <script type="application/ld+json" t-out="course_schema"/>
