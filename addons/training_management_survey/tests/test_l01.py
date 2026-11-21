@@ -19,6 +19,7 @@ from odoo.tools.binary import BinaryBytes
 from odoo.tools.pdf import PdfFileReader
 from odoo.tools.translate import load_language
 from odoo.addons.training_management.tests.test_evaluation import EvaluationCase
+from odoo.addons.training_management.tests.test_public_catalogue import priced_autonomy
 from odoo.addons.training_management.tests.test_path import PathCase
 from odoo.addons.training_management.tests.test_project import ProjectCase
 from odoo.addons.training_management.tests.test_tutoring import TutoringCase
@@ -862,6 +863,10 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
         self.assertFalse(self.env["training.company.authorization"].search([]))
 
     def test_p01_p04_public_journey_and_private_pdf_repeated_request(self):
+        # The eLearning programme is presented with the public price of the application selling it.
+        priced = priced_autonomy(self.env)
+        priced.start()
+        self.addCleanup(priced.stop)
         self.authenticate(None, None)
         home = self.url_open("/formations")
         self.assertEqual(home.status_code, 200)

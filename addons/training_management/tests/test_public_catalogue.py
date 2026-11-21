@@ -13,23 +13,23 @@ from odoo.tools.pdf import PdfFileReader
 from .test_catalogue import CatalogueCase
 
 
+def priced_autonomy(env, amount=990.0):
+    """Public autonomous price, as projected by the application selling the eLearning offer."""
+    course_class = type(env["training.course"])
+    facts = course_class._catalogue_facts
+
+    def priced(records, company):
+        rows = facts(records, company)
+        for row in rows.values():
+            if row.get("elearning"):
+                row["autonomous"] = {**(row.get("autonomous") or {}), "price": {"amount": amount, "label": "990"}}
+        return rows
+
+    return patch.object(course_class, "_catalogue_facts", priced)
+
+
 @tagged("post_install", "-at_install")
 class TestPublicCatalogue(CatalogueCase, HttpCase):
-    @staticmethod
-    def priced_autonomy(env, amount=990.0):
-        """Public autonomous price, as projected by the application selling the eLearning offer."""
-        course_class = type(env["training.course"])
-        facts = course_class._catalogue_facts
-
-        def priced(records, company):
-            rows = facts(records, company)
-            for row in rows.values():
-                if row.get("elearning"):
-                    row["autonomous"] = {**(row.get("autonomous") or {}), "price": {"amount": amount, "label": "990"}}
-            return rows
-
-        return patch.object(course_class, "_catalogue_facts", priced)
-
     def test_public_version_pdf_demo_and_private_boundaries(self):
         program = self.new_program(
             public_catalogue=True,
@@ -213,7 +213,7 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         bare = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}").content)
         self.assertEqual(bare.xpath("//div[@role='tablist']/button/@data-bs-target"), ["#training_booking_intra"])
         self.assertNotIn(self.course.name, self.url_open("/formations?format=autonomous").text)
-        priced = self.priced_autonomy(self.env)
+        priced = priced_autonomy(self.env)
         priced.start()
         self.addCleanup(priced.stop)
         path = "/formations/catalogue/" + self.env["ir.http"]._slug((self.course.id, self.course.name))
