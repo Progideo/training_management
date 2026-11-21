@@ -46,7 +46,20 @@ class PublicationPolicy(models.AbstractModel):
 
     @api.private
     def _check_send(self, document, partners, **kwargs):
-        if document and self._document(document)._name in DOCUMENTS:
+        target = self._document(document) if document else document
+        if (
+            target
+            and target._name == "training.session.alert.subscription"
+            and not target.owner_id
+            and not target.active_consent
+            and not partners
+            and not kwargs.get("email_cc")
+            and kwargs.get("email_to") == target.email
+        ):
+            # A visitor's confirmation link, already checked at transport (mail.mail) as the
+            # latest pending request: it only reaches the address that asked for it.
+            return super()._check_send(document, partners, **kwargs)
+        if target and target._name in DOCUMENTS:
             raise ValidationError(self.env._("Publication consent and moderation evidence must remain private."))
         return super()._check_send(document, partners, **kwargs)
 
