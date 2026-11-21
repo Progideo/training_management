@@ -89,7 +89,8 @@ class TrainingInvitation(models.Model):
                 existing = previous[:1].filtered(lambda item: item.fingerprint == fingerprint)
                 if existing:
                     # Retry the same queued item rather than create a duplicate.
-                    if existing.mail_id.state == "exception":
+                    # The queued mail is technical: its state is read with the same narrow elevation.
+                    if existing.mail_id.sudo().state == "exception":
                         existing.mail_id.sudo().write({"state": "outgoing"})
                     continue
                 localized = session.with_context(lang=partner.lang or self.env.lang)
