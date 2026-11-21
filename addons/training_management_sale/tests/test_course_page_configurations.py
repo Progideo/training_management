@@ -224,6 +224,8 @@ class TestCoursePageConfigurations(SessionAlertCase, HttpCase):
         # Without days, the duration of the version is given.
         self.assertIn("3.5 h", intra.replace(",", "."))
         self.assertFalse(root.xpath("//section[@id='training_course_formats']"))
+        # An individual can still ask for a quotation.
+        self.assertTrue(root.xpath("//div[@id='training_booking_intra']//a[contains(@href, 'kind=individual')]"))
         for section in ("presentation", "faq", "related", "reviews"):
             self.assertFalse(root.xpath("//section[@id='training_course_%s']" % section), section)
         self.assertIn("Sur devis", self.text(root, "//div[contains(@class, 'o_training_course_mobile_bar')]"))
