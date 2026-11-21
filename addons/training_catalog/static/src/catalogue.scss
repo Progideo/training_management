@@ -354,16 +354,37 @@
         }
     }
 
-    // Share
+    // Share: a discreet control that opens the link and the networks.
     .o_training_course_share {
-        margin-top: 1.75rem;
-        padding: 1.25rem;
-        background: var(--o-training-soft);
+        margin-top: 1.25rem;
+
+        > summary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-height: 44px;
+            list-style: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--o-training-link);
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            &:hover span {
+                text-decoration: underline;
+            }
+        }
     }
 
-    .o_training_course_section .o_training_course_share_title {
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
+    .o_training_course_share_panel {
+        max-width: 34rem;
+        margin-top: 0.25rem;
+        padding: 1rem;
+        border: 1px solid var(--o-training-line);
+        background: #fff;
     }
 
     .o_training_course_share_link {

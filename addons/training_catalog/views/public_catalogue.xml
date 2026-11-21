@@ -188,7 +188,7 @@
               <li t-if="objective_text" class="nav-item"><a class="nav-link" href="#training_course_objectives">Objectifs</a></li>
               <li t-if="public_programme or programme_pdf_url" class="nav-item"><a class="nav-link" href="#training_course_programme">Programme</a></li>
               <li t-if="audience_sections" class="nav-item"><a class="nav-link" href="#training_course_audience">Public et prérequis</a></li>
-              <li t-if="modality_sections or version_details" class="nav-item"><a class="nav-link" href="#training_course_modalities">Modalités</a></li>
+              <li t-if="modality_sections" class="nav-item"><a class="nav-link" href="#training_course_modalities">Modalités</a></li>
               <li t-if="comparison" class="nav-item"><a class="nav-link" href="#training_course_formats">Comparer les formats</a></li>
               <li t-if="course.get('faq')" class="nav-item"><a class="nav-link" href="#training_course_faq">Questions fréquentes</a></li>
               <li t-if="general_presentation_published and (public_reviews or review_status)" class="nav-item"><a class="nav-link" href="#training_course_reviews">Avis</a></li>
@@ -283,11 +283,16 @@
                   </li>
                 </ul>
                 <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
-                <div class="o_training_course_share">
-                  <h3 class="o_training_course_share_title">Partager cette formation</h3>
-                  <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
-                  <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
-                </div>
+                <details class="o_training_course_share">
+                  <summary>
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18 16.1c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.3.1-.5.1-.8s0-.5-.1-.8l7-4.1c.5.5 1.3.8 2.1.8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .3 0 .5.1.8l-7 4.1C7.5 8.3 6.8 8 6 8c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.2c-.1.2-.1.4-.1.7 0 1.6 1.3 2.9 2.9 2.9s2.9-1.3 2.9-2.9-1.2-3-2.8-3z"/></svg>
+                    <span>Partager cette formation</span>
+                  </summary>
+                  <div class="o_training_course_share_panel">
+                    <owl-component name="training_catalog.CourseShare" t-att-props="json.dumps(course_share)"/>
+                    <noscript><a t-att-href="course_share['email']">Partager par e-mail</a></noscript>
+                  </div>
+                </details>
               </section>
               <section t-if="objective_text" id="training_course_objectives" class="o_training_course_section">
                 <h2>Objectifs pédagogiques</h2>
@@ -320,10 +325,9 @@
                   </div>
                 </div>
               </section>
-              <section t-if="modality_sections or version_details" id="training_course_modalities" class="o_training_course_section">
+              <section t-if="modality_sections" id="training_course_modalities" class="o_training_course_section">
                 <h2>Modalités</h2>
                 <div class="o_training_course_rule" aria-hidden="true"/>
-                <p t-if="version_details" class="small">Version <t t-out="version_details['version']"/> — <t t-out="version_details['title']"/> · <t t-out="version_details['mode']"/><t t-if="version_details['hours']"> · <t t-out="version_details['hours']"/> h</t></p>
                 <dl t-if="modality_sections" class="o_training_course_columns o_training_course_modalities">
                   <div t-foreach="modality_sections" t-as="section">
                     <dt t-out="section[0]"/>

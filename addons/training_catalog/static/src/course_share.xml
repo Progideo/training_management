@@ -13,7 +13,7 @@
                    t-att-rel="network.local ? undefined : 'noopener noreferrer'"
                    t-attf-class="o_training_course_share_{{ network.key }}"
                    t-att-title="network.label">
-                    <i t-attf-class="fa {{ network.icon }}" aria-hidden="true"/>
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" t-att-d="network.path"/></svg>
                     <span class="visually-hidden" t-out="network.local ? 'Partager par e-mail' : 'Partager sur ' + network.label"/>
                 </a>
             </li>

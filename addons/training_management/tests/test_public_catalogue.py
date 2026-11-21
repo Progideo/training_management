@@ -1,4 +1,5 @@
 import io
+import json
 from urllib.parse import urlsplit
 
 from lxml import html
@@ -56,7 +57,7 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.assertIn(f"/formations/{program.id}/pdf", response.text)
         general = self.url_open(f"/formations/catalogue/{program.course_id.id}")
         self.assertEqual(general.status_code, 200)
-        self.assertIn(program.title, general.text)
+        self.assertIn("Produce an action plan", general.text)
         self.assertNotIn("Public detail", general.text)
         hidden_search = self.url_open("/formations?search=Public%20detail")
         self.assertNotIn(program.title, hidden_search.text)
@@ -133,6 +134,15 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
                 self.assertEqual(projected.title, title)
                 self.assertEqual(bytes(projected.pdf_attachment_id.raw), raw)
 
+    @staticmethod
+    def course_schema(root):
+        (schema,) = [
+            item
+            for item in map(json.loads, root.xpath("//script[@type='application/ld+json']/text()"))
+            if isinstance(item, dict) and item.get("@type") == "Course"
+        ]
+        return schema
+
     def test_catalogue_offers_latest_trainer_led_and_elearning_versions_with_their_modes(self):
         older = self.new_program(public_catalogue=True, version="V1", title="Fictional older on-site version")
         older.action_validate()
@@ -202,19 +212,19 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
             self.assertIn(self.course.name, title)
             self.assertNotIn("Public programme", title)
         self.assertNotIn(f"/formations/{autonomous.id}/avis", page.text)
-        # The chosen version is the one described under « Modalités »; offers are not listed twice.
+        # The chosen version gives its details (here its duration); the version itself is not
+        # named on the page, and offers are not listed twice.
         root = html.fromstring(page.content)
-        line = root.xpath("string(//section[@id='training_course_modalities']/p[1])")
-        self.assertIn("Version V4", line)
-        self.assertIn(autonomous.title, line)
+        self.assertEqual(self.course_schema(root)["timeRequired"], "PT3H30M")
+        self.assertNotIn(autonomous.title, page.text)
         self.assertFalse(root.xpath("//*[contains(@class, 'o_training_course_offers')]"))
         general = self.url_open(f"/formations/catalogue/{self.course.id}")
         self.assertNotIn(older.title, general.text)
-        self.assertIn(latest.title, general.text)
         # By default the page presents the version led by a trainer.
         tree = html.fromstring(general.content)
         self.assertIn("21 h", tree.xpath("string(//dl[contains(@class, 'o_training_course_figures')])"))
-        self.assertIn("Version V2", tree.xpath("string(//section[@id='training_course_modalities']/p[1])"))
+        self.assertEqual(self.course_schema(tree)["timeRequired"], "PT21H")
+        self.assertNotIn("Version V2", tree.xpath("string(//section[@id='training_course_modalities'])"))
         # Trainer-led and autonomous versions give the three formats, compared after the description.
         tabs = tree.xpath("//div[@role='tablist']/button/@data-bs-target")
         self.assertEqual(tabs, ["#training_booking_inter", "#training_booking_intra", "#training_booking_autonomous"])
