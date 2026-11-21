@@ -260,7 +260,7 @@ class TrainingCourse(models.Model):
         )
         tags_by_course = courses._catalogue_tags()
         facts_by_course = courses._catalogue_facts(company)
-        return [
+        rows = [
             {
                 **facts_by_course[course.id],
                 "id": course.id,
@@ -274,6 +274,26 @@ class TrainingCourse(models.Model):
             }
             for course in courses
         ]
+        listed = set((courses.filtered("public_catalogue") | courses.browse(previewed)).ids)
+        rows = [self._without_unpriced_autonomy(row) for row in rows]
+        # A course listed only through its offers leaves the catalogue with them.
+        return [row for row in rows if row["offers"] or row["id"] in listed]
+
+    @staticmethod
+    def _without_unpriced_autonomy(row):
+        """Autonomy is presented only with a public price (decision of 21 November 2026).
+
+        The price comes from the application that sells the autonomous offer. Without it,
+        neither the format, the autonomous offers nor their versions are presented.
+        """
+        if (row.get("autonomous") or {}).get("price"):
+            return row
+        return {
+            **row,
+            "autonomous": {},
+            "elearning": False,
+            "offers": [offer for offer in row["offers"] if offer["mode"] not in ("autonomous", "elearning")],
+        }
 
 
 class TrainingCourseFaq(models.Model):

@@ -372,6 +372,8 @@ class TestPreparation(PreparationCase):
         delivery.invitation_ids.sudo().mail_id.write({"state": "sent"})
         session._apply_schedule({"start_hour": 9}, "Return to A")
         self.assertEqual(invitations._queue(delivery, recipients), 2)
+        # A repeat in a new request reads the queued mails without Mail administration rights.
+        self.env.invalidate_all()
         self.assertEqual(invitations._queue(delivery, recipients), 0)
         self.assertEqual(len(delivery.invitation_ids), 6)
         self.assertEqual(set(delivery.invitation_ids.mapped("dispatch_number")), {1, 2, 3})
