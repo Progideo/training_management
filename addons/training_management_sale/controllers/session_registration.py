@@ -1,11 +1,12 @@
 """Website forms for pending inter-company enrollment requests."""
 
+from urllib.parse import quote
 from uuid import uuid4
 
 from odoo import fields, http
 from odoo.exceptions import ValidationError
 from odoo.http import request
-from odoo.tools import format_datetime
+from odoo.tools import format_amount, format_datetime
 
 from odoo.addons.training_management.controllers.material_portal import TrainingParticipantPortal
 
@@ -135,6 +136,9 @@ class TrainingSessionRegistration(TrainingCommercialCatalogue):
         if not delivery or not delivery._session_public_row():
             raise request.not_found()
         card = self._session_card(delivery)
+        product = delivery._public_session_product()
+        if product:
+            return self._paid_session_registration(company, course_id, delivery, card, product, **post)
         schedule = [
             company.id,
             course_id,
@@ -175,6 +179,73 @@ class TrainingSessionRegistration(TrainingCommercialCatalogue):
                     "values": values,
                     "token": token,
                     "error": error,
+                },
+            )
+        )
+
+    def _paid_session_registration(self, company, course_id, delivery, card, product, **post):
+        """Registration with a public price: no quotation, payment once the session is confirmed."""
+        path = card["url"]
+        if request.env.user._is_public():
+            # The order, its payment and the participant portal belong to a personal account.
+            return request.redirect("/web/login?redirect=%s" % quote(path, safe=""), code=303)
+        partner = request.env.user.partner_id
+        schedule = [
+            company.id,
+            course_id,
+            delivery.id,
+            delivery.program_id.id,
+            delivery.timezone,
+            fields.Datetime.to_string(delivery.start_at),
+            fields.Datetime.to_string(delivery.end_at),
+        ]
+        tokens = dict(request.session.get("training_session_registration_tokens", {}))
+        error = False
+        count = "1"
+        if request.httprequest.method == "POST":
+            token = post.get("submission_token", "")
+            if tokens.get(token) != schedule:
+                raise request.not_found()
+            count = post.get("count", "")
+            try:
+                if not count.isascii() or not count.isdecimal() or len(count) > 2:
+                    raise ValidationError(request.env._("Choose a participant count within the current availability."))
+                with request.env.cr.savepoint():
+                    order = request.env["sale.order"]._submit_public_session_registration(
+                        delivery, partner, int(count), token
+                    )
+                if order.state == "sent":
+                    return request.redirect(order.get_portal_url(), code=303)
+                return TrainingParticipantPortal._private(
+                    request.render(
+                        "training_management_sale.public_session_registration_waiting",
+                        {"course_id": course_id, "title": delivery.program_id.course_id.name, "session": card},
+                    )
+                )
+            except ValidationError as exc:
+                error = str(exc)
+        else:
+            if not card["limit"]:
+                raise request.not_found()
+            token = uuid4().hex
+            tokens[token] = schedule
+            request.session["training_session_registration_tokens"] = dict(list(tokens.items())[-20:])
+        template = product.product_tmpl_id
+        taxes = template.taxes_id.filtered(lambda tax: tax.company_id == company)
+        amount = taxes.compute_all(template.list_price, template.currency_id, 1.0, product=template)["total_excluded"]
+        return TrainingParticipantPortal._private(
+            request.render(
+                "training_management_sale.public_session_paid_registration",
+                {
+                    "course_id": course_id,
+                    "program_id": delivery.program_id.id,
+                    "title": delivery.program_id.course_id.name,
+                    "session": card,
+                    "price": format_amount(request.env, amount, template.currency_id),
+                    "count": count,
+                    "token": token,
+                    "error": error,
+                    "partner": partner,
                 },
             )
         )

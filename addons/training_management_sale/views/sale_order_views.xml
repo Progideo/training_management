@@ -9,6 +9,9 @@
                     <group>
                         <field name="training_request_kind" readonly="state in ['sale', 'cancel']"/>
                         <field name="training_requested_program_id" readonly="state in ['sale', 'cancel']" options="{'no_create': True}"/>
+                        <field name="training_registration_delivery_id" invisible="not training_registration_delivery_id" groups="training_management.group_training_reader"/>
+                        <field name="training_registration_release_at" invisible="not training_registration_delivery_id"/>
+                        <field name="training_payment_requested_at" invisible="not training_payment_requested_at"/>
                     </group>
                     <group>
                         <field name="training_attendee_count" readonly="state in ['sale', 'cancel']"/>
