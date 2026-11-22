@@ -19,7 +19,8 @@ def require_evidence_deletion(records, message, error=ValidationError):
         raise error(message)
     rows = records.sudo().with_context(active_test=False)
     finished = getattr(type(records), "_training_finished_states", None)
-    if finished is not None and any(row.state not in finished for row in rows):
+    unfinished = rows._training_unfinished() if hasattr(rows, "_training_unfinished") else None
+    if (finished is not None and any(row.state not in finished for row in rows)) or unfinished:
         raise ValidationError(env._("Only a finished or cancelled dossier can be deleted."))
     parents = getattr(type(records), "_training_hold_parents", ())
     for row in rows:

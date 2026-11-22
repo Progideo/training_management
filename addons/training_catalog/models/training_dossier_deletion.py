@@ -1,7 +1,7 @@
 from odoo import api, models
 from odoo.exceptions import AccessError
 
-from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
+from .training_deletion import require_evidence_deletion
 
 # Native models holding training evidence, deleted with their dossier.
 EVIDENCE_NATIVE_MODELS = ("survey.user_input",)
