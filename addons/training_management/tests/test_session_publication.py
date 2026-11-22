@@ -356,6 +356,36 @@ class TestPublicSessionRules(SessionAlertCase):
 
 @tagged("post_install", "-at_install")
 class TestSessionDateAlerts(SessionAlertCase):
+    def test_unconfirmed_visitor_requests_are_cleaned_after_60_days(self):
+        # Technical cleanup (22 November 2026): a never confirmed request is no consent.
+        model = self.env["training.session.alert.subscription"]
+        program = self.public_program.sudo()
+
+        def request(email):
+            model._request_by_email(program, email, accepted=True, definition=model._definition(program))
+            return model.sudo().search([("email", "=", email)])
+
+        stale, recent, former = (
+            request(e) for e in ("stale@example.invalid", "recent@example.invalid", "former@example.invalid")
+        )
+        former._confirm_by_token()
+        former._unsubscribe_by_token()
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE training_session_alert_subscription SET confirmation_requested_at = now() - interval '61 days'"
+            " WHERE id IN %s",
+            [(stale.id, former.id)],
+        )
+        self.env.invalidate_all()
+        done, remaining = model._gc_unconfirmed_requests()
+        self.assertEqual((done, remaining), (1, False))
+        self.assertFalse(stale.exists())
+        self.assertTrue(recent.exists() and former.exists())
+        self.assertEqual(model._gc_unconfirmed_requests(), (0, False))
+        # Every consent stays evidence, even after unsubscribing: only an administrator deletes it.
+        with self.assertRaises(ValidationError):
+            former.with_user(self.env.ref("base.public_user")).sudo().unlink()
+
     def test_explicit_consent_required_without_retention_policy(self):
         # Retention is the operator's matter (21 November 2026): no policy is required nor recorded.
         model = self.env["training.session.alert.subscription"].with_user(self.portal)
