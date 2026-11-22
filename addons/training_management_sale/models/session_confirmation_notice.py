@@ -24,7 +24,7 @@ class SessionConfirmationNotice(models.Model):
     recipient_language = fields.Char(required=True)
     session_fingerprint = fields.Char(required=True)
     details_html = fields.Html(string="Session Information", readonly=True, sanitize=True)
-    mail_id = fields.Many2one("mail.mail", ondelete="restrict", readonly=True)
+    mail_id = fields.Many2one("mail.mail", ondelete="set null", readonly=True)
     distribution_state = fields.Selection(related="mail_id.state")
 
     _one_address = models.Constraint(
