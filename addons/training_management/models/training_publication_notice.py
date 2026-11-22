@@ -16,7 +16,7 @@ class PublicationNotice(models.Model):
     recipient_id = fields.Many2one("res.users", required=True, ondelete="restrict")
     recipient_email = fields.Char()
     recipient_language = fields.Char(required=True)
-    mail_id = fields.Many2one("mail.mail", ondelete="restrict")
+    mail_id = fields.Many2one("mail.mail", ondelete="set null")
     not_queued_reason = fields.Char()
     _once = models.Constraint("UNIQUE(publication_id)", "This publication invitation is already journaled.")
 

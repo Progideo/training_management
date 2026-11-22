@@ -22,7 +22,7 @@ class TrainingInvitation(models.Model):
     partner_id = fields.Many2one("res.partner", required=True, ondelete="restrict")
     fingerprint = fields.Char(required=True)
     dispatch_number = fields.Integer(required=True, default=1)
-    mail_id = fields.Many2one("mail.mail", required=True, ondelete="restrict")
+    mail_id = fields.Many2one("mail.mail", ondelete="set null")
     distribution_state = fields.Selection(related="mail_id.state")
     requested_by_id = fields.Many2one("res.users", required=True, ondelete="restrict")
     requested_at = fields.Datetime(required=True)
