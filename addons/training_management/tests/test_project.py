@@ -195,7 +195,6 @@ class TestProject(ProjectCase):
             project_form.project_rubric_id = rubric
             project_form.project_deliverable = "Rapport fictif"
             project_form.project_service_reference = "FICT-P12-FORM"
-            project_form.project_retention_id = self.retention
         self.assertEqual(project_form.record.criterion, "validation")
         with self.assertRaises(ValidationError):
             self.env["training.project.rubric"].with_user(self.coordinator).create({"name": "Vide"}).action_publish()

@@ -68,7 +68,6 @@
                         <field name="feedback_id" readonly="state != 'draft'" options="{'no_open': True}" domain="[('state','=','published')]"/>
                         <field name="delivery_id" readonly="state != 'draft'" options="{'no_open': True}"/>
                         <field name="population" readonly="state != 'draft'"/>
-                        <field name="retention_id" readonly="state != 'draft'" options="{'no_create': True}"/>
                         <field name="opens_at" readonly="state != 'draft'"/>
                         <field name="due_at" readonly="state != 'draft'"/>
                         <field name="reminder_days" readonly="state != 'draft'"/>

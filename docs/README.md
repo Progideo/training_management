@@ -164,6 +164,7 @@ c5cfc7033533a76c98c1dd40ba09520014348d5766930ab57a19782ea2392068  docs/reference
 | Catalogue public — contenu et back-office (lot 4) | [catalogue-public-lot4.md](catalogue-public-lot4.md) |
 | Catalogue public — qualité (lot 5) | [catalogue-public-lot5.md](catalogue-public-lot5.md) |
 | Inscription inter avec paiement | [inscription-inter-paiement.md](inscription-inter-paiement.md) |
+| Conservation configurée hors du module | [conservation-configuree.md](conservation-configuree.md) |
 
 Chaque page reste simple et concise (voir [AGENTS.md](../AGENTS.md)) : elle porte les décisions, les règles et une recette courte ; les autorisations et
 les résultats d'exécution restent dans les pull requests. Phases : 1 = socle MVP et P01 à P08 ;
@@ -209,4 +210,10 @@ Empreinte SHA-256 après application ciblée de D28 aux paragraphes P03/P04 (J16
 
 ```text
 b7e281b0b8555ca3f35fdf9194ecf4eb6dce83b73dbe3ab8e9f6dce7f6902a7b  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+```
+
+Empreinte SHA-256 après amendement de SEC02 ([conservation configurée](conservation-configuree.md), 22 novembre 2026) :
+
+```text
+f83815cc6d33c3af57d1f56004a0a88adff4b81c94c090a464962c91d838ad0c  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```

@@ -49,7 +49,6 @@
                         <field name="quality_id"/>
                         <field name="responsible_id"/>
                         <field name="member_ids" widget="many2many_tags"/>
-                        <field name="retention_id" readonly="id" options="{'no_create': True}"/>
                         <field name="confidentiality" readonly="id"/>
                         <field name="due_date"/>
                         <field name="overdue"/>
@@ -179,7 +178,6 @@
                         <field name="quality_id"/>
                         <field name="responsible_id"/>
                         <field name="member_ids" widget="many2many_tags"/>
-                        <field name="retention_id" readonly="id" options="{'no_create': True}"/>
                         <field name="confidentiality" readonly="id"/>
                         <field name="due_date"/>
                         <field name="overdue"/>
@@ -281,7 +279,6 @@
             <xpath expr="//sheet" position="inside">
                 <group string="Confidential Complaint Intake" groups="training_management.group_training_coordinator">
                     <field name="complaint_quality_id"/>
-                    <field name="complaint_retention_id" options="{'no_create': True}"/>
                     <field name="complaint_response_days"/>
                 </group>
             </xpath>

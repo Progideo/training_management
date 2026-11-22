@@ -48,8 +48,9 @@ class Testimonial(models.Model):
     customer_id = fields.Many2one(related="allocation_id.customer_id")
     representative_id = fields.Many2one("res.users", ondelete="restrict")
     authority_reference = fields.Text(help="Private reference establishing authority to authorize this customer case.")
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     confidential = fields.Boolean(default=True)
     body = fields.Text()
@@ -227,7 +228,7 @@ class Testimonial(models.Model):
         clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
         return super(Testimonial, self.with_context(clean)).create(values)  # pylint: disable=context-overridden
 
-    @api.constrains("enrollment_id", "allocation_id", "representative_id", "delivery_id", "kind", "retention_id")
+    @api.constrains("enrollment_id", "allocation_id", "representative_id", "delivery_id", "kind")
     def _check_target(self):
         for row in self:
             if row.kind == "review":
@@ -244,7 +245,7 @@ class Testimonial(models.Model):
                     and row.representative_id
                     and not row.enrollment_id
                 )
-            if not valid or row.retention_id.company_id != row.company_id:
+            if not valid:
                 raise ValidationError(
                     self.env._(
                         "Select an enrollment or a customer allocation from this delivery and its operator policy."
@@ -283,10 +284,8 @@ class Testimonial(models.Model):
         self._lock()
         if self.state in ("invited", "submitted", "authorized", "published"):
             return True
-        if self.state != "draft" or not self.retention_id.approved_at or not self._public_program():
-            raise ValidationError(
-                self.env._("Use a draft, an approved retention policy and a currently public programme.")
-            )
+        if self.state != "draft" or not self._public_program():
+            raise ValidationError(self.env._("Use a draft and a currently public programme."))
         if self.kind == "review":
             enrollment = self.enrollment_id.sudo()
             facts = self._attendance()

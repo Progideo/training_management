@@ -377,7 +377,6 @@ class TestProvider(EvaluationCase):
                 form.name = "Fictional self-reviewed " + kind
                 form.kind = kind
                 form.quality_id = self.quality
-                form.retention_id = self.retention
                 if kind != "watch":
                     form.partner_id = self.portal_b.partner_id
                 row = form.save()
@@ -401,7 +400,6 @@ class TestProvider(EvaluationCase):
         form.name = "Fictional native watch"
         form.kind = "watch"
         form.quality_id = self.quality
-        form.retention_id = self.retention
         form.source = "https://example.test/native"
         form.observed_on = fields.Date.today()
         row = form.save().with_user(self.quality)

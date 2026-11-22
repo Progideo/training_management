@@ -22,7 +22,6 @@
                         <field name="enrollment_id" readonly="id"/>
                         <field name="included_count" readonly="id"/>
                         <field name="service_reference" readonly="id"/>
-                        <field name="retention_id" readonly="id"/>
                         <field name="used_count" readonly="1"/>
                     </group>
                     <p>One confirmed reservation consumes one unit. Cancelled reservations remain consumed unless the announced refund applies.</p>

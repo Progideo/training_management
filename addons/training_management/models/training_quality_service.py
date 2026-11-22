@@ -91,8 +91,7 @@ class QualityService(models.AbstractModel):
             raise ValidationError(self.env._("Enter a subject and your complaint."))
         delivery = enrollment.delivery_id
         reviewer = delivery.complaint_quality_id
-        retention = delivery.complaint_retention_id
-        if not reviewer or not reviewer.active or not retention.approved_at or delivery.complaint_response_days < 1:
+        if not reviewer or not reviewer.active or delivery.complaint_response_days < 1:
             raise ValidationError(self.env._("Complaint intake is not configured; contact the training organizer."))
         model = clean_context(self.env["training.complaint"]).sudo()
         # Narrow factory after current ownership, eligibility and serialized anti-replay checks.
@@ -107,7 +106,6 @@ class QualityService(models.AbstractModel):
                 "quality_id": reviewer.id,
                 "responsible_id": reviewer.id,
                 "member_ids": [Command.clear()],
-                "retention_id": retention.id,
                 "channel": "portal",
                 "portal_visible": True,
                 "submission_key": key,

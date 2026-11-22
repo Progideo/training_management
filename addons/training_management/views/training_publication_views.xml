@@ -81,7 +81,6 @@
                             <field name="allocation_id" invisible="kind != 'case'" required="kind == 'case'" readonly="id"/>
                             <field name="representative_id" invisible="kind != 'case'" required="kind == 'case'" readonly="id"/>
                             <field name="authority_reference" invisible="kind != 'case'" readonly="id"/>
-                            <field name="retention_id" readonly="id"/>
                         </group>
                         <group>
                             <field name="owner_id"/>

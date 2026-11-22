@@ -142,8 +142,13 @@ class ProjectActivity(models.Model):
     )
     project_deliverable = fields.Text(string="Livrable attendu")
     project_service_reference = fields.Char(string="Référence de prestation")
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     project_retention_id = fields.Many2one(
-        "training.retention.category", ondelete="restrict", check_company=True, string="Conservation du projet"
+        "training.retention.category",
+        ondelete="restrict",
+        check_company=True,
+        string="Conservation du projet",
+        readonly=True,
     )
 
     @api.onchange("project_rubric_id")
@@ -151,9 +156,7 @@ class ProjectActivity(models.Model):
         if self.project_rubric_id:
             self.criterion = "validation"
 
-    @api.constrains(
-        "project_rubric_id", "project_deliverable", "project_service_reference", "project_retention_id", "criterion"
-    )
+    @api.constrains("project_rubric_id", "project_deliverable", "project_service_reference", "criterion")
     def _check_project(self):
         for row in self.filtered("project_rubric_id"):
             if (
@@ -161,11 +164,10 @@ class ProjectActivity(models.Model):
                 or row.project_rubric_id.state != "published"
                 or not (row.project_deliverable or "").strip()
                 or not (row.project_service_reference or "").strip()
-                or not row.project_retention_id.approved_at
             ):
                 raise ValidationError(
                     self.env._(
-                        "Un projet exige une grille publiée, un livrable, une prestation, une politique approuvée et le critère Validation du tuteur."
+                        "Un projet exige une grille publiée, un livrable, une prestation et le critère Validation du tuteur."
                     )
                 )
 

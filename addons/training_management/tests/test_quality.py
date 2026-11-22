@@ -409,7 +409,6 @@ class TestQuality(QualityCase):
             form.enrollment_id = enrollment
             form.complainant_id = enrollment.participant_id
             form.quality_id = self.quality
-            form.retention_id = self.retention
             form.due_date = fields.Date.today()
             form.description = "Original complaint"
             with form.file_ids.new() as document:
@@ -466,7 +465,7 @@ class TestQuality(QualityCase):
             form.due_date = fields.Date.today()
         self.assertEqual(form.record.complaint_id, row)
         self.assertEqual(form.record.origin, "complaint")
-        self.assertEqual(form.record.retention_id, row.retention_id)
+        self.assertFalse(form.record.retention_id)
         self.assertEqual(len(Form(row).improvement_ids), 1)
         self.assertEqual(len(Form(row.with_user(self.coordinator)).improvement_ids), 0)
         with self.assertRaises(AccessError):

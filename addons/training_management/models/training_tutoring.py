@@ -23,8 +23,9 @@ class TutoringEntitlement(models.Model):
     company_id = fields.Many2one(related="enrollment_id.company_id", store=True)
     included_count = fields.Integer(required=True)
     service_reference = fields.Char(required=True)
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     used_count = fields.Integer(compute="_compute_used")
     booking_ids = fields.One2many("training.tutoring.booking", "entitlement_id", readonly=True)
@@ -43,8 +44,9 @@ class TutoringEntitlement(models.Model):
     def create(self, vals_list):
         self.env["training.tutoring.service"]._coordinator()
         allowed = {"enrollment_id", "included_count", "service_reference", "retention_id"}
-        if any(set(v) - allowed or not allowed <= set(v) for v in vals_list):
-            raise ValidationError(self.env._("Explicitly set the included count, service and retention policy."))
+        required = {"enrollment_id", "included_count", "service_reference"}
+        if any(set(v) - allowed or not required <= set(v) for v in vals_list):
+            raise ValidationError(self.env._("Explicitly set the included count and service."))
         enrollments = self.env["training.enrollment"].browse([v["enrollment_id"] for v in vals_list])
         enrollments.check_access("read")
         enrollments.delivery_id.company_id._lock_training_schedule()
@@ -52,18 +54,11 @@ class TutoringEntitlement(models.Model):
         clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
         return super(TutoringEntitlement, self.with_context(clean)).create(vals_list)  # pylint: disable=context-overridden
 
-    @api.constrains("enrollment_id", "included_count", "service_reference", "retention_id")
+    @api.constrains("enrollment_id", "included_count", "service_reference")
     def _check_entitlement(self):
         for row in self:
-            if (
-                row.included_count <= 0
-                or not row.service_reference.strip()
-                or not row.retention_id.approved_at
-                or row.enrollment_id.state != "confirmed"
-            ):
-                raise ValidationError(
-                    self.env._("Use a confirmed enrollment, a positive quota and an approved retention policy.")
-                )
+            if row.included_count <= 0 or not row.service_reference.strip() or row.enrollment_id.state != "confirmed":
+                raise ValidationError(self.env._("Use a confirmed enrollment and a positive quota."))
 
     def write(self, vals):  # pylint: disable=method-required-super
         raise ValidationError(self.env._("Keep the agreed tutoring entitlement unchanged."))

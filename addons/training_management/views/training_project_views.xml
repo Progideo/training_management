@@ -58,7 +58,6 @@
                     <field name="project_rubric_id" domain="[('state', '=', 'published'), ('company_id', '=', company_id)]" options="{'no_create': True}" readonly="progress_ids"/>
                     <field name="project_deliverable" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
                     <field name="project_service_reference" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
-                    <field name="project_retention_id" domain="[('approved_at', '!=', False), ('company_id', '=', company_id)]" options="{'no_create': True}" invisible="not project_rubric_id" required="project_rubric_id" readonly="progress_ids"/>
                     <p invisible="not project_rubric_id">Choisir Validation du tuteur. Le tuteur affecté doit aussi avoir une mission pédagogique et une habilitation Projet pratique en cours. Les remises simples restent disponibles sans grille.</p>
                 </group>
             </xpath>

@@ -36,8 +36,9 @@ class ProviderDossier(models.Model):
     partner_id = fields.Many2one("res.partner", ondelete="restrict", check_company=True, string="Intervening Partner")
     quality_id = fields.Many2one("res.users", required=True, ondelete="restrict", string="Assigned Quality Reviewer")
     member_ids = fields.Many2many("res.users", string="Explicitly Authorized Staff", default=lambda self: self.env.user)
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, check_company=True, ondelete="restrict"
+        "training.retention.category", check_company=True, ondelete="restrict", readonly=True
     )
     frozen = fields.Boolean(string="Legal Hold", default=False)
     competencies = fields.Text(string="Competencies and Scope")
@@ -160,15 +161,11 @@ class ProviderDossier(models.Model):
             self.env.transaction.invalidate_access_cache()
         return True
 
-    @api.constrains(
-        "quality_id", "member_ids", "company_id", "partner_id", "kind", "retention_id", "program_id", "improvement_id"
-    )
+    @api.constrains("quality_id", "member_ids", "company_id", "partner_id", "kind", "program_id", "improvement_id")
     def _check_scope(self):
         for row in self:
             if row.kind != "watch" and not row.partner_id:
                 raise ValidationError(self.env._("Select the intervening partner."))
-            if not row.retention_id.approved_at:
-                raise ValidationError(self.env._("Choose an approved retention policy."))
             if not row.quality_id.active or not row.quality_id.has_group(QUALITY):
                 raise ValidationError(self.env._("Assign an active quality reviewer."))
             for user in row.quality_id | row.member_ids:

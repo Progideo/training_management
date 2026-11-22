@@ -36,7 +36,6 @@
                             <field name="partner_id" invisible="kind == 'watch'" required="kind != 'watch'" readonly="id"/>
                             <field name="quality_id" readonly="id and not can_review"/>
                             <field name="member_ids" widget="many2many_tags" readonly="id and not can_review"/>
-                            <field name="retention_id" readonly="state == 'closed' or frozen"/>
                             <field name="frozen" readonly="not id or not can_review"/>
                         </group>
                     </group>

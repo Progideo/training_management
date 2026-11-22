@@ -17,18 +17,19 @@ class PracticeSummary(models.Model):
     company_id = fields.Many2one(related="allocation_id.company_id", store=True)
     body = fields.Text(required=True, string="Agreed Summary")
     authorization_reference = fields.Char(required=True, string="Agreement and Authorization Reference")
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     published_at = fields.Datetime(readonly=True, copy=False)
     published_by_id = fields.Many2one("res.users", readonly=True, copy=False, ondelete="restrict")
     withdrawn = fields.Boolean(readonly=True, copy=False)
 
-    @api.constrains("authorization_id", "allocation_id", "retention_id")
+    @api.constrains("authorization_id", "allocation_id")
     def _check_scope(self):
         for row in self:
-            if row.allocation_id not in row.authorization_id.allocation_ids or not row.retention_id.approved_at:
-                raise ValidationError(self.env._("Choose an authorized allocation and an approved retention policy."))
+            if row.allocation_id not in row.authorization_id.allocation_ids:
+                raise ValidationError(self.env._("Choose an authorized allocation."))
 
     @api.model_create_multi
     def create(self, vals_list):

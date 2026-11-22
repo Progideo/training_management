@@ -122,7 +122,6 @@ class TestTestimonial(PublicationCase):
             form.allocation_id = case.allocation_id
             form.representative_id = self.portal_b
             form.authority_reference = "Fictional exact mandate"
-            form.retention_id = self.retention
             form.confidential = False
             form.body = "Fictional native case text"
             form.public_context = "Fictional native public context"

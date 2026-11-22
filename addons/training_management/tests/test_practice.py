@@ -53,7 +53,6 @@ class TestPractice(PracticeCase):
             form.completed_on = action.completed_on
             form.horizon = "60"
             form.service_reference = "Fictional agreement"
-            form.retention_id = self.retention
         self.assertEqual(form.record.due_date, action.completed_on + timedelta(days=60))
         self.assertEqual(action.due_date, action.completed_on + timedelta(days=30))
         self.assertFalse(action.entry_ids)
