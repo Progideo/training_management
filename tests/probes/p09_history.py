@@ -68,6 +68,7 @@ def snapshot(tables, *, business=False, database_env=None):
                 "project_retention_id",
             ],
             "training_learning_entry": ["project_snapshot", "project_digest"],
+            "training_enrollment": ["anonymized_at"],
         }.get(table, [])
         if added:
             database_env.cr.execute(SQL("SELECT to_jsonb(t) FROM %s t", SQL.identifier(table)))

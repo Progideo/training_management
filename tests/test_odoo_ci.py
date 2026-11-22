@@ -158,8 +158,16 @@ class Coverage(unittest.TestCase):
                 self.assertIn(context, path.read_text())
                 activity = '                "exam_obligation",\n'
                 self.assertIn(activity, path.read_text())
+                # Conservation configurée: the anonymization stamp stays empty on historical enrollments.
+                anonymized = '            "training_enrollment": ["anonymized_at"],\n'
+                self.assertIn(anonymized, path.read_text())
                 self.assertEqual(
-                    path.read_text().replace(addition, "").replace(context, "").replace(activity, ""), original(name)
+                    path.read_text()
+                    .replace(addition, "")
+                    .replace(context, "")
+                    .replace(activity, "")
+                    .replace(anonymized, ""),
+                    original(name),
                 )
             elif name == "tests/probes/s092_history.py":
                 addition = (
