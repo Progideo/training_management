@@ -623,6 +623,8 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         link = "/formations/date-alert/confirm/%s" % sub.sudo().access_token
         self.assertIn(link, mail.body_html)
         self.assertTrue(sub._confirmation_authorized(mail))
+        # The transport accepts the confirmation, and only it (pending request, requested address).
+        self.assertTrue(mail._prepare_outgoing_list())
         # A repeated request neither tells whether the address is known nor sends another email.
         repeated = self.url_open(url, data={**data, "email": "visitor@example.invalid", "accepted": "yes"})
         self.assertEqual(repeated.status_code, response.status_code)
@@ -641,6 +643,8 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
         sub.invalidate_recordset()
         self.assertTrue(sub.active_consent)
         self.assertFalse(sub._confirmation_authorized(mail))
+        with self.assertRaises(ValidationError):
+            mail._prepare_outgoing_list()
         self.assertEqual(
             self.env["training.session.alert.event"].search([("subscription_id", "=", sub.id)]).operation, "subscribe"
         )
@@ -652,6 +656,7 @@ class TestSessionDatesHttp(SessionAlertCase, HttpCase):
             (notice.recipient_email, notice.recipient_id), ("visitor@example.invalid", self.env["res.users"])
         )
         self.assertTrue(notice._authorized())
+        self.assertTrue(notice.mail_id._prepare_outgoing_list())
         unsubscribe = "/formations/date-alert/unsubscribe/%s" % sub.sudo().access_token
         self.assertIn(unsubscribe, notice.mail_id.body_html)
         _page, values = form(unsubscribe)
