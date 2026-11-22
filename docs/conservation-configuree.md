@@ -72,3 +72,27 @@ administrateur, elle réussit. Sur une inscription en cours, « Supprimer le
 dossier » est refusé ; après annulation, l'inscription et ses journaux
 disparaissent, la réalisation reste. Un dossier de clôture gelé et ses preuves
 restent jusqu'à la levée du gel.
+
+## Lot E — anonymisation
+
+- « Anonymiser le dossier » (inscription terminée, non gelée ; administrateur,
+  à la main ou par `records.action_training_anonymize_dossier()` dans une action
+  automatisée) efface les copies de données personnelles du dossier et de ses
+  preuves training : adresses des journaux d'envoi et des nominations, identité
+  publique des témoignages, signature recopiée dans la preuve d'émargement. Les
+  courriels envoyés sont supprimés. Les preuves restent ; `anonymized_at` permet
+  à une règle de filtrer les dossiers déjà anonymisés.
+- « Anonymiser le participant » (contact) anonymise tous ses dossiers et ses
+  abonnements aux alertes, puis renomme et archive le contact. Il est refusé si le
+  contact a un utilisateur, des factures, des commandes ou des pistes : leurs
+  outils natifs décident.
+- Chaque modèle déclare ses copies (`_training_personal_fields`) ; un e-mail
+  obligatoire est remplacé par une adresse neutre propre à la ligne.
+- Limites : les textes libres (motifs, commentaires, messages de discussion) ne
+  sont pas réécrits.
+
+Recette : sur une inscription annulée, « Anonymiser le dossier » vide l'adresse
+des journaux et supprime leurs courriels, l'inscription et ses journaux restent.
+Sur un contact sans utilisateur, « Anonymiser le participant » l'archive sans
+nom ni coordonnées ; sur un participant ayant un compte portail, l'action est
+refusée.

@@ -111,6 +111,8 @@ class TrainingCompanyAuthorization(models.Model):
 
 class TrainingCompanyNomination(models.Model):
     _name = "training.company.nomination"
+    # Personal data copied here, cleared by the anonymization (conservation configurée).
+    _training_personal_fields = ("email",)
     _description = "Client Participant Nomination"
     _check_company_auto = True
 

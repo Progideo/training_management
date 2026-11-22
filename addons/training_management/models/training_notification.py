@@ -9,6 +9,8 @@ from odoo import api, fields, models
 
 class TrainingNotification(models.Model):
     _name = "training.notification"
+    # Personal data copied here, cleared by the anonymization (conservation configurée).
+    _training_personal_fields = ("email",)
     _inherit = "training.learning.evidence"
     _description = "Training Lifecycle Notification Journal"
     _order = "id desc"

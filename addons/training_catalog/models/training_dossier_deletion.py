@@ -1,5 +1,6 @@
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.exceptions import AccessError
+from odoo.tools import SQL
 
 from .training_deletion import require_evidence_deletion
 
@@ -25,6 +26,64 @@ class TrainingDossierDeletion(models.AbstractModel):
         for records in self.sudo().with_context(active_test=False)._training_dossier_records():
             records.exists().unlink()
         return True
+
+    def action_training_anonymize_dossier(self):
+        """Clear the personal data copied by finished dossiers and their training evidence.
+
+        Each model lists its copies in ``_training_personal_fields``; the evidence itself
+        stays. Sent mails of the journals are deleted. Meant for an administrator, by hand
+        or from an automated action he configured (conservation configurée).
+        """
+        if not self.env.user._is_system():
+            raise AccessError(self.env._("Only an administrator can anonymize a dossier."))
+        if not self:
+            return True
+        require_evidence_deletion(self, self.env._("Keep this dossier and its evidence."))
+        dossiers = self.sudo().with_context(active_test=False)
+        dossiers._training_clear_personal(dossiers._training_dossier_records())
+        if "anonymized_at" in dossiers._fields:
+            # Training records are immutable through the ORM: stamp them like the copies.
+            self.env.cr.execute(
+                SQL(
+                    "UPDATE %s SET anonymized_at = %s WHERE id IN %s",
+                    SQL.identifier(dossiers._table),
+                    fields.Datetime.now(),
+                    tuple(dossiers.ids),
+                )
+            )
+            dossiers.invalidate_recordset(["anonymized_at"])
+        return True
+
+    @api.private
+    def _training_clear_personal(self, recordsets):
+        mails = self.env["mail.mail"]
+        self.env.flush_all()
+        for rows in recordsets:
+            if not rows:
+                continue
+            names = getattr(type(rows), "_training_personal_fields", ())
+            placeholders = getattr(type(rows), "_training_personal_placeholders", ())
+            for name in names:
+                if name in placeholders:
+                    # A recipient is required: a neutral address unique to the row replaces it.
+                    value = SQL("'anonymized-' || id || '@anonymized.invalid'")
+                else:
+                    value = SQL("%s", "" if rows._fields[name].required else None)
+                # Bypass the write guards of the evidence: only the personal copy changes.
+                self.env.cr.execute(
+                    SQL(
+                        "UPDATE %s SET %s = %s WHERE id IN %s",
+                        SQL.identifier(rows._table),
+                        SQL.identifier(name),
+                        value,
+                        tuple(rows.ids),
+                    )
+                )
+            if names:
+                rows.invalidate_recordset(names)
+            if "mail_id" in rows._fields:
+                mails |= rows.mail_id
+        mails.exists().unlink()
 
     @api.private
     def _training_dossier_records(self):

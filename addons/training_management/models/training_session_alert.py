@@ -19,6 +19,9 @@ CONFIRMATIONS_PER_DAY = 5
 
 class SessionAlertSubscription(models.Model):
     _name = "training.session.alert.subscription"
+    # Personal data copied here, cleared by the anonymization (conservation configurée).
+    _training_personal_fields = ("email",)
+    _training_personal_placeholders = ("email",)
     _inherit = "training.learning.evidence"
     _description = "Voluntary New Session Date Subscription"
     _check_company_auto = True
@@ -341,6 +344,8 @@ class SessionAlertEvent(models.Model):
 
 class SessionAlertNotice(models.Model):
     _name = "training.session.alert.notice"
+    # Personal data copied here, cleared by the anonymization (conservation configurée).
+    _training_personal_fields = ("recipient_email",)
     _inherit = "training.learning.evidence"
     _description = "New Session Date Notification Journal"
 
