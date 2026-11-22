@@ -382,9 +382,9 @@ class TestSessionDateAlerts(SessionAlertCase):
         self.assertFalse(stale.exists())
         self.assertTrue(recent.exists() and former.exists())
         self.assertEqual(model._gc_unconfirmed_requests(), (0, False))
-        # Every consent stays evidence, even after unsubscribing.
+        # Every consent stays evidence, even after unsubscribing: only an administrator deletes it.
         with self.assertRaises(ValidationError):
-            former.unlink()
+            former.with_user(self.env.ref("base.public_user")).sudo().unlink()
 
     def test_explicit_consent_required_without_retention_policy(self):
         # Retention is the operator's matter (21 November 2026): no policy is required nor recorded.

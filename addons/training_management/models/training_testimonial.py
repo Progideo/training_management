@@ -6,6 +6,7 @@ import re
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 MODERATOR = "training_management.group_training_publication_moderator"
@@ -267,7 +268,7 @@ class Testimonial(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_publication(self):
-        raise ValidationError(self.env._("Keep publication requests and their authorization history."))
+        require_evidence_deletion(self, self.env._("Keep publication requests and their authorization history."))
 
     def copy_data(self, default=None):  # pylint: disable=method-required-super
         raise ValidationError(self.env._("Create a new draft without copying consent or publication evidence."))

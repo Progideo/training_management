@@ -3,6 +3,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.fields import Domain
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_material import COORDINATOR
 
@@ -132,7 +133,7 @@ class LearningEvidence(models.AbstractModel):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_keep_evidence(self):
-        raise ValidationError(self.env._("Keep learning evidence and its history unchanged."))
+        require_evidence_deletion(self, self.env._("Keep learning evidence and its history unchanged."))
 
     def copy_data(self, default=None):  # pylint: disable=method-required-super  # do not clone authors, work or evidence
         raise ValidationError(self.env._("Learning evidence cannot be copied."))

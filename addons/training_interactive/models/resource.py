@@ -2,6 +2,7 @@
 import uuid
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class Resource(models.Model):
@@ -33,4 +34,4 @@ class Resource(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_identity(self):
-        raise ValidationError(self.env._("Archive resources to preserve their identity."))
+        require_evidence_deletion(self, self.env._("Archive resources to preserve their identity."))

@@ -6,6 +6,7 @@ import json
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Domain
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_evaluation import COORDINATOR, QUALITY, clean_context
 
@@ -44,6 +45,7 @@ class QualityDelivery(models.Model):
 
 class QualityRecord(models.AbstractModel):
     _name = "training.quality.record"
+    _inherit = "training.dossier.deletion"
     _description = "Private Quality Dossier Rules"
     _check_company_auto = True
 
@@ -268,7 +270,7 @@ class QualityRecord(models.AbstractModel):
 
     @api.ondelete(at_uninstall=False)
     def _keep_quality_history(self):
-        raise ValidationError(self.env._("Keep quality dossiers and their history; no automatic purge."))
+        require_evidence_deletion(self, self.env._("Keep quality dossiers and their history; no automatic purge."))
 
     def action_export_proof(self):
         self._authorize(quality=True, mutating=False)
@@ -576,6 +578,8 @@ class Improvement(models.Model):
 
 class QualityEvent(models.Model):
     _name = "training.quality.event"
+    # The legal hold of the parent dossier also protects this evidence.
+    _training_hold_parents = ("complaint_id", "improvement_id")
     _description = "Immutable Private Quality History"
     _order = "id"
 
@@ -610,11 +614,13 @@ class QualityEvent(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_event(self):
-        raise ValidationError(self.env._("Keep immutable quality history."))
+        require_evidence_deletion(self, self.env._("Keep immutable quality history."))
 
 
 class QualityFile(models.Model):
     _name = "training.quality.file"
+    # The legal hold of the parent dossier also protects this evidence.
+    _training_hold_parents = ("complaint_id", "improvement_id")
     _description = "Immutable Private Quality File"
     _check_company_auto = True
 
@@ -673,7 +679,7 @@ class QualityFile(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_file(self):
-        raise ValidationError(self.env._("Retain quality files and their provenance."))
+        require_evidence_deletion(self, self.env._("Retain quality files and their provenance."))
 
 
 class QualityEnrollment(models.Model):

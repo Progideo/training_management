@@ -8,6 +8,7 @@ from datetime import timedelta
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.binary import BinaryBytes
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 MODES = [("electronic", "Electronic"), ("paper", "Paper"), ("mixed", "Mixed")]
@@ -78,7 +79,7 @@ class AttendanceEvidence(models.AbstractModel):
 
     @api.ondelete(at_uninstall=False)
     def _keep_evidence(self):
-        raise ValidationError(self.env._("Keep attendance evidence and its history."))
+        require_evidence_deletion(self, self.env._("Keep attendance evidence and its history."))
 
     def copy_data(self, default=None):  # pylint: disable=method-required-super  # preserve provenance
         raise AccessError(self.env._("Attendance evidence cannot be copied."))

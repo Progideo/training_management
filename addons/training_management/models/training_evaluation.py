@@ -6,6 +6,7 @@ from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Domain
 from odoo.tools.binary import BinaryBytes
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 QUALITY = "training_management.group_training_quality"
@@ -121,7 +122,7 @@ class EvaluationAuthorization(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_authorizations(self):
-        raise ValidationError(self.env._("Retain authorization decisions."))
+        require_evidence_deletion(self, self.env._("Retain authorization decisions."))
 
 
 class Evaluation(models.Model):
@@ -358,7 +359,7 @@ class EvaluationAssignment(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_assignments(self):
-        raise ValidationError(self.env._("Retain evaluation assignments and their history."))
+        require_evidence_deletion(self, self.env._("Retain evaluation assignments and their history."))
 
 
 class EvaluationResult(models.Model):
@@ -392,7 +393,7 @@ class EvaluationResult(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_results(self):
-        raise ValidationError(self.env._("Retain evaluation decisions."))
+        require_evidence_deletion(self, self.env._("Retain evaluation decisions."))
 
 
 class EvaluationService(models.AbstractModel):

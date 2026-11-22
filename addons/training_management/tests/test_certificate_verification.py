@@ -103,8 +103,8 @@ class TestCertificateVerification(VerificationCase):
             verification.with_user(self.quality).copy()
         with self.assertRaises(AccessError):
             verification.with_user(self.quality).unlink()
-        with self.assertRaises(ValidationError):
-            verification.unlink()
+        with self.assertRaises(ValidationError):  # only an administrator deletes evidence, never sudo() alone
+            verification.with_user(self.env.ref("base.public_user")).sudo().unlink()
         with self.assertRaises(AccessError):
             verification.with_user(self.quality).create({})
         for token in ("unknown", str(document.id), "x" * 43, "x" * 10000, False):

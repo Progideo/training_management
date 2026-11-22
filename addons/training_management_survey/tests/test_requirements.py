@@ -154,8 +154,8 @@ class TestExamRequirements(SharedExamCase):
                 required.write(values)
         with self.assertRaises(AccessError):
             requirements.write({"obligation": "optional"})
-        with self.assertRaises(AccessError):
-            requirements.unlink()
+        with self.assertRaises(AccessError):  # only an administrator deletes evidence, never sudo() alone
+            requirements.with_user(self.env.ref("base.public_user")).sudo().unlink()
         with self.assertRaises(ValidationError):
             self.assigned(delivery, exam)
         with self.assertRaises(ValidationError):

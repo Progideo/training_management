@@ -6,6 +6,7 @@ import json
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.addons.training_interactive.services.events import encode_report, validate_result
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 def encode(value):
@@ -47,7 +48,7 @@ class Attempt(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_attempt(self):
-        raise AccessError(self.env._("Keep attempt history"))
+        require_evidence_deletion(self, self.env._("Keep attempt history"), AccessError)
 
     @api.private
     def _scope(self, enrollment_id, usage_id, lock=False):
@@ -203,4 +204,4 @@ class Event(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_event(self):
-        raise AccessError(self.env._("Keep original events"))
+        require_evidence_deletion(self, self.env._("Keep original events"), AccessError)

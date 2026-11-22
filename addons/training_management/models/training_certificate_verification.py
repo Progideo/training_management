@@ -5,6 +5,7 @@ import re
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_closure import QUALITY
 
@@ -58,7 +59,7 @@ class CertificateVerification(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_verification(self):
-        raise ValidationError(self.env._("Keep certificate verification and its history."))
+        require_evidence_deletion(self, self.env._("Keep certificate verification and its history."))
 
     @api.private
     def _issue(self, document, token, url):

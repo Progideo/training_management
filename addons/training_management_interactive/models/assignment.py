@@ -3,6 +3,7 @@
 # with a clean context after authorization.
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 from .version import COORDINATOR
 
 
@@ -134,7 +135,7 @@ class Usage(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_usage(self):
-        raise ValidationError(self.env._("Keep historical content usages."))
+        require_evidence_deletion(self, self.env._("Keep historical content usages."))
 
 
 class Activity(models.Model):

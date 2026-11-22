@@ -304,7 +304,9 @@ class TestLearning(LearningCase):
                 attachment.write(vals)
         for operation in (
             lambda: attachment.copy(),
-            lambda: attachment.unlink(),
+            lambda: (
+                attachment.with_user(self.env.ref("base.public_user")).sudo().unlink()
+            ),  # only an administrator deletes evidence
             lambda: (
                 self.env["ir.attachment"]
                 .with_user(self.portal)

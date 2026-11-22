@@ -1,7 +1,8 @@
 """Native Survey evidence, exact scoring and strict server-owned deadlines."""
 
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class Attempt(models.Model):
@@ -44,8 +45,7 @@ class Attempt(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _mock_keep_attempts(self):
-        if self._mock_exam_records():
-            raise ValidationError(self.env._("Keep the exam history."))
+        require_evidence_deletion(self._mock_exam_records(), self.env._("Keep the exam history."))
 
     @api.private
     def _mock_close_if_expired(self):
@@ -166,4 +166,6 @@ class AnswerLine(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _training_keep_answers(self):
-        self._training_mutable(self.user_input_id)
+        # Answers are evidence: an administrator may delete them (conservation configurée).
+        if not self.env.user._is_system():
+            self._training_mutable(self.user_input_id)

@@ -9,6 +9,7 @@ from markupsafe import Markup
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import SQL, consteq, email_normalize, email_split
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 # A confirmation link received by email stays valid this long.
 CONFIRMATION_DELAY = timedelta(days=7)
@@ -59,9 +60,11 @@ class SessionAlertSubscription(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_keep_evidence(self):
-        # Only a visitor request never confirmed is technical data; every consent stays evidence.
-        if self - self._never_confirmed():
-            raise ValidationError(self.env._("Keep learning evidence and its history unchanged."))
+        # A visitor request never confirmed is technical data; every consent stays evidence,
+        # deletable by an administrator only (conservation configurée).
+        require_evidence_deletion(
+            self - self._never_confirmed(), self.env._("Keep learning evidence and its history unchanged.")
+        )
 
     @api.private
     def _never_confirmed(self):

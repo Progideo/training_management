@@ -12,6 +12,7 @@ from odoo import api, fields, models, SUPERUSER_ID
 from odoo.exceptions import AccessError, ValidationError
 
 from odoo.addons.training_management.models.training_evaluation import clean_context
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class Feedback(models.Model):
@@ -152,8 +153,8 @@ class FeedbackInput(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_feedback(self):
-        if self.filtered("training_feedback_campaign_id"):
-            raise AccessError(self.env._("Retain collected feedback."))
+        collected = self.filtered(lambda row: row.sudo().training_feedback_campaign_id)
+        require_evidence_deletion(collected, self.env._("Retain collected feedback."), AccessError)
 
 
 class FeedbackLine(models.Model):

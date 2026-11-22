@@ -6,6 +6,7 @@ from datetime import timedelta
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, LockError, ValidationError
 from odoo.tools.binary import BinaryBytes
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 
@@ -100,7 +101,7 @@ class PracticeAction(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_plan(self):
-        raise ValidationError(self.env._("Keep practice actions and their history."))
+        require_evidence_deletion(self, self.env._("Keep practice actions and their history."))
 
     def copy_data(self, default=None):  # pylint: disable=method-required-super
         raise ValidationError(self.env._("Create a new agreed action instead of copying its history."))

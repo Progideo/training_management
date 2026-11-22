@@ -7,6 +7,7 @@ the PDF preview); ordinary Odoo attachments retain their native behavior.
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 CONFIDENTIAL_MODELS = ("training.adaptation", "training.adaptation.history")
@@ -172,11 +173,12 @@ class IrAttachment(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_material(self):
-        if any(
-            item.res_model in ("training.material", "training.learning.entry", "training.practice.entry")
-            for item in self.sudo()
-        ):
-            raise ValidationError(self.env._("Keep private support files and their history."))
+        private = self.filtered(
+            lambda item: (
+                item.sudo().res_model in ("training.material", "training.learning.entry", "training.practice.entry")
+            )
+        )
+        require_evidence_deletion(private, self.env._("Keep private support files and their history."))
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_programme_pdf(self):

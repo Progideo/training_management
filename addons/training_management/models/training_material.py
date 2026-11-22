@@ -4,6 +4,7 @@ import hashlib
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 
@@ -159,7 +160,7 @@ class TrainingMaterial(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_keep_evidence(self):
-        raise ValidationError(self.env._("Withdraw private PDFs instead of deleting their history."))
+        require_evidence_deletion(self, self.env._("Withdraw private PDFs instead of deleting their history."))
 
     def _can_return_content(self, field_name=None, access_token=None):
         self.env["training.document.policy"]._check_read(self)
@@ -243,7 +244,7 @@ class TrainingMaterialAssignment(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_keep_reference(self):
-        raise ValidationError(self.env._("Withdraw this reference instead of deleting its history."))
+        require_evidence_deletion(self, self.env._("Withdraw this reference instead of deleting its history."))
 
 
 class TrainingProgram(models.Model):

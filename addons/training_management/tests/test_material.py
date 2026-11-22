@@ -198,8 +198,8 @@ class TestTrainingMaterial(MaterialCase):
                 attachment.write(values)
         with self.assertRaises(ValidationError):
             attachment.copy({"res_model": "res.partner", "res_id": self.customer.id})
-        with self.assertRaises(ValidationError):
-            self.attachment(material).unlink()
+        with self.assertRaises(ValidationError):  # only an administrator deletes evidence, never sudo() alone
+            self.attachment(material).with_user(self.env.ref("base.public_user")).sudo().unlink()
         e.action_revoke_access(reason="Fictional revoke")
         with self.assertRaises(AccessError):
             binary._get_stream_from(found)

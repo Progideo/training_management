@@ -6,6 +6,7 @@
 import json
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 from .version import COORDINATOR
 
 
@@ -176,4 +177,4 @@ class Invalidation(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_audit(self):
-        raise AccessError(self.env._("Keep invalidation history"))
+        require_evidence_deletion(self, self.env._("Keep invalidation history"), AccessError)
