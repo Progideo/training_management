@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.misc import format_datetime
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 COORDINATOR = "training_management.group_training_coordinator"
@@ -339,8 +340,9 @@ class TrainingSession(models.Model):
             self.env["training.operation"]._record(item, before[item.id], after, False)
         return result
 
-    def unlink(self):  # pylint: disable=method-required-super  # immutable history: cancellation replaces deletion
-        raise AccessError(self.env._("Cancel a session to preserve its history."))  # pylint: disable=no-raise-unlink  # preserve audit
+    def unlink(self):
+        require_evidence_deletion(self, self.env._("Cancel a session to preserve its history."), AccessError)
+        return super().unlink()
 
     def action_change(self):
         self.ensure_one()

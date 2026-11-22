@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 OBLIGATIONS = [("optional", "Optional"), ("complete", "Required to Complete"), ("pass", "Required to Pass")]
 
@@ -30,7 +31,7 @@ class Requirement(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_requirements(self):
-        raise AccessError(self.env._("Keep the frozen exam obligations."))
+        require_evidence_deletion(self, self.env._("Keep the frozen exam obligations."), AccessError)
 
     @api.private
     def _capture(self, enrollment):

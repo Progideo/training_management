@@ -3,6 +3,7 @@ from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Domain
 from odoo.tools.binary import BinaryBytes
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 from ..services.archive import parse_package
 
 AUTHOR = "training_interactive.group_interactive_author"
@@ -121,7 +122,7 @@ class Version(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_history(self):
-        raise ValidationError(self.env._("Keep content versions and their history."))
+        require_evidence_deletion(self, self.env._("Keep content versions and their history."))
 
     def action_publish(self):
         self.check_access("write")
@@ -191,7 +192,7 @@ class PackageFile(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_files(self):
-        raise AccessError(self.env._("Keep historical package files."))
+        require_evidence_deletion(self, self.env._("Keep historical package files."), AccessError)
 
 
 class Binary(models.AbstractModel):

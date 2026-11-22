@@ -8,6 +8,7 @@ from markupsafe import Markup
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.misc import format_datetime
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class TrainingInvitation(models.Model):
@@ -148,8 +149,9 @@ class TrainingInvitation(models.Model):
     def write(self, vals):  # pylint: disable=method-required-super  # immutable records
         raise AccessError(self.env._("Distribution history is immutable."))  # pylint: disable=no-raise-unlink  # preserve audit
 
-    def unlink(self):  # pylint: disable=method-required-super  # immutable history: cancellation replaces deletion
-        raise AccessError(self.env._("Distribution history is immutable."))  # pylint: disable=no-raise-unlink  # preserve audit
+    def unlink(self):
+        require_evidence_deletion(self, self.env._("Distribution history is immutable."), AccessError)
+        return super().unlink()
 
 
 class MailMail(models.Model):

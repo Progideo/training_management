@@ -3,6 +3,7 @@
 from odoo import api, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.fields import Domain
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_learning import ENTRY_MODEL
 
@@ -80,8 +81,8 @@ class MailMessage(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_keep_learning(self):
-        if any(message.model == ENTRY_MODEL for message in self.sudo()):
-            raise ValidationError(self.env._("Keep private learning messages unchanged."))
+        entries = self.filtered(lambda message: message.sudo().model == ENTRY_MODEL)
+        require_evidence_deletion(entries, self.env._("Keep private learning messages unchanged."))
 
     def _export_rows(self, fields, *, _is_toplevel_call=True):
         if any(message.model == ENTRY_MODEL for message in self.sudo()):

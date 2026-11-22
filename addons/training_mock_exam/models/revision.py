@@ -5,6 +5,7 @@ from uuid import UUID
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class Revision(models.Model):
@@ -31,7 +32,7 @@ class Revision(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_revisions(self):
-        raise AccessError(self.env._("Result revisions are immutable."))
+        require_evidence_deletion(self, self.env._("Result revisions are immutable."), AccessError)
 
     @api.private
     def _record(self, attempt, points, reason, *, request_key=None, expected_previous=None):

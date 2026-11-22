@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ConcurrencyError, LockError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class TrainingIntraVersion(models.Model):
@@ -221,8 +222,9 @@ class TrainingIntraVersion(models.Model):
             },
         }
 
-    def unlink(self):  # pylint: disable=method-required-super  # preserve client agreement history
-        raise AccessError(self.env._("Client programme version history must be preserved."))  # pylint: disable=no-raise-unlink  # immutable history
+    def unlink(self):
+        require_evidence_deletion(self, self.env._("Client programme version history must be preserved."), AccessError)
+        return super().unlink()
 
 
 class TrainingIntraDelivery(models.Model):

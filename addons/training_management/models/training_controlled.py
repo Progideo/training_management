@@ -3,6 +3,7 @@ import json
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.misc import format_date, format_datetime
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 MAIL_FIELDS = {"message_main_attachment_id"}
@@ -90,8 +91,9 @@ class TrainingOperation(models.Model):
     def write(self, vals):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
         raise AccessError(self.env._("Operation history is immutable."))
 
-    def unlink(self):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
-        raise AccessError(self.env._("Operation history is immutable."))  # pylint: disable=no-raise-unlink  # training records are never deleted: refusal is intended
+    def unlink(self):
+        require_evidence_deletion(self, self.env._("Operation history is immutable."), AccessError)
+        return super().unlink()
 
     @api.private
     def _record(self, record, before, after, reason):
@@ -127,6 +129,7 @@ class TrainingOperation(models.Model):
 
 class TrainingControlled(models.AbstractModel):
     _name = "training.controlled"
+    _inherit = "training.dossier.deletion"
     _description = "Controlled Training Record"
 
     # Public actions that accept a reason from the generic reason assistant.
@@ -191,5 +194,8 @@ class TrainingControlled(models.AbstractModel):
             },
         }
 
-    def unlink(self):  # pylint: disable=method-required-super  # training records are changed only through their controlled actions
-        raise ValidationError(self.env._("Keep training records and their history; use the cancellation workflow."))  # pylint: disable=no-raise-unlink  # training records are never deleted: refusal is intended
+    def unlink(self):
+        require_evidence_deletion(
+            self, self.env._("Keep training records and their history; use the cancellation workflow.")
+        )
+        return super().unlink()

@@ -13,6 +13,8 @@ _logger = logging.getLogger(__name__)
 
 class TrainingDelivery(models.Model):
     _name = "training.delivery"
+    # Deletion by an administrator only, once finished (conservation configurée).
+    _training_finished_states = ("closed", "cancelled")
     _inherit = ["training.controlled", "mail.thread", "mail.activity.mixin"]
     _description = "Training Delivery"
     _check_company_auto = True

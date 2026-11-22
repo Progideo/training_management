@@ -6,6 +6,8 @@ from .training_controlled import TERMINAL
 
 class TrainingSeatAllocation(models.Model):
     _name = "training.seat.allocation"
+    # Deletion by an administrator only, once finished (conservation configurée).
+    _training_finished_states = ("expired", "cancelled")
     _inherit = ["training.controlled", "mail.thread", "mail.activity.mixin"]
     _description = "Training Seat Allocation"
     _check_company_auto = True

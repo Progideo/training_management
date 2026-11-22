@@ -248,9 +248,11 @@ class TestClosure(ClosureCase):
         with self.assertRaises(ValidationError):
             self.proof(dossier)
         with self.assertRaises(ValidationError):
-            dossier.write({"frozen": False})
+            dossier.write({"name": "Renamed"} if "name" in dossier._fields else {"share_certificates": True})
+        # Conservation configurée: the legal hold may be released after closing; deletion stays an administrator's.
+        dossier.write({"frozen": False})
         with self.assertRaises((AccessError, ValidationError)):
-            dossier.unlink()
+            dossier.with_user(self.coordinator).unlink()
 
     def test_participation_actual_duration_and_retained_pdf(self):
         _delivery, session, enrollment = self.scheduled()

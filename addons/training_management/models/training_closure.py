@@ -11,6 +11,7 @@ import zipfile
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.binary import BinaryBytes
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 QUALITY = "training_management.group_training_quality"
@@ -206,7 +207,10 @@ class ClosureDossier(models.Model):
     def write(self, vals):
         self._authorize()
         self._serialize()
-        if (self.filtered(lambda d: d.state == "closed") and set(vals) - {"client_contact_ids"}) or set(vals) - {
+        # The legal hold of a closed dossier may still be released (conservation configurée).
+        if (self.filtered(lambda d: d.state == "closed") and set(vals) - {"client_contact_ids", "frozen"}) or set(
+            vals
+        ) - {
             "quality_id",
             "client_contact_ids",
             "share_certificates",
@@ -374,11 +378,13 @@ class ClosureDossier(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_dossier(self):
-        raise ValidationError(self.env._("Keep closure dossiers and their evidence."))
+        require_evidence_deletion(self, self.env._("Keep closure dossiers and their evidence."))
 
 
 class ClosureProof(models.Model):
     _name = "training.proof"
+    # The legal hold of the parent dossier also protects this evidence.
+    _training_hold_parents = ("dossier_id",)
     _description = "Versioned Training Proof"
     _rec_name = "category"
     _check_company_auto = True
@@ -504,7 +510,7 @@ class ClosureProof(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_proof(self):
-        raise ValidationError(self.env._("Keep every proof version, including drafts and exemptions."))
+        require_evidence_deletion(self, self.env._("Keep every proof version, including drafts and exemptions."))
 
     def copy_data(self, default=None):  # pylint: disable=method-required-super
         raise ValidationError(self.env._("Create a new version with its own provenance."))

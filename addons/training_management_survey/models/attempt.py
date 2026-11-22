@@ -1,7 +1,8 @@
 """Native answers and scoring with private, immutable training evidence."""
 
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class Attempt(models.Model):
@@ -42,8 +43,8 @@ class Attempt(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _training_keep_attempts(self):
-        if self.filtered("training_enrollment_id"):
-            raise ValidationError(self.env._("Keep the exam history."))
+        attempts = self.filtered(lambda row: row.sudo().training_enrollment_id)
+        require_evidence_deletion(attempts, self.env._("Keep the exam history."))
 
     @api.private
     def _mock_exam_records(self):

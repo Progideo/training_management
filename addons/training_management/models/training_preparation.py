@@ -4,6 +4,7 @@ import json
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_schedule import COORDINATOR
 
@@ -250,8 +251,9 @@ class TrainingAdaptation(models.Model):
                 item._audit(snapshots[item.id])
         return result
 
-    def unlink(self):  # pylint: disable=method-required-super  # immutable history: cancellation replaces deletion
-        raise AccessError(self.env._("Adaptation history must be preserved."))  # pylint: disable=no-raise-unlink  # preserve audit
+    def unlink(self):
+        require_evidence_deletion(self, self.env._("Adaptation history must be preserved."), AccessError)
+        return super().unlink()
 
     def _export_rows(self, fields, *, _is_toplevel_call=True):
         # Native recursive exports call _export_rows, not export_data on the
@@ -295,5 +297,6 @@ class TrainingAdaptationHistory(models.Model):
     def write(self, vals):  # pylint: disable=method-required-super  # immutable records
         raise AccessError(self.env._("History is immutable."))  # pylint: disable=no-raise-unlink  # preserve audit
 
-    def unlink(self):  # pylint: disable=method-required-super  # immutable history: cancellation replaces deletion
-        raise AccessError(self.env._("History is immutable."))  # pylint: disable=no-raise-unlink  # preserve audit
+    def unlink(self):
+        require_evidence_deletion(self, self.env._("History is immutable."), AccessError)
+        return super().unlink()

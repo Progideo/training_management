@@ -5,6 +5,7 @@ import json
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_evaluation import COORDINATOR, QUALITY, clean_context
 
@@ -22,6 +23,7 @@ def text(value):
 
 class ProviderDossier(models.Model):
     _name = "training.provider.dossier"
+    _inherit = "training.dossier.deletion"
     _description = "Private Instructor, Subcontracting or Watch Dossier"
     _check_company_auto = True
     _order = "id desc"
@@ -239,11 +241,13 @@ class ProviderDossier(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_history(self):
-        raise ValidationError(self.env._("Archive dossiers and retain their evidence and history."))
+        require_evidence_deletion(self, self.env._("Archive dossiers and retain their evidence and history."))
 
 
 class ProviderEvidence(models.Model):
     _name = "training.provider.evidence"
+    # The legal hold of the parent dossier also protects this evidence.
+    _training_hold_parents = ("dossier_id",)
     _description = "Immutable Private Provider Evidence"
     _check_company_auto = True
     _order = "id desc"
@@ -316,11 +320,13 @@ class ProviderEvidence(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_history(self):
-        raise ValidationError(self.env._("Retain every evidence version."))
+        require_evidence_deletion(self, self.env._("Retain every evidence version."))
 
 
 class ProviderObligation(models.Model):
     _name = "training.provider.obligation"
+    # The legal hold of the parent dossier also protects this evidence.
+    _training_hold_parents = ("dossier_id",)
     _description = "Subcontractor Contractual Obligation"
     _check_company_auto = True
 
@@ -426,11 +432,13 @@ class ProviderObligation(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_history(self):
-        raise ValidationError(self.env._("Retain contractual obligations and controls."))
+        require_evidence_deletion(self, self.env._("Retain contractual obligations and controls."))
 
 
 class ProviderEvent(models.Model):
     _name = "training.provider.event"
+    # The legal hold of the parent dossier also protects this evidence.
+    _training_hold_parents = ("dossier_id",)
     _description = "Immutable Private Provider History"
     _order = "id"
 
@@ -476,7 +484,7 @@ class ProviderEvent(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_history(self):
-        raise ValidationError(self.env._("Retain private dossier history."))
+        require_evidence_deletion(self, self.env._("Retain private dossier history."))
 
 
 class ProviderService(models.AbstractModel):

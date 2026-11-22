@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Conservation configurée (22 November 2026): an administrator deletes a finished dossier. -->
+    <record id="action_training_enrollment_delete_dossier" model="ir.actions.server">
+        <field name="name">Delete Dossier</field>
+        <field name="model_id" ref="model_training_enrollment" />
+        <field name="binding_model_id" ref="model_training_enrollment" />
+        <field name="binding_view_types">list,form</field>
+        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
+        <field name="state">code</field>
+        <field name="code">records.action_training_delete_dossier()</field>
+    </record>
+    <record id="action_training_delivery_delete_dossier" model="ir.actions.server">
+        <field name="name">Delete Dossier</field>
+        <field name="model_id" ref="model_training_delivery" />
+        <field name="binding_model_id" ref="model_training_delivery" />
+        <field name="binding_view_types">list,form</field>
+        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
+        <field name="state">code</field>
+        <field name="code">records.action_training_delete_dossier()</field>
+    </record>
+    <record id="action_training_complaint_delete_dossier" model="ir.actions.server">
+        <field name="name">Delete Dossier</field>
+        <field name="model_id" ref="model_training_complaint" />
+        <field name="binding_model_id" ref="model_training_complaint" />
+        <field name="binding_view_types">list,form</field>
+        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
+        <field name="state">code</field>
+        <field name="code">records.action_training_delete_dossier()</field>
+    </record>
+    <record id="action_training_improvement_delete_dossier" model="ir.actions.server">
+        <field name="name">Delete Dossier</field>
+        <field name="model_id" ref="model_training_improvement" />
+        <field name="binding_model_id" ref="model_training_improvement" />
+        <field name="binding_view_types">list,form</field>
+        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
+        <field name="state">code</field>
+        <field name="code">records.action_training_delete_dossier()</field>
+    </record>
+    <record id="action_training_provider_dossier_delete_dossier" model="ir.actions.server">
+        <field name="name">Delete Dossier</field>
+        <field name="model_id" ref="model_training_provider_dossier" />
+        <field name="binding_model_id" ref="model_training_provider_dossier" />
+        <field name="binding_view_types">list,form</field>
+        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
+        <field name="state">code</field>
+        <field name="code">records.action_training_delete_dossier()</field>
+    </record>
+</odoo>

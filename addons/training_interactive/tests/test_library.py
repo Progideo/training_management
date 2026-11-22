@@ -335,8 +335,8 @@ class TestInteractiveLibrary(LibraryCase):
                 binary._get_stream_from(resolved, "data")
         with self.assertRaises(AccessError):
             file.sudo().write({"path": "other"})
-        with self.assertRaises(AccessError):
-            file.sudo().unlink()
+        with self.assertRaises(AccessError):  # only an administrator deletes evidence, never sudo() alone
+            file.with_user(self.env.ref("base.public_user")).sudo().unlink()
 
     def test_identity_archive_and_snapshot(self):
         version = self.version()

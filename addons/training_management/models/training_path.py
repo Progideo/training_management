@@ -2,6 +2,7 @@
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 COORDINATOR = "training_management.group_training_coordinator"
 
@@ -305,7 +306,7 @@ class TrainingPathAssignment(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _unlink_keep_history(self):
-        raise ValidationError(self.env._("Keep validated path references and their history unchanged."))
+        require_evidence_deletion(self, self.env._("Keep validated path references and their history unchanged."))
 
 
 class TrainingEnrollment(models.Model):

@@ -163,8 +163,8 @@ class TestPractice(PracticeCase):
                 )
         with self.assertRaises(ValidationError):
             attachment.write({"public": True})
-        with self.assertRaises(ValidationError):
-            attachment.unlink()
+        with self.assertRaises(ValidationError):  # only an administrator deletes evidence, never sudo() alone
+            attachment.with_user(self.env.ref("base.public_user")).sudo().unlink()
         with self.assertRaises(ValidationError):
             policy._check_send(entry, self.portal.partner_id, required=False)
         action.enrollment_id.write({"learning_tutor_id": self.internal.id})

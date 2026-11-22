@@ -10,6 +10,8 @@ from .training_controlled import TERMINAL
 
 class TrainingEnrollment(models.Model):
     _name = "training.enrollment"
+    # Deletion by an administrator only, once finished (conservation configurée).
+    _training_finished_states = ("closed", "cancelled", "replaced", "abandoned")
     _inherit = ["training.controlled", "mail.thread", "mail.activity.mixin"]
     _description = "Training Enrollment"
     _check_company_auto = True

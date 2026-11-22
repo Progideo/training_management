@@ -6,6 +6,7 @@ from uuid import UUID
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 from .training_schedule import BOOKED, local_instant
 
@@ -65,7 +66,7 @@ class TutoringEntitlement(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def _keep_entitlement(self):
-        raise ValidationError(self.env._("Keep tutoring entitlements and their history."))
+        require_evidence_deletion(self, self.env._("Keep tutoring entitlements and their history."))
 
 
 class TutoringSlot(models.Model):
