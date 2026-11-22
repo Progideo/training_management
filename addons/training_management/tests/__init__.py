@@ -51,3 +51,4 @@ from . import test_attendance_signature
 
 from . import test_course_reviews
 from . import test_evidence_deletion
+from . import test_anonymization

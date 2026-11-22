@@ -8,6 +8,8 @@ from odoo.exceptions import ValidationError
 
 class TrainingRequestNotice(models.Model):
     _name = "training.request.notice"
+    # Personal data copied here, cleared by the anonymization (conservation configurée).
+    _training_personal_fields = ("email",)
     _inherit = "training.learning.evidence"
     _description = "Training Request Acknowledgement Journal"
 
