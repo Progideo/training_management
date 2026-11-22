@@ -8,10 +8,13 @@ from markupsafe import Markup
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tools import consteq, email_normalize, email_split
+from odoo.tools import SQL, consteq, email_normalize, email_split
 
 # A confirmation link received by email stays valid this long.
 CONFIRMATION_DELAY = timedelta(days=7)
+# Technical cleanup: a visitor request never confirmed is not a consent (22 November 2026).
+UNCONFIRMED_LIFETIME = timedelta(days=60)
+GC_LIMIT = 1000
 # Confirmation emails: one per subscription within this delay, and a daily limit per address.
 CONFIRMATION_THROTTLE = timedelta(minutes=15)
 CONFIRMATIONS_PER_DAY = 5
@@ -53,6 +56,35 @@ class SessionAlertSubscription(models.Model):
         " OR (owner_id IS NULL AND owner_partner_id IS NULL AND email IS NOT NULL))",
         "A date subscription belongs either to an account or to an email address.",
     )
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_keep_evidence(self):
+        # Only a visitor request never confirmed is technical data; every consent stays evidence.
+        if self - self._never_confirmed():
+            raise ValidationError(self.env._("Keep learning evidence and its history unchanged."))
+
+    @api.private
+    def _never_confirmed(self):
+        events = self.env["training.session.alert.event"].sudo().search([("subscription_id", "in", self.ids)])
+        return self.filtered(lambda row: not row.owner_id and not row.active_consent) - events.subscription_id
+
+    @api.autovacuum
+    def _gc_unconfirmed_requests(self):
+        self.env.flush_all()
+        self.env.cr.execute(
+            SQL(
+                """SELECT s.id FROM training_session_alert_subscription s
+                    WHERE s.owner_id IS NULL AND NOT COALESCE(s.active_consent, FALSE)
+                      AND s.confirmation_requested_at < %s
+                      AND NOT EXISTS (SELECT 1 FROM training_session_alert_event e WHERE e.subscription_id = s.id)
+                    ORDER BY s.id LIMIT %s""",
+                fields.Datetime.now() - UNCONFIRMED_LIFETIME,
+                GC_LIMIT,
+            )
+        )
+        stale = self.sudo().browse([row[0] for row in self.env.cr.fetchall()])
+        stale.unlink()
+        return len(stale), len(stale) == GC_LIMIT
 
     @api.private
     def _owner(self):
