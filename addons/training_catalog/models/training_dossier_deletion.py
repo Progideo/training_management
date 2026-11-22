@@ -1,5 +1,6 @@
 from odoo import api, models
 from odoo.exceptions import AccessError
+from odoo.tools import SQL
 
 from .training_deletion import require_evidence_deletion
 
@@ -22,9 +23,35 @@ class TrainingDossierDeletion(models.AbstractModel):
         if not self.env.user._is_system():
             raise AccessError(self.env._("Only an administrator can delete a dossier."))
         require_evidence_deletion(self, self.env._("Keep this dossier and its evidence."))
-        for records in self.sudo().with_context(active_test=False)._training_dossier_records():
+        ordered = self.sudo().with_context(active_test=False)._training_dossier_records()
+        self._training_break_cycles(ordered)
+        for records in ordered:
             records.exists().unlink()
         return True
+
+    @api.private
+    def _training_break_cycles(self, ordered):
+        """Clear optional links between records deleted together (two evidence rows may reference each other)."""
+        doomed = {}
+        for records in ordered:
+            doomed.setdefault(records._name, set()).update(records.ids)
+        self.env.flush_all()
+        for records in ordered:
+            for field in records._fields.values():
+                targets = doomed.get(getattr(field, "comodel_name", None))
+                if field.type != "many2one" or not field.store or field.required or not targets:
+                    continue
+                self.env.cr.execute(
+                    SQL(
+                        "UPDATE %s SET %s = NULL WHERE id IN %s AND %s IN %s",
+                        SQL.identifier(records._table),
+                        SQL.identifier(field.name),
+                        tuple(records.ids),
+                        SQL.identifier(field.name),
+                        tuple(targets),
+                    )
+                )
+            records.invalidate_recordset()
 
     @api.private
     def _training_dossier_records(self):
