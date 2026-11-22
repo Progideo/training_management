@@ -32,3 +32,15 @@ Recette : créer un dossier de clôture, une réclamation et un droit de tutorat
 sans politique ; vérifier l'absence du menu « Politiques de conservation » et du
 champ dans les formulaires ; mettre à jour une base contenant des politiques et
 vérifier qu'elles sont conservées.
+
+## Lot F — nettoyage technique
+
+- Une demande d'alerte de visiteur jamais confirmée est supprimée 60 jours après
+  sa dernière demande de confirmation (`@api.autovacuum`, tâche quotidienne
+  native). Un abonnement confirmé, même désabonné, reste une preuve.
+- Les autorisations de lecture eLearning expirées étaient déjà nettoyées ; aucun
+  autre jeton du module n'expire.
+
+Recette : créer une demande de visiteur, la vieillir de 61 jours, lancer
+« Base : Auto-vacuum internal data » ; la demande disparaît, un abonnement
+confirmé puis désabonné reste.
