@@ -26,8 +26,9 @@ class PracticeAction(models.Model):
     access_withdrawn = fields.Boolean(readonly=True, copy=False)
     trainer_feedback = fields.Boolean(string="Trainer Feedback Included")
     service_reference = fields.Char(required=True, string="Agreed Service Reference")
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     reminder_days = fields.Integer(default=7, help="Zero disables reminders. First reminder on the due date.")
     state = fields.Selection(
@@ -51,13 +52,12 @@ class PracticeAction(models.Model):
         if not self.env.user.active or not self.env.user.has_group(COORDINATOR):
             raise AccessError(self.env._("Only a training coordinator may manage practice plans."))
 
-    @api.constrains("enrollment_id", "completed_on", "retention_id", "reminder_days", "service_reference")
+    @api.constrains("enrollment_id", "completed_on", "reminder_days", "service_reference")
     def _check_plan(self):
         for action in self:
             if (
                 action.enrollment_id.state != "confirmed"
                 or action.delivery_id.state not in ("delivered", "closed")
-                or not action.retention_id.approved_at
                 or not action.enrollment_id.commercially_authorized
                 or action.enrollment_id.access_state in ("suspended", "revoked")
                 or action.reminder_days < 0
@@ -65,9 +65,7 @@ class PracticeAction(models.Model):
                 or not action.service_reference.strip()
             ):
                 raise ValidationError(
-                    self.env._(
-                        "Use a completed training, a confirmed enrollment, an approved retention policy and a non-negative reminder interval."
-                    )
+                    self.env._("Use a completed training, a confirmed enrollment and a non-negative reminder interval.")
                 )
 
     @api.model_create_multi

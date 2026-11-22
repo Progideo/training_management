@@ -23,10 +23,10 @@ périmètre contrôlé de chaque dossier. Leur pertinence reste contrôlée huma
 
 1. Attribuer explicitement le rôle qualité. Ce rôle seul n’accorde l’accès qu’aux
    dossiers affectés ; il ne donne pas les pouvoirs du coordinateur.
-2. La qualité approuve une politique de conservation : finalité, responsable,
-   durée et traitement d’archive/suppression. Aucune durée juridique n’est inventée.
-3. Le coordinateur crée le dossier depuis l’inscription, choisit son responsable
-   qualité et la politique approuvée. L’identité du client est conservée.
+2. La conservation se configure hors du module (voir [conservation configurée](conservation-configuree.md)).
+   Aucune durée juridique n’est inventée.
+3. Le coordinateur crée le dossier depuis l’inscription et choisit son responsable
+   qualité. L’identité du client est conservée.
 4. Déposer les PDF et leur provenance : auteur original, date de production,
    source et identifiant de document/événement d’origine. L’ORM conserve aussi
    le déposant et sa date serveur. Chaque ajout dans une catégorie crée une version

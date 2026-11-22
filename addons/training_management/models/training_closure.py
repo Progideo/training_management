@@ -128,8 +128,9 @@ class ClosureDossier(models.Model):
     delivery_id = fields.Many2one(related="enrollment_id.delivery_id", store=True)
     company_id = fields.Many2one(related="enrollment_id.company_id", store=True)
     quality_id = fields.Many2one("res.users", required=True, ondelete="restrict")
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     share_certificates = fields.Boolean(string="Share Issued Certificates with Explicit Client Recipients")
     verify_certificates = fields.Boolean(
@@ -207,18 +208,17 @@ class ClosureDossier(models.Model):
         self._serialize()
         if (self.filtered(lambda d: d.state == "closed") and set(vals) - {"client_contact_ids"}) or set(vals) - {
             "quality_id",
-            "retention_id",
             "client_contact_ids",
             "share_certificates",
             "verify_certificates",
             "frozen",
         }:
             raise ValidationError(self.env._("Keep dossier identity and closed dossiers unchanged."))
-        if set(vals) & {"quality_id", "retention_id"} and (self.sudo().evidence_ids or self.sudo().output_ids):
-            raise ValidationError(self.env._("Keep the reviewer and retention policy once evidence exists."))
+        if "quality_id" in vals and (self.sudo().evidence_ids or self.sudo().output_ids):
+            raise ValidationError(self.env._("Keep the reviewer once evidence exists."))
         return super().write(vals)
 
-    @api.constrains("quality_id", "retention_id", "client_contact_ids", "customer_id")
+    @api.constrains("quality_id", "client_contact_ids", "customer_id")
     def _check_definition(self):
         for dossier in self:
             reviewer = dossier.quality_id
@@ -226,8 +226,6 @@ class ClosureDossier(models.Model):
                 raise ValidationError(
                     self.env._("Assign an active quality reviewer authorized for this operating company.")
                 )
-            if not dossier.retention_id.approved_at:
-                raise ValidationError(self.env._("Choose an approved retention policy."))
             if any(
                 p.commercial_partner_id != dossier.customer_id.commercial_partner_id for p in dossier.client_contact_ids
             ):

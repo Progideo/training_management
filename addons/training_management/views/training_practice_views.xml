@@ -29,7 +29,6 @@
                         <field name="service_reference" readonly="id"/>
                         <field name="trainer_feedback" readonly="id"/>
                         <field name="reminder_days" readonly="id"/>
-                        <field name="retention_id" readonly="id"/>
                     </group>
                     <p>Agreed actions are preserved. Close an action and create a replacement to correct its definition. Private evidence is never included in client summaries.</p>
                     <field name="entry_ids">
@@ -76,7 +75,6 @@
                         <field name="allocation_id" readonly="published_at"/>
                         <field name="authorization_id" readonly="published_at"/>
                         <field name="authorization_reference" readonly="published_at"/>
-                        <field name="retention_id" readonly="published_at"/>
                         <field name="body" readonly="published_at"/>
                         <field name="published_at"/>
                         <field name="published_by_id"/>

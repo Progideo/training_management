@@ -331,9 +331,9 @@ Acceptation — Nominal : un participant ouvre son propre PDF protégé. Erreur 
 
 ## SEC02 Gouverner conservation et exports
 
-Priorité MVP. Définir par catégorie finalité, responsable, durée validée, archive, suppression et éventuel gel. Les demandes de suppression sont instruites ; journaliser les exports et appliquer les mêmes droits.
+Priorité MVP. Amendée le 22 novembre 2026 ([conservation configurée](../conservation-configuree.md)). Comme Odoo standard, le module ne définit aucune catégorie, durée ni politique de conservation ; seul le nettoyage technique est codé. Les durées sont configurées par un administrateur global avec Data Recycle ou des actions automatisées. Les preuves sont conservées par défaut ; une fois leur dossier terminé, l'administrateur ou une règle qu'il a configurée peut les supprimer. Un gel actif bloque la suppression. Les suppressions suivent la traçabilité native d'Odoo. Le module fournit l'anonymisation, sans échéance par défaut. Un abonnement aux alertes jamais confirmé est supprimé après 60 jours. Journaliser les exports et appliquer les mêmes droits.
 
-Acceptation — Nominal : un export conserve un manifeste de son périmètre. Erreur ou limite : aucune purge de tentatives par défaut et aucune suppression d'une preuve sous gel.
+Acceptation — Nominal : un export conserve un manifeste de son périmètre ; un dossier se crée sans politique de conservation. Erreur ou limite : aucune suppression automatique sans règle configurée et aucune suppression d'une preuve sous gel.
 
 # 11 Écrans et communications
 
@@ -428,7 +428,7 @@ Lecture : R = retenu comme bonne pratique ; C = conditionnel ; H = hors périmè
 
 ## Structure de chaque preuve
 
-Identifiant ; type ; formation et version ; session ou inscription concernée ; source ; auteur ; date de production ; version ; état de validation ; validateur ; confidentialité ; catégorie de conservation ; lien vers le fichier ou l'événement d'origine. Une nouvelle version conserve le lien avec la précédente.
+Identifiant ; type ; formation et version ; session ou inscription concernée ; source ; auteur ; date de production ; version ; état de validation ; validateur ; confidentialité ; lien vers le fichier ou l'événement d'origine. Une nouvelle version conserve le lien avec la précédente.
 
 ## Dossier minimal proposé
 
@@ -492,7 +492,7 @@ Le périmètre et le séquencement sont acceptés : phase 1 P01 à P08, phase 2 
 
 ## Paramètres à fixer avant mise en service
 
-Entité facturante et devise comptable ; devises, tarifs et moyens de paiement natifs ; fiscalité et mentions validées ; coordonnées bancaires ; durées d'accès ; délai de réservation ; conditions d'annulation ; fenêtres d'émargement et niveau de signature ; responsabilités qualité ; conservation ; délai d'assistance ; volumes, concurrence, objectifs de service et échéance de lancement. Aucun de ces paramètres ne doit être deviné au déploiement.
+Entité facturante et devise comptable ; devises, tarifs et moyens de paiement natifs ; fiscalité et mentions validées ; coordonnées bancaires ; durées d'accès ; délai de réservation ; conditions d'annulation ; fenêtres d'émargement et niveau de signature ; responsabilités qualité ; règles de conservation (configurées hors du module : Data Recycle, actions automatisées) ; délai d'assistance ; volumes, concurrence, objectifs de service et échéance de lancement. Aucun de ces paramètres ne doit être deviné au déploiement.
 
 ## Passage à l'étape suivante
 

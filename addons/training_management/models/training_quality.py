@@ -20,8 +20,10 @@ class QualityDelivery(models.Model):
     _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # Keep confidential quality rules separate from other training workflows.
 
     complaint_quality_id = fields.Many2one("res.users", string="Complaint Intake Reviewer", groups=COORDINATOR)
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     complaint_retention_id = fields.Many2one(
         "training.retention.category",
+        readonly=True,
         string="Complaint Retention Policy",
         groups=COORDINATOR,
         check_company=True,
@@ -65,8 +67,9 @@ class QualityRecord(models.AbstractModel):
     responsible_id = fields.Many2one(
         "res.users", required=True, default=lambda self: self.env.user, ondelete="restrict"
     )
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     confidentiality = fields.Selection(
         [("internal", "Internal / Assigned Staff"), ("sensitive", "Sensitive / Assigned Staff")],
@@ -234,7 +237,7 @@ class QualityRecord(models.AbstractModel):
             self.env.transaction.invalidate_access_cache()
         return True
 
-    @api.constrains("quality_id", "member_ids", "responsible_id", "retention_id", "company_id", "due_date")
+    @api.constrains("quality_id", "member_ids", "responsible_id", "company_id", "due_date")
     def _check_quality_definition(self):
         for row in self:
             if row.company_id not in self.env.user.company_ids:
@@ -255,8 +258,6 @@ class QualityRecord(models.AbstractModel):
                     raise ValidationError(
                         self.env._("Authorize only active quality or coordination staff in this company.")
                     )
-            if not row.retention_id.approved_at:
-                raise ValidationError(self.env._("Choose an approved retention policy."))
 
     @api.private
     def _transition(self, state, reason=None, **values):  # pylint: disable=super-method-mismatch  # Controlled state factory.
@@ -353,7 +354,6 @@ class Complaint(models.Model):
                 "default_complaint_id": self.id,
                 "default_delivery_id": self.delivery_id.id,
                 "default_quality_id": self.quality_id.id,
-                "default_retention_id": self.retention_id.id,
                 "default_origin": "complaint",
                 "default_origin_reference": self.env._("Complaint %s", self.id),
             },

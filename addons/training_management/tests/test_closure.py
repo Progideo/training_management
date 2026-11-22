@@ -417,6 +417,19 @@ class TestClosure(ClosureCase):
         self.assertNotIn("score", pieces[0])
         self.assertNotIn("threshold", pieces[0])
 
+    def test_dossier_needs_no_retention_policy(self):
+        # Retention is configured outside the module (Data Recycle, automated actions).
+        dossier = (
+            self.env["training.closure"]
+            .with_user(self.coordinator)
+            .create({"enrollment_id": self.opened().id, "quality_id": self.quality.id})
+        )
+        self.assertFalse(dossier.retention_id)
+        self.assertTrue(dossier.frozen)
+        self.assertNotIn("retention_id", dossier.get_views([(False, "form")])["views"]["form"]["arch"])
+        with self.assertRaises(ValidationError):
+            dossier.retention_id = self.retention
+
     def test_company_client_and_enrollment_scope(self):
         dossier = self.dossier()
         with self.assertRaises(ValidationError):

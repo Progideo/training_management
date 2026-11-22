@@ -96,8 +96,9 @@ class Campaign(models.Model):
     anonymous = fields.Boolean(related="feedback_id.anonymous")
     purpose = fields.Selection(related="feedback_id.purpose")
     population = fields.Text(required=True, help="Inclusion criteria retained with the campaign.")
+    # Historical only: retention is configured outside the module (Data Recycle, automated actions), 22 November 2026.
     retention_id = fields.Many2one(
-        "training.retention.category", required=True, ondelete="restrict", check_company=True
+        "training.retention.category", ondelete="restrict", check_company=True, readonly=True
     )
     opens_at = fields.Datetime(required=True, default=fields.Datetime.now)
     due_at = fields.Datetime(required=True)
@@ -144,11 +145,9 @@ class Campaign(models.Model):
                 raise ValidationError(self.env._("Keep opened campaign settings and closed snapshots unchanged."))
         return super().write(vals)
 
-    @api.constrains("due_at", "opens_at", "reminder_days", "feedback_id", "delivery_id", "retention_id")
+    @api.constrains("due_at", "opens_at", "reminder_days", "feedback_id", "delivery_id")
     def _check_campaign(self):
         for row in self:
-            if row.retention_id and not row.retention_id.approved_at:
-                raise ValidationError(self.env._("Choose an approved retention policy."))
             if (
                 row.due_at <= row.opens_at
                 or row.reminder_days < 0

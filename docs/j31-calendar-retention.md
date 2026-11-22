@@ -1,5 +1,7 @@
 # Conservation en jours ou mois calendaires
 
+Remplacé le 22 novembre 2026 par la [conservation configurée](conservation-configuree.md) : les politiques ne sont plus saisies dans le module. Le texte ci-dessous reste comme historique.
+
 Une politique choisit une seule unité positive : jours ou mois calendaires. Les politiques existantes restent en jours, avec leurs valeurs et approbations. Le changement d’unité dans le formulaire efface le montant de l’autre unité ; l’approbation serveur refuse les valeurs contradictoires. Une politique approuvée reste immuable.
 
 Les alertes affichent l’unité approuvée et conservent le lien vers cette version dans les preuves du consentement. Trois mois calendaires ne sont pas convertis en quatre-vingt-dix jours. Les règles existantes de désabonnement immédiat et d’examen manuel des demandes de suppression sont conservées ; aucune purge automatique ajoutée.
