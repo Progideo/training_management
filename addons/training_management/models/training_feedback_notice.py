@@ -16,7 +16,7 @@ class FeedbackNotice(models.Model):
     occurrence = fields.Char(required=True)
     email = fields.Char()
     recipient_language = fields.Char(required=True)
-    mail_id = fields.Many2one("mail.mail", ondelete="restrict")
+    mail_id = fields.Many2one("mail.mail", ondelete="set null")
     distribution_state = fields.Selection(related="mail_id.state")
     failure = fields.Char()
     _one_notice = models.Constraint("UNIQUE(recipient_id, occurrence)", "This invitation is already journaled.")

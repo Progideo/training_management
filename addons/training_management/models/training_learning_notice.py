@@ -33,7 +33,7 @@ class LearningNotice(models.Model):
     recipient_id = fields.Many2one("res.users", ondelete="restrict")
     recipient_email = fields.Char()
     recipient_language = fields.Char(required=True)
-    mail_id = fields.Many2one("mail.mail", ondelete="restrict")
+    mail_id = fields.Many2one("mail.mail", ondelete="set null")
     distribution_state = fields.Selection(related="mail_id.state")
     not_queued_reason = fields.Char()
     _one_event = models.Constraint(

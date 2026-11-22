@@ -33,6 +33,28 @@ sans politique ; vérifier l'absence du menu « Politiques de conservation » et
 champ dans les formulaires ; mettre à jour une base contenant des politiques et
 vérifier qu'elles sont conservées.
 
+## Lot B — courriels des journaux
+
+- Les journaux d'envoi gardent leur courriel par défaut comme preuve d'envoi.
+- Leur lien vers le courriel ne bloque plus sa suppression (`set null`) : le
+  nettoyage natif des courriels annulés (6 mois) et les règles Data Recycle sur
+  `mail.mail` s'appliquent ; le journal reste, sans courriel, et n'est pas renvoyé.
+
+Recette : annuler le courriel d'un journal, le vieillir de 7 mois, lancer
+« Base : Auto-vacuum internal data » ; le courriel disparaît, le journal reste.
+
+## Lot F — nettoyage technique
+
+- Une demande d'alerte de visiteur jamais confirmée est supprimée 60 jours après
+  sa dernière demande de confirmation (`@api.autovacuum`, tâche quotidienne
+  native). Un abonnement confirmé, même désabonné, reste une preuve.
+- Les autorisations de lecture eLearning expirées étaient déjà nettoyées ; aucun
+  autre jeton du module n'expire.
+
+Recette : créer une demande de visiteur, la vieillir de 61 jours, lancer
+« Base : Auto-vacuum internal data » ; la demande disparaît, un abonnement
+confirmé puis désabonné reste.
+
 ## Lot C — preuves supprimables par l'administrateur
 
 - Les preuves restent par défaut. Seul un administrateur (`base.group_system`)
