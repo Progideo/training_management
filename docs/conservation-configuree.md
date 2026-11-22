@@ -32,3 +32,13 @@ Recette : créer un dossier de clôture, une réclamation et un droit de tutorat
 sans politique ; vérifier l'absence du menu « Politiques de conservation » et du
 champ dans les formulaires ; mettre à jour une base contenant des politiques et
 vérifier qu'elles sont conservées.
+
+## Lot B — courriels des journaux
+
+- Les journaux d'envoi gardent leur courriel par défaut comme preuve d'envoi.
+- Leur lien vers le courriel ne bloque plus sa suppression (`set null`) : le
+  nettoyage natif des courriels annulés (6 mois) et les règles Data Recycle sur
+  `mail.mail` s'appliquent ; le journal reste, sans courriel, et n'est pas renvoyé.
+
+Recette : annuler le courriel d'un journal, le vieillir de 7 mois, lancer
+« Base : Auto-vacuum internal data » ; le courriel disparaît, le journal reste.

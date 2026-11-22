@@ -64,6 +64,29 @@ class TestNotificationAlerts(AttendanceCase):
         with self.assertRaises(AccessError):
             enrollment.with_user(self.portal).action_open_access(reason="Forbidden")
 
+    def test_native_mail_cleanup_keeps_the_journal(self):
+        # Journals keep their mail as evidence by default, but never block the native
+        # cleanup of cancelled mails (conservation configurée, 22 November 2026).
+        enrollment = self.opened(self.delivery())
+        journal = self.env["training.notification"].search(
+            [("enrollment_id", "=", enrollment.id), ("kind", "=", "access")]
+        )
+        mail = journal.mail_id
+        self.assertTrue(mail)
+        mail.sudo().write({"state": "cancel"})
+        self.env.flush_all()
+        self.env.cr.execute("UPDATE mail_mail SET write_date = now() - interval '7 months' WHERE id = %s", [mail.id])
+        self.env["mail.mail"].sudo()._gc_canceled_mail_mail()
+        self.env.invalidate_all()
+        self.assertFalse(mail.exists())
+        self.assertTrue(journal.exists())
+        self.assertFalse(journal.mail_id)
+        enrollment.action_open_access(reason="Replay after cleanup")
+        self.assertEqual(
+            self.env["training.notification"].search([("enrollment_id", "=", enrollment.id), ("kind", "=", "access")]),
+            journal,
+        )
+
     def test_invitations_and_private_learning_use_configured_identity(self):
         delivery, session, enrollment = self.scheduled()
         inv = self.env["training.invitation"].with_user(self.coordinator)
