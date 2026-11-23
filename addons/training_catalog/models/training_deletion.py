@@ -28,3 +28,14 @@ def require_evidence_deletion(records, message, error=ValidationError):
         holders += [row[name] for name in parents if row[name]]
         if any(holder.frozen for holder in holders):
             raise ValidationError(env._("Release the legal hold before deleting this evidence."))
+    # The mails of a deleted journal go with it, as Odoo deletes the messages of a deleted
+    # record: once their document is gone, nobody could delete them any more.
+    mail_fields = [
+        name
+        for name, field in rows._fields.items()
+        if field.type == "many2one" and field.comodel_name == "mail.mail" and field.store
+    ]
+    mails = env["mail.mail"].sudo()
+    for name in mail_fields:
+        mails |= rows[name]
+    mails.exists().unlink()

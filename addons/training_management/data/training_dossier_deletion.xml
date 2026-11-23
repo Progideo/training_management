@@ -8,7 +8,7 @@
         <field name="binding_view_types">list,form</field>
         <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
         <field name="state">code</field>
-        <field name="code">records.action_training_delete_dossier()</field>
+        <field name="code">action = records.action_training_delete_dossier()</field>
     </record>
     <record id="action_training_delivery_delete_dossier" model="ir.actions.server">
         <field name="name">Delete Dossier</field>
@@ -17,7 +17,7 @@
         <field name="binding_view_types">list,form</field>
         <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
         <field name="state">code</field>
-        <field name="code">records.action_training_delete_dossier()</field>
+        <field name="code">action = records.action_training_delete_dossier()</field>
     </record>
     <record id="action_training_complaint_delete_dossier" model="ir.actions.server">
         <field name="name">Delete Dossier</field>
@@ -26,7 +26,7 @@
         <field name="binding_view_types">list,form</field>
         <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
         <field name="state">code</field>
-        <field name="code">records.action_training_delete_dossier()</field>
+        <field name="code">action = records.action_training_delete_dossier()</field>
     </record>
     <record id="action_training_improvement_delete_dossier" model="ir.actions.server">
         <field name="name">Delete Dossier</field>
@@ -35,7 +35,7 @@
         <field name="binding_view_types">list,form</field>
         <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
         <field name="state">code</field>
-        <field name="code">records.action_training_delete_dossier()</field>
+        <field name="code">action = records.action_training_delete_dossier()</field>
     </record>
     <record id="action_training_provider_dossier_delete_dossier" model="ir.actions.server">
         <field name="name">Delete Dossier</field>
@@ -44,6 +44,6 @@
         <field name="binding_view_types">list,form</field>
         <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
         <field name="state">code</field>
-        <field name="code">records.action_training_delete_dossier()</field>
+        <field name="code">action = records.action_training_delete_dossier()</field>
     </record>
 </odoo>
