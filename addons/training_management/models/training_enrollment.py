@@ -43,8 +43,6 @@ class TrainingEnrollment(models.Model):
     allocation_id = fields.Many2one("training.seat.allocation", ondelete="restrict", check_company=True)
     free_reason = fields.Text(string="Free Invitation Reason")
     requested_at = fields.Datetime(default=fields.Datetime.now, readonly=True, required=True, copy=False)
-    # Set by the anonymization (conservation configurée): rules can filter anonymized dossiers.
-    anonymized_at = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection(
         [
             (v, label)
