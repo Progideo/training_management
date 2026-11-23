@@ -347,3 +347,28 @@ msgstr "Aperçu de la fiche publique"
 #: model_terms:ir.ui.view,arch_db:training_catalog.view_training_course_form
 msgid "First paragraph: tagline shown under the title"
 msgstr "Premier paragraphe : accroche affichée sous le titre"
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_deletion.py:0
+#: code:addons/training_catalog/models/training_dossier_deletion.py:0
+msgid "Only a finished or cancelled dossier can be deleted."
+msgstr "Seul un dossier terminé ou annulé peut être supprimé."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_deletion.py:0
+msgid "Release the legal hold before deleting this evidence."
+msgstr "Levez le gel avant de supprimer cette preuve."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_dossier_deletion.py:0
+msgid "Only an administrator can delete a dossier."
+msgstr "Seul un administrateur peut supprimer un dossier."
+
+#. module: training_catalog
+#. odoo-python
+#: code:addons/training_catalog/models/training_dossier_deletion.py:0
+msgid "Keep this dossier and its evidence."
+msgstr "Conservez ce dossier et ses preuves."

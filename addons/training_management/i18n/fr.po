@@ -15455,3 +15455,12 @@ msgstr "Cette confirmation d’alerte n’est plus valable."
 #: code:addons/training_management/models/mail_mail.py:0
 msgid "A date alert confirmation contains only its confirmation link."
 msgstr "Une confirmation d’alerte ne contient que son lien de confirmation."
+
+#. module: training_management
+#: model:ir.actions.server,name:training_management.action_training_enrollment_delete_dossier
+#: model:ir.actions.server,name:training_management.action_training_delivery_delete_dossier
+#: model:ir.actions.server,name:training_management.action_training_complaint_delete_dossier
+#: model:ir.actions.server,name:training_management.action_training_improvement_delete_dossier
+#: model:ir.actions.server,name:training_management.action_training_provider_dossier_delete_dossier
+msgid "Delete Dossier"
+msgstr "Supprimer le dossier"

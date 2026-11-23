@@ -79,6 +79,10 @@ confirmé puis désabonné reste.
 - Les protections d'intégrité restent : versions validées, contenus d'examens
   publiés, PDF de référence, lignes de vente acceptées.
 
+- Supprimer un journal d'envoi supprime aussi son courriel, comme Odoo supprime les
+  messages d'un enregistrement supprimé. Après « Supprimer le dossier », l'interface
+  revient à la liste (recette du 23 novembre 2026).
+
 Recette : en coordinateur, la suppression d'un journal d'envoi est refusée ; en
 administrateur, elle réussit. Sur une inscription en cours, « Supprimer le
 dossier » est refusé ; après annulation, l'inscription et ses journaux

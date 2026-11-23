@@ -27,7 +27,15 @@ class TrainingDossierDeletion(models.AbstractModel):
         self._training_break_cycles(ordered)
         for records in ordered:
             records.exists().unlink()
-        return True
+        # Back to the list: the deleted record cannot stay displayed.
+        return {
+            "type": "ir.actions.act_window",
+            "name": self._description,
+            "res_model": self._name,
+            "view_mode": "list,form",
+            "views": [[False, "list"], [False, "form"]],
+            "target": "main",
+        }
 
     @api.private
     def _training_break_cycles(self, ordered):

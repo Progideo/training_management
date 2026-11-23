@@ -64,6 +64,16 @@ class TestNotificationAlerts(AttendanceCase):
         with self.assertRaises(AccessError):
             enrollment.with_user(self.portal).action_open_access(reason="Forbidden")
 
+    def test_deleted_journal_takes_its_mail(self):
+        # Recette of 23 November 2026: once its journal is gone, nobody could delete the mail.
+        enrollment = self.opened(self.delivery())
+        journal = self.env["training.notification"].search([("enrollment_id", "=", enrollment.id)], limit=1)
+        mail = journal.mail_id
+        message = mail.mail_message_id
+        self.assertTrue(mail and message)
+        journal.with_user(self.env.ref("base.user_admin")).sudo().unlink()
+        self.assertFalse(journal.exists() or mail.exists() or message.exists())
+
     def test_native_mail_cleanup_keeps_the_journal(self):
         # Journals keep their mail as evidence by default, but never block the native
         # cleanup of cancelled mails (conservation configurée, 22 November 2026).

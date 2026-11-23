@@ -55,9 +55,11 @@ class TestEvidenceDeletion(ClosureCase):
         self.assertEqual(records[-1], enrollment)
         dependents = records[:-1]
         self.assertTrue(dependents, "an opened enrollment has training evidence")
-        enrollment.with_user(self.admin).action_training_delete_dossier()
+        action = enrollment.with_user(self.admin).action_training_delete_dossier()
         self.assertFalse(enrollment.exists())
         self.assertFalse(any(rows.exists() for rows in dependents))
+        # Back to the list: the deleted record cannot stay displayed.
+        self.assertEqual((action["type"], action["res_model"]), ("ir.actions.act_window", "training.enrollment"))
         self.assertTrue(delivery.exists())
 
     def test_held_closure_keeps_the_whole_dossier(self):
