@@ -46,22 +46,4 @@
         <field name="state">code</field>
         <field name="code">records.action_training_delete_dossier()</field>
     </record>
-    <record id="action_training_enrollment_anonymize_dossier" model="ir.actions.server">
-        <field name="name">Anonymize Dossier</field>
-        <field name="model_id" ref="model_training_enrollment" />
-        <field name="binding_model_id" ref="model_training_enrollment" />
-        <field name="binding_view_types">list,form</field>
-        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
-        <field name="state">code</field>
-        <field name="code">records.action_training_anonymize_dossier()</field>
-    </record>
-    <record id="action_res_partner_anonymize_participant" model="ir.actions.server">
-        <field name="name">Anonymize Training Participant</field>
-        <field name="model_id" ref="base.model_res_partner" />
-        <field name="binding_model_id" ref="base.model_res_partner" />
-        <field name="binding_view_types">list,form</field>
-        <field name="group_ids" eval="[Command.link(ref('base.group_system'))]" />
-        <field name="state">code</field>
-        <field name="code">records.action_training_anonymize_participant()</field>
-    </record>
 </odoo>

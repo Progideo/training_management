@@ -33,8 +33,6 @@ STATES = [
 
 class Testimonial(models.Model):
     _name = "training.publication"
-    # Personal data copied here, cleared by the anonymization (conservation configurée).
-    _training_personal_fields = ("public_identity",)
     _description = "Verified Review or Customer Case"
     _check_company_auto = True
     _order = "id desc"

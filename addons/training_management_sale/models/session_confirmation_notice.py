@@ -12,8 +12,6 @@ from odoo.tools import clean_context, email_normalize, format_datetime
 
 class SessionConfirmationNotice(models.Model):
     _name = "training.session.confirmation.notice"
-    # Personal data copied here, cleared by the anonymization (conservation configurée).
-    _training_personal_fields = ("email",)
     _inherit = "training.learning.evidence"
     _description = "Session Registration Confirmation Email"
     _order = "id desc"

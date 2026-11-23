@@ -212,8 +212,8 @@ Empreinte SHA-256 après application ciblée de D28 aux paragraphes P03/P04 (J16
 b7e281b0b8555ca3f35fdf9194ecf4eb6dce83b73dbe3ab8e9f6dce7f6902a7b  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```
 
-Empreinte SHA-256 après amendement de SEC02 ([conservation configurée](conservation-configuree.md), 22 novembre 2026) :
+Empreinte SHA-256 après amendement de SEC02 ([conservation configurée](conservation-configuree.md), 22 et 23 novembre 2026) :
 
 ```text
-f83815cc6d33c3af57d1f56004a0a88adff4b81c94c090a464962c91d838ad0c  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
+3c811fb0e9f1cf000f29d700f4ec27238ead4470789972c027f2063914a527d1  docs/references/Training_Management_Specification_Fonctionnelle_v2.md
 ```

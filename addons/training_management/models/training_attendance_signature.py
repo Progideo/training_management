@@ -97,8 +97,6 @@ class AttendanceSignature(models.Model):
 
 class AttendanceSignedEvent(models.Model):
     _inherit = "training.attendance.event"  # pylint: disable=consider-merging-classes-inherited  # signed evidence is separate from operator notifications
-    # Personal data copied here, cleared by the anonymization (conservation configurée).
-    _training_personal_fields = ("signature",)
 
     signature = fields.Binary(attachment=False, readonly=True, copy=False)
     signature_version = fields.Integer(readonly=True)

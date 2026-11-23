@@ -8,8 +8,6 @@ from odoo.exceptions import AccessError
 
 class PublicationNotice(models.Model):
     _name = "training.publication.notice"
-    # Personal data copied here, cleared by the anonymization (conservation configurée).
-    _training_personal_fields = ("recipient_email",)
     _inherit = "training.learning.evidence"
     _description = "Publication Invitation Journal"
 
