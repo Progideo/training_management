@@ -9,7 +9,6 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import SQL, consteq, email_normalize, email_split
 from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
-from .training_mail_journal import mail_fingerprint
 
 # A confirmation link received by email stays valid this long.
 CONFIRMATION_DELAY = timedelta(days=7)
@@ -240,7 +239,7 @@ class SessionAlertSubscription(models.Model):
     def _queue_confirmation(self):
         self.ensure_one()
         mail = self._training_render_mail(self.email, self.company_id)
-        self._store_evidence({"confirmation_mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        self._store_evidence({"confirmation_mail_id": mail.id})
 
     @api.private
     def _confirmation_authorized(self, mail):
@@ -447,4 +446,4 @@ class SessionAlertNotice(models.Model):
                 delivery.company_id,
                 email_from=delivery.company_id.partner_id.email_formatted or self.env.user.email_formatted,
             )
-            row._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+            row._store_evidence({"mail_id": mail.id})

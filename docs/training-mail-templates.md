@@ -13,7 +13,7 @@ modèles Odoo standard (`mail.template`), rédigés en anglais et traduits en fr
   société (`training_notification_template_id`).
 - Les textes restent génériques : aucun nom, titre privé, résultat ni fichier ; un lien vers
   l’espace authentifié.
-- Le journal conserve une empreinte de l’objet et du corps mis en file : un email modifié
+- Une empreinte de l’objet et du corps mis en file est conservée à part (`training.mail.digest`) : un email modifié
   après sa mise en file est refusé au transport, comme les droits du destinataire.
 - La langue est celle du destinataire, enregistrée dans le journal.
 - Les modèles sont chargés une seule fois (`noupdate`) : une adaptation propre à un

@@ -3,8 +3,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
-from odoo.addons.training_management.models.training_mail_journal import mail_fingerprint
-
 
 class TrainingRequestNotice(models.Model):
     _name = "training.request.notice"
@@ -59,7 +57,7 @@ class TrainingRequestNotice(models.Model):
             notice.company_id,
             email_from=notice.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        notice._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        notice._store_evidence({"mail_id": mail.id})
         return notice
 
 

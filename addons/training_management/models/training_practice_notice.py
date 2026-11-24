@@ -4,8 +4,6 @@
 
 from odoo import api, fields, models
 
-from .training_mail_journal import mail_fingerprint
-
 
 class PracticeNotice(models.Model):
     _name = "training.practice.notice"
@@ -62,5 +60,5 @@ class PracticeNotice(models.Model):
             action.company_id,
             email_from=action.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        row._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        row._store_evidence({"mail_id": mail.id})
         return row

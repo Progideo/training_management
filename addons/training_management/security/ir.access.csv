@@ -213,3 +213,4 @@ access_closure_event_quality,Closure history assigned quality,training.closure.e
 rule_closure_event_company,Closure history company,training.closure.event,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 access_closure_change_coordinator,Change closure coordinator,training.closure.change,training_management.group_training_coordinator,crud,
 access_closure_change_quality,Change closure quality,training.closure.change,training_management.group_training_quality,crud,
+access_training_mail_digest_system,Training mail digest,training.mail.digest,base.group_system,r,

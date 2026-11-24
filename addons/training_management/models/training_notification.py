@@ -4,8 +4,6 @@ from datetime import timedelta
 
 from odoo import api, fields, models
 
-from .training_mail_journal import mail_fingerprint
-
 
 class TrainingNotification(models.Model):
     _name = "training.notification"
@@ -105,7 +103,7 @@ class TrainingNotification(models.Model):
             enrollment.company_id,
             email_from=enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        notice._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        notice._store_evidence({"mail_id": mail.id})
         return notice
 
     @api.model

@@ -1,13 +1,8 @@
-"""Request acknowledgements now come from a native template: record the digest of mails
-queued before this version so that transport accepts them.
-
-The three session emails are now written in English with a French translation. They are
+"""The three session emails are now written in English with a French translation. They are
 `noupdate`: reload them once from the module data, with their French translation."""
 
 from odoo.tools import convert_file, file_path
 from odoo.tools.translate import TranslationImporter
-
-from odoo.addons.training_management.models.training_mail_journal import mail_fingerprint
 
 MODULE = "training_management_sale"
 FILES = ("data/session_confirmation_template.xml", "data/session_registration_mail_templates.xml")
@@ -22,14 +17,6 @@ def migrate(cr, version):
     from odoo import SUPERUSER_ID, api
 
     env = api.Environment(cr, SUPERUSER_ID, {})
-    rows = env["training.request.notice"].sudo().search([("mail_id", "!=", False), ("mail_fingerprint", "=", False)])
-    # Direct update: the journals are retained evidence, their write metadata stays unchanged.
-    for row in rows:
-        cr.execute(
-            "UPDATE training_request_notice SET mail_fingerprint = %s WHERE id = %s",
-            (mail_fingerprint(row.mail_id), row.id),
-        )
-
     for filename in FILES:
         convert_file(env, MODULE, filename, {}, mode="init", noupdate=True)
     importer = TranslationImporter(cr, verbose=False)

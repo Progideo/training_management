@@ -3,8 +3,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
-from .training_mail_journal import mail_fingerprint
-
 
 class OperatorNotice(models.Model):
     _name = "training.operator.notice"
@@ -175,7 +173,7 @@ class OperatorNotice(models.Model):
             journal._store_evidence({"failure": self.env._("No authorized recipient with an email address.")})
             return journal
         mail = journal._training_render_mail(journal.email, company)
-        journal._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        journal._store_evidence({"mail_id": mail.id})
         return journal
 
 

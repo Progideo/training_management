@@ -2,8 +2,6 @@
 
 from odoo import api, fields, models
 
-from .training_mail_journal import mail_fingerprint
-
 
 class FeedbackNotice(models.Model):
     _name = "training.feedback.notice"
@@ -62,5 +60,5 @@ class FeedbackNotice(models.Model):
             recipient.company_id,
             email_from=recipient.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        journal._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        journal._store_evidence({"mail_id": mail.id})
         return journal

@@ -2,7 +2,6 @@
 
 from odoo import api, fields, models
 
-from .training_mail_journal import mail_fingerprint
 from odoo.exceptions import AccessError
 
 
@@ -61,5 +60,5 @@ class PublicationNotice(models.Model):
             publication.company_id,
             email_from=publication.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        row._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
+        row._store_evidence({"mail_id": mail.id})
         return row
