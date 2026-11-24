@@ -25,6 +25,7 @@ class GamificationService(models.AbstractModel):
         return {
             "attendance": (self.env._("Validated attendance (half-day)"), self._events_attendance),
             "activity_completed": (self.env._("Learning activity completed"), self._events_activity_completed),
+            "activity_submitted": (self.env._("Work submitted for validation"), self._events_activity_submitted),
             "activity_validated": (self.env._("Work validated by the trainer"), self._events_activity_validated),
             "practice_done": (self.env._("Practice action carried out"), self._events_practice_done),
             "feedback_received": (self.env._("Named evaluation answered"), self._events_feedback_received),
@@ -63,6 +64,12 @@ class GamificationService(models.AbstractModel):
     def _events_activity_completed(self, enrollments):
         for row in self._progress(enrollments):
             yield row.enrollment_id, f"{row._name},{row.id}", row.completed, row.declared_at or row.write_date
+
+    @api.model
+    def _events_activity_submitted(self, enrollments):
+        # A deposit stays a deposit when the trainer asks for changes.
+        for row in self._progress(enrollments, "validation"):
+            yield row.enrollment_id, f"{row._name},{row.id}", row.state != "pending", row.write_date
 
     @api.model
     def _events_activity_validated(self, enrollments):

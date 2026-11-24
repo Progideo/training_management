@@ -29,6 +29,7 @@ formation au moteur natif `gamification` (karma, rangs, badges, défis) :
 | --- | --- | --- |
 | Présence validée (demi-journée) | `training.attendance` validée, non absente | présence invalidée |
 | Activité terminée | `training.learning.progress` terminée | activité de nouveau incomplète |
+| Travail déposé pour validation | progression d'une activité à validation, déposée (même si des corrections sont demandées) | dépôt retiré |
 | Travail validé par le formateur | progression d'une activité à validation, validée | validation retirée |
 | Action de mise en pratique réalisée | `training.practice.action` réalisée ou close | accès retiré |
 | Évaluation nominative complétée | destinataire participant, réponse reçue | — |

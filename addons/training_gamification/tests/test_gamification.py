@@ -173,6 +173,7 @@ class TestTrainingGamification(GamificationCase):
             {
                 "attendance",
                 "activity_completed",
+                "activity_submitted",
                 "activity_validated",
                 "practice_done",
                 "feedback_received",
