@@ -2,15 +2,17 @@
 
 from datetime import timedelta
 
-from markupsafe import Markup
 
 from odoo import api, fields, models
+
+from .training_mail_journal import mail_fingerprint
 
 
 class LearningNotice(models.Model):
     _name = "training.learning.notice"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
     _description = "Learning Notification Journal"
+    _training_mail_template_xmlid = "training_management.mail_template_learning_notice"
     _order = "id desc"
     _rec_name = "event_kind"
 
@@ -81,22 +83,6 @@ class LearningNotice(models.Model):
         return True
 
     @api.private
-    def _content(self):
-        self.ensure_one()
-        env = self.with_context(lang=self.recipient_language).env
-        # No name, private title, correction, score or file in email or subject.
-        subject = env._("Your training space needs attention")
-        tutor = self.entry_id and self.entry_id.kind in ("submission", "question")
-        path = "/my/training-tutoring/%s" if tutor else "/my/trainings/%s"
-        url = self.enrollment_id.get_base_url() + path % self.enrollment_id.id
-        body = Markup('<p>%s</p><p><a href="%s">%s</a></p>') % (
-            env._("Sign in to your training space to view the current information."),
-            url,
-            env._("Open training space"),
-        )
-        return subject, body
-
-    @api.private
     def _queue(self, enrollment, event_key, recipient, *, entry=None, extra_values=None):
         # Caller holds the learning enrollment fence or the S03 delivery fence. No request context can
         # add attachments, CC, followers or different recipients to elevated mail.
@@ -123,24 +109,10 @@ class LearningNotice(models.Model):
                 {"not_queued_reason": self.env._("No currently authorized recipient with an email address.")}
             )
             return record
-        subject, body = record._content()
-        clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
-        mail_model = self.env["mail.mail"].sudo().with_context(clean)  # pylint: disable=context-overridden  # discard caller defaults before whitelisted mail
-        mail = mail_model.create(
-            {
-                "subject": subject,
-                "body_html": body,
-                "email_to": record.recipient_email,
-                "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                **self.env["mail.mail"]._training_identity(enrollment.company_id),
-                "email_cc": False,
-                "recipient_ids": [],
-                "recipient_cc_ids": [],
-                "attachment_ids": [],
-                "model": self._name,
-                "res_id": record.id,
-                "auto_delete": False,
-            }
+        mail = record._training_render_mail(
+            record.recipient_email,
+            enrollment.company_id,
+            email_from=enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        record._store_evidence({"mail_id": mail.id})
+        record._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
         return record

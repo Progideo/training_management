@@ -1316,6 +1316,7 @@ msgstr ""
 #. module: training_management_sale
 #. odoo-python
 #: code:addons/training_management_sale/models/request_notice.py:0
+#: model:mail.template,subject:training_management_sale.mail_template_request_notice
 msgid "Your training request has been received"
 msgstr "Votre demande de formation a été reçue"
 
@@ -2632,3 +2633,26 @@ msgstr "Les places de cette inscription ont été libérées avant la confirmati
 #: code:addons/training_management_sale/models/session_registration_payment.py:0
 msgid "This registration can be paid only once the session is confirmed and its places held."
 msgstr "Cette inscription ne peut être payée qu’une fois la session confirmée et ses places conservées."
+
+#. module: training_management_sale
+#: model:mail.template,body_html:training_management_sale.mail_template_request_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Your training request has been recorded. The team will contact you. This acknowledgement does not confirm an enrollment.</p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Votre demande de formation est enregistrée. L’équipe vous contactera. Cet accusé de réception ne confirme pas une inscription.</p>\n"
+"</div>"
+
+#. module: training_management_sale
+#: model:mail.template,description:training_management_sale.mail_template_request_notice
+msgid "Acknowledges a training request received from the website."
+msgstr "Accuse réception d’une demande de formation reçue depuis le site."
+
+#. module: training_management_sale
+#: model:mail.template,name:training_management_sale.mail_template_request_notice
+msgid "Training: request acknowledgement"
+msgstr "Formation : accusé de réception d’une demande"

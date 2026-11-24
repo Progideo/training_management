@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Learning notice of a withdrawn interactive resource; generic, without the resource title. -->
+    <record id="mail_template_resource_withdrawal" model="mail.template">
+        <field name="name">Training: learning resource withdrawn</field>
+        <field name="model_id" ref="training_management.model_training_learning_notice"/>
+        <field name="subject">Your training space needs attention</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Tells the participant that a learning resource of their training is no longer available.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>A learning resource is unavailable. Contact your training coordination.</p>
+    <p>Sign in to your training space to view the current information.</p>
+    <p><a t-att-href="object.enrollment_id.get_base_url() + '/my/trainings/%s' % object.enrollment_id.id">Open training space</a></p>
+</div></field>
+    </record>
+</odoo>

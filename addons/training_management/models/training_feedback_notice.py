@@ -1,14 +1,15 @@
 """Idempotent feedback mail, with eligibility checked at transport."""
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
+
+from .training_mail_journal import mail_fingerprint
 
 
 class FeedbackNotice(models.Model):
     _name = "training.feedback.notice"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
     _description = "Feedback Invitation Journal"
+    _training_mail_template_xmlid = "training_management.mail_template_feedback_notice"
 
     recipient_id = fields.Many2one("training.feedback.recipient", required=True, ondelete="restrict")
     campaign_id = fields.Many2one(related="recipient_id.campaign_id", store=True)
@@ -39,17 +40,6 @@ class FeedbackNotice(models.Model):
         )
 
     @api.private
-    def _content(self):
-        self.ensure_one()
-        env = self.with_context(lang=self.recipient_language).env
-        body = Markup('<p>%s</p><p><a href="%s/my/training-feedback">%s</a></p>') % (
-            env._("Sign in to your training feedback space. If you have already replied, please ignore this reminder."),
-            self.campaign_id.get_base_url(),
-            env._("Open feedback space"),
-        )
-        return env._("Your training feedback"), body
-
-    @api.private
     def _queue(self, recipient, occurrence):
         journal = self.sudo().search([("recipient_id", "=", recipient.id), ("occurrence", "=", occurrence)], limit=1)
         if journal:
@@ -67,29 +57,10 @@ class FeedbackNotice(models.Model):
         if not journal.email or not journal._authorized():
             journal._store_evidence({"failure": self.env._("No authorized recipient with an email address.")})
             return journal
-        subject, body = journal._content()
-        clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
-        # pylint: disable=context-overridden  # discard caller defaults before the mail factory
-        mail = (
-            self.env["mail.mail"]
-            .sudo()
-            .with_context(clean)  # pylint: disable=context-overridden  # discard caller defaults
-            .create(
-                {  # pylint: disable=context-overridden
-                    "subject": subject,
-                    "body_html": body,
-                    "email_to": journal.email,
-                    "email_from": recipient.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                    **self.env["mail.mail"]._training_identity(recipient.company_id),
-                    "email_cc": False,
-                    "recipient_ids": [],
-                    "recipient_cc_ids": [],
-                    "attachment_ids": [],
-                    "model": self._name,
-                    "res_id": journal.id,
-                    "auto_delete": False,
-                }
-            )
+        mail = journal._training_render_mail(
+            journal.email,
+            recipient.company_id,
+            email_from=recipient.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        journal._store_evidence({"mail_id": mail.id})
+        journal._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
         return journal

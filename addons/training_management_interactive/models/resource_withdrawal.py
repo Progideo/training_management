@@ -1,6 +1,5 @@
 """The TM adapter owns notifications for its own active enrollments."""
 
-from markupsafe import Markup
 from odoo import api, fields, models
 
 
@@ -78,13 +77,7 @@ class Notice(models.Model):
         )
 
     @api.private
-    def _content(self):
-        subject, body = super()._content()
+    def _training_mail_template(self):
         if self.interactive_version_id:
-            language = self.with_context(lang=self.recipient_language).env
-            body = (
-                Markup("<p>%s</p>")
-                % language._("A learning resource is unavailable. Contact your training coordination.")
-                + body
-            )
-        return subject, body
+            return self.env.ref("training_management_interactive.mail_template_resource_withdrawal")
+        return super()._training_mail_template()

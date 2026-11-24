@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Generic acknowledgement: only subject and body are used; the journal sets the envelope. -->
+    <record id="mail_template_request_notice" model="mail.template">
+        <field name="name">Training: request acknowledgement</field>
+        <field name="model_id" ref="model_training_request_notice"/>
+        <field name="subject">Your training request has been received</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Acknowledges a training request received from the website.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Your training request has been recorded. The team will contact you. This acknowledgement does not confirm an enrollment.</p>
+</div></field>
+    </record>
+</odoo>

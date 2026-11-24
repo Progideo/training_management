@@ -2,15 +2,16 @@
 
 from datetime import timedelta
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
+
+from .training_mail_journal import mail_fingerprint
 
 
 class TrainingNotification(models.Model):
     _name = "training.notification"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
     _description = "Training Lifecycle Notification Journal"
+    _training_mail_template_xmlid = "training_management.mail_template_training_notification"
     _order = "id desc"
 
     enrollment_id = fields.Many2one("training.enrollment", required=True, ondelete="restrict")
@@ -72,18 +73,6 @@ class TrainingNotification(models.Model):
         return True
 
     @api.private
-    def _content(self):
-        self.ensure_one()
-        env = self.with_context(lang=self.recipient_language).env
-        subject = env._("Your training space has been updated")
-        body = Markup('<p>%s</p><p><a href="%s/my/home">%s</a></p>') % (
-            env._("Sign in to view your enrollment, evaluation deadlines or available documents."),
-            self.enrollment_id.get_base_url(),
-            env._("Open my training space"),
-        )
-        return subject, body
-
-    @api.private
     def _queue(self, enrollment, kind, key, *, assignment=None, document=None):
         # Trusted lifecycle callers hold the delivery fence. A replay reuses the
         # existing journal and queued mail; it never recreates a sent message.
@@ -111,30 +100,12 @@ class TrainingNotification(models.Model):
         if not notice.email or not notice._authorized():
             notice._store_evidence({"failure": self.env._("No authorized recipient with an email address.")})
             return notice
-        subject, body = notice._content()
-        clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
-        mail = (
-            self.env["mail.mail"]  # pylint: disable=context-overridden  # replace caller context before elevated mail
-            .sudo()
-            .with_context(clean)  # pylint: disable=context-overridden  # discard caller defaults before elevated mail
-            .create(
-                {  # pylint: disable=context-overridden
-                    "subject": subject,
-                    "body_html": body,
-                    "email_to": notice.email,
-                    "email_cc": False,
-                    "recipient_ids": [],
-                    "recipient_cc_ids": [],
-                    "attachment_ids": [],
-                    "email_from": enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                    **self.env["mail.mail"]._training_identity(enrollment.company_id),
-                    "model": self._name,
-                    "res_id": notice.id,
-                    "auto_delete": False,
-                }
-            )
+        mail = notice._training_render_mail(
+            notice.email,
+            enrollment.company_id,
+            email_from=enrollment.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        notice._store_evidence({"mail_id": mail.id})
+        notice._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
         return notice
 
     @api.model

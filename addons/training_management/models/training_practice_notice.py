@@ -2,15 +2,16 @@
 
 # pylint: disable=context-overridden  # replace caller defaults before whitelisted elevated mail
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
+
+from .training_mail_journal import mail_fingerprint
 
 
 class PracticeNotice(models.Model):
     _name = "training.practice.notice"
     _inherit = "training.learning.notice"
     _description = "Practice Reminder Journal"
+    _training_mail_template_xmlid = "training_management.mail_template_practice_notice"
 
     action_id = fields.Many2one("training.practice.action", required=True, ondelete="restrict")
 
@@ -28,16 +29,6 @@ class PracticeNotice(models.Model):
             and user == self.recipient_id
             and user.partner_id.email == self.recipient_email
             and action.with_user(user)._eligible("participant")
-        )
-
-    @api.private
-    def _content(self):
-        self.ensure_one()
-        env = self.with_context(lang=self.recipient_language).env
-        return env._("Your practice plan needs attention"), Markup('<p>%s</p><p><a href="%s">%s</a></p>') % (
-            env._("Sign in to review your post-training actions."),
-            self.enrollment_id.get_base_url() + "/my/training-practice",
-            env._("Open practice plan"),
         )
 
     @api.private
@@ -66,28 +57,10 @@ class PracticeNotice(models.Model):
                 {"not_queued_reason": self.env._("No currently authorized recipient with an email address.")}
             )
             return row
-        subject, body = row._content()
-        clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
-        mail = (
-            self.env["mail.mail"]
-            .sudo()
-            .with_context(clean)  # pylint: disable=context-overridden  # discard untrusted mail defaults
-            .create(
-                {  # pylint: disable=context-overridden
-                    "subject": subject,
-                    "body_html": body,
-                    "email_to": row.recipient_email,
-                    "email_from": action.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                    **self.env["mail.mail"]._training_identity(action.company_id),
-                    "email_cc": False,
-                    "recipient_ids": [],
-                    "recipient_cc_ids": [],
-                    "attachment_ids": [],
-                    "model": self._name,
-                    "res_id": row.id,
-                    "auto_delete": False,
-                }
-            )
+        mail = row._training_render_mail(
+            row.recipient_email,
+            action.company_id,
+            email_from=action.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
-        row._store_evidence({"mail_id": mail.id})
+        row._store_evidence({"mail_id": mail.id, "mail_fingerprint": mail_fingerprint(mail)})
         return row

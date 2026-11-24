@@ -2,7 +2,7 @@
 {
     "name": "Training Management — Interactive",
     "summary": "Private formative resources and enriched native mock exams",
-    "version": "20.0.3.5.4",
+    "version": "20.0.3.6.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "license": "LGPL-3",
@@ -10,6 +10,7 @@
     "data": [
         "security/groups.xml",
         "security/ir.access.csv",
+        "data/resource_withdrawal_template.xml",
         "views/resource_views.xml",
         "views/editorial_views.xml",
         "views/runtime_views.xml",
