@@ -22,7 +22,7 @@ RELEASE_DELAY = timedelta(days=7)
 
 
 class TrainingDelivery(models.Model):
-    _inherit = "training.delivery"
+    _inherit = "training.delivery"  # pylint: disable=consider-merging-classes-inherited  # payment flow kept apart
 
     @api.private
     def _public_session_product(self):
@@ -229,7 +229,7 @@ class SaleOrder(models.Model):
 
 
 class PaymentTransaction(models.Model):
-    _inherit = "payment.transaction"
+    _inherit = "payment.transaction"  # pylint: disable=consider-merging-classes-inherited  # payment flow kept apart
 
     @api.model_create_multi
     def create(self, vals_list):
