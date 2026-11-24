@@ -664,3 +664,9 @@ msgstr "points pour atteindre"
 #: model_terms:ir.ui.view,arch_db:training_gamification.company_training_engagement
 msgid "reached a session challenge."
 msgstr "ont réussi un défi de session."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Work submitted for validation"
+msgstr "Travail déposé pour validation"
