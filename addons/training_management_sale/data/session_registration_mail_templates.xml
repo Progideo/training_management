@@ -1,61 +1,43 @@
 <odoo noupdate="1">
     <record id="mail_template_session_registration_waiting" model="mail.template">
-        <field name="name">Inscription enregistrée — session à confirmer</field>
+        <field name="name">Training: registration recorded, session to be confirmed</field>
         <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="subject">Inscription enregistrée — {{ object.training_registration_delivery_id.program_id.course_id.name }}</field>
+        <field name="subject">Registration recorded — {{ object.training_registration_delivery_id.program_id.course_id.name }}</field>
         <field name="partner_to">{{ object.partner_id.id }}</field>
         <field name="lang">{{ object.partner_id.lang }}</field>
         <field name="auto_delete" eval="False"/>
+        <field name="description">Sent when a website registration is recorded for a session that is not confirmed yet.</field>
         <field name="body_html" type="html">
-            <div>
-                <t t-set="delivery" t-value="object.training_registration_delivery_id"/>
-                <p>Bonjour <t t-out="object.partner_id.name"/>,</p>
-                <p>
-                    Votre inscription de <t t-out="object.training_attendee_count"/> participant(s) à la formation
-                    <strong t-out="delivery.program_id.course_id.name"/> est enregistrée, pour la session du
-                    <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')"/>.
-                </p>
-                <p>
-                    Cette session n’est pas encore confirmée : n’effectuez aucun paiement pour le moment.
-                    Dès sa confirmation, nous vous enverrons une demande de paiement pour confirmer votre participation.
-                </p>
-                <p>Votre place est réservée jusqu’au <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')"/>.</p>
-                <p>Pour toute question, vous pouvez répondre à ce message.</p>
-                <p t-out="object.company_id.name"/>
-            </div>
-        </field>
+<div>
+    <t t-set="delivery" t-value="object.training_registration_delivery_id"/>
+    <p>Hello <t t-out="object.partner_id.name"/>,</p>
+    <p>Your registration of <t t-out="object.training_attendee_count"/> participant(s) in the training <strong t-out="delivery.program_id.course_id.name"/> is recorded, for the session of <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')"/>.</p>
+    <p>This session is not confirmed yet: please do not pay for now. As soon as it is confirmed, we will send you a payment request to confirm your participation.</p>
+    <p>Your place is held until <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')"/>.</p>
+    <p>If you have any questions, you can reply to this message.</p>
+    <p t-out="object.company_id.name"/>
+</div></field>
     </record>
 
     <!-- The named buyer signs in to pay: the link carries no access token, which rendering
          the template would otherwise generate on a sample order when it is checked. -->
     <record id="mail_template_session_registration_payment" model="mail.template">
-        <field name="name">Session confirmée — demande de paiement</field>
+        <field name="name">Training: session confirmed, payment request</field>
         <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="subject">Session confirmée — confirmez votre participation à {{ object.training_registration_delivery_id.program_id.course_id.name }}</field>
+        <field name="subject">Session confirmed — confirm your participation in {{ object.training_registration_delivery_id.program_id.course_id.name }}</field>
         <field name="partner_to">{{ object.partner_id.id }}</field>
         <field name="lang">{{ object.partner_id.lang }}</field>
         <field name="auto_delete" eval="False"/>
+        <field name="description">Asks the buyer to pay once the session is confirmed; the place is released after the deadline.</field>
         <field name="body_html" type="html">
-            <div>
-                <t t-set="delivery" t-value="object.training_registration_delivery_id"/>
-                <p>Bonjour <t t-out="object.partner_id.name"/>,</p>
-                <p>
-                    La session du <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')"/>
-                    de la formation <strong t-out="delivery.program_id.course_id.name"/> est confirmée.
-                </p>
-                <p>
-                    Pour confirmer votre participation (<t t-out="object.training_attendee_count"/> participant(s)),
-                    réglez votre inscription avant le
-                    <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')"/> :
-                    passé ce délai, la place est libérée.
-                </p>
-                <p>
-                    <a t-att-href="object.get_base_url() + object.access_url"
-                       style="background-color:#875A7B;padding:8px 16px;color:#fff;border-radius:5px;text-decoration:none">Payer et confirmer ma participation</a>
-                </p>
-                <p>Pour toute question, vous pouvez répondre à ce message.</p>
-                <p t-out="object.company_id.name"/>
-            </div>
-        </field>
+<div>
+    <t t-set="delivery" t-value="object.training_registration_delivery_id"/>
+    <p>Hello <t t-out="object.partner_id.name"/>,</p>
+    <p>The session of <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')"/> of the training <strong t-out="delivery.program_id.course_id.name"/> is confirmed.</p>
+    <p>To confirm your participation (<t t-out="object.training_attendee_count"/> participant(s)), pay for your registration before <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')"/>: after this date, the place is released.</p>
+    <p><a t-att-href="object.get_base_url() + object.access_url" style="background-color:#875A7B;padding:8px 16px;color:#fff;border-radius:5px;text-decoration:none">Pay and confirm my participation</a></p>
+    <p>If you have any questions, you can reply to this message.</p>
+    <p t-out="object.company_id.name"/>
+</div></field>
     </record>
 </odoo>

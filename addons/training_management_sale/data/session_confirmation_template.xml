@@ -1,26 +1,20 @@
 <odoo noupdate="1">
     <record id="mail_template_session_confirmation" model="mail.template">
-        <field name="name">Confirmation d’inscription à une session</field>
+        <field name="name">Training: session enrollment confirmation</field>
         <field name="model_id" ref="model_training_session_confirmation_notice"/>
-        <field name="subject">Confirmation d’inscription — {{ object.lead_id.training_requested_course_id.name }}</field>
+        <field name="subject">Enrollment confirmation — {{ object.lead_id.training_requested_course_id.name }}</field>
         <field name="lang">{{ object.recipient_language }}</field>
         <field name="auto_delete" eval="False"/>
+        <field name="description">Confirms the enrollment to the requester and to each participant once the session places are confirmed.</field>
         <field name="body_html" type="html">
-            <div>
-                <p>Bonjour,</p>
-                <p t-if="object.is_requester">
-                    Nous confirmons les <t t-out="object.lead_id.training_attendee_count"/> place(s)
-                    demandée(s) pour la formation ci-dessous.
-                </p>
-                <p t-else="">Votre inscription à la formation ci-dessous est confirmée.</p>
-                <p t-if="object.participant_ids">
-                    Participant(s) destinataire(s) de ce message
-                    <t t-out="', '.join(object.participant_ids.mapped('name'))"/>.
-                </p>
-                <t t-out="object.details_html"/>
-                <p>Pour toute question, vous pouvez répondre à ce message.</p>
-                <p t-out="object.company_id.name"/>
-            </div>
-        </field>
+<div>
+    <p>Hello,</p>
+    <p t-if="object.is_requester">We confirm the <t t-out="object.lead_id.training_attendee_count"/> place(s) requested for the training below.</p>
+    <p t-else="">Your enrollment in the training below is confirmed.</p>
+    <p t-if="object.participant_ids">Participant(s) receiving this message: <t t-out="', '.join(object.participant_ids.mapped('name'))"/>.</p>
+    <t t-out="object.details_html"/>
+    <p>If you have any questions, you can reply to this message.</p>
+    <p t-out="object.company_id.name"/>
+</div></field>
     </record>
 </odoo>

@@ -6,8 +6,8 @@ modèles Odoo standard (`mail.template`), rédigés en anglais et traduits en fr
 ## Règles
 
 - Chaque journal d’envoi (inscription, espace formation, mise en pratique, tutorat, retours,
-  publication, alerte de l’équipe, alerte de dates, convocation, accusé de demande) a son
-  modèle, modifiable dans Paramètres > Technique > Modèles d’email.
+  publication, alerte de l’équipe, alerte de dates, convocation, accusé de demande,
+  confirmation d’inscription, inscription en attente, demande de paiement) a son modèle, modifiable dans Paramètres > Technique > Modèles d’email.
 - Le modèle ne fournit que l’objet et le corps. Destinataire, copies, pièces jointes,
   rapports et abonnés restent fixés par le journal ; l’expéditeur suit l’identité de la
   société (`training_notification_template_id`).
