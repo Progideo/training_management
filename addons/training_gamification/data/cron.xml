@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_reconcile_points" model="ir.cron">
+        <field name="name">Training: apply points rules</field>
+        <field name="model_id" ref="model_training_gamification_rule"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_reconcile()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+</odoo>

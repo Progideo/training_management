@@ -1,0 +1,391 @@
+# Translation of Odoo Server.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_gamification
+#: model:ir.model.constraint,message:training_gamification.constraint_training_gamification_rule_positive_points
+msgid "A rule grants a positive number of points."
+msgstr "Une règle attribue un nombre positif de points."
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__active
+msgid "Active"
+msgstr "Active"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_rule_form
+msgid "Apply Now"
+msgstr "Appliquer maintenant"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/rule.py:0
+msgid "Archive a rule that already granted points instead of deleting it."
+msgstr ""
+"Archivez une règle qui a déjà attribué des points au lieu de la supprimer."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/rule.py:0
+msgid ""
+"Archive this rule and create another one: points were already granted for "
+"this event."
+msgstr ""
+"Archivez cette règle et créez-en une autre : des points ont déjà été "
+"attribués pour cet événement."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_rule_search
+msgid "Archived"
+msgstr "Archivées"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__company_id
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__date_from
+msgid "Counts Events From"
+msgstr "Compte les événements à partir du"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__create_uid
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__create_date
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__date
+msgid "Date"
+msgstr "Date"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_training_gamification_point__date
+msgid "Date of the training event that earned or withdrew the points."
+msgstr "Date de l'événement de formation qui a attribué ou retiré les points."
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_gamification_karma_tracking__display_name
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__display_name
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__display_name
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_service__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_training_gamification_rule__date_from
+msgid ""
+"Earlier events never earn points: activating a rule grants nothing "
+"retroactively."
+msgstr ""
+"Les événements antérieurs ne rapportent jamais de points : activer une règle"
+" n'attribue rien rétroactivement."
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__enrollment_id
+msgid "Enrollment"
+msgstr "Inscription"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__event_type
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__event_type
+msgid "Event Type"
+msgstr "Événement"
+
+#. module: training_gamification
+#: model:ir.ui.menu,name:training_gamification.menu_gamification
+msgid "Gamification"
+msgstr "Gamification"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__grant_id
+#: model:ir.model.fields.selection,name:training_gamification.selection__training_gamification_point__kind__grant
+msgid "Grant"
+msgstr "Attribution"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_gamification_karma_tracking__id
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__id
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__id
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_service__id
+msgid "ID"
+msgstr "ID"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_rule_form
+msgid "Inactive"
+msgstr "Inactive"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__write_uid
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__write_date
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Learning activity completed"
+msgstr "Activité terminée"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_training_gamification_rule__course_ids
+msgid "Leave empty to apply to every training."
+msgstr "Laisser vide pour appliquer la règle à toutes les formations."
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__max_per_enrollment
+msgid "Maximum per Enrollment"
+msgstr "Maximum par inscription"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Named evaluation answered"
+msgstr "Évaluation nominative complétée"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_training_gamification_rule__max_per_enrollment
+msgid "Number of times one enrollment can earn this rule; 0 = no limit."
+msgstr ""
+"Nombre de fois qu'une inscription peut obtenir cette règle ; 0 = sans "
+"limite."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/rule.py:0
+#: code:addons/training_gamification/models/service.py:0
+msgid "Only an administrator can apply points rules."
+msgstr "Seul un administrateur peut appliquer les règles de points."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/point.py:0
+msgid "Only an administrator can delete points."
+msgstr "Seul un administrateur peut supprimer des points."
+
+#. module: training_gamification
+#: model:ir.module.module,summary:base.module_training_gamification
+msgid "Optional points for training engagement, credited as native karma"
+msgstr ""
+"Points facultatifs récompensant l'engagement en formation, crédités en karma"
+" natif"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_point_search
+msgid "Participant"
+msgstr "Participant"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__point_ids
+msgid "Point"
+msgstr "Point"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__points
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__points
+msgid "Points"
+msgstr "Points"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__granted_count
+msgid "Points Granted"
+msgstr "Points attribués"
+
+#. module: training_gamification
+#: model:ir.actions.act_window,name:training_gamification.action_gamification_point
+#: model:ir.ui.menu,name:training_gamification.menu_gamification_point
+msgid "Points Journal"
+msgstr "Journal des points"
+
+#. module: training_gamification
+#: model:ir.actions.act_window,name:training_gamification.action_gamification_rule
+#: model:ir.ui.menu,name:training_gamification.menu_gamification_rule
+msgid "Points Rules"
+msgstr "Règles de points"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/point.py:0
+msgid "Points are granted by the configured rules."
+msgstr "Les points sont attribués par les règles configurées."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_rule_form
+msgid ""
+"Points reward engagement only: they never open an access, a session, a price or a document.\n"
+"                        Participants without a portal account earn nothing."
+msgstr ""
+"Les points récompensent uniquement l'engagement : ils n'ouvrent jamais d'accès, de session, de tarif ni de document.\n"
+"                        Les participants sans compte portail ne reçoivent rien."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Practice action carried out"
+msgstr "Action de mise en pratique réalisée"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__rule_id
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_point_search
+msgid "Rule"
+msgstr "Règle"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_training_gamification_rule__active
+msgid "Rules are delivered inactive; points are granted once active."
+msgstr ""
+"Les règles sont livrées inactives ; les points sont attribués une fois la "
+"règle active."
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__source_key
+msgid "Source Key"
+msgstr "Clé de la source"
+
+#. module: training_gamification
+#: model:ir.model.constraint,message:training_gamification.constraint_training_gamification_rule_positive_limit
+msgid "The limit cannot be negative."
+msgstr "La limite ne peut pas être négative."
+
+#. module: training_gamification
+#: model:ir.model.constraint,message:training_gamification.constraint_training_gamification_point_one_active_grant
+msgid "These points were already granted for this event."
+msgstr "Ces points ont déjà été attribués pour cet événement."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/rule.py:0
+msgid "This event is not available with the installed modules."
+msgstr "Cet événement n'est pas disponible avec les modules installés."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_point_list
+msgid "Total"
+msgstr "Total"
+
+#. module: training_gamification
+#: model:ir.model,name:training_gamification.model_gamification_karma_tracking
+msgid "Track Karma Changes"
+msgstr "Suivi des changements de karma"
+
+#. module: training_gamification
+#: model:ir.module.module,shortdesc:base.module_training_gamification
+msgid "Training Gamification"
+msgstr "Gamification des formations"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/karma_tracking.py:0
+#: model:ir.model,name:training_gamification.model_training_gamification_point
+msgid "Training Points"
+msgstr "Points de formation"
+
+#. module: training_gamification
+#: model:ir.model,name:training_gamification.model_training_gamification_rule
+msgid "Training Points Rule"
+msgstr "Règle de points de formation"
+
+#. module: training_gamification
+#: model:ir.model,name:training_gamification.model_training_gamification_service
+msgid "Training Points Service"
+msgstr "Service des points de formation"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Training completed"
+msgstr "Formation terminée"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/point.py:0
+msgid "Training points deleted with their dossier"
+msgstr "Points de formation supprimés avec leur dossier"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_training_gamification_point__source_key
+msgid "Training record behind the event."
+msgstr "Enregistrement de formation à l'origine de l'événement."
+
+#. module: training_gamification
+#: model:ir.actions.server,name:training_gamification.cron_reconcile_points_ir_actions_server
+msgid "Training: apply points rules"
+msgstr "Formation : appliquer les règles de points"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__course_ids
+msgid "Trainings"
+msgstr "Formations"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Tutoring session held"
+msgstr "Séance de tutorat tenue"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Validated attendance (half-day)"
+msgstr "Présence validée (demi-journée)"
+
+#. module: training_gamification
+#: model:ir.model.fields.selection,name:training_gamification.selection__training_gamification_point__kind__withdrawal
+msgid "Withdrawal"
+msgstr "Retrait"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__withdrawn
+msgid "Withdrawn"
+msgstr "Retiré"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/service.py:0
+msgid "Work validated by the trainer"
+msgstr "Travail validé par le formateur"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_rule_form
+msgid "e.g. Attendance"
+msgstr "ex. Présence"
