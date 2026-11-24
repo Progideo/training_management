@@ -80,6 +80,7 @@
                 <field name="date"/>
                 <field name="user_id"/>
                 <field name="enrollment_id"/>
+                <field name="delivery_id" optional="show"/>
                 <field name="rule_id"/>
                 <field name="kind"/>
                 <field name="points" sum="Total"/>

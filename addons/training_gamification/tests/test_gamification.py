@@ -9,8 +9,7 @@ from odoo.tests import tagged
 from odoo.addons.training_management.tests.test_attendance import AttendanceCase
 
 
-@tagged("post_install", "-at_install")
-class TestTrainingGamification(AttendanceCase):
+class GamificationCase(AttendanceCase):
     def setUp(self):
         super().setUp()
         self.admin = self.env.ref("base.user_admin")
@@ -49,6 +48,9 @@ class TestTrainingGamification(AttendanceCase):
         self.assertEqual(presence.state, "validated")
         return presence
 
+
+@tagged("post_install", "-at_install")
+class TestTrainingGamification(GamificationCase):
     def test_nothing_is_granted_without_an_active_rule(self):
         self.validated_presence()
         self.rule(active=False)
@@ -149,12 +151,14 @@ class TestTrainingGamification(AttendanceCase):
             self.env["training.gamification.service"].with_user(self.coordinator)._reconcile()
         with self.assertRaises(AccessError):
             self.env["training.gamification.point"].with_user(self.admin).create({})
-        with self.assertRaises(AccessError):
-            self.env["training.gamification.point"].with_user(self.portal).search([])
+        # A participant reads only their own points.
 
         rule = self.rule()
         self.validated_presence()
         self.reconcile()
+        Point = self.env["training.gamification.point"]
+        self.assertEqual(Point.with_user(self.portal).search([]).user_id, self.portal)
+        self.assertFalse(Point.with_user(self.portal_b).search([]))
         with self.assertRaises(ValidationError):
             rule.write({"event_type": "enrollment_closed"})
         with self.assertRaises(ValidationError):

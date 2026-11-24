@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="challenge_form_view_training" model="ir.ui.view">
+        <field name="name">gamification.challenge.form.training</field>
+        <field name="model">gamification.challenge</field>
+        <field name="inherit_id" ref="gamification.challenge_form_view"/>
+        <field name="arch" type="xml">
+            <field name="visibility_mode" position="after">
+                <field name="training_template"/>
+                <field name="training_delivery_id" invisible="not training_delivery_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_training_delivery_form_gamification" model="ir.ui.view">
+        <field name="name">training.delivery.form.gamification</field>
+        <field name="model">training.delivery</field>
+        <field name="inherit_id" ref="training_management.view_training_delivery_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button groups="training_management.group_training_coordinator" name="action_launch_training_challenge" type="object" string="Launch a Challenge" invisible="state in ('closed', 'cancelled')"/>
+            </xpath>
+            <xpath expr="//sheet/*[1]" position="before">
+                <div class="oe_button_box" name="gamification_button_box" groups="training_management.group_training_coordinator">
+                    <button name="action_open_training_engagement" type="object" class="oe_stat_button" icon="fa-trophy">
+                        <div class="o_stat_info"><span class="o_stat_text">Engagement</span></div>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_challenge_launch_form" model="ir.ui.view">
+        <field name="name">training.gamification.challenge.launch.form</field>
+        <field name="model">training.gamification.challenge.launch</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>The challenge is copied for this delivery: participants with an account, delivery dates, personal visibility only.</p>
+                <group>
+                    <field name="delivery_id"/>
+                    <field name="template_id" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_launch" type="object" string="Launch" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

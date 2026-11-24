@@ -23,6 +23,7 @@ class GamificationPoint(models.Model):
         "training.enrollment", required=True, ondelete="cascade", index=True, check_company=True
     )
     company_id = fields.Many2one(related="enrollment_id.company_id", store=True)
+    delivery_id = fields.Many2one(related="enrollment_id.delivery_id", store=True, index=True)
     user_id = fields.Many2one("res.users", required=True, ondelete="cascade", index=True)
     kind = fields.Selection([("grant", "Grant"), ("withdrawal", "Withdrawal")], required=True)
     points = fields.Integer(required=True)

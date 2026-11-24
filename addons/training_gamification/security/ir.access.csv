@@ -3,3 +3,7 @@ rule_admin,Training points rules,training.gamification.rule,base.group_system,cr
 rule_company,Training points rule companies,training.gamification.rule,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
 point_admin,Training points journal,training.gamification.point,base.group_system,rd,
 point_company,Training points journal companies,training.gamification.point,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+point_own_portal,Own training points,training.gamification.point,base.group_portal,r,"[('user_id', '=', user.id)]"
+point_own_user,Own training points,training.gamification.point,base.group_user,r,"[('user_id', '=', user.id)]"
+point_coordinator,Training points journal coordinators,training.gamification.point,training_management.group_training_coordinator,r,
+launch_coordinator,Launch session challenge,training.gamification.challenge.launch,training_management.group_training_coordinator,crud,

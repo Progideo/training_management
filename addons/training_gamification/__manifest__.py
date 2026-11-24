@@ -12,5 +12,7 @@
         "security/ir.access.csv",
         "data/cron.xml",
         "views/gamification_views.xml",
+        "views/portal_templates.xml",
+        "views/challenge_views.xml",
     ],
 }
