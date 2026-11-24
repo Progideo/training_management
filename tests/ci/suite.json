@@ -25,12 +25,14 @@
       "website": false
     },
     "full": {
-      "label": "Socle + Ventes + Surveys + Interactif",
+      "label": "Socle + Ventes + Surveys + Interactif + Gamification",
       "addons": [
         "training_management",
         "training_management_sale",
         "training_management_survey",
-        "training_management_interactive"
+        "training_management_interactive",
+        "training_gamification",
+        "training_gamification_survey"
       ],
       "website": false
     },
@@ -44,12 +46,14 @@
       "language": "en_US"
     },
     "website_full": {
-      "label": "Website/eLearning + Ventes + Surveys · anglais + Interactif",
+      "label": "Website/eLearning + Ventes + Surveys · anglais + Interactif + Gamification",
       "addons": [
         "training_management",
         "training_management_sale",
         "training_management_survey",
-        "training_management_interactive"
+        "training_management_interactive",
+        "training_gamification",
+        "training_gamification_survey"
       ],
       "website": true,
       "language": "en_US"
@@ -64,12 +68,14 @@
       "language": "fr_FR"
     },
     "website_full_fr": {
-      "label": "Website/eLearning + Ventes + Surveys · français + Interactif",
+      "label": "Website/eLearning + Ventes + Surveys · français + Interactif + Gamification",
       "addons": [
         "training_management",
         "training_management_sale",
         "training_management_survey",
-        "training_management_interactive"
+        "training_management_interactive",
+        "training_gamification",
+        "training_gamification_survey"
       ],
       "website": true,
       "language": "fr_FR"

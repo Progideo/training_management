@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+rule_admin,Training points rules,training.gamification.rule,base.group_system,crud,
+rule_company,Training points rule companies,training.gamification.rule,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"
+point_admin,Training points journal,training.gamification.point,base.group_system,rd,
+point_company,Training points journal companies,training.gamification.point,,crud,"[('company_id', 'in', company_ids)] if user.active else [('id', '=', 0)]"

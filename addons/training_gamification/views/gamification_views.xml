@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gamification_rule_list" model="ir.ui.view">
+        <field name="name">training.gamification.rule.list</field>
+        <field name="model">training.gamification.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="points"/>
+                <field name="max_per_enrollment"/>
+                <field name="date_from"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gamification_rule_form" model="ir.ui.view">
+        <field name="name">training.gamification.rule.form</field>
+        <field name="model">training.gamification.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_apply_now" type="object" string="Apply Now" invisible="not active"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Inactive" bg_color="text-bg-secondary" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Attendance"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="points"/>
+                            <field name="max_per_enrollment"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="course_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                            <field name="granted_count"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Points reward engagement only: they never open an access, a session, a price or a document.
+                        Participants without a portal account earn nothing.
+                    </p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_gamification_rule_search" model="ir.ui.view">
+        <field name="name">training.gamification.rule.search</field>
+        <field name="model">training.gamification.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="event_type"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_gamification_rule" model="ir.actions.act_window">
+        <field name="name">Points Rules</field>
+        <field name="res_model">training.gamification.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+    </record>
+
+    <record id="view_gamification_point_list" model="ir.ui.view">
+        <field name="name">training.gamification.point.list</field>
+        <field name="model">training.gamification.point</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="enrollment_id"/>
+                <field name="rule_id"/>
+                <field name="kind"/>
+                <field name="points" sum="Total"/>
+                <field name="withdrawn" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gamification_point_search" model="ir.ui.view">
+        <field name="name">training.gamification.point.search</field>
+        <field name="model">training.gamification.point</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="enrollment_id"/>
+                <field name="rule_id"/>
+                <filter name="group_user" string="Participant" context="{'group_by': 'user_id'}"/>
+                <filter name="group_rule" string="Rule" context="{'group_by': 'rule_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_gamification_point" model="ir.actions.act_window">
+        <field name="name">Points Journal</field>
+        <field name="res_model">training.gamification.point</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem
+        id="menu_gamification"
+        name="Gamification"
+        parent="training_management.menu_training_configuration"
+        groups="base.group_system"
+        sequence="90"
+    />
+    <menuitem id="menu_gamification_rule" parent="menu_gamification" action="action_gamification_rule" sequence="10"/>
+    <menuitem id="menu_gamification_point" parent="menu_gamification" action="action_gamification_point" sequence="20"/>
+</odoo>

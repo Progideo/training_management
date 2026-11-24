@@ -1,0 +1,41 @@
+# Translation of Odoo Server.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: training_gamification_survey
+#: model:ir.model.fields,field_description:training_gamification_survey.field_training_gamification_service__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: training_gamification_survey
+#: model:ir.model.fields,field_description:training_gamification_survey.field_training_gamification_service__id
+msgid "ID"
+msgstr "ID"
+
+#. module: training_gamification_survey
+#. odoo-python
+#: code:addons/training_gamification_survey/models/service.py:0
+msgid "Mock exam completed"
+msgstr "Examen blanc terminé"
+
+#. module: training_gamification_survey
+#: model:ir.module.module,summary:base.module_training_gamification_survey
+msgid "Points for completed mock exams, once per exam and enrollment"
+msgstr ""
+"Points pour les examens blancs terminés, une fois par examen et par "
+"inscription"
+
+#. module: training_gamification_survey
+#: model:ir.module.module,shortdesc:base.module_training_gamification_survey
+msgid "Training Gamification — Mock Exams"
+msgstr "Gamification des formations — Examens blancs"
+
+#. module: training_gamification_survey
+#: model:ir.model,name:training_gamification_survey.model_training_gamification_service
+msgid "Training Points Service"
+msgstr "Service des points de formation"
