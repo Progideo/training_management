@@ -229,3 +229,104 @@ class GamificationService(models.AbstractModel):
                 )
                 value += point.points
         Tracking.create(values)
+
+    @api.model
+    def _progress_values(self, user):
+        """What a participant sees of their own progress: never anyone else's."""
+        user = user.sudo()
+        points = (
+            self.env["training.gamification.point"]
+            .sudo()
+            .search([("user_id", "=", user.id)], order="date desc, id desc", limit=20)
+        )
+        goals = (
+            self.env["gamification.goal"]
+            .sudo()
+            .search(
+                [
+                    ("user_id", "=", user.id),
+                    ("challenge_id.state", "=", "inprogress"),
+                    ("challenge_id.visibility_mode", "=", "personal"),
+                    ("state", "in", ("inprogress", "reached")),
+                ],
+                order="state, id",
+            )
+        )
+        next_rank = user.next_rank_id
+        return {
+            "karma": user.karma,
+            "rank": user.rank_id.name,
+            "next_rank": next_rank.name,
+            "to_next_rank": max(next_rank.karma_min - user.karma, 0) if next_rank else 0,
+            "badges": [
+                {"id": line.badge_id.id, "name": line.badge_id.name, "date": line.create_date.date()}
+                for line in user.badge_ids.sorted("create_date", reverse=True)
+                if line.badge_id.active
+            ],
+            "goals": [
+                {
+                    "challenge": goal.challenge_id.name,
+                    "goal": goal.definition_id.name,
+                    "current": goal.current,
+                    "target": goal.target_goal,
+                    "reached": goal.state == "reached",
+                }
+                for goal in goals
+            ],
+            "points": [
+                {
+                    "date": point.date.date(),
+                    "rule": point.rule_id.name,
+                    "training": point.enrollment_id.program_id.course_id.name,
+                    "points": point.points,
+                }
+                for point in points
+            ],
+            "can_publish": "website_published" in user._fields,
+            "published": bool(user["website_published"]) if "website_published" in user._fields else False,
+        }
+
+    CLIENT_MINIMUM = 3
+
+    @api.model
+    def _client_indicator(self, allocation_id):
+        """Collective engagement of a client's participants, never an individual figure.
+
+        Shown from three participants only, so that nobody's result can be read.
+        """
+        allocation = self.env["training.company.service"]._allocation(allocation_id)
+        enrollments = allocation.sudo().enrollment_ids.filtered(lambda e: e.state in ("confirmed", "closed"))
+        if len(enrollments) < self.CLIENT_MINIMUM:
+            return False
+        active = (
+            self.env["training.gamification.point"]
+            .sudo()
+            .search([("enrollment_id", "in", enrollments.ids), ("kind", "=", "grant"), ("withdrawn", "=", False)])
+            .enrollment_id
+        )
+        challenges = (
+            self.env["gamification.challenge"]
+            .sudo()
+            .search([("training_delivery_id", "=", allocation.delivery_id.id), ("state", "in", ("inprogress", "done"))])
+        )
+        reached = False
+        if challenges:
+            users = {enrollment.id: self._participant_user(enrollment) for enrollment in enrollments}
+            winners = (
+                self.env["gamification.goal"]
+                .sudo()
+                .search(
+                    [
+                        ("challenge_id", "in", challenges.ids),
+                        ("state", "=", "reached"),
+                        ("user_id", "in", [user.id for user in users.values() if user]),
+                    ]
+                )
+                .user_id
+            )
+            reached = round(100 * len([e for e, user in users.items() if user and user in winners]) / len(enrollments))
+        return {
+            "participants": len(enrollments),
+            "active": round(100 * len(active) / len(enrollments)),
+            "challenges": reached,
+        }

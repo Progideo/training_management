@@ -51,6 +51,22 @@ formation au moteur natif `gamification` (karma, rangs, badges, défis) :
 - Une règle ayant attribué des points ne change plus d'événement ni de société :
   l'archiver et en créer une autre.
 
+## Portail et suivi
+
+- **Ma progression** (`/my/training-progress`) : points, rang, badges, défis en cours
+  et derniers points du participant connecté, jamais ceux d'un autre. Le participant y
+  publie ou retire son profil public (avec le site web).
+- **Défis de session** : un administrateur prépare des défis natifs en brouillon,
+  cochés « Modèle de défi de session » (visibilité personnelle obligatoire). Sur une
+  réalisation, un coordinateur clique « Lancer un défi » : une copie vise les
+  participants ayant un compte, sur les dates de la réalisation, sans récompense de
+  classement.
+- **Engagement** (bouton de la réalisation) : journal des points de la réalisation,
+  par participant, pour la coordination.
+- **Indicateur collectif** (dossier entreprise du portail) : part des participants du
+  client ayant obtenu des points et ayant réussi un défi de session. Affiché à partir
+  de trois participants confirmés ; aucun chiffre individuel.
+
 ## Recette
 
 1. Créer une règle « Présence » active, datée du jour ; valider une présence d'un
@@ -60,4 +76,8 @@ formation au moteur natif `gamification` (karma, rangs, badges, défis) :
 4. Participant sans compte : aucune ligne.
 5. Repasser plusieurs fois un examen blanc : une seule attribution.
 6. Annuler puis supprimer le dossier : lignes et karma supprimés.
-7. Un coordinateur ne voit ni le menu, ni les règles, ni le journal.
+7. Un coordinateur ne voit ni le menu ni les règles ; il voit le journal d'une
+   réalisation par le bouton « Engagement ».
+8. Ma progression : le participant voit ses points ; un autre participant ne les voit pas.
+9. Lancer un défi sur une réalisation : seuls les participants avec compte y figurent.
+10. Dossier entreprise : indicateur absent à deux participants, affiché à trois.

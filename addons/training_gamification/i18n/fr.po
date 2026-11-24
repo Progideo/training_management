@@ -8,9 +8,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_training_delivery_form_gamification
+msgid "<span class=\"o_stat_text\">Engagement</span>"
+msgstr "<span class=\"o_stat_text\">Engagement</span>"
+
+#. module: training_gamification
 #: model:ir.model.constraint,message:training_gamification.constraint_training_gamification_rule_positive_points
 msgid "A rule grants a positive number of points."
 msgstr "Une règle attribue un nombre positif de points."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/delivery.py:0
+msgid "A session challenge needs the delivery dates."
+msgstr "Un défi de session nécessite les dates de la réalisation."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/challenge.py:0
+msgid "A session challenge template stays in draft."
+msgstr "Un modèle de défi de session reste en brouillon."
 
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__active
@@ -45,10 +62,52 @@ msgid "Archived"
 msgstr "Archivées"
 
 #. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_challenge_launch_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__template_id
+msgid "Challenge"
+msgstr "Défi"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/wizard/challenge_launch.py:0
+msgid "Challenge “%(name)s” launched."
+msgstr "Défi « %(name)s » lancé."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/delivery.py:0
+msgid "Choose a session challenge template."
+msgstr "Choisissez un modèle de défi de session."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.company_training_engagement
+msgid "Collective engagement"
+msgstr "Engagement collectif"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.company_training_engagement
+msgid "Collective figures only, shown from three participants."
+msgstr ""
+"Chiffres collectifs uniquement, affichés à partir de trois participants."
+
+#. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__company_id
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__company_id
 msgid "Company"
 msgstr "Société"
+
+#. module: training_gamification
+#: model:ir.model.fields,help:training_gamification.field_gamification_challenge__training_template
+msgid ""
+"Coordinators can launch a copy of this draft challenge on a training "
+"delivery."
+msgstr ""
+"Les coordinateurs peuvent lancer une copie de ce défi brouillon sur une "
+"réalisation de formation."
 
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__date_from
@@ -56,12 +115,14 @@ msgid "Counts Events From"
 msgstr "Compte les événements à partir du"
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__create_uid
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__create_uid
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__create_date
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__create_date
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__create_date
 msgid "Created on"
@@ -69,6 +130,7 @@ msgstr "Créé le"
 
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__date
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
 msgid "Date"
 msgstr "Date"
 
@@ -78,7 +140,16 @@ msgid "Date of the training event that earned or withdrew the points."
 msgstr "Date de l'événement de formation qui a attribué ou retiré les points."
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__delivery_id
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__delivery_id
+msgid "Delivery"
+msgstr "Réalisation"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_gamification_challenge__display_name
 #: model:ir.model.fields,field_description:training_gamification.field_gamification_karma_tracking__display_name
+#: model:ir.model.fields,field_description:training_gamification.field_training_delivery__display_name
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__display_name
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__display_name
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__display_name
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_service__display_name
@@ -93,6 +164,12 @@ msgid ""
 msgstr ""
 "Les événements antérieurs ne rapportent jamais de points : activer une règle"
 " n'attribue rien rétroactivement."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/delivery.py:0
+msgid "Engagement"
+msgstr "Engagement"
 
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__enrollment_id
@@ -111,13 +188,21 @@ msgid "Gamification"
 msgstr "Gamification"
 
 #. module: training_gamification
+#: model:ir.model,name:training_gamification.model_gamification_challenge
+msgid "Gamification Challenge"
+msgstr "Défi de gamification"
+
+#. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__grant_id
 #: model:ir.model.fields.selection,name:training_gamification.selection__training_gamification_point__kind__grant
 msgid "Grant"
 msgstr "Attribution"
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_gamification_challenge__id
 #: model:ir.model.fields,field_description:training_gamification.field_gamification_karma_tracking__id
+#: model:ir.model.fields,field_description:training_gamification.field_training_delivery__id
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__id
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__id
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__id
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_service__id
@@ -135,16 +220,40 @@ msgid "Kind"
 msgstr "Type"
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__write_uid
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__write_uid
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__write_uid
 msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_gamification_challenge_launch__write_date
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__write_date
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__write_date
 msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Latest points"
+msgstr "Derniers points"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_challenge_launch_form
+msgid "Launch"
+msgstr "Lancer"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_training_delivery_form_gamification
+msgid "Launch a Challenge"
+msgstr "Lancer un défi"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/delivery.py:0
+#: model:ir.model,name:training_gamification.model_training_gamification_challenge_launch
+msgid "Launch a Session Challenge"
+msgstr "Lancer un défi de session"
 
 #. module: training_gamification
 #. odoo-python
@@ -158,9 +267,36 @@ msgid "Leave empty to apply to every training."
 msgstr "Laisser vide pour appliquer la règle à toutes les formations."
 
 #. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Make my profile private"
+msgstr "Rendre mon profil privé"
+
+#. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__max_per_enrollment
 msgid "Maximum per Enrollment"
 msgstr "Maximum par inscription"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "My badges"
+msgstr "Mes badges"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "My challenges"
+msgstr "Mes défis"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_progress_home
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_progress_link
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "My progress"
+msgstr "Ma progression"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "My public profile"
+msgstr "Mon profil public"
 
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__name
@@ -172,6 +308,27 @@ msgstr "Nom"
 #: code:addons/training_gamification/models/service.py:0
 msgid "Named evaluation answered"
 msgstr "Évaluation nominative complétée"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "No badge yet."
+msgstr "Aucun badge pour le moment."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "No challenge in progress."
+msgstr "Aucun défi en cours."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/delivery.py:0
+msgid "No participant of this delivery has an account."
+msgstr "Aucun participant de cette réalisation n'a de compte."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "No points yet."
+msgstr "Aucun point pour le moment."
 
 #. module: training_gamification
 #: model:ir.model.fields,help:training_gamification.field_training_gamification_rule__max_per_enrollment
@@ -213,6 +370,7 @@ msgstr "Point"
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__points
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_rule__points
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
 msgid "Points"
 msgstr "Points"
 
@@ -249,10 +407,39 @@ msgstr ""
 "                        Les participants sans compte portail ne reçoivent rien."
 
 #. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid ""
+"Points reward your engagement in training. They never open an access and do "
+"not appear on your certificates."
+msgstr ""
+"Les points récompensent votre engagement en formation. Ils n'ouvrent jamais "
+"d'accès et ne figurent pas sur vos attestations."
+
+#. module: training_gamification
 #. odoo-python
 #: code:addons/training_gamification/models/service.py:0
 msgid "Practice action carried out"
 msgstr "Action de mise en pratique réalisée"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Publish my profile"
+msgstr "Publier mon profil"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Rank"
+msgstr "Rang"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Reached"
+msgstr "Atteint"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Reason"
+msgstr "Motif"
 
 #. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__rule_id
@@ -273,9 +460,39 @@ msgid "Sequence"
 msgstr "Séquence"
 
 #. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_delivery__training_challenge_count
+msgid "Session Challenge Count"
+msgstr "Nombre de défis de session"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_gamification_challenge__training_template
+msgid "Session Challenge Template"
+msgstr "Modèle de défi de session"
+
+#. module: training_gamification
+#: model:ir.model.fields,field_description:training_gamification.field_training_delivery__training_challenge_ids
+msgid "Session Challenges"
+msgstr "Défis de session"
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/challenge.py:0
+msgid "Session challenges never show a ranking."
+msgstr "Les défis de session n'affichent jamais de classement."
+
+#. module: training_gamification
 #: model:ir.model.fields,field_description:training_gamification.field_training_gamification_point__source_key
 msgid "Source Key"
 msgstr "Clé de la source"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.view_challenge_launch_form
+msgid ""
+"The challenge is copied for this delivery: participants with an account, "
+"delivery dates, personal visibility only."
+msgstr ""
+"Le défi est copié pour cette réalisation : participants ayant un compte, "
+"dates de la réalisation, visibilité personnelle uniquement."
 
 #. module: training_gamification
 #: model:ir.model.constraint,message:training_gamification.constraint_training_gamification_rule_positive_limit
@@ -302,6 +519,17 @@ msgstr "Total"
 #: model:ir.model,name:training_gamification.model_gamification_karma_tracking
 msgid "Track Karma Changes"
 msgstr "Suivi des changements de karma"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Training"
+msgstr "Formation"
+
+#. module: training_gamification
+#: model:ir.model,name:training_gamification.model_training_delivery
+#: model:ir.model.fields,field_description:training_gamification.field_gamification_challenge__training_delivery_id
+msgid "Training Delivery"
+msgstr "Réalisation de formation"
 
 #. module: training_gamification
 #: model:ir.module.module,shortdesc:base.module_training_gamification
@@ -386,6 +614,53 @@ msgid "Work validated by the trainer"
 msgstr "Travail validé par le formateur"
 
 #. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Your choice has been saved."
+msgstr "Votre choix a été enregistré."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "Your profile is private: nobody else sees your points, rank or badges."
+msgstr ""
+"Votre profil est privé : personne d'autre ne voit vos points, votre rang ni "
+"vos badges."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid ""
+"Your profile, with your points, rank and badges, is public. It appears in "
+"the ranking of published profiles."
+msgstr ""
+"Votre profil, avec vos points, votre rang et vos badges, est public. Il "
+"apparaît dans le classement des profils publiés."
+
+#. module: training_gamification
+#. odoo-python
+#: code:addons/training_gamification/models/delivery.py:0
+msgid "delivery_id"
+msgstr "delivery_id"
+
+#. module: training_gamification
 #: model_terms:ir.ui.view,arch_db:training_gamification.view_gamification_rule_form
 msgid "e.g. Attendance"
 msgstr "ex. Présence"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.company_training_engagement
+msgid "of your"
+msgstr "de vos"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.company_training_engagement
+msgid "participants earned engagement points."
+msgstr "participants ont obtenu des points d'engagement."
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.portal_training_progress
+msgid "points to reach"
+msgstr "points pour atteindre"
+
+#. module: training_gamification
+#: model_terms:ir.ui.view,arch_db:training_gamification.company_training_engagement
+msgid "reached a session challenge."
+msgstr "ont réussi un défi de session."
