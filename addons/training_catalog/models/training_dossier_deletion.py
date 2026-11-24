@@ -28,9 +28,28 @@ class TrainingDossierDeletion(models.AbstractModel):
         for records in ordered:
             records.exists().unlink()
         # Back to the list: the deleted record cannot stay displayed.
+        return self._training_list_action()
+
+    @api.private
+    def _training_list_action(self):
+        """The list of the model's menu (translated title, usual filters), else a plain list."""
+        windows = (
+            self.env["ir.actions.act_window"]
+            .sudo()
+            .search([("res_model", "=", self._name), ("res_id", "=", False), ("view_mode", "like", "list")])
+        )
+        menus = (
+            self.env["ir.ui.menu"]
+            .sudo()
+            .search([("action", "in", [f"ir.actions.act_window,{window.id}" for window in windows])], order="id")
+        )
+        if menus:
+            action = menus[0].action._get_action_dict()
+            action["target"] = "main"
+            return action
         return {
             "type": "ir.actions.act_window",
-            "name": self._description,
+            "name": self.env["ir.model"]._get(self._name).name,
             "res_model": self._name,
             "view_mode": "list,form",
             "views": [[False, "list"], [False, "form"]],

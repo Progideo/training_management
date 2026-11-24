@@ -60,6 +60,8 @@ class TestEvidenceDeletion(ClosureCase):
         self.assertFalse(any(rows.exists() for rows in dependents))
         # Back to the list: the deleted record cannot stay displayed.
         self.assertEqual((action["type"], action["res_model"]), ("ir.actions.act_window", "training.enrollment"))
+        # The list of the menu, with its title and usual filters.
+        self.assertEqual(action["id"], self.env.ref("training_management.action_training_enrollments").id)
         self.assertTrue(delivery.exists())
 
     def test_held_closure_keeps_the_whole_dossier(self):
