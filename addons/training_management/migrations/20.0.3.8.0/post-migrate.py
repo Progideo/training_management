@@ -19,6 +19,7 @@ JOURNALS = {
 
 def migrate(cr, version):
     from odoo import SUPERUSER_ID, api
+    from odoo.tools import SQL
 
     env = api.Environment(cr, SUPERUSER_ID, {})
     for model, field in JOURNALS.items():
@@ -30,5 +31,13 @@ def migrate(cr, version):
             .with_context(active_test=False)
             .search([(field, "!=", False), ("mail_fingerprint", "=", False)])
         )
+        # Direct update: the journals are retained evidence, their write metadata stays unchanged.
         for row in rows:
-            row._store_evidence({"mail_fingerprint": mail_fingerprint(row[field])})
+            cr.execute(
+                SQL(
+                    "UPDATE %s SET mail_fingerprint = %s WHERE id = %s",
+                    SQL.identifier(env[model]._table),
+                    mail_fingerprint(row[field]),
+                    row.id,
+                )
+            )

@@ -23,8 +23,12 @@ def migrate(cr, version):
 
     env = api.Environment(cr, SUPERUSER_ID, {})
     rows = env["training.request.notice"].sudo().search([("mail_id", "!=", False), ("mail_fingerprint", "=", False)])
+    # Direct update: the journals are retained evidence, their write metadata stays unchanged.
     for row in rows:
-        row._store_evidence({"mail_fingerprint": mail_fingerprint(row.mail_id)})
+        cr.execute(
+            "UPDATE training_request_notice SET mail_fingerprint = %s WHERE id = %s",
+            (mail_fingerprint(row.mail_id), row.id),
+        )
 
     for filename in FILES:
         convert_file(env, MODULE, filename, {}, mode="init", noupdate=True)
