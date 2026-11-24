@@ -42,7 +42,8 @@ formation au moteur natif `gamification` (karma, rangs, badges, défis) :
   règle par règle, les preuves aux attributions. Elle est idempotente.
 - Le journal `training.gamification.point` est écrit par le serveur seul. Un
   retrait ajoute une ligne négative ; l'attribution n'est pas réécrite.
-- Chaque ligne crédite le karma natif, avec le nom de la règle comme motif.
+- Chaque ligne crédite le karma natif, avec le nom de la règle comme motif. L'email
+  natif de passage de rang est conservé (décision du 24 novembre 2026).
 - Badges et défis natifs comptent les lignes du journal (définition d'objectif sur
   `training.gamification.point`, par exemple `[('user_id', '=', user.id),
   ('kind', '=', 'grant'), ('withdrawn', '=', False)]`). Viser les comptes portail :
