@@ -19,6 +19,8 @@ formation au moteur natif `gamification` (karma, rangs, badges, défis) :
 - Seul le compte portail du participant reçoit des points. Sans compte, rien
   n'est attribué, et un compte créé plus tard ne récupère rien.
 - Aucun classement n'est proposé : les défis natifs restent en visibilité personnelle.
+  Seule exception acceptée : la page native `/profile/users` classe par karma les
+  participants qui ont choisi de publier leur profil.
 - Les campagnes d'évaluation anonymes ne rapportent jamais de points.
 
 ## Événements
