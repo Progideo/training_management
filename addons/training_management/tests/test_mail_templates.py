@@ -39,9 +39,10 @@ class TestMailTemplates(AttendanceCase):
             self.assertFalse(template.attachment_ids or template.report_template_ids, xmlid)
 
     def test_template_text_is_used_and_checked_at_transport(self):
-        self.env.ref("training_management.mail_template_training_notification").write(
-            {"subject": "Fictional organization: your training space"}
-        )
+        # Written in the participant's language, as an organization edits its template.
+        self.env.ref("training_management.mail_template_training_notification").with_context(
+            lang=self.portal.lang or "en_US"
+        ).write({"subject": "Fictional organization: your training space"})
         journal = self.lifecycle_mail()
         mail = journal.mail_id
         self.assertEqual(mail.subject, "Fictional organization: your training space")
