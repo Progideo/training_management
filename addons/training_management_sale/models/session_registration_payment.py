@@ -211,7 +211,10 @@ class SaleOrder(models.Model):
         template = self.env.ref(xmlid).sudo()
         for order in self:
             # The buyer is the only named contact of the order: the document policy checks the recipients.
-            template.send_mail(order.id, email_layout_xmlid="mail.mail_notification_light")
+            # The organization's own frame when the template names one, the light native frame otherwise.
+            template.send_mail(
+                order.id, email_layout_xmlid=template.email_layout_xmlid or "mail.mail_notification_light"
+            )
 
     def action_confirm(self):
         result = super().action_confirm()

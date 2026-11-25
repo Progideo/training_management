@@ -11,9 +11,9 @@
 <div>
     <t t-set="delivery" t-value="object.training_registration_delivery_id"/>
     <p>Hello <t t-out="object.partner_id.name"/>,</p>
-    <p>Your registration of <t t-out="object.training_attendee_count"/> participant(s) in the training <strong t-out="delivery.program_id.course_id.name"/> is recorded, for the session of <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')"/>.</p>
+    <p>Your registration of <t t-out="object.training_attendee_count"/> participant(s) in the training <strong t-out="delivery.program_id.course_id.name"/> is recorded, for the session of <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format=&quot;MMMM d, y 'at' h:mm a&quot;)"/> (<t t-out="delivery.timezone.split('/')[-1].replace('_', ' ')"/> time).</p>
     <p>This session is not confirmed yet: please do not pay for now. As soon as it is confirmed, we will send you a payment request to confirm your participation.</p>
-    <p>Your place is held until <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')"/>.</p>
+    <p>Your place is held until <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format=&quot;MMMM d, y 'at' h:mm a&quot;)"/> (<t t-out="delivery.timezone.split('/')[-1].replace('_', ' ')"/> time).</p>
     <p>If you have any questions, you can reply to this message.</p>
     <p t-out="object.company_id.name"/>
 </div></field>
@@ -33,9 +33,9 @@
 <div>
     <t t-set="delivery" t-value="object.training_registration_delivery_id"/>
     <p>Hello <t t-out="object.partner_id.name"/>,</p>
-    <p>The session of <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')"/> of the training <strong t-out="delivery.program_id.course_id.name"/> is confirmed.</p>
-    <p>To confirm your participation (<t t-out="object.training_attendee_count"/> participant(s)), pay for your registration before <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')"/>: after this date, the place is released.</p>
-    <p><a t-att-href="object.get_base_url() + object.access_url" style="background-color:#875A7B;padding:8px 16px;color:#fff;border-radius:5px;text-decoration:none">Pay and confirm my participation</a></p>
+    <p>The session of <t t-out="format_datetime(delivery.start_at, tz=delivery.timezone, dt_format=&quot;MMMM d, y 'at' h:mm a&quot;)"/> (<t t-out="delivery.timezone.split('/')[-1].replace('_', ' ')"/> time) of the training <strong t-out="delivery.program_id.course_id.name"/> is confirmed.</p>
+    <p>To confirm your participation (<t t-out="object.training_attendee_count"/> participant(s)), pay for your registration before <t t-out="format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format=&quot;MMMM d, y 'at' h:mm a&quot;)"/> (<t t-out="delivery.timezone.split('/')[-1].replace('_', ' ')"/> time): after this date, the place is released.</p>
+    <p><a t-att-href="object.get_base_url() + object.access_url" t-attf-style="display: inline-block; background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; color: {{ object.company_id.email_primary_color or '#FFFFFF' }}; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold;">Pay and confirm my participation</a></p>
     <p>If you have any questions, you can reply to this message.</p>
     <p t-out="object.company_id.name"/>
 </div></field>
