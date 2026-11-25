@@ -1,15 +1,14 @@
 """Generic acknowledgement of a training CRM request, through native mail.mail."""
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
 class TrainingRequestNotice(models.Model):
     _name = "training.request.notice"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
     _description = "Training Request Acknowledgement Journal"
+    _training_mail_template_xmlid = "training_management_sale.mail_template_request_notice"
 
     lead_id = fields.Many2one("crm.lead", required=True, ondelete="restrict")
     company_id = fields.Many2one("res.company", required=True)
@@ -34,13 +33,6 @@ class TrainingRequestNotice(models.Model):
         )
 
     @api.private
-    def _content(self):
-        env = self.with_context(lang=self.recipient_language).env
-        return env._("Your training request has been received"), Markup("<p>%s</p>") % env._(
-            "Your training request has been recorded. The team will contact you. This acknowledgement does not confirm an enrollment."
-        )
-
-    @api.private
     def _queue(self, lead):
         lead.check_access("read")
         lead.lock_for_update()
@@ -60,28 +52,10 @@ class TrainingRequestNotice(models.Model):
         if not notice._authorized():
             notice._store_evidence({"failure": self.env._("No current request recipient with a valid email address.")})
             return notice
-        subject, body = notice._content()
-        clean = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
-        mail = (
-            self.env["mail.mail"]  # pylint: disable=context-overridden  # replace caller context before elevated mail
-            .sudo()
-            .with_context(clean)  # pylint: disable=context-overridden  # discard caller defaults before elevated mail
-            .create(
-                {  # pylint: disable=context-overridden
-                    "subject": subject,
-                    "body_html": body,
-                    "email_to": notice.email,
-                    "email_cc": False,
-                    "recipient_ids": [],
-                    "recipient_cc_ids": [],
-                    "attachment_ids": [],
-                    "auto_delete": False,
-                    "email_from": notice.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                    **self.env["mail.mail"]._training_identity(notice.company_id),
-                    "model": self._name,
-                    "res_id": notice.id,
-                }
-            )
+        mail = notice._training_render_mail(
+            notice.email,
+            notice.company_id,
+            email_from=notice.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
         notice._store_evidence({"mail_id": mail.id})
         return notice
@@ -108,10 +82,8 @@ class RequestMail(models.Model):
             notice = self.env["training.request.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This request acknowledgement is no longer authorized."))
-            subject, body = notice._content()
             if (
-                self.subject != subject
-                or self.body_html != body
+                not notice._training_mail_matches(self)
                 or self.email_to != notice.email
                 or self.email_cc
                 or self.recipient_ids

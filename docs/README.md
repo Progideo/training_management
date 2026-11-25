@@ -138,6 +138,7 @@ c5cfc7033533a76c98c1dd40ba09520014348d5766930ab57a19782ea2392068  docs/reference
 | S09.3 — réclamations et amélioration continue | [s093-quality.md](s093-quality.md) |
 | S09.4 — intervenants, sous-traitance et veille | [s094-intervenants-veille.md](s094-intervenants-veille.md) |
 | S10 — tableau de suivi, indicateurs et notifications | [s10-operational-dashboard.md](s10-operational-dashboard.md) |
+| Modèles d’email des formations (EN + FR) | [training-mail-templates.md](training-mail-templates.md) |
 | S11 — sécurité transversale, conservation et accès | [s11-security-audit.md](s11-security-audit.md) |
 | P01–P06 — couverture et droits C02/C04 | [p01-p06-coverage.md](p01-p06-coverage.md) |
 | P01–P02 — parcours et demande guidée | [p01-p02-guided-requests.md](p01-p02-guided-requests.md) |

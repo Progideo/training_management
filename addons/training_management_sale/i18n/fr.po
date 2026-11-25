@@ -1316,6 +1316,7 @@ msgstr ""
 #. module: training_management_sale
 #. odoo-python
 #: code:addons/training_management_sale/models/request_notice.py:0
+#: model:mail.template,subject:training_management_sale.mail_template_request_notice
 msgid "Your training request has been received"
 msgstr "Votre demande de formation a été reçue"
 
@@ -2632,3 +2633,164 @@ msgstr "Les places de cette inscription ont été libérées avant la confirmati
 #: code:addons/training_management_sale/models/session_registration_payment.py:0
 msgid "This registration can be paid only once the session is confirmed and its places held."
 msgstr "Cette inscription ne peut être payée qu’une fois la session confirmée et ses places conservées."
+
+#. module: training_management_sale
+#: model:mail.template,body_html:training_management_sale.mail_template_request_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Your training request has been recorded. The team will contact you. This acknowledgement does not confirm an enrollment.</p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Votre demande de formation est enregistrée. L’équipe vous contactera. Cet accusé de réception ne confirme pas une inscription.</p>\n"
+"</div>"
+
+#. module: training_management_sale
+#: model:mail.template,description:training_management_sale.mail_template_request_notice
+msgid "Acknowledges a training request received from the website."
+msgstr "Accuse réception d’une demande de formation reçue depuis le site."
+
+#. module: training_management_sale
+#: model:mail.template,name:training_management_sale.mail_template_request_notice
+msgid "Training: request acknowledgement"
+msgstr "Formation : accusé de réception d’une demande"
+
+#. module: training_management_sale
+#: model:mail.template,body_html:training_management_sale.mail_template_session_confirmation
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p t-if=\"object.is_requester\">We confirm the <t t-out=\"object.lead_id.training_attendee_count\"></t> place(s) requested for the training below.</p>\n"
+"    <p t-else=\"\">Your enrollment in the training below is confirmed.</p>\n"
+"    <p t-if=\"object.participant_ids\">Participant(s) receiving this message: <t t-out=\"', '.join(object.participant_ids.mapped('name'))\"></t>.</p>\n"
+"    <t t-out=\"object.details_html\"></t>\n"
+"    <p>If you have any questions, you can reply to this message.</p>\n"
+"    <p t-out=\"object.company_id.name\"></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p t-if=\"object.is_requester\">Nous confirmons les <t t-out=\"object.lead_id.training_attendee_count\"></t> place(s) demandée(s) pour la formation ci-dessous.</p>\n"
+"    <p t-else=\"\">Votre inscription à la formation ci-dessous est confirmée.</p>\n"
+"    <p t-if=\"object.participant_ids\">Participant(s) destinataire(s) de ce message : <t t-out=\"', '.join(object.participant_ids.mapped('name'))\"></t>.</p>\n"
+"    <t t-out=\"object.details_html\"></t>\n"
+"    <p>Pour toute question, vous pouvez répondre à ce message.</p>\n"
+"    <p t-out=\"object.company_id.name\"></p>\n"
+"</div>"
+
+#. module: training_management_sale
+#: model:mail.template,body_html:training_management_sale.mail_template_session_registration_payment
+msgid ""
+"<div>\n"
+"    <t t-set=\"delivery\" t-value=\"object.training_registration_delivery_id\"></t>\n"
+"    <p>Hello <t t-out=\"object.partner_id.name\"></t>,</p>\n"
+"    <p>The session of <t t-out=\"format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')\"></t> of the training <strong t-out=\"delivery.program_id.course_id.name\"></strong> is confirmed.</p>\n"
+"    <p>To confirm your participation (<t t-out=\"object.training_attendee_count\"></t> participant(s)), pay for your registration before <t t-out=\"format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')\"></t>: after this date, the place is released.</p>\n"
+"    <p><a t-att-href=\"object.get_base_url() + object.access_url\" style=\"background-color:#875A7B;padding:8px 16px;color:#fff;border-radius:5px;text-decoration:none\">Pay and confirm my participation</a></p>\n"
+"    <p>If you have any questions, you can reply to this message.</p>\n"
+"    <p t-out=\"object.company_id.name\"></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <t t-set=\"delivery\" t-value=\"object.training_registration_delivery_id\"></t>\n"
+"    <p>Bonjour <t t-out=\"object.partner_id.name\"></t>,</p>\n"
+"    <p>La session du <t t-out=\"format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')\"></t> de la formation <strong t-out=\"delivery.program_id.course_id.name\"></strong> est confirmée.</p>\n"
+"    <p>Pour confirmer votre participation (<t t-out=\"object.training_attendee_count\"></t> participant(s)), réglez votre inscription avant le <t t-out=\"format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')\"></t> : passé ce délai, la place est libérée.</p>\n"
+"    <p><a t-att-href=\"object.get_base_url() + object.access_url\" style=\"background-color:#875A7B;padding:8px 16px;color:#fff;border-radius:5px;text-decoration:none\">Payer et confirmer ma participation</a></p>\n"
+"    <p>Pour toute question, vous pouvez répondre à ce message.</p>\n"
+"    <p t-out=\"object.company_id.name\"></p>\n"
+"</div>"
+
+#. module: training_management_sale
+#: model:mail.template,body_html:training_management_sale.mail_template_session_registration_waiting
+msgid ""
+"<div>\n"
+"    <t t-set=\"delivery\" t-value=\"object.training_registration_delivery_id\"></t>\n"
+"    <p>Hello <t t-out=\"object.partner_id.name\"></t>,</p>\n"
+"    <p>Your registration of <t t-out=\"object.training_attendee_count\"></t> participant(s) in the training <strong t-out=\"delivery.program_id.course_id.name\"></strong> is recorded, for the session of <t t-out=\"format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')\"></t>.</p>\n"
+"    <p>This session is not confirmed yet: please do not pay for now. As soon as it is confirmed, we will send you a payment request to confirm your participation.</p>\n"
+"    <p>Your place is held until <t t-out=\"format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')\"></t>.</p>\n"
+"    <p>If you have any questions, you can reply to this message.</p>\n"
+"    <p t-out=\"object.company_id.name\"></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <t t-set=\"delivery\" t-value=\"object.training_registration_delivery_id\"></t>\n"
+"    <p>Bonjour <t t-out=\"object.partner_id.name\"></t>,</p>\n"
+"    <p>Votre inscription de <t t-out=\"object.training_attendee_count\"></t> participant(s) à la formation <strong t-out=\"delivery.program_id.course_id.name\"></strong> est enregistrée, pour la session du <t t-out=\"format_datetime(delivery.start_at, tz=delivery.timezone, dt_format='long')\"></t>.</p>\n"
+"    <p>Cette session n’est pas encore confirmée : n’effectuez aucun paiement pour le moment. Dès sa confirmation, nous vous enverrons une demande de paiement pour confirmer votre participation.</p>\n"
+"    <p>Votre place est réservée jusqu’au <t t-out=\"format_datetime(object.training_registration_release_at, tz=delivery.timezone, dt_format='long')\"></t>.</p>\n"
+"    <p>Pour toute question, vous pouvez répondre à ce message.</p>\n"
+"    <p t-out=\"object.company_id.name\"></p>\n"
+"</div>"
+
+#. module: training_management_sale
+#: model:mail.template,description:training_management_sale.mail_template_session_registration_payment
+msgid ""
+"Asks the buyer to pay once the session is confirmed; the place is released "
+"after the deadline."
+msgstr ""
+"Demande à l’acheteur de payer une fois la session confirmée ; la place est "
+"libérée après l’échéance."
+
+#. module: training_management_sale
+#: model:mail.template,description:training_management_sale.mail_template_session_confirmation
+msgid ""
+"Confirms the enrollment to the requester and to each participant once the "
+"session places are confirmed."
+msgstr ""
+"Confirme l’inscription au demandeur et à chaque participant une fois les "
+"places de la session confirmées."
+
+#. module: training_management_sale
+#: model:mail.template,subject:training_management_sale.mail_template_session_confirmation
+msgid ""
+"Enrollment confirmation — {{ "
+"object.lead_id.training_requested_course_id.name }}"
+msgstr ""
+"Confirmation d’inscription — {{ "
+"object.lead_id.training_requested_course_id.name }}"
+
+#. module: training_management_sale
+#: model:mail.template,subject:training_management_sale.mail_template_session_registration_waiting
+msgid ""
+"Registration recorded — {{ "
+"object.training_registration_delivery_id.program_id.course_id.name }}"
+msgstr ""
+"Inscription enregistrée — {{ "
+"object.training_registration_delivery_id.program_id.course_id.name }}"
+
+#. module: training_management_sale
+#: model:mail.template,description:training_management_sale.mail_template_session_registration_waiting
+msgid ""
+"Sent when a website registration is recorded for a session that is not "
+"confirmed yet."
+msgstr ""
+"Envoyé lorsqu’une inscription en ligne est enregistrée pour une session pas "
+"encore confirmée."
+
+#. module: training_management_sale
+#: model:mail.template,subject:training_management_sale.mail_template_session_registration_payment
+msgid ""
+"Session confirmed — confirm your participation in {{ "
+"object.training_registration_delivery_id.program_id.course_id.name }}"
+msgstr ""
+"Session confirmée — confirmez votre participation à {{ "
+"object.training_registration_delivery_id.program_id.course_id.name }}"
+
+#. module: training_management_sale
+#: model:mail.template,name:training_management_sale.mail_template_session_registration_waiting
+msgid "Training: registration recorded, session to be confirmed"
+msgstr "Formation : inscription enregistrée, session à confirmer"
+
+#. module: training_management_sale
+#: model:mail.template,name:training_management_sale.mail_template_session_registration_payment
+msgid "Training: session confirmed, payment request"
+msgstr "Formation : session confirmée, demande de paiement"
+
+#. module: training_management_sale
+#: model:mail.template,name:training_management_sale.mail_template_session_confirmation
+msgid "Training: session enrollment confirmation"
+msgstr "Formation : confirmation d’inscription à une session"

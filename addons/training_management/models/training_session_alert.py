@@ -4,12 +4,11 @@ import hashlib
 import secrets
 from datetime import timedelta
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import SQL, consteq, email_normalize, email_split
 from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
+
 
 # A confirmation link received by email stays valid this long.
 CONFIRMATION_DELAY = timedelta(days=7)
@@ -23,7 +22,8 @@ CONFIRMATIONS_PER_DAY = 5
 
 class SessionAlertSubscription(models.Model):
     _name = "training.session.alert.subscription"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
+    _training_mail_template_xmlid = "training_management.mail_template_date_alert_confirmation"
     _description = "Voluntary New Session Date Subscription"
     _check_company_auto = True
     _rec_name = "course_id"
@@ -236,45 +236,9 @@ class SessionAlertSubscription(models.Model):
         return True
 
     @api.private
-    def _confirmation_content(self):
-        self.ensure_one()
-        env = self.with_context(lang=self.language or "en_US").env
-        base = self.company_id.get_base_url()
-        return env._("Confirm your new date alert"), Markup(
-            '<p>%s</p><p><strong>%s</strong></p><p><a href="%s">%s</a></p><p>%s</p>'
-        ) % (
-            env._("You asked to be told when new dates are published for this training:"),
-            self.public_title,
-            base + "/formations/date-alert/confirm/%s" % self.sudo().access_token,
-            env._("Confirm my alert"),
-            env._("If you did not ask for it, ignore this email: no alert is activated without confirmation."),
-        )
-
-    @api.private
     def _queue_confirmation(self):
         self.ensure_one()
-        subject, body = self._confirmation_content()
-        clean = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
-        mail = (
-            self.env["mail.mail"]
-            .sudo()
-            .with_context(**clean)
-            .create(
-                {
-                    "subject": subject,
-                    "body_html": body,
-                    "email_to": self.email,
-                    **self.env["mail.mail"]._training_identity(self.company_id),
-                    "email_cc": False,
-                    "recipient_ids": [],
-                    "recipient_cc_ids": [],
-                    "attachment_ids": [],
-                    "model": self._name,
-                    "res_id": self.id,
-                    "auto_delete": False,
-                }
-            )
-        )  # pylint: disable=context-overridden  # discard untrusted mail defaults
+        mail = self._training_render_mail(self.email, self.company_id)
         self._store_evidence({"confirmation_mail_id": mail.id})
 
     @api.private
@@ -376,7 +340,8 @@ class SessionAlertEvent(models.Model):
 
 class SessionAlertNotice(models.Model):
     _name = "training.session.alert.notice"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
+    _training_mail_template_xmlid = "training_management.mail_template_date_alert_notice"
     _description = "New Session Date Notification Journal"
 
     subscription_id = fields.Many2one("training.session.alert.subscription", required=True, ondelete="restrict")
@@ -428,19 +393,9 @@ class SessionAlertNotice(models.Model):
         )
 
     @api.private
-    def _content(self):
-        env = self.with_context(lang=self.recipient_language).env
-        return env._("New training session dates are available"), Markup(
-            '<p>%s</p><p><a href="%s">%s</a></p><p><a href="%s">%s</a></p>'
-        ) % (
-            env._(
-                "New session dates have been published for a training you follow. Consult the current public information before requesting a place."
-            ),
-            self.delivery_id.get_base_url() + "/formations/%s/sessions" % self.delivery_id.program_id.id,
-            env._("View session dates"),
-            self._manage_url(),
-            env._("Manage or unsubscribe from date alerts"),
-        )
+    def training_mail_manage_url(self):
+        """Link of the alert email to manage or stop date alerts."""
+        return self._manage_url()
 
     @api.private
     def _manage_url(self):
@@ -486,27 +441,9 @@ class SessionAlertNotice(models.Model):
                     {"not_queued_reason": self.env._("No currently authorized recipient with an email address.")}
                 )
                 continue
-            subject, body = row._content()
-            clean = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
-            mail = (
-                self.env["mail.mail"]
-                .sudo()
-                .with_context(**clean)
-                .create(
-                    {
-                        "subject": subject,
-                        "body_html": body,
-                        "email_to": row.recipient_email,
-                        "email_from": delivery.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                        **self.env["mail.mail"]._training_identity(delivery.company_id),
-                        "email_cc": False,
-                        "recipient_ids": [],
-                        "recipient_cc_ids": [],
-                        "attachment_ids": [],
-                        "model": self._name,
-                        "res_id": row.id,
-                        "auto_delete": False,
-                    }
-                )
-            )  # pylint: disable=context-overridden  # discard untrusted mail defaults
+            mail = row._training_render_mail(
+                row.recipient_email,
+                delivery.company_id,
+                email_from=delivery.company_id.partner_id.email_formatted or self.env.user.email_formatted,
+            )
             row._store_evidence({"mail_id": mail.id})

@@ -1,3 +1,4 @@
+from . import training_mail_journal
 from . import training_course
 from . import training_program
 from . import training_controlled

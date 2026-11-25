@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Native, editable templates of the training emails. Only subject and body are used:
+     recipients, sender, attachments and reports are set by the journal that queues the mail.
+     The texts stay generic: no participant name, private title, result or file. -->
+<odoo noupdate="1">
+    <record id="mail_template_training_notification" model="mail.template">
+        <field name="name">Training: enrollment update</field>
+        <field name="model_id" ref="model_training_notification"/>
+        <field name="subject">Your training space has been updated</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Sent to the participant when the enrollment, an evaluation deadline, a document or the learning access changes.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Sign in to view your enrollment, evaluation deadlines or available documents.</p>
+    <p><a t-att-href="object.enrollment_id.get_base_url() + '/my/home'">Open my training space</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_learning_notice" model="mail.template">
+        <field name="name">Training: learning space update</field>
+        <field name="model_id" ref="model_training_learning_notice"/>
+        <field name="subject">Your training space needs attention</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Sent to the participant or tutor when private learning information changes, or after a period of inactivity.</field>
+        <field name="body_html" type="html">
+<div>
+    <t t-set="tutor" t-value="object.entry_id and object.entry_id.kind in ('submission', 'question')"/>
+    <p>Hello,</p>
+    <p>Sign in to your training space to view the current information.</p>
+    <p><a t-att-href="object.enrollment_id.get_base_url() + ('/my/training-tutoring/%s' if tutor else '/my/trainings/%s') % object.enrollment_id.id">Open training space</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_practice_notice" model="mail.template">
+        <field name="name">Training: practice plan reminder</field>
+        <field name="model_id" ref="model_training_practice_notice"/>
+        <field name="subject">Your practice plan needs attention</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Reminds the participant of the planned post-training actions.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Sign in to review your post-training actions.</p>
+    <p><a t-att-href="object.enrollment_id.get_base_url() + '/my/training-practice'">Open practice plan</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_tutoring_notice" model="mail.template">
+        <field name="name">Training: tutoring reservation change</field>
+        <field name="model_id" ref="model_training_tutoring_notice"/>
+        <field name="subject">Your tutoring reservation has changed</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Sent to the participant and the tutor when a tutoring reservation is confirmed or cancelled.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Sign in to view the current reservation information.</p>
+    <p><a t-att-href="object.enrollment_id.get_base_url() + '/my/training-bookings'">Open tutoring reservations</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_feedback_notice" model="mail.template">
+        <field name="name">Training: feedback invitation</field>
+        <field name="model_id" ref="model_training_feedback_notice"/>
+        <field name="subject">Your training feedback</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Invites the recipient of a feedback campaign to reply.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Sign in to your training feedback space. If you have already replied, please ignore this reminder.</p>
+    <p><a t-att-href="object.campaign_id.get_base_url() + '/my/training-feedback'">Open feedback space</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_publication_notice" model="mail.template">
+        <field name="name">Training: publication authorization request</field>
+        <field name="model_id" ref="model_training_publication_notice"/>
+        <field name="subject">A publication authorization awaits your decision</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Asks the author whether their contribution may be published.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Sign in to review the proposed publication. Giving an opinion or authorizing publication is optional.</p>
+    <p><a t-att-href="object.publication_id.get_base_url() + '/my/training-publications'">Review publication requests</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_operator_notice" model="mail.template">
+        <field name="name">Training: staff alert</field>
+        <field name="model_id" ref="model_training_operator_notice"/>
+        <field name="subject">A training action needs your attention</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Alerts the training manager or the assigned trainer.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>Sign in to review the information you are authorized to access.</p>
+    <p><a t-att-href="object.training_mail_url()">Open training space</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_date_alert_confirmation" model="mail.template">
+        <field name="name">Training: date alert confirmation</field>
+        <field name="model_id" ref="model_training_session_alert_subscription"/>
+        <field name="subject">Confirm your new date alert</field>
+        <field name="lang">{{ object.language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Asks a visitor without an account to confirm their new date alert.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>You asked to be told when new dates are published for this training:</p>
+    <p><strong t-out="object.public_title"/></p>
+    <p><a t-att-href="object.company_id.get_base_url() + '/formations/date-alert/confirm/' + object.access_token">Confirm my alert</a></p>
+    <p>If you did not ask for it, ignore this email: no alert is activated without confirmation.</p>
+</div></field>
+    </record>
+
+    <record id="mail_template_date_alert_notice" model="mail.template">
+        <field name="name">Training: new session dates</field>
+        <field name="model_id" ref="model_training_session_alert_notice"/>
+        <field name="subject">New training session dates are available</field>
+        <field name="lang">{{ object.recipient_language }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Tells a date alert subscriber that new session dates are published.</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Hello,</p>
+    <p>New session dates have been published for a training you follow. Consult the current public information before requesting a place.</p>
+    <p><a t-att-href="object.delivery_id.get_base_url() + '/formations/%s/sessions' % object.delivery_id.program_id.id">View session dates</a></p>
+    <p><a t-att-href="object.training_mail_manage_url()">Manage or unsubscribe from date alerts</a></p>
+</div></field>
+    </record>
+
+    <record id="mail_template_session_invitation" model="mail.template">
+        <field name="name">Training: session invitation</field>
+        <field name="model_id" ref="model_training_invitation"/>
+        <field name="subject">{{ object.session_id.cancelled and 'Session cancelled' or 'Training invitation / schedule update' }} — {{ object.session_id.name }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Invites a confirmed participant or an assigned trainer to a session, or tells them about a schedule change or cancellation.</field>
+        <field name="body_html" type="html">
+<div>
+    <t t-set="session" t-value="object.session_id"/>
+    <p>Hello,</p>
+    <p t-if="session.cancelled">This session is cancelled:</p>
+    <p t-else="">Here are the details of your training session:</p>
+    <p><strong t-out="object.delivery_id.name"/> — <t t-out="session.name"/></p>
+    <p><t t-out="format_datetime(session.start_at, tz=object.recipient_timezone)"/> → <t t-out="format_datetime(session.end_at, tz=object.recipient_timezone)"/> (<t t-out="object.recipient_timezone"/>)</p>
+    <p t-if="session.instructor_id">Trainer: <t t-out="session.instructor_id.name"/></p>
+    <p t-if="session.location or session.room_id">Location: <t t-out="session.location or session.room_id.name"/></p>
+    <p t-if="session.meeting_url">Online meeting: <a t-att-href="session.meeting_url" t-out="session.meeting_url"/></p>
+</div></field>
+    </record>
+</odoo>

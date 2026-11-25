@@ -25,15 +25,13 @@ class MailMail(models.Model):
                 notice.delivery_id.invalidate_recordset()
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This learning notification no longer has an authorized recipient."))
-            subject, body = notice._content()
             if (
                 self.email_to != notice.recipient_email
                 or self.email_cc
                 or self.recipient_ids
                 or self.recipient_cc_ids
                 or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
+                or not notice._training_mail_matches(self)
             ):
                 raise ValidationError(self.env._("Learning notifications contain only the authorized sign-in link."))
         if self.model == "training.session.alert.subscription":
@@ -44,59 +42,51 @@ class MailMail(models.Model):
                 subscription.invalidate_recordset()
             if not subscription or not subscription._confirmation_authorized(self):
                 raise ValidationError(self.env._("This date alert confirmation is no longer valid."))
-            subject, body = subscription._confirmation_content()
             if (
                 self.email_cc
                 or self.recipient_ids
                 or self.recipient_cc_ids
                 or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
+                or not subscription._training_mail_matches(self)
             ):
                 raise ValidationError(self.env._("A date alert confirmation contains only its confirmation link."))
         if self.model == "training.feedback.notice":
             notice = self.env["training.feedback.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This feedback invitation is no longer authorized."))
-            subject, body = notice._content()
             if (
                 self.email_to != notice.email
                 or self.email_cc
                 or self.recipient_ids
                 or self.recipient_cc_ids
                 or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
+                or not notice._training_mail_matches(self)
             ):
                 raise ValidationError(self.env._("Feedback notifications contain only the sign-in link."))
         if self.model == "training.notification":
             notice = self.env["training.notification"].sudo().search([("mail_id", "=", self.id)], limit=1)
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This lifecycle notification is no longer authorized."))
-            subject, body = notice._content()
             if (
                 self.email_to != notice.email
                 or self.email_cc
                 or self.recipient_ids
                 or self.recipient_cc_ids
                 or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
+                or not notice._training_mail_matches(self)
             ):
                 raise ValidationError(self.env._("Lifecycle notifications contain only the authorized sign-in link."))
         if self.model == "training.operator.notice":
             notice = self.env["training.operator.notice"].sudo().search([("mail_id", "=", self.id)], limit=1)
             if not notice or not notice._authorized():
                 raise ValidationError(self.env._("This staff alert no longer has an authorized recipient."))
-            subject, body = notice._content()
             if (
                 self.email_to != notice.email
                 or self.email_cc
                 or self.recipient_ids
                 or self.recipient_cc_ids
                 or self.attachment_ids
-                or self.subject != subject
-                or self.body_html != body
+                or not notice._training_mail_matches(self)
             ):
                 raise ValidationError(self.env._("Staff alerts contain only the authorized sign-in link."))
         # Called inside native _send's error handling, immediately before build

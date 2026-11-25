@@ -3,17 +3,16 @@
 import hashlib
 import json
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tools.misc import format_datetime
 from odoo.addons.training_catalog.models.training_deletion import require_evidence_deletion
 
 
 class TrainingInvitation(models.Model):
     _name = "training.invitation"
+    _inherit = ["training.mail.journal"]
     _description = "Training Invitation Distribution"
+    _training_mail_template_xmlid = "training_management.mail_template_session_invitation"
     _order = "id desc"
 
     delivery_id = fields.Many2one("training.delivery", required=True, ondelete="restrict")
@@ -76,7 +75,6 @@ class TrainingInvitation(models.Model):
         # Never carry RPC default_* values into elevated mail creation: in
         # particular no default_attachment_ids, CC, followers or mail server.
         clean_context = {key: value for key, value in self.env.context.items() if not key.startswith("default_")}
-        outgoing = self.env["mail.mail"].sudo().with_context(clean_context)  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
         for session in all_sessions:
             participants = delivery.enrollment_ids.filtered(lambda item: item.state == "confirmed").participant_id
             for partner in recipients & (participants | session.instructor_id):
@@ -94,51 +92,28 @@ class TrainingInvitation(models.Model):
                     if existing.mail_id.sudo().state == "exception":
                         existing.mail_id.sudo().write({"state": "outgoing"})
                     continue
-                localized = session.with_context(lang=partner.lang or self.env.lang)
-                title = (
-                    localized.env._("Session cancelled")
-                    if session.cancelled
-                    else localized.env._("Training invitation / schedule update")
-                )
-                start = format_datetime(localized.env, session.start_at, tz=tz)
-                end = format_datetime(localized.env, session.end_at, tz=tz)
-                body = Markup("<p>%s — %s</p><p>%s → %s (%s)</p><p>%s</p><p>%s</p><p>%s</p>") % (
-                    delivery.name,
-                    session.name,
-                    start,
-                    end,
-                    tz,
-                    session.instructor_id.name or "",
-                    session.location or session.room_id.name or "",
-                    session.meeting_url or "",
-                )
-                # Narrow elevation: whitelist recipients above, one message per
-                # person, no followers, attachments, CC or confidential content.
-                mail = outgoing.create(
-                    {
-                        "subject": "%s — %s" % (title, session.name),
-                        "body_html": body,
-                        "email_to": partner.email,
-                        "email_from": self.env.user.email_formatted or delivery.company_id.partner_id.email_formatted,
-                        **self.env["mail.mail"]._training_identity(delivery.company_id),
-                        "auto_delete": False,
-                        "model": "training.session",
-                        "res_id": session.id,
-                    }
-                )
-                super(TrainingInvitation, self.sudo().with_context(clean_context)).create(  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
+                invitation = super(TrainingInvitation, self.sudo().with_context(clean_context)).create(  # pylint: disable=context-overridden  # deliberately discard untrusted defaults
                     {
                         "delivery_id": delivery.id,
                         "session_id": session.id,
                         "partner_id": partner.id,
                         "fingerprint": fingerprint,
                         "dispatch_number": previous[0].dispatch_number + 1 if previous else 1,
-                        "mail_id": mail.id,
                         "requested_by_id": self.env.uid,
                         "requested_at": fields.Datetime.now(),
                         "recipient_timezone": tz,
                     }
                 )
+                # Narrow elevation: whitelist recipients above, one message per
+                # person, no followers, attachments, CC or confidential content.
+                mail = invitation._training_render_mail(
+                    partner.email,
+                    delivery.company_id,
+                    email_from=self.env.user.email_formatted or delivery.company_id.partner_id.email_formatted,
+                    model="training.session",
+                    res_id=session.id,
+                )
+                super(TrainingInvitation, invitation).write({"mail_id": mail.id})
                 count += 1
         return count
 

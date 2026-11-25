@@ -5560,6 +5560,7 @@ msgstr "Validé par le tuteur affecté."
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_learning_notice.py:0
+#: model:mail.template,subject:training_management.mail_template_learning_notice
 msgid "Your training space needs attention"
 msgstr "Votre espace formation attend votre attention"
 
@@ -8119,6 +8120,7 @@ msgstr "Retirez les destinataires au lieu de supprimer les invitations."
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_feedback_notice.py:0
+#: model:mail.template,subject:training_management.mail_template_feedback_notice
 msgid "Your training feedback"
 msgstr "Vos retours de formation"
 
@@ -10406,6 +10408,7 @@ msgstr "Indicateurs vérifiables"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_notification.py:0
+#: model:mail.template,subject:training_management.mail_template_training_notification
 msgid "Your training space has been updated"
 msgstr "Votre espace de formation a été mis à jour"
 
@@ -11683,6 +11686,7 @@ msgstr "Notifications de formation"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_operator_notice.py:0
+#: model:mail.template,subject:training_management.mail_template_operator_notice
 msgid "A training action needs your attention"
 msgstr "Une action de formation nécessite votre attention"
 
@@ -12368,6 +12372,7 @@ msgstr "Retirer"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_practice_notice.py:0
+#: model:mail.template,subject:training_management.mail_template_practice_notice
 msgid "Your practice plan needs attention"
 msgstr "Votre plan de mise en pratique demande votre attention"
 
@@ -12904,6 +12909,7 @@ msgstr "Nombre consommé"
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_tutoring_notice.py:0
+#: model:mail.template,subject:training_management.mail_template_tutoring_notice
 msgid "Your tutoring reservation has changed"
 msgstr "Votre réservation de tutorat a changé"
 
@@ -12969,6 +12975,7 @@ msgstr "Un cas client confidentiel doit rester privé."
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_publication_notice.py:0
+#: model:mail.template,subject:training_management.mail_template_publication_notice
 msgid "A publication authorization awaits your decision"
 msgstr "Une autorisation de publication attend votre décision"
 
@@ -13712,6 +13719,7 @@ msgstr ""
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_session_alert.py:0
+#: model:mail.template,subject:training_management.mail_template_date_alert_notice
 msgid "New training session dates are available"
 msgstr "De nouvelles dates de formation sont disponibles"
 
@@ -15417,6 +15425,7 @@ msgstr "Saisissez une adresse email valide."
 #. module: training_management
 #. odoo-python
 #: code:addons/training_management/models/training_session_alert.py:0
+#: model:mail.template,subject:training_management.mail_template_date_alert_confirmation
 msgid "Confirm your new date alert"
 msgstr "Confirmez votre alerte de nouvelles dates"
 
@@ -15464,3 +15473,301 @@ msgstr "Une confirmation d’alerte ne contient que son lien de confirmation."
 #: model:ir.actions.server,name:training_management.action_training_provider_dossier_delete_dossier
 msgid "Delete Dossier"
 msgstr "Supprimer le dossier"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_date_alert_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>New session dates have been published for a training you follow. Consult the current public information before requesting a place.</p>\n"
+"    <p><a t-att-href=\"object.delivery_id.get_base_url() + '/formations/%s/sessions' % object.delivery_id.program_id.id\">View session dates</a></p>\n"
+"    <p><a t-att-href=\"object.training_mail_manage_url()\">Manage or unsubscribe from date alerts</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>De nouvelles dates sont publiées pour une formation que vous suivez. Consultez les informations publiques actuelles avant de demander une place.</p>\n"
+"    <p><a t-att-href=\"object.delivery_id.get_base_url() + '/formations/%s/sessions' % object.delivery_id.program_id.id\">Voir les dates des sessions</a></p>\n"
+"    <p><a t-att-href=\"object.training_mail_manage_url()\">Gérer mes alertes de dates ou me désabonner</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_operator_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to review the information you are authorized to access.</p>\n"
+"    <p><a t-att-href=\"object.training_mail_url()\">Open training space</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous pour consulter les informations auxquelles vous êtes autorisé à accéder.</p>\n"
+"    <p><a t-att-href=\"object.training_mail_url()\">Ouvrir l’espace formation</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_publication_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to review the proposed publication. Giving an opinion or authorizing publication is optional.</p>\n"
+"    <p><a t-att-href=\"object.publication_id.get_base_url() + '/my/training-publications'\">Review publication requests</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous pour consulter la publication proposée. Donner un avis ou autoriser une publication est facultatif.</p>\n"
+"    <p><a t-att-href=\"object.publication_id.get_base_url() + '/my/training-publications'\">Consulter les demandes de publication</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_practice_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to review your post-training actions.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/training-practice'\">Open practice plan</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous pour consulter vos actions après formation.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/training-practice'\">Ouvrir le plan de mise en pratique</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_tutoring_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to view the current reservation information.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/training-bookings'\">Open tutoring reservations</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous pour consulter les informations à jour de la réservation.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/training-bookings'\">Ouvrir les réservations de tutorat</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_training_notification
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to view your enrollment, evaluation deadlines or available documents.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/home'\">Open my training space</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous pour consulter votre inscription, vos échéances d’évaluation ou les documents disponibles.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/home'\">Ouvrir mon espace de formation</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_feedback_notice
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to your training feedback space. If you have already replied, please ignore this reminder.</p>\n"
+"    <p><a t-att-href=\"object.campaign_id.get_base_url() + '/my/training-feedback'\">Open feedback space</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous à votre espace des retours de formation. Si vous avez déjà répondu, ignorez cette relance.</p>\n"
+"    <p><a t-att-href=\"object.campaign_id.get_base_url() + '/my/training-feedback'\">Ouvrir l’espace des retours</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_date_alert_confirmation
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>You asked to be told when new dates are published for this training:</p>\n"
+"    <p><strong t-out=\"object.public_title\"></strong></p>\n"
+"    <p><a t-att-href=\"object.company_id.get_base_url() + '/formations/date-alert/confirm/' + object.access_token\">Confirm my alert</a></p>\n"
+"    <p>If you did not ask for it, ignore this email: no alert is activated without confirmation.</p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Vous avez demandé à être prévenu de la publication de nouvelles dates pour cette formation :</p>\n"
+"    <p><strong t-out=\"object.public_title\"></strong></p>\n"
+"    <p><a t-att-href=\"object.company_id.get_base_url() + '/formations/date-alert/confirm/' + object.access_token\">Confirmer mon alerte</a></p>\n"
+"    <p>Si vous n’êtes pas à l’origine de cette demande, ignorez ce courriel : aucune alerte n’est activée sans confirmation.</p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_session_invitation
+msgid ""
+"<div>\n"
+"    <t t-set=\"session\" t-value=\"object.session_id\"></t>\n"
+"    <p>Hello,</p>\n"
+"    <p t-if=\"session.cancelled\">This session is cancelled:</p>\n"
+"    <p t-else=\"\">Here are the details of your training session:</p>\n"
+"    <p><strong t-out=\"object.delivery_id.name\"></strong> — <t t-out=\"session.name\"></t></p>\n"
+"    <p><t t-out=\"format_datetime(session.start_at, tz=object.recipient_timezone)\"></t> → <t t-out=\"format_datetime(session.end_at, tz=object.recipient_timezone)\"></t> (<t t-out=\"object.recipient_timezone\"></t>)</p>\n"
+"    <p t-if=\"session.instructor_id\">Trainer: <t t-out=\"session.instructor_id.name\"></t></p>\n"
+"    <p t-if=\"session.location or session.room_id\">Location: <t t-out=\"session.location or session.room_id.name\"></t></p>\n"
+"    <p t-if=\"session.meeting_url\">Online meeting: <a t-att-href=\"session.meeting_url\" t-out=\"session.meeting_url\"></a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <t t-set=\"session\" t-value=\"object.session_id\"></t>\n"
+"    <p>Bonjour,</p>\n"
+"    <p t-if=\"session.cancelled\">Cette séance est annulée :</p>\n"
+"    <p t-else=\"\">Voici les informations de votre séance de formation :</p>\n"
+"    <p><strong t-out=\"object.delivery_id.name\"></strong> — <t t-out=\"session.name\"></t></p>\n"
+"    <p><t t-out=\"format_datetime(session.start_at, tz=object.recipient_timezone)\"></t> → <t t-out=\"format_datetime(session.end_at, tz=object.recipient_timezone)\"></t> (<t t-out=\"object.recipient_timezone\"></t>)</p>\n"
+"    <p t-if=\"session.instructor_id\">Formateur : <t t-out=\"session.instructor_id.name\"></t></p>\n"
+"    <p t-if=\"session.location or session.room_id\">Lieu : <t t-out=\"session.location or session.room_id.name\"></t></p>\n"
+"    <p t-if=\"session.meeting_url\">Réunion en ligne : <a t-att-href=\"session.meeting_url\" t-out=\"session.meeting_url\"></a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,body_html:training_management.mail_template_learning_notice
+msgid ""
+"<div>\n"
+"    <t t-set=\"tutor\" t-value=\"object.entry_id and object.entry_id.kind in ('submission', 'question')\"></t>\n"
+"    <p>Hello,</p>\n"
+"    <p>Sign in to your training space to view the current information.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + ('/my/training-tutoring/%s' if tutor else '/my/trainings/%s') % object.enrollment_id.id\">Open training space</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <t t-set=\"tutor\" t-value=\"object.entry_id and object.entry_id.kind in ('submission', 'question')\"></t>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Connectez-vous à votre espace formation pour consulter les informations à jour.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + ('/my/training-tutoring/%s' if tutor else '/my/trainings/%s') % object.enrollment_id.id\">Ouvrir l’espace formation</a></p>\n"
+"</div>"
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_operator_notice
+msgid "Alerts the training manager or the assigned trainer."
+msgstr "Alerte le responsable de formation ou le formateur affecté."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_date_alert_confirmation
+msgid "Asks a visitor without an account to confirm their new date alert."
+msgstr ""
+"Demande à un visiteur sans compte de confirmer son alerte de nouvelles "
+"dates."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_publication_notice
+msgid "Asks the author whether their contribution may be published."
+msgstr "Demande à l’auteur si sa contribution peut être publiée."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_session_invitation
+msgid ""
+"Invites a confirmed participant or an assigned trainer to a session, or "
+"tells them about a schedule change or cancellation."
+msgstr ""
+"Convoque un participant confirmé ou un formateur affecté à une séance, ou "
+"l’informe d’une modification d’horaire ou d’une annulation."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_feedback_notice
+msgid "Invites the recipient of a feedback campaign to reply."
+msgstr "Invite le destinataire d’une campagne de retours à répondre."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_practice_notice
+msgid "Reminds the participant of the planned post-training actions."
+msgstr "Rappelle au participant les actions prévues après la formation."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_tutoring_notice
+msgid ""
+"Sent to the participant and the tutor when a tutoring reservation is "
+"confirmed or cancelled."
+msgstr ""
+"Envoyé au participant et au tuteur lorsqu’une réservation de tutorat est "
+"confirmée ou annulée."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_learning_notice
+msgid ""
+"Sent to the participant or tutor when private learning information changes, "
+"or after a period of inactivity."
+msgstr ""
+"Envoyé au participant ou au tuteur lorsqu’une information pédagogique privée"
+" change, ou après une période d’inactivité."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_training_notification
+msgid ""
+"Sent to the participant when the enrollment, an evaluation deadline, a "
+"document or the learning access changes."
+msgstr ""
+"Envoyé au participant lorsque l’inscription, une échéance d’évaluation, un "
+"document ou l’accès pédagogique change."
+
+#. module: training_management
+#: model:mail.template,description:training_management.mail_template_date_alert_notice
+msgid "Tells a date alert subscriber that new session dates are published."
+msgstr ""
+"Informe un abonné aux alertes de dates que de nouvelles dates sont publiées."
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_date_alert_confirmation
+msgid "Training: date alert confirmation"
+msgstr "Formation : confirmation d’alerte de dates"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_training_notification
+msgid "Training: enrollment update"
+msgstr "Formation : mise à jour de l’inscription"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_feedback_notice
+msgid "Training: feedback invitation"
+msgstr "Formation : invitation à donner son avis"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_learning_notice
+msgid "Training: learning space update"
+msgstr "Formation : information de l’espace formation"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_date_alert_notice
+msgid "Training: new session dates"
+msgstr "Formation : nouvelles dates de sessions"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_practice_notice
+msgid "Training: practice plan reminder"
+msgstr "Formation : relance du plan de mise en pratique"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_publication_notice
+msgid "Training: publication authorization request"
+msgstr "Formation : demande d’autorisation de publication"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_session_invitation
+msgid "Training: session invitation"
+msgstr "Formation : convocation à une séance"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_operator_notice
+msgid "Training: staff alert"
+msgstr "Formation : alerte de l’équipe"
+
+#. module: training_management
+#: model:mail.template,name:training_management.mail_template_tutoring_notice
+msgid "Training: tutoring reservation change"
+msgstr "Formation : modification d’une réservation de tutorat"
+
+#. module: training_management
+#: model:mail.template,subject:training_management.mail_template_session_invitation
+msgid ""
+"{{ object.session_id.cancelled and 'Session cancelled' or 'Training "
+"invitation / schedule update' }} — {{ object.session_id.name }}"
+msgstr ""
+"{{ object.session_id.cancelled and 'Séance annulée' or 'Convocation / "
+"modification de séance' }} — {{ object.session_id.name }}"

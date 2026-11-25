@@ -184,3 +184,39 @@ msgstr "Conservez les usages historiques des contenus."
 #: code:addons/training_management_interactive/models/assignment.py:0
 msgid "Preserve the activity and its content usage."
 msgstr "Conservez l’activité et son usage de contenu."
+
+#. module: training_management_interactive
+#: model:mail.template,body_html:training_management_interactive.mail_template_resource_withdrawal
+msgid ""
+"<div>\n"
+"    <p>Hello,</p>\n"
+"    <p>A learning resource is unavailable. Contact your training coordination.</p>\n"
+"    <p>Sign in to your training space to view the current information.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/trainings/%s' % object.enrollment_id.id\">Open training space</a></p>\n"
+"</div>"
+msgstr ""
+"<div>\n"
+"    <p>Bonjour,</p>\n"
+"    <p>Une ressource pédagogique n’est plus disponible. Contactez votre coordination de formation.</p>\n"
+"    <p>Connectez-vous à votre espace formation pour consulter les informations à jour.</p>\n"
+"    <p><a t-att-href=\"object.enrollment_id.get_base_url() + '/my/trainings/%s' % object.enrollment_id.id\">Ouvrir l’espace formation</a></p>\n"
+"</div>"
+
+#. module: training_management_interactive
+#: model:mail.template,description:training_management_interactive.mail_template_resource_withdrawal
+msgid ""
+"Tells the participant that a learning resource of their training is no "
+"longer available."
+msgstr ""
+"Informe le participant qu’une ressource pédagogique de sa formation n’est "
+"plus disponible."
+
+#. module: training_management_interactive
+#: model:mail.template,name:training_management_interactive.mail_template_resource_withdrawal
+msgid "Training: learning resource withdrawn"
+msgstr "Formation : ressource pédagogique retirée"
+
+#. module: training_management_interactive
+#: model:mail.template,subject:training_management_interactive.mail_template_resource_withdrawal
+msgid "Your training space needs attention"
+msgstr "Votre espace formation attend votre attention"

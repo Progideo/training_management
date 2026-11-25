@@ -1,15 +1,15 @@
 """One private sign-in notice per request, checked again at native transport."""
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
+
 from odoo.exceptions import AccessError
 
 
 class PublicationNotice(models.Model):
     _name = "training.publication.notice"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
     _description = "Publication Invitation Journal"
+    _training_mail_template_xmlid = "training_management.mail_template_publication_notice"
 
     publication_id = fields.Many2one("training.publication", required=True, ondelete="restrict")
     company_id = fields.Many2one(related="publication_id.company_id", store=True)
@@ -37,19 +37,6 @@ class PublicationNotice(models.Model):
         return row._valid_participation() if row.kind == "review" else not row.confidential
 
     @api.private
-    def _content(self):
-        env = self.with_context(lang=self.recipient_language).env
-        return env._("A publication authorization awaits your decision"), Markup(
-            '<p>%s</p><p><a href="%s">%s</a></p>'
-        ) % (
-            env._(
-                "Sign in to review the proposed publication. Giving an opinion or authorizing publication is optional."
-            ),
-            self.publication_id.get_base_url() + "/my/training-publications",
-            env._("Review publication requests"),
-        )
-
-    @api.private
     def _queue_publication(self, publication):  # pylint: disable=context-overridden  # discard untrusted mail defaults
         previous = self.sudo().search([("publication_id", "=", publication.id)])
         if previous:
@@ -68,24 +55,10 @@ class PublicationNotice(models.Model):
                 {"not_queued_reason": self.env._("No currently authorized recipient with an email address.")}
             )
             return row
-        subject, body = row._content()
-        clean = {k: v for k, v in self.env.context.items() if not k.startswith("default_")}
-        mail_model = self.env["mail.mail"].sudo().with_context(clean)  # pylint: disable=context-overridden  # remove untrusted mail defaults
-        mail = mail_model.create(
-            {  # pylint: disable=context-overridden
-                "subject": subject,
-                "body_html": body,
-                "email_to": row.recipient_email,
-                "email_from": publication.company_id.partner_id.email_formatted or self.env.user.email_formatted,
-                **self.env["mail.mail"]._training_identity(publication.company_id),
-                "email_cc": False,
-                "recipient_ids": [],
-                "recipient_cc_ids": [],
-                "attachment_ids": [],
-                "model": self._name,
-                "res_id": row.id,
-                "auto_delete": False,
-            }
+        mail = row._training_render_mail(
+            row.recipient_email,
+            publication.company_id,
+            email_from=publication.company_id.partner_id.email_formatted or self.env.user.email_formatted,
         )
         row._store_evidence({"mail_id": mail.id})
         return row

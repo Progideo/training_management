@@ -1,15 +1,14 @@
 """Generic, append-only staff alerts with fresh source and recipient grants."""
 
-from markupsafe import Markup
-
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, ValidationError
 
 
 class OperatorNotice(models.Model):
     _name = "training.operator.notice"
-    _inherit = "training.learning.evidence"
+    _inherit = ["training.learning.evidence", "training.mail.journal"]
     _description = "Training Staff Alert Journal"
+    _training_mail_template_xmlid = "training_management.mail_template_operator_notice"
     _order = "id desc"
 
     company_id = fields.Many2one("res.company", required=True, ondelete="restrict")
@@ -124,18 +123,14 @@ class OperatorNotice(models.Model):
         )
 
     @api.private
-    def _content(self):
+    def training_mail_url(self):
+        """Sign-in link of the alert email: the trainer reviews attendance from the portal."""
         self.ensure_one()
-        env = self.with_context(lang=self.recipient_language).env
         source = self._source()
         path = "/odoo"
         if self.role == "trainer" and source and source._name == "training.attendance.event":
             path = "/my/training-sessions/%s/attendance" % source.attendance_id.session_id.id
-        return env._("A training action needs your attention"), Markup('<p>%s</p><p><a href="%s">%s</a></p>') % (
-            env._("Sign in to review the information you are authorized to access."),
-            self.company_id.get_base_url() + path,
-            env._("Open training space"),
-        )
+        return self.company_id.get_base_url() + path
 
     @api.private
     def _queue(self, source, key, role="manager"):
@@ -177,24 +172,8 @@ class OperatorNotice(models.Model):
         if not journal.email or not journal._authorized():
             journal._store_evidence({"failure": self.env._("No authorized recipient with an email address.")})
             return journal
-        subject, body = journal._content()
-        mail = self.env["mail.mail"].sudo().with_context({})  # pylint: disable=context-overridden  # discard untrusted caller defaults
-        queued = mail.create(
-            {
-                "subject": subject,
-                "body_html": body,
-                "email_to": journal.email,
-                "email_cc": False,
-                "recipient_ids": [],
-                "recipient_cc_ids": [],
-                "attachment_ids": [],
-                "auto_delete": False,
-                "model": self._name,
-                "res_id": journal.id,
-                **mail._training_identity(company),
-            }
-        )
-        journal._store_evidence({"mail_id": queued.id})
+        mail = journal._training_render_mail(journal.email, company)
+        journal._store_evidence({"mail_id": mail.id})
         return journal
 
 
