@@ -65,14 +65,17 @@ class SessionConfirmationNotice(models.Model):
         zone = schedule["timezone"]
         modes = dict(self.env["training.program.version"]._fields["delivery_mode"]._description_selection(env))
 
+        # Readable local dates, as in the registration emails: "February 9, 2027 at 9:00 AM".
+        pattern = env._("MMMM d, y 'at' h:mm a")
+
         def dates(instant):
-            return format_datetime(env, instant, tz=zone, dt_format="d MMMM y HH:mm XXX")
+            return format_datetime(env, instant, tz=zone, dt_format=pattern)
 
         body = Markup("<p><strong>%s</strong></p><p>%s — %s (%s)</p><p>%s</p>") % (
             schedule["course"],
             dates(schedule["start"]),
             dates(schedule["end"]),
-            zone,
+            env._("%s time", (zone or "UTC").split("/")[-1].replace("_", " ")),
             modes.get(schedule["mode"], schedule["mode"]),
         )
         for session in schedule["sessions"]:

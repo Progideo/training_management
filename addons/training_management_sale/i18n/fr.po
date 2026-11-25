@@ -2798,3 +2798,15 @@ msgstr "Formation : session confirmée, demande de paiement"
 #: model:mail.template,name:training_management_sale.mail_template_session_confirmation
 msgid "Training: session enrollment confirmation"
 msgstr "Formation : confirmation d’inscription à une session"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "%s time"
+msgstr "heure de %s"
+
+#. module: training_management_sale
+#. odoo-python
+#: code:addons/training_management_sale/models/session_confirmation_notice.py:0
+msgid "MMMM d, y 'at' h:mm a"
+msgstr "d MMMM y 'à' HH:mm"
