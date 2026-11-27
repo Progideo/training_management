@@ -312,9 +312,9 @@ class TestGeneralCatalogue(SharedCatalogCase, HttpCase):
         self.assertEqual(count("4 jours et plus"), "1 formation(s)")
         self.assertEqual(count("Certifiante"), "1 formation(s)")
         self.assertEqual(count("Fictional combined other"), "1 formation(s)")
-        # Unavailable formats are announced in words, not only struck through.
-        formats = " ".join(root.xpath("string(//ul[contains(@class, 'o_training_catalogue_formats')])").split())
-        self.assertIn("Inter : non disponible", formats)
+        # Cards name the delivery (with a trainer / eLearning) once: no format list nor offer links.
+        self.assertFalse(root.xpath("//article//ul[@aria-label='Formats disponibles']"))
+        self.assertFalse(root.xpath("//article//*[contains(@class, 'o_training_catalogue_offers')]"))
         # Mobile: the filters open from a labelled disclosure showing the number of active filters.
         summary = " ".join(root.xpath("string(//aside/details/summary)").split())
         self.assertEqual(summary, "Filtrer (4)")

@@ -25,14 +25,6 @@
             <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M2 20h20"/></svg>eLearning</span>
         </div>
         <t t-call="training_catalog.public_course_tags" tags="course['tags']"/>
-        <ul class="list-unstyled d-flex flex-wrap gap-1 small mb-0 o_training_catalogue_formats" aria-label="Formats disponibles">
-          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['inter'] else 'text-body-secondary text-decoration-line-through'}">Inter<span class="visually-hidden"><t t-if="course['formats']['inter']"> : disponible</t><t t-else=""> : non disponible</t></span></li>
-          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['intra'] else 'text-body-secondary text-decoration-line-through'}">Intra<span class="visually-hidden"><t t-if="course['formats']['intra']"> : disponible</t><t t-else=""> : non disponible</t></span></li>
-          <li t-attf-class="px-2 py-1 #{'bg-body-tertiary fw-semibold' if course['formats']['autonomous'] else 'text-body-secondary text-decoration-line-through'}">Autonomie<span class="visually-hidden"><t t-if="course['formats']['autonomous']"> : disponible</t><t t-else=""> : non disponible</t></span></li>
-        </ul>
-        <ul t-if="course['offers']" class="small mb-0 o_training_catalogue_offers">
-          <li t-foreach="course['offers']" t-as="offer"><a class="position-relative z-2" t-att-href="offer['url']"><t t-out="offer['kind']"/> : <t t-out="offer['title']"/></a></li>
-        </ul>
       </div>
       <div class="card-footer bg-body-tertiary d-flex justify-content-between align-items-end gap-2 small">
         <div>
