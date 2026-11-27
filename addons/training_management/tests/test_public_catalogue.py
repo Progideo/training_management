@@ -62,7 +62,8 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         self.authenticate(None, None)
         response = self.url_open("/formations")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(program.title, response.text)
+        # Cards present the course, not its versions (no offer links since #208).
+        self.assertIn(program.course_id.name, response.text)
         self.assertNotIn(private.title, response.text)
         response = self.url_open(f"/formations/{program.id}")
         self.assertEqual(response.status_code, 200)
