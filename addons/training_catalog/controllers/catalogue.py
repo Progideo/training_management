@@ -63,8 +63,18 @@ class TrainingCatalogue(http.Controller):
     @staticmethod
     def _formats(row):
         """Ways to follow a course, from the facts its applications project."""
+        # A course led by a trainer with a public inter-company price, a public session (even
+        # full) or an explicit inter-company offer can be followed in an inter-company session
+        # before dates are published: the course page then offers the new date alert.
+        # Otherwise the inter-company format is hidden (21 and 27 Nov. 2026).
         return {
-            "inter": bool(row.get("next_session")),
+            "inter": bool(
+                row.get("next_session")
+                or (
+                    row.get("live")
+                    and (row.get("session_price") or row.get("public_session") or row.get("inter_offered"))
+                )
+            ),
             "intra": bool(row.get("live")),
             "autonomous": bool(
                 row.get("autonomous")
@@ -363,12 +373,6 @@ class TrainingCatalogue(http.Controller):
         env = request.env
         card = self._card(row)
         formats = dict(card["formats"])
-        # A course led by a trainer with a public inter-company price can be followed in an
-        # inter-company session before dates are published: the tab then offers the new date
-        # alert. Without a price nor a public session, the inter-company tab is hidden (21 Nov. 2026).
-        formats["inter"] = formats["inter"] or bool(
-            row.get("live") and (row.get("session_price") or row.get("public_session"))
-        )
         tabs = [key for key in ("inter", "intra", "autonomous") if formats[key]]
         active = kwargs.get("format") if kwargs.get("format") in tabs else (tabs[0] if tabs else "")
         presentation = (row["presentation"] or "").strip()

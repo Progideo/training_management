@@ -372,3 +372,19 @@ msgstr "Seul un administrateur peut supprimer un dossier."
 #: code:addons/training_catalog/models/training_dossier_deletion.py:0
 msgid "Keep this dossier and its evidence."
 msgstr "Conservez ce dossier et ses preuves."
+
+#. module: training_catalog
+#: model:ir.model.fields,field_description:training_catalog.field_training_course__public_inter_offered
+msgid "Offered Inter-company Without Dates"
+msgstr "Proposée en inter-entreprises sans date"
+
+#. module: training_catalog
+#: model:ir.model.fields,help:training_catalog.field_training_course__public_inter_offered
+msgid ""
+"Present the inter-company format of a course led by a trainer even without a"
+" public session or price: the visitor sees “on quotation” and may subscribe "
+"to new date alerts."
+msgstr ""
+"Présente le format inter-entreprises d’une formation avec formateur même "
+"sans session ni tarif publics : le visiteur voit « Sur devis » et peut "
+"s’abonner aux alertes de nouvelles dates."

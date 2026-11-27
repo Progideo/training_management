@@ -45,6 +45,7 @@ def snapshot(tables, *, business=False, database_env=None):
                 "public_level",
                 "public_certifying",
                 "public_highlights",
+                "public_inter_offered",
             ],
             "survey_user_input": [
                 "mock_context_key",
@@ -89,7 +90,10 @@ def snapshot(tables, *, business=False, database_env=None):
                         continue
                     if (
                         (table == "training_delivery" and column != "session_first_published_at")
-                        or (table == "training_course" and column in ("public_catalogue", "public_certifying"))
+                        or (
+                            table == "training_course"
+                            and column in ("public_catalogue", "public_certifying", "public_inter_offered")
+                        )
                         or table == "training_program_version"
                     ):
                         assert row.get(column) is None or row.get(column) is False, (table, row["id"], column)

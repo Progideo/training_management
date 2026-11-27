@@ -313,3 +313,16 @@ class TestPublicCatalogue(CatalogueCase, HttpCase):
         # Every anchor of the summary leads to a section of the page.
         for anchor in tree.xpath("//nav[@aria-label='Sommaire de la formation']//a/@href"):
             self.assertTrue(tree.xpath("//*[@id='%s']" % anchor[1:]), anchor)
+
+        # An explicit inter-company offer presents the format without dates nor price:
+        # quotation and new date alert, in the catalogue filter as on the page (27 Nov. 2026).
+        self.course.sudo().public_inter_offered = True
+        tree = html.fromstring(self.url_open(f"/formations/catalogue/{self.course.id}").content)
+        inter = tree.xpath("string(//div[@id='training_booking_inter'])")
+        self.assertIn("Sur devis", inter)
+        self.assertTrue(
+            tree.xpath(f"//div[@id='training_booking_inter']//a[@href='/formations/{program.id}/date-alert']")
+        )
+        self.assertIn("Sur devis", tree.xpath("string(//div[@id='training_booking_intra'])"))
+        listed = html.fromstring(self.url_open("/formations?format=inter").content)
+        self.assertIn(self.course.name, listed.xpath("string(//main)"))
