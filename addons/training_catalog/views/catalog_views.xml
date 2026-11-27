@@ -50,6 +50,7 @@
                                 <group>
                                     <field name="public_level"/>
                                     <field name="public_certifying"/>
+                                    <field name="public_inter_offered"/>
                                 </group>
                             </group>
                             <group string="Related Courses" name="website_related">

@@ -29,6 +29,11 @@ class TrainingCourse(models.Model):
     )
 
     public_reference = fields.Char()
+    public_inter_offered = fields.Boolean(
+        string="Offered Inter-company Without Dates",
+        help="Present the inter-company format of a course led by a trainer even without a public "
+        "session or price: the visitor sees “on quotation” and may subscribe to new date alerts.",
+    )
     live_duration_days = fields.Float(string="Live Duration (days)")
     public_logo = fields.Image(max_width=256, max_height=256)
 
@@ -236,6 +241,8 @@ class TrainingCourse(models.Model):
                 else [],
                 "related": [{"id": other.id, "name": other.name} for other in related] if presented else [],
                 "duration_days": course.live_duration_days if presented else 0.0,
+                # A format offered by the operator, independent of the general presentation.
+                "inter_offered": course.public_inter_offered,
                 "published_at": course.public_published_at if presented else False,
             }
         return facts

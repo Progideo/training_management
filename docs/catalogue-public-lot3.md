@@ -103,3 +103,12 @@ autonomie seule, présentation sans programme publié
   qui vend l'offre eLearning (décision du 21 novembre 2026). Sans tarif, ni l'onglet,
   ni le format au catalogue, ni la version eLearning ne sont présentés ; une formation
   listée uniquement par cette version quitte le catalogue.
+
+## Inter sans date ni tarif (27 novembre 2026)
+
+- Case « Proposée en inter-entreprises sans date » (onglet « Site web » de la
+  formation) : avec une version avec formateur publiée, le format inter est
+  présenté même sans session ni tarif publics (« Sur devis », alerte des
+  nouvelles dates). Sans la case, la règle du 21 novembre s'applique (tarif ou
+  session publique).
+- Le filtre « Inter-entreprises » du catalogue suit la même règle que la fiche.
