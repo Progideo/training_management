@@ -1475,6 +1475,7 @@ msgstr ""
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_path_form
+#: code:addons/training_management/controllers/courses_page.py:0
 msgid "Validate"
 msgstr "Valider"
 
@@ -2270,6 +2271,7 @@ msgstr "Date de l’opération"
 
 #. module: training_management
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__ongoing
+#: code:addons/training_management/controllers/courses_page.py:0
 msgid "Ongoing"
 msgstr "En cours"
 
@@ -2591,6 +2593,7 @@ msgstr "Renseignez une période d’accès dont la fin est postérieure au débu
 
 #. module: training_management
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_form
+#: code:addons/training_management/controllers/courses_page.py:0
 msgid "Start"
 msgstr "Démarrer"
 
@@ -4063,6 +4066,7 @@ msgstr "Indisponibilité"
 #. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainer_sessions
 #: code:addons/training_management/controllers/attendance_matrix.py:0
+#: code:addons/training_management/controllers/courses_page.py:0
 msgid "Upcoming"
 msgstr "À venir"
 
@@ -4572,8 +4576,10 @@ msgstr "Affectation de support"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training_paths
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training_path
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training_navigation
+#: code:addons/training_management/models/website_menu.py:0
+#: model:portal.entry,name:training_management.portal_entry_courses
 msgid "My training"
-msgstr "Mes formations"
+msgstr "Mes cours"
 
 #. module: training_management
 #. odoo-python
@@ -14992,6 +14998,7 @@ msgstr "Ma signature enregistrée"
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
 #: model_terms:ir.ui.view,arch_db:training_management.portal_personal_signature
 #: model_terms:ir.ui.view,arch_db:training_management.signature_home_link
+#: model:portal.entry,name:training_management.portal_entry_signature
 msgid "My signature"
 msgstr "Ma signature"
 
@@ -15771,3 +15778,189 @@ msgid ""
 msgstr ""
 "{{ object.session_id.cancelled and 'Séance annulée' or 'Convocation / "
 "modification de séance' }} — {{ object.session_id.name }}"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "Next session:"
+msgstr "Prochaine séance :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "I am learning"
+msgstr "Je me forme"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "I am teaching"
+msgstr "J'anime"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My company"
+msgstr "Mon entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "To do now"
+msgstr "À faire maintenant"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "Show all actions"
+msgstr "Afficher toutes les actions"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My instructor-led trainings"
+msgstr "Mes formations avec formateur"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "All my trainings"
+msgstr "Toutes mes formations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Open page"
+msgstr "Ouvrir"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "Manage"
+msgstr "Gérer"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "All my sessions"
+msgstr "Toutes mes séances"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "All company files"
+msgstr "Tous les dossiers de l'entreprise"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "No training is currently available. Contact your coordinator if needed."
+msgstr "Aucune formation n'est disponible pour le moment. Contactez votre coordinateur si besoin."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "See the training catalogue"
+msgstr "Voir le catalogue des formations"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "Other pages"
+msgstr "Autres pages"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Finished"
+msgstr "Terminée"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "next session %(date)s"
+msgstr "prochaine séance %(date)s"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "dates to be announced"
+msgstr "dates à venir"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Before %(date)s"
+msgstr "Avant le %(date)s"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Sign your attendance: %(period)s"
+msgstr "Signer votre présence : %(period)s"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Sign your attendance: %(count)s half-days"
+msgstr "Signer votre présence : %(count)s demi-journées"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "To regularize"
+msgstr "À régulariser"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Now"
+msgstr "Maintenant"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Sign"
+msgstr "Signer"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "To check"
+msgstr "À contrôler"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Check %(count)s signed attendances"
+msgstr "Contrôler %(count)s présences signées"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Check 1 signed attendance"
+msgstr "Contrôler 1 présence signée"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Check"
+msgstr "Contrôler"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "To validate"
+msgstr "À valider"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Validate %(count)s evaluations"
+msgstr "Valider %(count)s évaluations"
+
+#. module: training_management
+#: code:addons/training_management/controllers/courses_page.py:0
+msgid "Validate 1 evaluation"
+msgstr "Valider 1 évaluation"
+
+#. module: training_management
+#: model:portal.entry,description:training_management.portal_entry_courses
+msgid "Your trainings, sessions and actions to do"
+msgstr "Vos formations, séances et actions à faire"
+
+#. module: training_management
+#: model:portal.entry,description:training_management.portal_entry_signature
+msgid "Used to sign your attendance"
+msgstr "Utilisée pour signer vos présences"
+
+#. module: training_management
+#: model:portal.entry,name:training_management.portal_entry_date_alerts
+msgid "New date alerts"
+msgstr "Alertes de nouvelles dates"
+
+#. module: training_management
+#: model:portal.entry,description:training_management.portal_entry_date_alerts
+msgid "Be told when a session opens for a training"
+msgstr "Soyez prévenu quand une session ouvre pour une formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My online courses"
+msgstr "Mes cours en ligne"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "All my online courses"
+msgstr "Tous mes cours en ligne"

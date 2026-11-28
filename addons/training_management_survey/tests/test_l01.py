@@ -50,7 +50,7 @@ class TestLaunchAcceptance(EvaluationCase, ExamCase, HttpCase):
             ("/formations", "Formations"),
             ("/formations/orientation", "Diagnostic d’orientation"),
             (f"/formations/orientation/{survey.id}", "Diagnostic d’orientation"),
-            ("/my/trainings", "Mes formations"),
+            ("/my/trainings", "Mes cours"),
             ("/my/training-paths", "Mes parcours"),
             ("/my/training-practice", "Mes plans de mise en pratique"),
             ("/my/training-bookings", "Réservations de tutorat"),

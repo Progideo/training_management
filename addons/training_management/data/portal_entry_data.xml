@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- « My account » cards: shown by the native portal only to the people concerned
+         (counters in controllers/courses_home.py). -->
+    <record id="portal_entry_courses" model="portal.entry">
+        <field name="name">My training</field>
+        <field name="description">Your trainings, sessions and actions to do</field>
+        <field name="url">/my/trainings</field>
+        <field name="image" type="bytes" file="training_management/static/src/img/portal-courses.svg"/>
+        <field name="placeholder_count">training_course_count</field>
+        <field name="sequence" eval="5"/>
+    </record>
+    <record id="portal_entry_signature" model="portal.entry">
+        <field name="name">My signature</field>
+        <field name="description">Used to sign your attendance</field>
+        <field name="url">/my/training-signature</field>
+        <field name="image" type="bytes" file="training_management/static/src/img/portal-signature.svg"/>
+        <field name="placeholder_count">training_signature_count</field>
+        <field name="sequence" eval="160"/>
+    </record>
+    <record id="portal_entry_date_alerts" model="portal.entry">
+        <field name="name">New date alerts</field>
+        <field name="description">Be told when a session opens for a training</field>
+        <field name="url">/my/training-date-alerts</field>
+        <field name="image" type="bytes" file="training_management/static/src/img/portal-date-alerts.svg"/>
+        <field name="placeholder_count">training_date_alert_count</field>
+        <field name="sequence" eval="170"/>
+    </record>
+</odoo>

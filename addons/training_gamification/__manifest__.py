@@ -2,7 +2,7 @@
 {
     "name": "Training Gamification",
     "summary": "Optional points for training engagement, credited as native karma",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Services/Training",
     "author": "Training Management contributors",
     "website": "https://github.com/Progideo/training_management",
@@ -14,5 +14,6 @@
         "views/gamification_views.xml",
         "views/portal_templates.xml",
         "views/challenge_views.xml",
+        "data/portal_entry_data.xml",
     ],
 }

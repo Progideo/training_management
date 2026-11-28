@@ -3,3 +3,4 @@ from . import training_category
 from . import rating_rating
 from . import res_company
 from . import training_dossier_deletion
+from . import my_courses

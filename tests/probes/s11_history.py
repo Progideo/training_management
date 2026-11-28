@@ -31,11 +31,19 @@ def visibility_schema():
     return list(env.cr.fetchone())
 
 
-def fingerprints(columns):
+def fingerprints(columns, limits=None):
+    """Hash each retained table; for a table in ``limits``, only the rows existing at baseline.
+
+    An upgrade may add its own rows (module data files such as card pictograms in
+    ir_attachment): retained history is the set of rows that existed before it.
+    """
     env.flush_all()
     result = {}
     for table, names in columns.items():
-        env.cr.execute(SQL("SELECT %s FROM %s", SQL(",").join(map(SQL.identifier, names)), SQL.identifier(table)))
+        query = SQL("SELECT %s FROM %s", SQL(",").join(map(SQL.identifier, names)), SQL.identifier(table))
+        if limits and table in limits:
+            query = SQL("%s WHERE id <= %s", query, limits[table])
+        env.cr.execute(query)
 
         # psycopg returns bytea as memoryview: str(value) includes a process
         # address and changes even for identical bytes. Hash the actual bytes.
@@ -170,6 +178,8 @@ if phase == "baseline":
         "archive": hashlib.sha256(document.data.content).hexdigest(),
     }
     columns = schema()
+    env.cr.execute("SELECT COALESCE(MAX(id), 0) FROM ir_attachment")
+    limits = {"ir_attachment": env.cr.fetchone()[0]}
     env["ir.config_parameter"].create(
         {
             "key": key,
@@ -182,7 +192,8 @@ if phase == "baseline":
                     "document": document.id,
                     "files": files,
                     "columns": columns,
-                    "fingerprints": fingerprints(columns),
+                    "fingerprints": fingerprints(columns, limits),
+                    "limits": limits,
                     "visibility": visibility_schema(),
                     "user": user.id,
                     "delivery": delivery.id,
@@ -195,7 +206,7 @@ if phase == "baseline":
     print("S11_BASELINE_HISTORY_READY")
 elif phase == "verify":
     saved = json.loads(env["ir.config_parameter"].search([("key", "=", key)]).value)
-    actual = fingerprints(saved["columns"])
+    actual = fingerprints(saved["columns"], saved["limits"])
     changed = [table for table, expected in saved["fingerprints"].items() if actual[table] != expected]
     assert not changed, "Retained table fingerprints changed: %s" % changed
     assert visibility_schema() == saved["visibility"]

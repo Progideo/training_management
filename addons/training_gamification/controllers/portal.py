@@ -1,4 +1,5 @@
 from odoo import http
+from odoo.addons.training_management.controllers.courses_home import TrainingAccountCards
 from odoo.http import request
 
 
@@ -32,3 +33,12 @@ class TrainingProgressPortal(http.Controller):
         response = stream.get_response()
         response.headers["Cache-Control"] = "private, max-age=3600"
         return response
+
+
+class TrainingProgressCard(TrainingAccountCards):
+    def _prepare_portal_counter_values(self, counter):
+        if counter == "training_progress_count":
+            learning = request.env["training.learning.service"]
+            shown = bool(request.env["training.document.policy"]._enrollments().filtered(learning._is_participant))
+            return "res.users", [("id", "=", request.env.uid if shown else 0)], "sudo"
+        return super()._prepare_portal_counter_values(counter)
