@@ -34,5 +34,12 @@ class WebsiteMenu(models.Model):
                     "sequence": 90,
                 }
             )
-            for code, _name in self.env["res.lang"].get_installed():
-                menu.with_context(lang=code).name = self.with_context(lang=code).env._("My training")
+            menu._training_courses_menu_labels()
+
+    def _training_courses_menu_labels(self):
+        """Translate the entry in every installed language, keeping a label changed in the editor."""
+        for code, _name in self.env["res.lang"].get_installed():
+            label = self.with_context(lang=code).env._("My training")
+            for menu in self.with_context(lang=code):
+                if menu.name in ("My training", label):
+                    menu.name = label

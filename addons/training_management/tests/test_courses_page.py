@@ -5,6 +5,7 @@ from unittest.mock import patch
 from lxml import html
 
 from odoo.tests import HttpCase, new_test_user, tagged
+from odoo.tools.translate import load_language
 
 from .test_attendance import AttendanceCase
 
@@ -129,3 +130,19 @@ class TestCoursesPage(AttendanceCase, HttpCase):
             tree = self.page(outsider)
             self.assertTrue(tree.xpath("//section[@id='courses_online']//a[@href='/my/learning/1']"))
             self.assertFalse(tree.xpath("//p[contains(@class, 'o_training_courses_empty')]"))
+
+    def test_menu_entry_is_translated(self):
+        load_language(self.cr, "fr_FR")
+        menus = self.env["website.menu"]
+        menus.search([("url", "=", "/my/trainings")]).unlink()
+        menus._training_courses_menu()
+        menu = menus.search([("url", "=", "/my/trainings")], limit=1)
+        self.assertEqual(menu.with_context(lang="fr_FR").name, "Mes cours")
+        self.assertEqual(menu.with_context(lang="en_US").name, "My training")
+        # A label already in English (20.0.3.9.0) is translated; one edited in the site editor is kept.
+        menu.with_context(lang="fr_FR").name = "My training"
+        menu._training_courses_menu_labels()
+        self.assertEqual(menu.with_context(lang="fr_FR").name, "Mes cours")
+        menu.with_context(lang="fr_FR").name = "Espace formation"
+        menu._training_courses_menu_labels()
+        self.assertEqual(menu.with_context(lang="fr_FR").name, "Espace formation")
