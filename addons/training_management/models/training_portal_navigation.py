@@ -130,4 +130,8 @@ class TrainingPortalNavigation(models.AbstractModel):
         user = self.env.user
         if not user.active or user._is_public():
             return False
-        return self._attends() or bool(self.env["training.company.service"]._grants())
+        return (
+            self._attends()
+            or bool(self.env["training.company.service"]._grants())
+            or self.env["training.my.courses"]._has_courses()
+        )

@@ -15954,3 +15954,13 @@ msgstr "Alertes de nouvelles dates"
 #: model:portal.entry,description:training_management.portal_entry_date_alerts
 msgid "Be told when a session opens for a training"
 msgstr "Soyez prévenu quand une session ouvre pour une formation"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "My online courses"
+msgstr "Mes cours en ligne"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
+msgid "All my online courses"
+msgstr "Tous mes cours en ligne"

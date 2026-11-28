@@ -1,5 +1,7 @@
 """« My courses »: one page per signed-in person, menu entry, landing page and « My account » cards."""
 
+from unittest.mock import patch
+
 from lxml import html
 
 from odoo.tests import HttpCase, new_test_user, tagged
@@ -105,3 +107,25 @@ class TestCoursesPage(AttendanceCase, HttpCase):
         values = self.make_jsonrpc_request("/my/counters", {"counters": counters})
         self.assertEqual(values["training_course_count"], 0)
         self.assertEqual(values["training_signature_count"], 0)
+
+    def test_online_courses_contributed_by_another_module(self):
+        outsider = self.outsider()
+        row = {
+            "label": "Ongoing",
+            "ongoing": True,
+            "name": "Fictional autonomous course",
+            "detail": "Next: fictional lesson",
+            "progress": 40,
+            "url": "/my/learning/1",
+            "button": "Continue",
+            "sort": 0,
+        }
+        Contributions = type(self.env["training.my.courses"])
+        with (
+            patch.object(Contributions, "_has_courses", lambda self: True),
+            patch.object(Contributions, "_online_rows", lambda self: [row]),
+        ):
+            self.assertTrue(self.env["training.portal.navigation"].with_user(outsider)._has_courses())
+            tree = self.page(outsider)
+            self.assertTrue(tree.xpath("//section[@id='courses_online']//a[@href='/my/learning/1']"))
+            self.assertFalse(tree.xpath("//p[contains(@class, 'o_training_courses_empty')]"))

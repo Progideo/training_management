@@ -66,6 +66,15 @@
                         </details>
                     </section>
 
+                    <section t-if="online" id="courses_online" aria-labelledby="courses_online_title" class="o_training_courses_block">
+                        <h2 id="courses_online_title" class="h4">My online courses</h2>
+                        <t t-foreach="online[:rows_shown]" t-as="row">
+                            <t t-call="training_management.courses_row" tag="row['label']" tag_class="'text-bg-primary' if row['ongoing'] else 'text-bg-light'"
+                               title="row['name']" detail="row['detail']" url="row['url']" button="row['button']" primary="row['ongoing']" progress="row['progress']"/>
+                        </t>
+                        <p t-if="online_url and len(online) > rows_shown" class="mt-2 mb-0"><a t-att-href="online_url">All my online courses</a></p>
+                    </section>
+
                     <section t-if="sessions" id="courses_sessions" aria-labelledby="courses_sessions_title" class="o_training_courses_block">
                         <h2 id="courses_sessions_title" class="h4">I am teaching</h2>
                         <t t-foreach="sessions[:rows_shown]" t-as="row">
@@ -86,8 +95,8 @@
 
                     <div id="courses_more_sections"/>
 
-                    <p t-if="not trainings and not sessions and not company and not todo and not any(training_links.values())" class="o_training_courses_empty mb-0">No training is currently available. Contact your coordinator if needed.</p>
-                    <p t-if="not trainings and not sessions and not company and not todo" class="mb-0"><a href="/formations">See the training catalogue</a></p>
+                    <p t-if="not trainings and not online and not sessions and not company and not todo and not any(training_links.values())" class="o_training_courses_empty mb-0">No training is currently available. Contact your coordinator if needed.</p>
+                    <p t-if="not trainings and not online and not sessions and not company and not todo" class="mb-0"><a href="/formations">See the training catalogue</a></p>
 
                     <section class="o_training_courses_links" t-if="any(training_links.get(k) for k in ('paths', 'practice', 'evaluations', 'documents', 'exams', 'feedback', 'bookings', 'publications', 'complaints', 'sessions', 'tutoring', 'dashboard', 'company'))">
                         <h2 class="h5">Other pages</h2>

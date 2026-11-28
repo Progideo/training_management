@@ -7,7 +7,9 @@ séparée de « Mon compte ».
 
 - **« Mes cours »** (`/my/trainings`) regroupe, en lignes pleine largeur :
   « À faire maintenant », « Mes formations avec formateur », « J'anime »,
-  « Mon entreprise ». Cinq lignes au plus par bloc ; « Toutes… » déplie ou
+  « Mon entreprise », et « Mes cours en ligne » fourni par un module autonome
+  (eLearning) via le modèle commun `training.my.courses` du catalogue, sans
+  dépendance à Training Management. Cinq lignes au plus par bloc ; « Toutes… » déplie ou
   renvoie à la liste complète. Les autres pages restent accessibles en bas
   (« Autres pages »), par les points d'extension existants.
 - **« À faire maintenant »** : présences à signer (demi-journées commencées,
@@ -35,5 +37,5 @@ séparée de « Mon compte ».
 
 - Un site créé après l'installation ne reçoit pas l'entrée de menu : l'ajouter
   dans l'éditeur (URL `/my/trainings`).
-- Questionnaires de satisfaction, examens blancs et cours eLearning autonomes :
-  à raccorder par leurs modules.
+- Questionnaires de satisfaction et examens blancs : actions à raccorder par
+  leurs modules ; cours eLearning : à fournir par `training_elearning`.

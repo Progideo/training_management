@@ -27,11 +27,13 @@ class TrainingCoursesMixin:
         )
         sessions = self._course_session_rows(now)
         company = env["training.company.service"]._rows()
-        todo = sorted(self._courses_todo(active, now), key=lambda item: item["sort"])
+        contributions = env["training.my.courses"]
+        online = sorted(contributions._online_rows(), key=lambda row: (not row["ongoing"], row["sort"]))
+        todo = sorted(self._courses_todo(active, now) + contributions._todo(), key=lambda item: item["sort"])
         roles = [
             role
             for role, present in (
-                ("participant", bool(trainings)),
+                ("participant", bool(trainings or online)),
                 ("trainer", bool(sessions)),
                 ("company", bool(company)),
             )
@@ -41,6 +43,8 @@ class TrainingCoursesMixin:
         return {
             "todo": todo,
             "trainings": trainings,
+            "online": online,
+            "online_url": contributions._online_url(),
             "sessions": sessions,
             "company": company,
             "roles": roles,
