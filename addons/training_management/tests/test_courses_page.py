@@ -62,7 +62,7 @@ class TestCoursesPage(AttendanceCase, HttpCase):
 
     def test_menu_entry_only_for_people_with_a_course(self):
         self.scheduled()
-        website = self.env["website"].get_current_website()
+        website = self.env["website"].search([], order="id", limit=1)
         menus = self.env["website.menu"]
         menus.search([("url", "=", "/my/trainings")]).unlink()
         menus._training_courses_menu()
@@ -78,7 +78,7 @@ class TestCoursesPage(AttendanceCase, HttpCase):
     def test_landing_page_after_login(self):
         self.scheduled()
         for user, expected in ((self.portal, "/my/trainings"), (self.outsider(), "/my")):
-            self.logout()
+            self.authenticate(None, None)
             login = self.url_open("/web/login")
             csrf = html.fromstring(login.content).xpath("//input[@name='csrf_token']/@value")[0]
             response = self.url_open(
