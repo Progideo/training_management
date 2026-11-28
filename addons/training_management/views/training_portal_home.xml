@@ -22,8 +22,7 @@
     </template>
 
     <template id="portal_trainings" name="My Training">
-        <t t-call="website.layout">
-            <t t-set="additional_title">My training</t>
+        <t t-call="website.layout" additional_title.translate="My training">
             <div id="wrap" class="o_training_courses">
                 <div class="container py-4 d-flex flex-column gap-4">
                     <section class="d-flex flex-wrap justify-content-between align-items-end gap-2">
