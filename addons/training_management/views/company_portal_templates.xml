@@ -30,7 +30,7 @@
                 <h1 t-out="name"/>
                 <div class="card p-3 mb-3">
                     <p><strong><t t-out="lot_quantity"/></strong> places in this allocation · <strong><t t-out="lot_remaining"/></strong> places not yet assigned.</p>
-                    <p><t t-out="pending_nominations"/> participant proposals awaiting coordination.</p>
+                    <p><t t-out="pending_nominations"/> <t t-if="pending_nominations == 1">participant proposal awaiting coordination.</t><t t-else="">participant proposals awaiting coordination.</t></p>
                     <p t-if="lot_deadline">Reservation deadline: <t t-out="lot_deadline"/></p>
                 </div>
                 <div t-if="saved or approved" id="company-feedback" class="alert alert-success o_training_feedback" tabindex="-1" role="status"><t t-if="approved">Your agreement on this version has been recorded.</t><t t-else="">Participant proposal recorded. Coordination must still confirm the enrollment.</t></div>
@@ -38,7 +38,7 @@
                 <h2>Séances</h2>
                 <ul>
                     <li t-foreach="sessions" t-as="s">
-                        <t t-out="s['name']"/> · <t t-out="s['start']"/> — <t t-out="s['end']"/> (<t t-out="s['timezone']"/>)</li>
+                        <t t-out="s['name']"/> · <t t-out="s['period']"/><t t-if="s['timezone_note']"> (<t t-out="s['timezone_note']"/>)</t></li>
                 </ul>
                 <h2>Participants de mon lot</h2>
                 <ul>

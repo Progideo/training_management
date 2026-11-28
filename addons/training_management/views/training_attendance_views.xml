@@ -170,7 +170,7 @@
                 <h3 t-out="row['participant'] if trainer else row['name']"/>
                 <p><t t-out="row['period']"/> (<t t-out="row['timezone']"/>)</p>
                 <ul><li t-foreach="row['schedule']" t-as="part"><t t-out="part['name']"/> — <t t-out="part['start']"/> → <t t-out="part['end']"/> (<t t-out="part['timezone']"/>)</li></ul>
-                <p><strong t-out="row['state']"/> — <t t-out="row['minutes']"/> validated minutes</p>
+                <p><strong t-out="row['state']"/> — <t t-out="int(round(row['minutes'] or 0))"/> validated minutes</p>
                 <p t-if="not row['elapsed']" role="status">This half-day has not ended yet. Attendance can be recorded afterwards.</p>
                 <p t-if="trainer and not row['can_review'] and not row['validated']" role="status">Another assigned trainer must review this attendance.</p>
                 <form t-if="row['elapsed'] and ((trainer and row['can_review'] and not row['validated']) or (not trainer and not row['declared'] and row['mode'] != 'paper' and row['period_key'] != 'legacy'))" method="post" class="o_training_attendance_form">

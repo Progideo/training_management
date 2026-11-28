@@ -152,6 +152,8 @@ class ExamPortal(http.Controller):
             values = {
                 "title": activity.training_exam_id.title,
                 "duration": activity.training_exam_id.time_limit,
+                "graded": activity.exam_obligation == "pass",
+                "threshold": activity.training_exam_id.scoring_success_min,
                 "can_start": bool(activity.training_exam_id.active)
                 and enrollment._effective_state() == "active"
                 and request.env["training.learning.service"]._available(enrollment, activity),

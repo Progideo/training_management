@@ -175,7 +175,9 @@ class ExamService(models.AbstractModel):
             "revisions": [
                 {
                     "reason": r.reason,
-                    "date": format_datetime(self.env, r.revised_at or r.create_date, tz=self.env.user.tz or "UTC"),
+                    "date": format_datetime(
+                        self.env, r.revised_at or r.create_date, tz=self.env.user.tz or "UTC", dt_format="short"
+                    ),
                 }
                 for r in self._result_adjustments(attempt)
             ],

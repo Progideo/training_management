@@ -5664,6 +5664,7 @@ msgstr "Arrivée (minutes après le début)"
 #: model:ir.model.fields,field_description:training_management.field_training_dashboard_line__attendance
 #: model_terms:ir.ui.view,arch_db:training_management.dashboard_participant
 #: model_terms:ir.ui.view,arch_db:training_management.portal_attendance_matrix
+#: model_terms:ir.ui.view,arch_db:training_management.portal_attendance
 msgid "Attendance"
 msgstr "Présences"
 
@@ -15771,3 +15772,63 @@ msgid ""
 msgstr ""
 "{{ object.session_id.cancelled and 'Séance annulée' or 'Convocation / "
 "modification de séance' }} — {{ object.session_id.name }}"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Included reservations:"
+msgstr "Réservations incluses :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Consumed:"
+msgstr "Utilisées :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Duration (minutes):"
+msgstr "Durée (minutes) :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Capacity:"
+msgstr "Capacité :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.tutoring_slots
+msgid "Quota refunded when cancelled no later than:"
+msgstr "Réservation restituée en cas d’annulation au plus tard le :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.attendance_matrix_cell
+msgid "Participant declaration signature; trainer review is a separate step."
+msgstr "Signature de la déclaration du participant ; le contrôle du formateur est une étape distincte."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.dashboard_participant
+msgid "· deadline:"
+msgstr "· échéance :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_public
+msgid "Authorized on:"
+msgstr "Autorisé le :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Exact name:"
+msgstr "Nom exact :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "I separately authorize display of this exact customer name:"
+msgstr "J’autorise séparément l’affichage de ce nom de client exact :"
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.publication_form
+msgid "Verified participation may be partial; it does not certify completion or success."
+msgstr "La participation vérifiée peut être partielle ; elle n’atteste ni l’achèvement ni la réussite."
+
+#. module: training_management
+#: model_terms:ir.ui.view,arch_db:training_management.company_training
+msgid "participant proposal awaiting coordination."
+msgstr "proposition de participant en attente de la coordination."

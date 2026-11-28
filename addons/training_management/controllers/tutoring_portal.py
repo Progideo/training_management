@@ -39,7 +39,7 @@ class TutoringPortal(http.Controller):
                         {
                             "participant": b.enrollment_id.participant_id.name,
                             "name": b.slot_id.name,
-                            "start": format_datetime(request.env, b.slot_id.start_at, tz=tz),
+                            "start": format_datetime(request.env, b.slot_id.start_at, tz=tz, dt_format="short"),
                             "state": b.state,
                             "meeting_url": b.slot_id.meeting_url if b.state == "confirmed" else False,
                         }
@@ -100,15 +100,15 @@ class TutoringPortal(http.Controller):
                 {
                     "id": slot.id,
                     "name": slot.name,
-                    "start": format_datetime(request.env, slot.start_at, tz=tz),
-                    "end": format_datetime(request.env, slot.end_at, tz=tz),
+                    "start": format_datetime(request.env, slot.start_at, tz=tz, dt_format="short"),
+                    "end": format_datetime(request.env, slot.end_at, tz=tz, dt_format="short"),
                     "duration": formatLang(request.env, round(slot.duration_hours * 60), digits=0),
                     "capacity": slot.capacity,
                     "kind": slot.kind,
                     "terms": slot.cancellation_terms,
                     "refund": slot.refund_policy == "before",
                     "deadline": format_datetime(
-                        request.env, slot.start_at - timedelta(hours=slot.cancellation_hours), tz=tz
+                        request.env, slot.start_at - timedelta(hours=slot.cancellation_hours), tz=tz, dt_format="short"
                     )
                     if slot.refund_policy == "before"
                     else False,
@@ -132,7 +132,7 @@ class TutoringPortal(http.Controller):
                         {
                             "id": b.id,
                             "name": b.slot_id.name,
-                            "start": format_datetime(request.env, b.slot_id.start_at, tz=tz),
+                            "start": format_datetime(request.env, b.slot_id.start_at, tz=tz, dt_format="short"),
                             "state": b.state,
                             "terms": b.cancellation_terms,
                             "refunded": b.refunded,
@@ -142,7 +142,7 @@ class TutoringPortal(http.Controller):
                             else False,
                             "meeting_url": b.slot_id.meeting_url if b.state == "confirmed" else False,
                             "refund": b.refund_policy == "before",
-                            "deadline": format_datetime(request.env, b.refund_deadline, tz=tz)
+                            "deadline": format_datetime(request.env, b.refund_deadline, tz=tz, dt_format="short")
                             if b.refund_deadline
                             else False,
                         }

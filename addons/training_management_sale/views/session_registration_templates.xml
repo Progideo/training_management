@@ -16,7 +16,7 @@
                                 <span class="d-block small"><t t-out="session['mode']"/><t t-if="session['location']"> · <t t-out="session['location']"/></t><t t-if="session['hours']"> · <t t-out="session['hours']"/></t></span>
                             </span>
                             <span t-if="not session['limit']" class="o_training_course_seats">Session complète</span>
-                            <span t-elif="session['few_seats']" class="o_training_course_seats o_training_course_seats_low">Plus que <t t-out="session['seats_left']"/> place(s)</span>
+                            <span t-elif="session['few_seats']" class="o_training_course_seats o_training_course_seats_low">Plus que <t t-out="session['seats_left']"/> <t t-if="session['seats_left'] == 1">place</t><t t-else="">places</t></span>
                             <span t-elif="session['seats_left']" class="o_training_course_seats o_training_course_seats_open"><t t-out="session['seats_left']"/> places</span>
                         </label>
                     </div>

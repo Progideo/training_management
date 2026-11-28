@@ -40,7 +40,7 @@
             <p>Opening a PDF does not validate learning or attendance.</p>
             <t t-set="learning_action" t-value="('/my/training-tutoring/%s/learning' if is_tutor else '/my/trainings/%s/learning') % learning['id']"/>
             <div t-foreach="learning['activities']" t-as="a" t-att-id="'learning-activity-%s' % a['id']" class="card p-3 mb-3" style="scroll-margin-top:5rem">
-                <div t-if="not is_tutor and a['state'] == 'submitted' and not learning['error']" t-att-id="'submission-saved-%s' % a['id']" class="alert alert-success" role="status">
+                <div t-if="not is_tutor and a['state'] == 'submitted' and a['criterion'] != 'declaration' and not learning['error']" t-att-id="'submission-saved-%s' % a['id']" class="alert alert-success" role="status">
                     <p class="fw-bold mb-1">Your submission has been saved.</p>
                     <p t-if="a['criterion'] == 'validation'" class="mb-2">Awaiting the tutor's assessment.</p>
                     <a t-att-href="'#learning-entry-%s' % a['latest_submission']">View my submission</a>

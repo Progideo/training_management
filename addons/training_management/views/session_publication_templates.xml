@@ -11,7 +11,7 @@
                         <p><t t-out="row['start']"/> — <t t-out="row['end']"/> · Fuseau : <t t-out="row['timezone']"/></p>
                         <p t-if="row['location']" t-out="row['location']"/>
                         <p><span t-if="row['confirmed']" class="badge text-bg-success me-2">Session confirmée</span><strong t-if="row['status'] == 'full'">Complète</strong><strong t-elif="row['status'] != 'confirmed'">Ouverte</strong>
-                            <span t-if="row['few_seats']" class="ms-2 fw-semibold">Plus que <t t-out="row['seats_left']"/> place(s)</span></p>
+                            <span t-if="row['few_seats']" class="ms-2 fw-semibold">Plus que <t t-out="row['seats_left']"/> <t t-if="row['seats_left'] == 1">place</t><t t-else="">places</t></span></p>
                     </li>
                 </ul>
             <a class="btn btn-outline-primary" t-att-href="'/formations/%s/date-alert' % program_id">M’alerter des nouvelles dates</a>
@@ -44,7 +44,7 @@
         </t>
     </template>
     <template id="session_date_subscriptions" name="My new date subscriptions">
-        <t t-call="portal.frontend_layout">
+        <t t-call="portal.frontend_layout" additional_title.translate="Mes alertes de nouvelles dates">
             <div class="container py-4 o_training_public_page o_not_editable" id="wrap">
             <h1>Mes alertes de nouvelles dates</h1>
             <p>Ces alertes sont indépendantes de vos inscriptions et convocations. Le désabonnement prend effet aussi sur les courriels encore en attente d’envoi.</p>

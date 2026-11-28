@@ -403,3 +403,8 @@ msgstr "Examen blanc"
 #: model:ir.model.fields,field_description:training_mock_exam.field_survey_survey__training_course_id
 msgid "Training Course"
 msgstr "Formation"
+
+#. module: training_mock_exam
+#: model_terms:ir.ui.view,arch_db:training_mock_exam.exam_attempt
+msgid "Time remaining:"
+msgstr "Temps restant :"

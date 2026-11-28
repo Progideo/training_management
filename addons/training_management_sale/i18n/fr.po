@@ -2810,3 +2810,8 @@ msgstr "heure de %s"
 #: code:addons/training_management_sale/models/session_confirmation_notice.py:0
 msgid "MMMM d, y 'at' h:mm a"
 msgstr "d MMMM y 'à' HH:mm"
+
+#. module: training_management_sale
+#: model_terms:ir.ui.view,arch_db:training_management_sale.report_saleorder_path
+msgid "Training path:"
+msgstr "Parcours de formation :"

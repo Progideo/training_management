@@ -2,7 +2,7 @@
     <template id="attendance_matrix_cell">
         <span t-attf-class="tm_attendance_dot tm_attendance_#{cell['code']}" aria-hidden="true"/>
         <strong t-out="cell['label']"/>
-        <p t-if="cell['rows']" class="small mb-1"><t t-out="cell['minutes']"/> validated minutes</p>
+        <p t-if="cell['rows']" class="small mb-1"><t t-out="int(round(cell['minutes'] or 0))"/> validated minutes</p>
         <div t-foreach="cell['signatures']" t-as="signature" class="tm_attendance_signature">
             <img t-att-src="'/my/training-attendance-signature/%s' % signature['id']" t-att-alt="signature['actor']" width="150" height="50" loading="lazy"/>
             <small class="d-block"><t t-if="signature['absent']">Declared absent</t><t t-else="">Declared present</t></small>
@@ -13,7 +13,7 @@
             <ul class="ps-3">
                 <li t-foreach="cell['rows']" t-as="item">
                     <t t-out="item['name']"/> — <t t-out="item['start']"/> → <t t-out="item['end']"/> (<t t-out="item['timezone']"/>)
-                    <p><t t-out="item['state']"/> · <t t-out="item['minutes']"/> min</p>
+                    <p><t t-out="item['state']"/> · <t t-out="int(round(item['minutes'] or 0))"/> min</p>
                     <a t-if="not matrix['collective']" t-att-href="'#' + item['anchor']">Declare / view history</a>
                     <a t-elif="item['review_url']" t-att-href="item['review_url']">Review / view history</a>
                 </li>

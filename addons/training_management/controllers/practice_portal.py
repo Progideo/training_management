@@ -15,7 +15,9 @@ class PracticePortal(http.Controller):
         for row in rows:
             row["due"] = format_date(request.env, row["due"])
             for entry in row["entries"]:
-                entry["date"] = format_datetime(request.env, entry["date"], tz=request.env.user.tz or "UTC")
+                entry["date"] = format_datetime(
+                    request.env, entry["date"], tz=request.env.user.tz or "UTC", dt_format="short"
+                )
         return TrainingParticipantPortal._private(
             request.render(
                 "training_management.practice_portal", {"rows": rows, "error": False, "draft": "", "draft_id": 0}
