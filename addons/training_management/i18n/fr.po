@@ -1473,6 +1473,7 @@ msgstr ""
 "sessions sous le seuil"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_program_form
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_path_form
 #: code:addons/training_management/controllers/courses_page.py:0
@@ -2270,6 +2271,7 @@ msgid "Occurred At"
 msgstr "Date de l’opération"
 
 #. module: training_management
+#. odoo-python
 #: model:ir.model.fields.selection,name:training_management.selection__training_delivery__state__ongoing
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Ongoing"
@@ -2592,6 +2594,7 @@ msgid "Set an increasing access period."
 msgstr "Renseignez une période d’accès dont la fin est postérieure au début."
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.view_training_delivery_form
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Start"
@@ -4567,6 +4570,7 @@ msgid "Material Assignment"
 msgstr "Affectation de support"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.practice_portal
 #: model_terms:ir.ui.view,arch_db:training_management.portal_participant_home
 #: model_terms:ir.ui.view,arch_db:training_management.portal_training
@@ -15820,6 +15824,7 @@ msgid "All my trainings"
 msgstr "Toutes mes formations"
 
 #. module: training_management
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:training_management.portal_trainings
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Open page"
@@ -15856,81 +15861,97 @@ msgid "Other pages"
 msgstr "Autres pages"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Finished"
 msgstr "Terminée"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "next session %(date)s"
 msgstr "prochaine séance %(date)s"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "dates to be announced"
 msgstr "dates à venir"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Before %(date)s"
 msgstr "Avant le %(date)s"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Sign your attendance: %(period)s"
 msgstr "Signer votre présence : %(period)s"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Sign your attendance: %(count)s half-days"
 msgstr "Signer votre présence : %(count)s demi-journées"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "To regularize"
 msgstr "À régulariser"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Now"
 msgstr "Maintenant"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Sign"
 msgstr "Signer"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "To check"
 msgstr "À contrôler"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Check %(count)s signed attendances"
 msgstr "Contrôler %(count)s présences signées"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Check 1 signed attendance"
 msgstr "Contrôler 1 présence signée"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Check"
 msgstr "Contrôler"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "To validate"
 msgstr "À valider"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Validate %(count)s evaluations"
 msgstr "Valider %(count)s évaluations"
 
 #. module: training_management
+#. odoo-python
 #: code:addons/training_management/controllers/courses_page.py:0
 msgid "Validate 1 evaluation"
 msgstr "Valider 1 évaluation"
