@@ -28,8 +28,7 @@
             <h2 id="training-schedule">Schedule</h2><p t-if="not sessions" class="o_training_empty_schedule">No scheduled session.</p>
             <ul class="list-group mb-3">
                 <li t-foreach="sessions" t-as="session" class="list-group-item">
-                <strong t-out="session['name']"/><p><t t-out="session['start']"/> → <t t-out="session['end']"/> (<t t-out="session['timezone']"/>)</p>
-                <p>Reference timezone: <t t-out="session['reference_timezone']"/></p><p t-out="session['location']"/>
+                <strong t-out="session['name']"/><p><t t-out="session['period']"/><t t-if="session['timezone_note']"> (<t t-out="session['timezone_note']"/>)</t></p><p t-out="session['location']"/>
                 <a t-if="session['meeting_url']" t-att-href="session['meeting_url']" rel="noopener noreferrer">Join remote session</a>
             </li>
             </ul><t t-call="training_management.portal_materials"/>

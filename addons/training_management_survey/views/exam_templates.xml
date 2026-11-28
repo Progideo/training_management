@@ -34,7 +34,7 @@
     </xpath>
     <xpath expr="//section[1]" position="inside">
       <p t-foreach="learning['activities']" t-as="a" t-if="not is_tutor and a.get('exam_url')">
-        <a class="btn btn-outline-primary" t-att-href="a['exam_url']">Mock exam: <t t-out="a['name']" />
+        <a class="btn btn-outline-primary" t-att-href="a['exam_url']"><t t-if="a.get('exam_obligation') == 'pass'">Graded quiz:</t><t t-else="">Mock exam:</t> <t t-out="a['name']" />
         </a>
       </p>
     </xpath>
@@ -45,8 +45,9 @@
       <div class="container py-4">
         <a t-att-href="back">My training</a>
         <h1 t-out="title" />
-        <p>Mock exam — no official certification.</p>
-        <p>Duration: <t t-out="duration" /> minutes. Time runs continuously after confirmation, including while disconnected.</p>
+        <p t-if="graded">Graded quiz: reach <t t-out="'%g' % threshold" /> % to complete this activity.</p>
+        <p t-else="">Mock exam — no official certification.</p>
+        <p>Duration: <t t-out="'%g' % duration" /> minutes. Time runs continuously after confirmation, including while disconnected.</p>
         <form t-if="can_start" method="post">
           <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
           <button type="submit" class="btn btn-primary">

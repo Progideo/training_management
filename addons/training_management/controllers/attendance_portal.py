@@ -283,13 +283,17 @@ class AttendancePortal(http.Controller):
                         "schedule": [
                             {
                                 "name": session.name,
-                                "start": format_datetime(request.env, period["start"], tz=session.timezone),
-                                "end": format_datetime(request.env, period["end"], tz=session.timezone),
+                                "start": format_datetime(
+                                    request.env, period["start"], tz=session.timezone, dt_format="short"
+                                ),
+                                "end": format_datetime(
+                                    request.env, period["end"], tz=session.timezone, dt_format="short"
+                                ),
                                 "timezone": session.timezone,
                             }
                         ],
-                        "start": format_datetime(request.env, period["start"], tz=session.timezone),
-                        "end": format_datetime(request.env, period["end"], tz=session.timezone),
+                        "start": format_datetime(request.env, period["start"], tz=session.timezone, dt_format="short"),
+                        "end": format_datetime(request.env, period["end"], tz=session.timezone, dt_format="short"),
                         "signatures": [
                             {
                                 "id": event.id,
@@ -339,7 +343,7 @@ class AttendancePortal(http.Controller):
                         "history": [
                             {
                                 "kind": dict(e._fields["kind"]._description_selection(request.env))[e.kind],
-                                "date": format_datetime(request.env, e.occurred_at, tz=tz),
+                                "date": format_datetime(request.env, e.occurred_at, tz=tz, dt_format="short"),
                                 "actor": e.actor_id.name,
                                 "signature_id": e.id if e.signature else False,
                                 "wording": e.wording,

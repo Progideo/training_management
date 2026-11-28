@@ -6,7 +6,7 @@ from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 from .material_portal import TrainingParticipantPortal
-from .portal_utils import session_navigation
+from .portal_utils import portal_period, portal_timezone_note, session_navigation
 
 
 class TrainingTrainerPortal(http.Controller):
@@ -102,8 +102,10 @@ class TrainingTrainerPortal(http.Controller):
                     "id": session.id,
                     "name": session.name,
                     "delivery": session.delivery_id.name,
-                    "start": format_datetime(request.env, session.start_at, tz=tz),
-                    "end": format_datetime(request.env, session.end_at, tz=tz),
+                    "start": format_datetime(request.env, session.start_at, tz=tz, dt_format="short"),
+                    "end": format_datetime(request.env, session.end_at, tz=tz, dt_format="short"),
+                    "period": portal_period(session.start_at, session.end_at, tz),
+                    "timezone_note": portal_timezone_note(session.timezone or tz),
                     "timezone": tz,
                     "reference_timezone": session.timezone,
                     "location": session.location or session.room_id.name,

@@ -7,7 +7,7 @@ from odoo.http import request
 from odoo.http.stream import content_disposition
 from odoo.tools.misc import format_datetime
 
-from .portal_utils import portal_datetime
+from .portal_utils import portal_datetime, portal_period, portal_timezone_note
 
 
 class TrainingParticipantPortal(http.Controller):
@@ -43,8 +43,10 @@ class TrainingParticipantPortal(http.Controller):
         sessions = [
             {
                 "name": s.name,
-                "start": format_datetime(request.env, s.start_at, tz=tz),
-                "end": format_datetime(request.env, s.end_at, tz=tz),
+                "start": format_datetime(request.env, s.start_at, tz=tz, dt_format="short"),
+                "end": format_datetime(request.env, s.end_at, tz=tz, dt_format="short"),
+                "period": portal_period(s.start_at, s.end_at, tz),
+                "timezone_note": portal_timezone_note(s.timezone or tz),
                 "location": s.location or s.room_id.name,
                 "meeting_url": s.meeting_url,
                 "timezone": tz,

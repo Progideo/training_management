@@ -167,7 +167,7 @@
             <h1>Training evaluations</h1>
             <p t-if="not rows">No authorized evaluation.</p>
             <ul>
-                <li t-foreach="rows" t-as="row"><a t-att-href="'/my/training-evaluations/%s' % row['id']" t-out="row['name']"/> — <span t-out="row['state']"/> — <span t-out="row['due']"/><span t-if="row['has_score']"> — <t t-out="row['score']"/> %</span><span t-elif="row['validated']"> — Qualitative result (score not applicable)</span><span t-else=""> — Not evaluated</span></li>
+                <li t-foreach="rows" t-as="row"><a t-att-href="'/my/training-evaluations/%s' % row['id']" t-out="row['name']"/> — <span t-out="row['state']"/> — <span t-out="row['due']"/><span t-if="row['has_score']"> — <t t-out="'%g' % round(row['score'], 1)"/> %</span><span t-elif="row['validated']"> — Qualitative result (score not applicable)</span><span t-else=""> — Not evaluated</span></li>
             </ul>
             <t t-call="portal.pager"/>
         </t>
@@ -180,7 +180,7 @@
             <p t-out="criteria"/>
             <p>State: <span t-out="state"/>. Deadline: <span t-out="due"/></p>
             <div t-if="error or message" id="evaluation-feedback" tabindex="-1" autofocus="autofocus" t-att-class="'alert alert-danger' if error else 'alert alert-success'" t-att-role="'alert' if error else 'status'" t-out="error or message"/>
-            <p t-if="has_score">Validated score: <span t-out="score"/> % — Threshold: <span t-out="threshold"/> %</p>
+            <p t-if="has_score">Validated score: <span t-out="'%g' % round(score, 1)"/> % — Threshold: <span t-out="'%g' % round(threshold, 1)"/> %</p>
             <p t-elif="validated">Qualitative result (score not applicable).</p>
             <p t-else="">Not evaluated.</p>
             <p t-if="conclusion" t-out="conclusion"/>

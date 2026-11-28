@@ -1839,3 +1839,34 @@ msgstr "Mes tentatives d’examen blanc"
 #: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
 msgid "Mock Exam Attempts"
 msgstr "Tentatives d’examen blanc"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.learning_exam_link
+msgid "Optional exam: it does not block completion."
+msgstr "Examen facultatif : il ne bloque pas l’achèvement de la formation."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.learning_exam_link
+msgid "Finish one attempt; an expired attempt also counts once closed."
+msgstr "Terminez une tentative ; une tentative expirée compte aussi une fois clôturée."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.learning_exam_link
+msgid "Reach the assigned exam version's success threshold."
+msgstr "Atteignez le seuil de réussite de l’examen."
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.learning_exam_link
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Graded quiz:"
+msgstr "Quiz noté :"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "Graded quiz: reach"
+msgstr "Quiz noté : atteignez"
+
+#. module: training_management_survey
+#: model_terms:ir.ui.view,arch_db:training_management_survey.exam_start
+msgid "% to complete this activity."
+msgstr "% pour valider cette activité."

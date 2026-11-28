@@ -18,7 +18,12 @@ def learning_values(enrollment):
     for row in rows:
         row["key"] = str(uuid4())
         row["deadline"] = (
-            format_datetime(request.env, row["deadline"], tz=request.env.user.tz or enrollment.delivery_id.timezone)
+            format_datetime(
+                request.env,
+                row["deadline"],
+                tz=request.env.user.tz or enrollment.delivery_id.timezone,
+                dt_format="short",
+            )
             if row["deadline"]
             else False
         )
@@ -35,13 +40,16 @@ def learning_values(enrollment):
         entry["key"] = str(uuid4())
         entry["parent_date"] = (
             format_datetime(
-                request.env, entry["parent_date"], tz=request.env.user.tz or enrollment.delivery_id.timezone
+                request.env,
+                entry["parent_date"],
+                tz=request.env.user.tz or enrollment.delivery_id.timezone,
+                dt_format="short",
             )
             if entry["parent_date"]
             else False
         )
         entry["date"] = format_datetime(
-            request.env, entry["date"], tz=request.env.user.tz or enrollment.delivery_id.timezone
+            request.env, entry["date"], tz=request.env.user.tz or enrollment.delivery_id.timezone, dt_format="short"
         )
     return {
         "id": enrollment.id,

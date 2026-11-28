@@ -4,7 +4,7 @@ from odoo.http import request
 from odoo.tools.misc import format_datetime
 
 from .material_portal import TrainingParticipantPortal
-from .portal_utils import portal_datetime
+from .portal_utils import portal_datetime, portal_period, portal_timezone_note
 from .public_catalogue import TrainingPublicCatalogue
 
 
@@ -93,9 +93,15 @@ class TrainingCompanyPortal(http.Controller):
                     "sessions": [
                         {
                             "name": s.name,
-                            "start": format_datetime(request.env, s.start_at, tz=s.timezone),
-                            "end": format_datetime(request.env, s.end_at, tz=s.timezone),
-                            "timezone": s.timezone,
+                            "start": format_datetime(
+                                request.env, s.start_at, tz=s.timezone or delivery.timezone, dt_format="short"
+                            ),
+                            "end": format_datetime(
+                                request.env, s.end_at, tz=s.timezone or delivery.timezone, dt_format="short"
+                            ),
+                            "period": portal_period(s.start_at, s.end_at, s.timezone or delivery.timezone),
+                            "timezone": s.timezone or delivery.timezone,
+                            "timezone_note": portal_timezone_note(s.timezone or delivery.timezone),
                         }
                         for s in delivery.session_ids
                         if not s.cancelled

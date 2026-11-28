@@ -17,7 +17,7 @@
                 <li t-foreach="sessions" t-as="session" class="list-group-item">
                     <a t-att-href="'/my/training-sessions/%s?filterby=%s&amp;page=%s' % (session['id'], filterby, page)"><t t-out="session['name']"/></a>
                     <div t-out="session['delivery']"/>
-                    <div><t t-out="session['start']"/> — <t t-out="session['timezone']"/></div>
+                    <div><t t-out="session['period']"/><t t-if="session['timezone_note']"> (<t t-out="session['timezone_note']"/>)</t></div>
                 </li>
             </ul>
             <t t-call="portal.pager"/>
@@ -28,8 +28,7 @@
             <t t-call="training_management.portal_training_navigation"/><a t-att-href="session_back">My training sessions</a>
             <h1 t-out="session['name']"/>
             <p t-out="session['delivery']"/>
-            <p><t t-out="session['start']"/> → <t t-out="session['end']"/> (<t t-out="session['timezone']"/>)</p>
-            <p>Reference timezone: <t t-out="session['reference_timezone']"/></p>
+            <p><t t-out="session['period']"/><t t-if="session['timezone_note']"> (<t t-out="session['timezone_note']"/>)</t></p>
             <p t-out="session['location']"/>
             <a t-if="session['meeting_url']" t-att-href="session['meeting_url']" rel="noopener noreferrer">Join remote session</a>
             <p class="text-break" t-out="session['equipment']"/>
