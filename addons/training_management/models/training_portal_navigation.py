@@ -95,3 +95,39 @@ class TrainingPortalNavigation(models.AbstractModel):
             ),
         }
         return links
+
+    @api.private
+    def _attends(self):
+        """Whether the person signs attendance: an active participation or a session to teach."""
+        user = self.env.user
+        if not user.active or user._is_public():
+            return False
+        learning = self.env["training.learning.service"]
+        if self.env["training.document.policy"]._enrollments().filtered(learning._is_participant):
+            return True
+        return bool(
+            self.env["training.session"]
+            .sudo()
+            .search_count(
+                [
+                    "|",
+                    ("instructor_id", "=", user.partner_id.id),
+                    ("id", "in", self.env["training.session"]._delegated_session_ids(user.partner_id)),
+                    ("company_id", "in", user.company_ids.ids),
+                    ("delivery_id.state", "in", ("confirmed", "ongoing", "delivered")),
+                    ("cancelled", "=", False),
+                ],
+                limit=1,
+            )
+        )
+
+    @api.private
+    def _has_courses(self):
+        """Whether « My courses » has something for the person: menu entry and landing page.
+
+        Extended by modules adding their own courses (autonomous eLearning, for instance).
+        """
+        user = self.env.user
+        if not user.active or user._is_public():
+            return False
+        return self._attends() or bool(self.env["training.company.service"]._grants())

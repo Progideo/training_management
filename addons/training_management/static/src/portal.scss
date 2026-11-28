@@ -32,3 +32,16 @@ body[class*="o_training_management"] {
 }
 .tm_attendance_signature img { object-fit: contain; }
 .tm_attendance_details:target { outline: 2px solid var(--primary, #0d6efd); }
+
+// « My courses »: full-width rows, native colours.
+.o_training_courses {
+    .o_training_courses_block > .o_training_course_row:first-of-type { border-top: var(--border-width, 1px) solid var(--border-color, #dee2e6); }
+    .o_training_course_row { background: var(--body-bg, #fff); }
+    .o_training_courses_todo .o_training_course_row { border-radius: var(--border-radius, .375rem); border: 0 !important; margin-bottom: .5rem; }
+    .o_training_course_tag { min-width: 8rem; white-space: normal; text-align: start; }
+    .o_training_course_text { min-width: 14rem; }
+    .o_training_course_row .btn { min-height: 2.75rem; }
+    details > summary { cursor: pointer; }
+    .tm_navigation { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .75rem; }
+    .tm_navigation > * { margin: 0 !important; }
+}

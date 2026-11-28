@@ -76,3 +76,4 @@ from . import training_portal_navigation
 from . import training_attendance_period
 
 from . import training_attendance_signature
+from . import website_menu

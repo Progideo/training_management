@@ -1,37 +1,22 @@
 from odoo import http
 from odoo.addons.mail.controllers.attachment import AttachmentController
-from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.web.controllers.binary import Binary
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 from odoo.http.stream import content_disposition
 from odoo.tools.misc import format_datetime
 
+from .courses_page import TrainingCoursesMixin
 from .portal_utils import portal_datetime
 
 
-class TrainingParticipantPortal(http.Controller):
+class TrainingParticipantPortal(TrainingCoursesMixin, http.Controller):
     @http.route(
         ["/my/trainings", "/my/trainings/page/<int:page>"], type="http", auth="user", website=True, methods=["GET"]
     )
     def trainings(self, page=1, **kwargs):
-        enrollments = request.env["training.document.policy"]._enrollments()
-        active = enrollments.filtered(lambda e: e._effective_state() == "active")
-        pager = portal_pager(url="/my/trainings", total=len(active), page=page, step=40)
-        rows = [
-            {"id": e.id, "name": e.delivery_id.name, "programme": e.program_id.title}
-            for e in active[pager["offset"] : pager["offset"] + 40]
-        ]
-        return self._private(
-            request.render(
-                "training_management.portal_trainings",
-                {
-                    "enrollments": rows,
-                    "pager": pager,
-                    "training_links": request.env["training.portal.navigation"]._links(),
-                },
-            )
-        )
+        # « My courses »: every row is built by the service authorizing its destination.
+        return self._private(request.render("training_management.portal_trainings", self._courses_values()))
 
     @http.route("/my/trainings/<int:enrollment_id>", type="http", auth="user", website=True, methods=["GET"])
     def training(self, enrollment_id, **kwargs):

@@ -670,3 +670,13 @@ msgstr "ont réussi un défi de session."
 #: code:addons/training_gamification/models/service.py:0
 msgid "Work submitted for validation"
 msgstr "Travail déposé pour validation"
+
+#. module: training_gamification
+#: model:portal.entry,name:training_gamification.portal_entry_progress
+msgid "My points and badges"
+msgstr "Mes points et badges"
+
+#. module: training_gamification
+#: model:portal.entry,description:training_gamification.portal_entry_progress
+msgid "Your training engagement, private by default"
+msgstr "Votre engagement en formation, privé par défaut"

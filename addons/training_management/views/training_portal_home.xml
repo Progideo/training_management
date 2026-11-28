@@ -1,20 +1,101 @@
 <odoo>
+    <!-- « My account » keeps the standard Odoo cards (data/portal_entry_data.xml). This
+         view id is kept so that an update replaces the former link card. -->
     <template id="portal_participant_home" inherit_id="portal.portal_my_home" name="Participant Training">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><div class="card p-3 my-2"><a href="/my/trainings">My training</a></div></xpath>
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside"><t/></xpath>
     </template>
+
+    <!-- One full-width row: status label, title, detail, optional progress, action. -->
+    <template id="courses_row" name="My courses: row">
+        <div t-attf-class="o_training_course_row d-flex flex-wrap align-items-center gap-3 p-3 border-bottom #{row_class or ''}">
+            <span t-if="tag" t-attf-class="o_training_course_tag badge #{tag_class or 'text-bg-light'}" t-out="tag"/>
+            <div class="flex-grow-1 o_training_course_text">
+                <a t-att-href="url" class="fw-bold text-reset text-decoration-none" t-out="title"/>
+                <div t-if="detail" class="small text-muted" t-out="detail"/>
+                <div t-if="progress is not False and progress is not None" class="progress mt-2" role="progressbar"
+                     t-att-aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100" style="height: .4rem; max-width: 24rem;">
+                    <div class="progress-bar" t-attf-style="width: #{progress}%"/>
+                </div>
+            </div>
+            <a t-att-href="url" t-attf-class="btn #{'btn-primary' if primary else 'btn-outline-primary'}" t-out="button"/>
+        </div>
+    </template>
+
     <template id="portal_trainings" name="My Training">
-        <t t-call="portal.portal_layout" additional_title.translate="My training"><h1>My training</h1>
-            <h2 t-if="enrollments">My enrollments</h2>
-            <p t-if="not enrollments and not any(training_links.values())">No training is currently available. Contact your coordinator if needed.</p>
-            <ul class="list-group"><li t-foreach="enrollments" t-as="enrollment" class="list-group-item">
-                <a t-att-href="'/my/trainings/%s' % enrollment['id']" t-out="enrollment['name']"/><div t-out="enrollment['programme']"/>
-            </li></ul><t t-call="portal.pager"/>
-            <section class="my-4" t-if="any(training_links.get(k) for k in ('paths', 'practice', 'evaluations', 'documents', 'exams', 'feedback', 'bookings', 'publications', 'complaints'))">
-                <h2>My actions and history</h2><div id="training_personal_links" class="tm_navigation"/>
-            </section>
-            <section class="my-4" t-if="any(training_links.get(k) for k in ('sessions', 'tutoring', 'dashboard', 'company'))">
-                <h2>My responsibilities</h2><div id="training_responsibility_links" class="tm_navigation"/>
-            </section>
+        <t t-call="website.layout">
+            <t t-set="additional_title">My training</t>
+            <div id="wrap" class="o_training_courses">
+                <div class="container py-4 d-flex flex-column gap-4">
+                    <section class="d-flex flex-wrap justify-content-between align-items-end gap-2">
+                        <h1 class="mb-0">My training</h1>
+                        <p t-if="next_session" class="mb-0">Next session: <strong t-out="next_session['next_label']"/> — <span t-out="next_session['name']"/></p>
+                    </section>
+                    <p t-if="mixed_roles" class="mb-0 small text-muted o_training_courses_roles">
+                        <t t-if="'participant' in roles"><a href="#courses_trainings">I am learning</a></t>
+                        <t t-if="'trainer' in roles"> · <a href="#courses_sessions">I am teaching</a></t>
+                        <t t-if="'company' in roles"> · <a href="#courses_company">My company</a></t>
+                    </p>
+
+                    <section t-if="todo" id="courses_todo" aria-labelledby="courses_todo_title" class="o_training_courses_block o_training_courses_todo p-3 rounded bg-light">
+                        <h2 id="courses_todo_title" class="h4">To do now <span class="badge text-bg-warning" t-out="len(todo)"/></h2>
+                        <t t-foreach="todo[:rows_shown]" t-as="item">
+                            <t t-call="training_management.courses_row" tag="item['tag']" tag_class="'text-bg-warning' if item['urgent'] else 'text-bg-light'"
+                               title="item['title']" detail="item['detail']" url="item['url']" button="item['button']" primary="item['urgent']" progress="False"/>
+                        </t>
+                        <details t-if="len(todo) > rows_shown">
+                            <summary class="py-2 fw-bold text-primary">Show all actions <span class="badge text-bg-light" t-out="len(todo)"/></summary>
+                            <t t-foreach="todo[rows_shown:]" t-as="item">
+                                <t t-call="training_management.courses_row" tag="item['tag']" tag_class="'text-bg-warning' if item['urgent'] else 'text-bg-light'"
+                                   title="item['title']" detail="item['detail']" url="item['url']" button="item['button']" primary="item['urgent']" progress="False"/>
+                            </t>
+                        </details>
+                    </section>
+
+                    <section t-if="trainings" id="courses_trainings" aria-labelledby="courses_trainings_title" class="o_training_courses_block">
+                        <h2 id="courses_trainings_title" class="h4">My instructor-led trainings</h2>
+                        <t t-foreach="trainings[:rows_shown]" t-as="row">
+                            <t t-call="training_management.courses_row" tag="row['label']" tag_class="'text-bg-primary' if row['status'] == 'ongoing' else 'text-bg-light'"
+                               title="row['name']" detail="row['detail']" url="row['url']"  primary="row['status'] == 'ongoing'" progress="row['progress']"><t t-set="button">Open page</t></t>
+                        </t>
+                        <details t-if="len(trainings) > rows_shown">
+                            <summary class="py-2 fw-bold text-primary">All my trainings <span class="badge text-bg-light" t-out="len(trainings)"/></summary>
+                            <t t-foreach="trainings[rows_shown:]" t-as="row">
+                                <t t-call="training_management.courses_row" tag="row['label']" tag_class="'text-bg-primary' if row['status'] == 'ongoing' else 'text-bg-light'"
+                                   title="row['name']" detail="row['detail']" url="row['url']"  primary="row['status'] == 'ongoing'" progress="row['progress']"><t t-set="button">Open page</t></t>
+                            </t>
+                        </details>
+                    </section>
+
+                    <section t-if="sessions" id="courses_sessions" aria-labelledby="courses_sessions_title" class="o_training_courses_block">
+                        <h2 id="courses_sessions_title" class="h4">I am teaching</h2>
+                        <t t-foreach="sessions[:rows_shown]" t-as="row">
+                            <t t-call="training_management.courses_row" tag="row['label']" tag_class="'text-bg-primary' if row['ongoing'] else 'text-bg-light'"
+                               title="row['name']" detail="row['detail']" url="row['url']"  primary="False" progress="False"><t t-set="button">Open page</t></t>
+                        </t>
+                        <p class="mt-2 mb-0"><a href="/my/training-sessions">All my sessions</a></p>
+                    </section>
+
+                    <section t-if="company" id="courses_company" aria-labelledby="courses_company_title" class="o_training_courses_block">
+                        <h2 id="courses_company_title" class="h4">My company</h2>
+                        <t t-foreach="company[:rows_shown]" t-as="row">
+                            <t t-call="training_management.courses_row" tag="row['state']" tag_class="'text-bg-light'"
+                               title="row['name']" detail="row['customer']" url="'/my/company-trainings/%s' % row['id']"  primary="False" progress="False"><t t-set="button">Manage</t></t>
+                        </t>
+                        <p t-if="len(company) > rows_shown" class="mt-2 mb-0"><a href="/my/company-trainings">All company files</a></p>
+                    </section>
+
+                    <div id="courses_more_sections"/>
+
+                    <p t-if="not trainings and not sessions and not company and not todo and not any(training_links.values())" class="o_training_courses_empty mb-0">No training is currently available. Contact your coordinator if needed.</p>
+                    <p t-if="not trainings and not sessions and not company and not todo" class="mb-0"><a href="/formations">See the training catalogue</a></p>
+
+                    <section class="o_training_courses_links" t-if="any(training_links.get(k) for k in ('paths', 'practice', 'evaluations', 'documents', 'exams', 'feedback', 'bookings', 'publications', 'complaints', 'sessions', 'tutoring', 'dashboard', 'company'))">
+                        <h2 class="h5">Other pages</h2>
+                        <div id="training_personal_links" class="tm_navigation"/>
+                        <div id="training_responsibility_links" class="tm_navigation mt-3"/>
+                    </section>
+                </div>
+            </div>
         </t>
     </template>
 </odoo>

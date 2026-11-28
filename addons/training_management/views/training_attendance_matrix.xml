@@ -70,7 +70,8 @@
         </t>
     </template>
     <template id="signature_home_link" inherit_id="training_management.portal_trainings">
-        <xpath expr="//h1" position="after"><p><a href="/my/training-signature">My signature</a></p></xpath>
+        <!-- Kept for updates: « My signature » is now a « My account » card. -->
+        <xpath expr="//h1" position="after"><t/></xpath>
     </template>
     <template id="attendance_dashboard_link" inherit_id="training_management.portal_dashboard">
         <xpath expr="//h1" position="after"><p><a t-att-href="'/my/training-dashboard/%s/attendance' % delivery_id">Attendance by day and half-day</a></p></xpath>

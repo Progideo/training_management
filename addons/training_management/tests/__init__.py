@@ -52,3 +52,4 @@ from . import test_attendance_signature
 from . import test_course_reviews
 from . import test_evidence_deletion
 from . import test_mail_templates
+from . import test_courses_page

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Main menu entry « My courses », shown only to people with a course (website_menu.py). -->
+    <function model="website.menu" name="_training_courses_menu"/>
+</odoo>

@@ -25,3 +25,4 @@ from . import session_publication
 from . import certificate_verification
 
 from . import attendance_matrix
+from . import courses_home

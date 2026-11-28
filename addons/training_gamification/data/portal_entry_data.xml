@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="portal_entry_progress" model="portal.entry">
+        <field name="name">My points and badges</field>
+        <field name="description">Your training engagement, private by default</field>
+        <field name="url">/my/training-progress</field>
+        <field name="image" type="bytes" file="training_gamification/static/src/img/portal-progress.svg"/>
+        <field name="placeholder_count">training_progress_count</field>
+        <field name="sequence" eval="180"/>
+    </record>
+</odoo>
